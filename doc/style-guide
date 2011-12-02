@@ -1,0 +1,105 @@
+Dateien:      *.cpp *.hpp
+Klassen:      CamelCase
+Enumeration:  TypeEnum { HOUSE, TREE, FLOWER };
+Variablen:    a_cool_identifier
+Methoden:     is_object()
+Member:       color_member_
+Namespace:    smallCamelCase
+              keine using namespaces; !!!
+LineWidth:    80 characters
+Preprozessor: projektheader: #include "pfad/datei.hpp"
+              systemheader:  #include <datei>
+TabWidth:     4 Spaces
+
+Klassendeklaration:
+
+	#ifndef HEADER_HPP
+	#define HEADER_HPP
+
+	#systemincludes
+	
+	#projektincludes
+
+	class ForwardDeklaration;
+
+	class Holla {
+		public:
+			Holla();
+			virtual ~Holla();
+			
+			void method() const throws(std::string);
+			
+		private:
+			void private_method();
+			
+			ForwardDeklaration* member_;
+	};
+
+	#endif // HEADER_HPP
+
+Klassendefinition:
+
+	#include "Holla.hpp"
+	
+	#systemincludes
+	
+	#include "ForwardDeklaration.hpp"
+	#projektincludes
+	
+	Holla::Holla():
+		member_(NULL) {
+		
+		sxfgd
+		dfg
+	}
+		
+	Holla::~Holla() {
+	
+	}
+	
+	void Holla::method() {
+	
+	}
+	
+	
+
+Klammern:
+
+	if ( .. ) {
+		do something;
+	} else {
+		do something else;
+	};
+
+
+Comments im header:
+
+	////////////////////////////////////////////////////////////
+	/// Best method ever.
+	/// Does this and this for this reason.
+	///
+	/// \param is_cool Whether this method is cool.
+	/// \return The result.
+	////////////////////////////////////////////////////////////
+
+	int method(bool is_cool);
+
+
+Comments im source:
+
+	int method(bool is_cool) {
+		// comment
+		if ( .. ) {
+			// comment
+			do something;
+		} else {
+			do something else;
+		};
+	}
+	
+Neuer Standard:
+	
+	nicht:   for (std::vector<bool>::iterator color(colors.begin(); color ...... ))
+	sondern: for (auto color(colors.begin(); color ......... ))
+	oder     for (auto color: colors)
+	
