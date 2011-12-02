@@ -35,7 +35,12 @@
 		</Compiler>
 		<Unit filename="include/renderer/GeometryBase.hpp" />
 		<Unit filename="include/renderer/MaterialBase.hpp" />
+		<Unit filename="include/renderer/Mesh.hpp" />
 		<Unit filename="include/renderer/RenderBackend.hpp" />
+		<Unit filename="include/renderer/RenderContext.hpp" />
+		<Unit filename="include/renderer/RenderWindow.hpp" />
+		<Unit filename="include/renderer/Shader.hpp" />
+		<Unit filename="include/renderer/glInclude.hpp" />
 		<Unit filename="include/scenegraph/Camera.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />
 		<Unit filename="include/scenegraph/Geometry.hpp" />
@@ -48,6 +53,8 @@
 		<Unit filename="include/utils/KnownObject.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
 		<Unit filename="src/main.cpp" />
+		<Unit filename="src/renderer/Mesh.cpp" />
+		<Unit filename="src/renderer/RenderWindow.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
