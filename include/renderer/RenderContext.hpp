@@ -23,7 +23,7 @@
 #ifndef RENDERCONTEXT_HPP
 #define RENDERCONTEXT_HPP
 
-#include "include/utils/glInclude.hpp"
+#include "include/renderer/glInclude.hpp"
 
 struct RenderContext {
     GLXContext context;

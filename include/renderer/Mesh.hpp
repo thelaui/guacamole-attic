@@ -23,6 +23,8 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
+#include <string>
+
 #include "include/renderer/glInclude.hpp"
 
 class aiMesh;

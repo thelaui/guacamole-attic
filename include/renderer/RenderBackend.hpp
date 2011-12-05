@@ -23,6 +23,13 @@
 #ifndef RENDER_BACKEND_HPP
 #define RENDER_BACKEND_HPP
 
+#include <vector>
+#include <string>
+
+class Camera;
+class Geometry;
+class Light;
+
 class RenderBackend {
     public:
         RenderBackend( int width, int height, std::string const& display = ":0.0" );

@@ -33,6 +33,7 @@
 			<Add option="-Wall" />
 			<Add directory="." />
 		</Compiler>
+		<Unit filename="include/renderer/DataBase.hpp" />
 		<Unit filename="include/renderer/FragmentShader.hpp" />
 		<Unit filename="include/renderer/GeometryBase.hpp" />
 		<Unit filename="include/renderer/Material.hpp" />
@@ -58,9 +59,7 @@
 		<Unit filename="include/utils/debug.hpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/renderer/FragmentShader.cpp" />
-		<Unit filename="src/renderer/GeometryBase.cpp" />
 		<Unit filename="src/renderer/Material.cpp" />
-		<Unit filename="src/renderer/MaterialBase.cpp" />
 		<Unit filename="src/renderer/Mesh.cpp" />
 		<Unit filename="src/renderer/RenderBackend.cpp" />
 		<Unit filename="src/renderer/RenderWindow.cpp" />

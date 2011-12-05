@@ -17,21 +17,37 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief A database for accessing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/MaterialBase.hpp"
+#ifndef DATA_BASE_HPP
+#define DATA_BASE_HPP
 
-#include "include/renderer/Material.hpp"
+#include <memory>
+#include <string>
+#include <map>
 
-MaterialBase() {}
+#include "include/utils/KnownObject.hpp"
 
-MaterialBase::~MaterialBase() {}
+template <typename T>
 
-void MaterialBase::add_material( std::string const& id, Material* material ) {}
+class DataBase: public KnownObject<DataBase<T>> {
+    public:
+        void add( std::string const& id, std::shared_ptr<T> date ) {
+            data_.insert(std::make_pair(id, date));
+        }
 
-bool MaterialBase::is_supported( std::string const& id ) const {}
+        bool is_supported( std::string const& id ) const {
+            return data_.find(id) != data_.end();
+        }
 
-Material* MaterialBase::get_material( std::string const& id ) const {}
+        std::shared_ptr<T> get( std::string const& id ) {
+            return data_[id];
+        }
 
+    private:
+        std::map<std::string, std::shared_ptr<T>> data_;
+};
+
+#endif // DATA_BASE_HPP
 

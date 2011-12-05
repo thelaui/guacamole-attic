@@ -23,25 +23,11 @@
 #ifndef GEOMETRY_BASE_HPP
 #define GEOMETRY_BASE_HPP
 
-#include <string>
-#include <map>
+#include "include/renderer/DataBase.hpp"
+#include "include/renderer/Mesh.hpp"
 
-#include "include/utils/KnownObject.hpp"
-
-class Mesh;
-
-class GeometryBase: public KnownObject<GeometryBase> {
-    public:
-        GeometryBase();
-        virtual ~GeometryBase();
-
-        void add_geometry( std::string const& id, Mesh* geometry );
-        bool is_supported( std::string const& id ) const;
-
-        Mesh* get_geometry( std::string const& id ) const;
-
-    private:
-        std::map<std::string, Mesh*> geometries_;
-};
+typedef DataBase<Mesh> GeometryBase;
 
 #endif // GEOMETRY_BASE_HPP
+
+

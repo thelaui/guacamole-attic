@@ -23,6 +23,9 @@
 #ifndef SHADERPROGRAM_HPP
 #define SHADERPROGRAM_HPP
 
+class VertexShader;
+class FragmentShader;
+
 class ShaderProgram {
     public:
         ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader );
