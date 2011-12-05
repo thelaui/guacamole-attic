@@ -25,24 +25,17 @@
 
 #include "include/renderer/glInclude.hpp"
 
-#include <map>
-
 class aiMesh;
 
 class Mesh {
     public:
         Mesh();
-        Mesh(aiMesh* aMesh);
+        Mesh(std::string const& file);
         ~Mesh();
 
-        void upload(int id);
-
-        GLuint* vao(int id);
-        unsigned int numFaces;
+        void draw() const;
 
     private:
-        std::map<int, GLuint*> vaos_;
-
         aiMesh* mesh_;
 };
 

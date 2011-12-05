@@ -11,17 +11,11 @@ Mesh::Mesh():
     numFaces(0),
     aMesh_(NULL) {}
 
-Mesh::Mesh(aiMesh* aMesh):
+Mesh::Mesh(std::string const& file):
     vaos_(),
     numFaces(0),
-    aMesh_(aMesh) {}
+    aMesh_(NULL) {
 
-Mesh::~Mesh() {
-    for (auto vao = vaos_.begin(); vao != vaos_.end(); ++vao)
-        glDeleteVertexArrays(1,vao->second);
-}
-
-void Mesh::upload(int id) {
     numFaces = aMesh_->mNumFaces;
     std::vector<unsigned int> faceArray(numFaces * 3);
 
@@ -72,6 +66,14 @@ void Mesh::upload(int id) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
-GLuint* Mesh::vao(int id) {
-    return vaos_[id];
+Mesh::~Mesh() {
+    for (auto vao = vaos_.begin(); vao != vaos_.end(); ++vao)
+        glDeleteVertexArrays(1,vao->second);
+}
+
+void Mesh::draw() const {
+    // bind the geometry and draw it
+    glBindVertexArray(bufferIds_[0]);
+    glDrawElements(GL_TRIANGLES, mesh_->getTriangles().size()*3, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }

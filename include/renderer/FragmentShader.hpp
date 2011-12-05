@@ -20,28 +20,16 @@
 /// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef FRAGMENTSHADER_HPP
+#define FRAGMENTSHADER_HPP
 
-#include <string>
-#include <map>
+#include "include/renderer/Shader.hpp"
 
-#include "include/utils/KnownObject.hpp"
-
-class Material;
-
-class MaterialBase: public KnownObject<MaterialBase> {
+class FragmentShader: public Shader {
     public:
-        MaterialBase();
-        virtual ~MaterialBase();
-
-        void add_material(std::string const& id, Material* material);
-        bool is_supported(std::string const& id) const;
-
-        Material* get_material(std::string const& id) const;
-
-    private:
-        std::map<std::string, Material*> materials_;
+        FragmentShader( std::string const& file );
+        virtual ~FragmentShader();
 };
 
-#endif // MATERIAL_BASE_HPP
+#endif // FRAGMENTSHADER_HPP
+

@@ -23,16 +23,16 @@
 #ifndef SHADER_HPP
 #define SHADER_HPP
 
+#include <string>
+
 class Shader {
     public:
         Shader();
         virtual ~Shader();
 
+    protected:
         void load( std::string const& fileName,
                    unsigned shaderType ) throw (std::string);
-
-    private:
-
 };
 
 #endif // SHADER_HPP

@@ -20,28 +20,17 @@
 /// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef SHADERPROGRAM_HPP
+#define SHADERPROGRAM_HPP
 
-#include <string>
-#include <map>
-
-#include "include/utils/KnownObject.hpp"
-
-class Material;
-
-class MaterialBase: public KnownObject<MaterialBase> {
+class ShaderProgram {
     public:
-        MaterialBase();
-        virtual ~MaterialBase();
+        ShaderProgram(VertexShader const& v_shader, FragmentShader const& f_shader);
+        virtual ~ShaderProgram();
 
-        void add_material(std::string const& id, Material* material);
-        bool is_supported(std::string const& id) const;
-
-        Material* get_material(std::string const& id) const;
+        void use();
 
     private:
-        std::map<std::string, Material*> materials_;
 };
 
-#endif // MATERIAL_BASE_HPP
+#endif // SHADERPROGRAM_HPP

@@ -33,13 +33,17 @@
 			<Add option="-Wall" />
 			<Add directory="." />
 		</Compiler>
+		<Unit filename="include/renderer/FragmentShader.hpp" />
 		<Unit filename="include/renderer/GeometryBase.hpp" />
+		<Unit filename="include/renderer/Material.hpp" />
 		<Unit filename="include/renderer/MaterialBase.hpp" />
 		<Unit filename="include/renderer/Mesh.hpp" />
 		<Unit filename="include/renderer/RenderBackend.hpp" />
 		<Unit filename="include/renderer/RenderContext.hpp" />
 		<Unit filename="include/renderer/RenderWindow.hpp" />
 		<Unit filename="include/renderer/Shader.hpp" />
+		<Unit filename="include/renderer/ShaderProgram.hpp" />
+		<Unit filename="include/renderer/VertexShader.hpp" />
 		<Unit filename="include/renderer/glInclude.hpp" />
 		<Unit filename="include/scenegraph/Camera.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />

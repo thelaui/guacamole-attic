@@ -20,23 +20,21 @@
 /// \brief A database for accessing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef WINDOW_HPP
-#define WINDOW_HPP
+#ifndef RENDERWINDOW_HPP
+#define RENDERWINDOW_HPP
 
 #include <string>
 
-#include "include/drawer.hpp"
 #include "include/renderer/RenderContext.hpp"
 
 class RenderWindow {
     public:
-        RenderWindow( std::string const& display ) throw (std::string);
+        RenderWindow( int width, int height, std::string const& display ) throw (std::string);
         virtual ~RenderWindow();
 
-        void draw( Scene* scene );
+        void set_active();
 
     private:
-        Drawer drawer_;
         RenderContext ctx_;
 
         int frames_;
@@ -44,4 +42,4 @@ class RenderWindow {
         long frames_start_;
 };
 
-#endif //WINDOW_HPP
+#endif //RENDERWINDOW_HPP

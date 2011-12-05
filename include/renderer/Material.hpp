@@ -17,31 +17,25 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef MATERIAL_HPP
+#define MATERIAL_HPP
 
-#include <string>
-#include <map>
+class ShaderProgram;
 
-#include "include/utils/KnownObject.hpp"
-
-class Material;
-
-class MaterialBase: public KnownObject<MaterialBase> {
+class Material {
     public:
-        MaterialBase();
-        virtual ~MaterialBase();
+        Material();
+        Material(ShaderProgram const& shader);
+        ~Material();
 
-        void add_material(std::string const& id, Material* material);
-        bool is_supported(std::string const& id) const;
-
-        Material* get_material(std::string const& id) const;
+        void use() const;
 
     private:
-        std::map<std::string, Material*> materials_;
 };
 
-#endif // MATERIAL_BASE_HPP
+#endif // MATERIAL_HPP
+
+
