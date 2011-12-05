@@ -1,11 +1,14 @@
 #ifndef NODE_HPP
 #define NODE_HPP
 
-#include<shared_ptr>
+#include <memory>
+#include <list>
+
+class Core;
 
 class Node {
     public:
-        Node();
+        Node(Core* core);
         virtual ~Node();
 
         void add_child( Node* child );
@@ -14,6 +17,10 @@ class Node {
         std::shared_ptr<Core> get_core() const;
 
     private:
+        Node* parent_;
+        std::list<Node*> children_;
+
+        std::shared_ptr<Core> core_;
 
 };
 

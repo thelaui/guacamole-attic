@@ -12,6 +12,7 @@ class SceneGraph: {
         void unlock();
 
     private:
+        Node* root_;
 
 };
 
