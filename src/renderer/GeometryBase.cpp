@@ -17,27 +17,20 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class storing geometry data.
+/// \brief A database for accessing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MESH_HPP
-#define MESH_HPP
+#include "include/renderer/GeometryBase.hpp"
 
-#include "include/renderer/glInclude.hpp"
+#include "include/renderer/Mesh.hpp"
 
-class aiMesh;
+GeometryBase::GeometryBase() {}
 
-class Mesh {
-    public:
-        Mesh();
-        Mesh( std::string const& file );
-        ~Mesh();
+GeometryBase::~GeometryBase() {}
 
-        void draw() const;
+void GeometryBase::add_geometry( std::string const& id, Mesh* geometry ) {}
 
-    private:
-        aiMesh* mesh_;
-};
+bool GeometryBase::is_supported( std::string const& id ) const {}
 
-#endif // MESH_HPP
+Mesh* GeometryBase::get_geometry( std::string const& id ) const {}
 

@@ -28,7 +28,7 @@ class ShaderProgram;
 class Material {
     public:
         Material();
-        Material(ShaderProgram const& shader);
+        Material( ShaderProgram const& shader );
         ~Material();
 
         void use() const;

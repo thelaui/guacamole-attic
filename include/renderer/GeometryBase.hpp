@@ -35,10 +35,10 @@ class GeometryBase: public KnownObject<GeometryBase> {
         GeometryBase();
         virtual ~GeometryBase();
 
-        void add_geometry(std::string const& id, Mesh* geometry);
-        bool is_supported(std::string const& id) const;
+        void add_geometry( std::string const& id, Mesh* geometry );
+        bool is_supported( std::string const& id ) const;
 
-        Mesh* get_geometry(std::string const& id) const;
+        Mesh* get_geometry( std::string const& id ) const;
 
     private:
         std::map<std::string, Mesh*> geometries_;

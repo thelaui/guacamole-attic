@@ -17,27 +17,12 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class storing geometry data.
+/// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MESH_HPP
-#define MESH_HPP
+#include "include/renderer/VertexShader.hpp"
 
-#include "include/renderer/glInclude.hpp"
+VertexShader::VertexShader( std::string const& file ) {}
 
-class aiMesh;
-
-class Mesh {
-    public:
-        Mesh();
-        Mesh( std::string const& file );
-        ~Mesh();
-
-        void draw() const;
-
-    private:
-        aiMesh* mesh_;
-};
-
-#endif // MESH_HPP
+VertexShader::~VertexShader() {}
 

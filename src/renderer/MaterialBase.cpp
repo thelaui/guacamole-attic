@@ -17,27 +17,21 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class storing geometry data.
+/// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MESH_HPP
-#define MESH_HPP
+#include "include/renderer/MaterialBase.hpp"
 
-#include "include/renderer/glInclude.hpp"
+#include "include/renderer/Material.hpp"
 
-class aiMesh;
+MaterialBase() {}
 
-class Mesh {
-    public:
-        Mesh();
-        Mesh( std::string const& file );
-        ~Mesh();
+MaterialBase::~MaterialBase() {}
 
-        void draw() const;
+void MaterialBase::add_material( std::string const& id, Material* material ) {}
 
-    private:
-        aiMesh* mesh_;
-};
+bool MaterialBase::is_supported( std::string const& id ) const {}
 
-#endif // MESH_HPP
+Material* MaterialBase::get_material( std::string const& id ) const {}
+
 

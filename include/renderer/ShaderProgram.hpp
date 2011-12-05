@@ -25,7 +25,7 @@
 
 class ShaderProgram {
     public:
-        ShaderProgram(VertexShader const& v_shader, FragmentShader const& f_shader);
+        ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader );
         virtual ~ShaderProgram();
 
         void use();

@@ -20,24 +20,18 @@
 /// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MESH_HPP
-#define MESH_HPP
+#include "include/renderer/Material.hpp"
 
-#include "include/renderer/glInclude.hpp"
+#include "include/renderer/ShaderProgram.hpp"
 
-class aiMesh;
+Material::Material() {}
 
-class Mesh {
-    public:
-        Mesh();
-        Mesh( std::string const& file );
-        ~Mesh();
+Material::Material( ShaderProgram const& shader ) {}
 
-        void draw() const;
+Material::~Material() {}
 
-    private:
-        aiMesh* mesh_;
-};
+void Material::use() const {}
 
-#endif // MESH_HPP
+
+
 

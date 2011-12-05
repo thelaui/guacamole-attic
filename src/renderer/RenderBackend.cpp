@@ -17,27 +17,17 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class storing geometry data.
+/// \brief Declaration of the internal renderer.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MESH_HPP
-#define MESH_HPP
+#include "include/renderer/RenderBackend.hpp"
 
-#include "include/renderer/glInclude.hpp"
+RenderBackend::RenderBackend( int width, int height, std::string const& display ) {}
 
-class aiMesh;
+RenderBackend::~RenderBackend() {}
 
-class Mesh {
-    public:
-        Mesh();
-        Mesh( std::string const& file );
-        ~Mesh();
+void RenderBackend::render( std::vector<Geometry*> const& node_list,
+                            std::vector<Light*> const& light_list,
+                            Camera const& camera ) {}
 
-        void draw() const;
-
-    private:
-        aiMesh* mesh_;
-};
-
-#endif // MESH_HPP
 

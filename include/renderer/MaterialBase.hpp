@@ -35,10 +35,10 @@ class MaterialBase: public KnownObject<MaterialBase> {
         MaterialBase();
         virtual ~MaterialBase();
 
-        void add_material(std::string const& id, Material* material);
-        bool is_supported(std::string const& id) const;
+        void add_material( std::string const& id, Material* material );
+        bool is_supported( std::string const& id ) const;
 
-        Material* get_material(std::string const& id) const;
+        Material* get_material( std::string const& id ) const;
 
     private:
         std::map<std::string, Material*> materials_;
