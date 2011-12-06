@@ -28,12 +28,14 @@ class FragmentShader;
 
 class ShaderProgram {
     public:
+        ShaderProgram();
         ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader );
         virtual ~ShaderProgram();
 
-        void use();
+        void use() const;
 
     private:
+        unsigned program_id_;
 };
 
 #endif // SHADERPROGRAM_HPP

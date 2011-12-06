@@ -33,6 +33,10 @@
 			<Add option="-Wall" />
 			<Add directory="." />
 		</Compiler>
+		<Linker>
+			<Add library="GL" />
+			<Add library="GLEW" />
+		</Linker>
 		<Unit filename="include/renderer/DataBase.hpp" />
 		<Unit filename="include/renderer/FragmentShader.hpp" />
 		<Unit filename="include/renderer/GeometryBase.hpp" />

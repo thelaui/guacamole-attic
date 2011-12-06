@@ -27,12 +27,16 @@
 
 class Shader {
     public:
-        Shader();
+        Shader(std::string const& fileName, unsigned shaderType);
         virtual ~Shader();
 
-    protected:
-        void load( std::string const& fileName,
-                   unsigned shaderType ) throw (std::string);
+        unsigned get_id() const;
+
+    private:
+        void validate_shader(unsigned shader, const char* file = 0);
+        char* text_file_read(std::string const& file_name) throw (std::string);
+
+        unsigned shader_id_;
 };
 
 #endif // SHADER_HPP

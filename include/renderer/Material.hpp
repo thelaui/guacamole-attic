@@ -23,7 +23,7 @@
 #ifndef MATERIAL_HPP
 #define MATERIAL_HPP
 
-class ShaderProgram;
+#include "include/renderer/ShaderProgram.hpp"
 
 class Material {
     public:
@@ -34,6 +34,7 @@ class Material {
         void use() const;
 
     private:
+        ShaderProgram shader_;
 };
 
 #endif // MATERIAL_HPP

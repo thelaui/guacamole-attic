@@ -22,7 +22,10 @@
 
 #include "include/renderer/FragmentShader.hpp"
 
-FragmentShader::FragmentShader( std::string const& file ) {}
+#include "include/renderer/glInclude.hpp"
+
+FragmentShader::FragmentShader( std::string const& file ):
+    Shader::Shader(file, GL_FRAGMENT_SHADER) {}
 
 FragmentShader::~FragmentShader() {}
 

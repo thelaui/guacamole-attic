@@ -22,8 +22,26 @@
 
 #include "include/renderer/ShaderProgram.hpp"
 
-ShaderProgram::ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader ) {}
+#include "include/renderer/VertexShader.hpp"
+#include "include/renderer/FragmentShader.hpp"
+#include "include/renderer/glInclude.hpp"
+
+ShaderProgram::ShaderProgram():
+    program_id_(0) {}
+
+ShaderProgram::ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader ):
+    program_id_(0) {
+
+    program_id_ = glCreateProgram();
+
+    glAttachShader(program_id_, v_shader.get_id());
+    glAttachShader(program_id_, f_shader.get_id());
+
+    glLinkProgram(program_id_);
+}
 
 ShaderProgram::~ShaderProgram() {}
 
-void ShaderProgram::use() {}
+void ShaderProgram::use() const {
+    glUseProgram(program_id_);
+}

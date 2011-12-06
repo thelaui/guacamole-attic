@@ -24,13 +24,17 @@
 
 #include "include/renderer/ShaderProgram.hpp"
 
-Material::Material() {}
+Material::Material():
+    shader_() {}
 
-Material::Material( ShaderProgram const& shader ) {}
+Material::Material( ShaderProgram const& shader ):
+    shader_(shader) {}
 
 Material::~Material() {}
 
-void Material::use() const {}
+void Material::use() const {
+    shader_.use();
+}
 
 
 
