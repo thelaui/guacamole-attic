@@ -23,23 +23,20 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
-#include <string>
-
-#include "include/renderer/glInclude.hpp"
-
 class aiMesh;
 
 class Mesh {
     public:
         Mesh();
-        Mesh( std::string const& file );
+        Mesh( aiMesh* aMesh );
         ~Mesh();
 
         void draw() const;
 
     private:
-        aiMesh* mesh_;
+        unsigned buffer_id_;
 };
 
 #endif // MESH_HPP
+
 

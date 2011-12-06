@@ -20,18 +20,42 @@
 /// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/Mesh.hpp"
+#include "include/utils/fileUtils.hpp"
 
-Mesh::Mesh():
-    buffer_id_(0) {}
+#include <fstream>
 
-Mesh::Mesh( aiMesh* aMesh ):
-    buffer_id_(0) {}
+namespace fileUtils {
 
-Mesh::~Mesh() {}
+    char* text_file_read(std::string const& file_name) {
+        char* text = 0;
 
-void Mesh::draw() const {
+        FILE *file = fopen(file_name.c_str(), "rt");
 
+        if (file != 0) {
+            fseek(file, 0, SEEK_END);
+            int count = ftell(file);
+            rewind(file);
+
+            if (count > 0) {
+                text = (char*)malloc(sizeof(char) * (count + 1));
+                count = fread(text, sizeof(char), count, file);
+                text[count] = '\0';
+            }
+            fclose(file);
+        }
+
+        return text;
+    }
+
+    bool file_exists( std::string const& file_name ) {
+        std::ifstream fin(file_name.c_str());
+        if (!fin.fail()) {
+            fin.close();
+            return true;
+        }
+
+        return false;
+    }
 }
 
 

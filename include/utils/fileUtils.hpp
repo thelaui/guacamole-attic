@@ -20,20 +20,19 @@
 /// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/Mesh.hpp"
+#ifndef FILEUTILS_HPP
+#define FILEUTILS_HPP
 
-Mesh::Mesh():
-    buffer_id_(0) {}
+#include <string>
 
-Mesh::Mesh( aiMesh* aMesh ):
-    buffer_id_(0) {}
+namespace fileUtils {
 
-Mesh::~Mesh() {}
+    char* text_file_read(std::string const& file_name);
 
-void Mesh::draw() const {
-
+    bool file_exists( std::string const& file_name );
 }
 
+#endif // FILEUTILS_HPP
 
 
 

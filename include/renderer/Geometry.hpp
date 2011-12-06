@@ -20,20 +20,25 @@
 /// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef GEOMETRY_HPP
+#define GEOMETRY_HPP
+
+#include <string>
+#include <vector>
+
 #include "include/renderer/Mesh.hpp"
 
-Mesh::Mesh():
-    buffer_id_(0) {}
+class Geometry {
+    public:
+        Geometry();
+        Geometry( std::string const& file );
+        ~Geometry();
 
-Mesh::Mesh( aiMesh* aMesh ):
-    buffer_id_(0) {}
+        void draw() const;
 
-Mesh::~Mesh() {}
+    private:
+        std::vector<Mesh> meshes_;
+};
 
-void Mesh::draw() const {
-
-}
-
-
-
+#endif // GEOMETRY_HPP
 

@@ -29,13 +29,14 @@
 # include <cstring>
 
 #include "include/renderer/glInclude.hpp"
+#include "include/utils/fileUtils.hpp"
 
 Shader::Shader(std::string const& fileName, unsigned shaderType):
     shader_id_(0) {
 
     const char* glsl_source;
 
-	glsl_source = text_file_read(fileName);
+	glsl_source = fileUtils::text_file_read(fileName);
 
 	shader_id_ = glCreateShader(shaderType);
 
@@ -60,27 +61,4 @@ void Shader::validate_shader(unsigned shader, const char* file) {
     if (length > 0) {
         std::cerr << "Shader " << shader << " (" << (file?file:"") << ") compile Log: " << buffer << std::endl;
     }
-}
-
-char* Shader::text_file_read(std::string const& file_name) throw (std::string) {
-    char* text = 0;
-
-    FILE *file = fopen(file_name.c_str(), "rt");
-
-    if (file != 0) {
-        fseek(file, 0, SEEK_END);
-        int count = ftell(file);
-        rewind(file);
-
-        if (count > 0) {
-            text = (char*)malloc(sizeof(char) * (count + 1));
-            count = fread(text, sizeof(char), count, file);
-            text[count] = '\0';
-        }
-        fclose(file);
-    }
-    else {
-        throw std::string("File not found" + file_name);
-    }
-    return text;
 }

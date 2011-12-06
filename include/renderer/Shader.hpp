@@ -34,7 +34,6 @@ class Shader {
 
     private:
         void validate_shader(unsigned shader, const char* file = 0);
-        char* text_file_read(std::string const& file_name) throw (std::string);
 
         unsigned shader_id_;
 };
