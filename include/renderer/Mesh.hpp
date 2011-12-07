@@ -34,11 +34,12 @@ class Mesh {
         Mesh( aiMesh* mesh );
         ~Mesh();
 
-        void upload_to(RenderContext const& context);
         void draw(RenderContext const& context) const;
 
     private:
-        std::vector<unsigned> vaos_;
+        void upload_to(RenderContext const& context) const;
+
+        mutable std::vector<unsigned> vaos_;
         aiMesh* mesh_;
 };
 

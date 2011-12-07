@@ -31,7 +31,7 @@
 class Geometry {
     public:
         Geometry();
-        Geometry( std::string const& file );
+        Geometry( std::string const& file_name );
         ~Geometry();
 
         void draw(RenderContext const& context) const;

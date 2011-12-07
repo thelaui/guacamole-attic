@@ -23,6 +23,7 @@
 #include "include/renderer/Material.hpp"
 
 #include "include/renderer/ShaderProgram.hpp"
+#include "include/renderer/RenderContext.hpp"
 
 Material::Material():
     shader_() {}
@@ -32,10 +33,13 @@ Material::Material( ShaderProgram const& shader ):
 
 Material::~Material() {}
 
-void Material::use() const {
-    shader_.use();
+void Material::use(RenderContext const& context) const {
+    shader_.use(context);
 }
 
+ShaderProgram const& Material::get_shader() const {
+    return shader_;
+}
 
 
 

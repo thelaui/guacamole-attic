@@ -27,6 +27,7 @@
 
 class FragmentShader: public Shader {
     public:
+        FragmentShader();
         FragmentShader( std::string const& file );
 };
 

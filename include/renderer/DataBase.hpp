@@ -42,7 +42,11 @@ class DataBase: public KnownObject<DataBase<T>> {
         }
 
         std::shared_ptr<T> get( std::string const& id ) {
-            return data_[id];
+            auto result(data_.find(id));
+            if (result == data_.end())
+                return NULL;
+
+            return result->second;
         }
 
     private:
@@ -50,4 +54,3 @@ class DataBase: public KnownObject<DataBase<T>> {
 };
 
 #endif // DATA_BASE_HPP
-

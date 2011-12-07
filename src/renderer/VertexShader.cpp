@@ -24,5 +24,8 @@
 
 #include "include/renderer/glInclude.hpp"
 
+VertexShader::VertexShader():
+    Shader::Shader() {}
+
 VertexShader::VertexShader( std::string const& file ):
     Shader::Shader(file, GL_VERTEX_SHADER) {}

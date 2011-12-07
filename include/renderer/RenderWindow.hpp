@@ -23,16 +23,28 @@
 #ifndef RENDERWINDOW_HPP
 #define RENDERWINDOW_HPP
 
+#include <memory>
 #include <string>
 
 #include "include/renderer/RenderContext.hpp"
+
+class Geometry;
 
 class RenderWindow {
     public:
         RenderWindow( int width, int height, std::string const& display ) throw (std::string);
         virtual ~RenderWindow();
 
-        void set_active();
+        void set_active() const;
+
+        void start_frame() const;
+        void finish_frame() const;
+
+        void draw(std::shared_ptr<Geometry> geometry) const;
+
+        RenderContext const& get_context() const;
+
+        static void init();
 
     private:
         static unsigned last_context_id_;

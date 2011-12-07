@@ -15,34 +15,30 @@
 //
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-/// \file
-/// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#version 330
 
-#include <string>
-#include <vector>
+in vec3 normal;
 
-class RenderContext;
+out vec4 out_color;
 
-class Shader {
-    public:
-        Shader();
-        Shader(std::string const& file_name, unsigned shader_type);
-        virtual ~Shader();
+void main() {
+	vec3 lightDirTop  = normalize(vec3(1.0,2.0,5.0));
+	vec3 lightDirBack = normalize(vec3(0.0, 10.0,-10.0));
+	vec3 lightDirFill = normalize(vec3(-10.0,-5.0,1.0));
 
-        unsigned get_id(RenderContext const& context) const;
+	vec3 top  = vec3(0.6, 0.6, 1.0);
+	vec3 back = vec3(1.0, 1.0, 1.0);
+	vec3 fill = vec3(0.8, 0.6, 0.3);
 
-    private:
-        void upload_to(RenderContext const& context) const;
-        void validate_shader(unsigned shader) const;
+	float intensityTop  = pow(max(dot(lightDirTop,normal),0.0), 3.0);
+	float intensityBack = max(dot(lightDirBack,normal),0.0);
+	float intensityFill = max(dot(lightDirFill,normal),0.0);
 
-        mutable std::vector<unsigned> shader_ids_;
-        unsigned shader_type_;
-        std::string file_name_;
-};
+	float fakeSpec = pow(max(dot(lightDirTop,normal),0.0), 50.0);
 
-#endif // SHADER_HPP
+	vec3 amb = vec3(0.1, 0.1, 0.1);
+
+	out_color = vec4(intensityTop*top + intensityBack*back + intensityFill*fill + amb + fakeSpec, 1.0);
+}

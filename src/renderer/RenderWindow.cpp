@@ -23,6 +23,7 @@
 #include "include/renderer/RenderWindow.hpp"
 
 #include "include/utils/debug.hpp"
+#include "include/renderer/Geometry.hpp"
 
 unsigned RenderWindow::last_context_id_ = 0;
 
@@ -87,7 +88,7 @@ RenderWindow::RenderWindow( int width, int height, std::string const& display ) 
     if (ctx_.window == 0)
         throw std::string("Failed to create X window!");
 
-    XSetStandardProperties(ctx_.display, ctx_.window, "MultiPipe", "folder", None, NULL, 0, NULL);
+    XSetStandardProperties(ctx_.display, ctx_.window, "guacamole", "folder", None, NULL, 0, NULL);
 
     XMapWindow(ctx_.display, ctx_.window);
 
@@ -118,27 +119,45 @@ RenderWindow::RenderWindow( int width, int height, std::string const& display ) 
     if (!glxewIsSupported("GLX_NV_swap_group"))
         throw std::string("Swap groups are not supported!");
 
-//    if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 101))
-//        throw std::string("Failed to join swap group");
+    if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 101))
+        throw std::string("Failed to join swap group");
 
-    glXMakeCurrent(ctx_.display, None, NULL);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
+
+    //glXMakeCurrent(ctx_.display, None, NULL);
 }
 
 RenderWindow::~RenderWindow() {
     glXMakeCurrent(ctx_.display, None, NULL);
-
     glXDestroyContext(ctx_.display, ctx_.context);
-    ctx_.context = NULL;
-
     XDestroyWindow(ctx_.display, ctx_.window);
-    ctx_.window = 0;
-
     XCloseDisplay(ctx_.display);
-    ctx_.display = 0;
 }
 
-void RenderWindow::set_active() {
+void RenderWindow::set_active() const {
     glXMakeCurrent(ctx_.display, ctx_.window, ctx_.context);
 }
 
+void RenderWindow::start_frame() const {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
 
+void RenderWindow::finish_frame() const {
+    glXSwapBuffers(ctx_.display, ctx_.window);
+}
+
+void RenderWindow::draw(std::shared_ptr<Geometry> geometry) const {
+    geometry->draw(ctx_);
+}
+
+void RenderWindow::init() {
+    XInitThreads();
+    glXCreateContextAttribsARB = (GLXContext(*)(Display* dpy, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list))glXGetProcAddressARB((GLubyte*)"glXCreateContextAttribsARB");
+    glXChooseFBConfig = (GLXFBConfig*(*)(Display *dpy, int screen, const int *attrib_list, int *nelements))glXGetProcAddressARB((GLubyte*)"glXChooseFBConfig");
+    glXGetVisualFromFBConfig = (XVisualInfo*(*)(Display *dpy, GLXFBConfig config))glXGetProcAddressARB((GLubyte*)"glXGetVisualFromFBConfig");
+}
+
+RenderContext const& RenderWindow::get_context() const {
+    return ctx_;
+}

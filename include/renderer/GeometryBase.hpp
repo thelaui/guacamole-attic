@@ -24,9 +24,12 @@
 #define GEOMETRY_BASE_HPP
 
 #include "include/renderer/DataBase.hpp"
-#include "include/renderer/Mesh.hpp"
+#include "include/renderer/Geometry.hpp"
 
-typedef DataBase<Mesh> GeometryBase;
+class GeometryBase: public DataBase<Geometry> {
+    public:
+        static void load_presets();
+};
 
 #endif // GEOMETRY_BASE_HPP
 

@@ -24,6 +24,9 @@
 
 #include "include/renderer/glInclude.hpp"
 
+FragmentShader::FragmentShader():
+    Shader::Shader() {}
+
 FragmentShader::FragmentShader( std::string const& file ):
     Shader::Shader(file, GL_FRAGMENT_SHADER) {}
 

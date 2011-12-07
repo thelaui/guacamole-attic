@@ -44,8 +44,7 @@ Mesh::~Mesh() {
             glDeleteVertexArrays(1, &vao);
 }
 
-void Mesh::upload_to(RenderContext const& context) {
-
+void Mesh::upload_to(RenderContext const& context) const {
     std::vector<unsigned> face_array(mesh_->mNumFaces * 3);
 
     for (unsigned t = 0; t < mesh_->mNumFaces; ++t) {
@@ -98,14 +97,15 @@ void Mesh::upload_to(RenderContext const& context) {
 }
 
 void Mesh::draw(RenderContext const& context) const {
-    // bind the geometry and draw it
-    if (vaos_.size() > context.id && vaos_[context.id]) {
-        glBindVertexArray(vaos_[context.id]);
-        glDrawElements(GL_TRIANGLES, mesh_->mNumFaces*3, GL_UNSIGNED_INT, 0);
-        glBindVertexArray(0);
-    } else {
-        WARNING("Failed to draw mesh: Not uploaded to GPU!");
+    // upload to GPU if neccessary
+    if (vaos_.size() <= context.id || vaos_[context.id] == 0) {
+        upload_to(context);
     }
+
+    // bind the geometry and draw it
+    glBindVertexArray(vaos_[context.id]);
+    glDrawElements(GL_TRIANGLES, mesh_->mNumFaces*3, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 }
 
 

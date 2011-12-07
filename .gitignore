@@ -3,3 +3,5 @@ obj/*
 *.depend
 guacamole.depend
 guacamole.layout
+guacamole
+guacamole-d

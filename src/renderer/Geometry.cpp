@@ -10,18 +10,20 @@
 Geometry::Geometry():
     meshes_() {}
 
-Geometry::Geometry(std::string const& file):
+Geometry::Geometry(std::string const& file_name):
     meshes_() {
 
-    if (fileUtils::file_exists(file)) {
+    if (fileUtils::file_exists(file_name)) {
         Assimp::Importer* importer = new Assimp::Importer();
-        aiScene const* scene = importer->ReadFile( file, aiProcessPreset_TargetRealtime_Quality);
+        aiScene const* scene = importer->ReadFile( file_name, aiProcessPreset_TargetRealtime_Quality);
 
         meshes_ = std::vector<Mesh>(scene->mNumMeshes);
 
         for (unsigned int n = 0; n < scene->mNumMeshes; ++n) {
             meshes_[n] = Mesh(scene->mMeshes[n]);
         }
+    } else {
+        WARNING("Failed to load object \"%s\": File does not exist!", file_name.c_str());
     }
 }
 

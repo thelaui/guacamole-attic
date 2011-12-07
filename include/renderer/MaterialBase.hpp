@@ -26,6 +26,9 @@
 #include "include/renderer/DataBase.hpp"
 #include "include/renderer/Material.hpp"
 
-typedef DataBase<Material> MaterialBase;
+class MaterialBase: public DataBase<Material> {
+    public:
+        static void load_presets();
+};
 
 #endif // MATERIAL_BASE_HPP

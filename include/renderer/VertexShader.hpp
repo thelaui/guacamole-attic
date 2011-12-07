@@ -27,6 +27,7 @@
 
 class VertexShader: public Shader {
     public:
+        VertexShader();
         VertexShader( std::string const& file );
 };
 
