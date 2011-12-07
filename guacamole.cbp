@@ -39,15 +39,20 @@
 		<Unit filename="include/scenegraph/Camera.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />
 		<Unit filename="include/scenegraph/Geometry.hpp" />
+		<Unit filename="include/scenegraph/GeometryBase.hpp" />
 		<Unit filename="include/scenegraph/Light.hpp" />
-		<Unit filename="include/scenegraph/Node.hpp" />
+		<Unit filename="include/scenegraph/MaterialBase.hpp" />
 		<Unit filename="include/scenegraph/SceneGraph.hpp" />
 		<Unit filename="include/traverser/ListNode.hpp" />
 		<Unit filename="include/traverser/Optimizer.hpp" />
 		<Unit filename="include/traverser/Renderer.hpp" />
 		<Unit filename="include/utils/KnownObject.hpp" />
+		<Unit filename="include/utils/PathParser.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
 		<Unit filename="src/main.cpp" />
+		<Unit filename="src/scenegraph/Core.cpp" />
+		<Unit filename="src/scenegraph/SceneGraph.cpp" />
+		<Unit filename="src/utils/PathParser.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
