@@ -34,6 +34,9 @@ class ShaderProgram {
 
         void use() const;
 
+        const static unsigned vertex_location = 0;
+        const static unsigned normal_location = 1;
+
     private:
         unsigned program_id_;
 };

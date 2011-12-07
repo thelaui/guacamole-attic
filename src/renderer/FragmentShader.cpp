@@ -27,6 +27,3 @@
 FragmentShader::FragmentShader( std::string const& file ):
     Shader::Shader(file, GL_FRAGMENT_SHADER) {}
 
-FragmentShader::~FragmentShader() {}
-
-

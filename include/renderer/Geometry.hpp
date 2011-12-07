@@ -34,7 +34,7 @@ class Geometry {
         Geometry( std::string const& file );
         ~Geometry();
 
-        void draw() const;
+        void draw(RenderContext const& context) const;
 
     private:
         std::vector<Mesh> meshes_;

@@ -23,18 +23,23 @@
 #ifndef MESH_HPP
 #define MESH_HPP
 
+#include <vector>
+
 class aiMesh;
+class RenderContext;
 
 class Mesh {
     public:
         Mesh();
-        Mesh( aiMesh* aMesh );
+        Mesh( aiMesh* mesh );
         ~Mesh();
 
-        void draw() const;
+        void upload_to(RenderContext const& context);
+        void draw(RenderContext const& context) const;
 
     private:
-        unsigned buffer_id_;
+        std::vector<unsigned> vaos_;
+        aiMesh* mesh_;
 };
 
 #endif // MESH_HPP

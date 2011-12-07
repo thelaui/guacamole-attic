@@ -29,6 +29,7 @@ Geometry::~Geometry() {
 
 }
 
-void Geometry::draw() const {
-
+void Geometry::draw(RenderContext const& context) const {
+    for (auto& mesh: meshes_)
+        mesh.draw(context);
 }

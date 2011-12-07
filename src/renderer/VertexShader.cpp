@@ -26,6 +26,3 @@
 
 VertexShader::VertexShader( std::string const& file ):
     Shader::Shader(file, GL_VERTEX_SHADER) {}
-
-VertexShader::~VertexShader() {}
-
