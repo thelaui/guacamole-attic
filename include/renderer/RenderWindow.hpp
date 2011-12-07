@@ -35,6 +35,8 @@ class RenderWindow {
         void set_active();
 
     private:
+        static unsigned last_context_id_;
+
         RenderContext ctx_;
 
         int frames_;
