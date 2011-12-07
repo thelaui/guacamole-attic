@@ -1,13 +1,13 @@
-#include "include/utils/PathParser.hpp"
+#include "include/scenegraph/SceneGraph.hpp"
 
 #include <iostream>
 
 int main() {
-    PathParser parser("/");
-    auto parsed_strings(parser.get_parsed_path());
+    SceneGraph graph;
 
-    for (auto string : parsed_strings)
-        std::cout << string << std::endl;
+//    graph.add_node("/", "huhu");
+    graph.add_node("/huhu/haha", "hoho");
+//    graph.add_node("/huhu/hoho", "hihi");
 
     return 0;
 }

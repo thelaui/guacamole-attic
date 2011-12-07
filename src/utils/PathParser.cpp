@@ -1,8 +1,13 @@
 #include "include/utils/PathParser.hpp"
 
+#include "include/utils/debug.hpp"
+
 #include <sstream>
 
-PathParser::PathParser(std::string path) {
+PathParser::PathParser():
+    parsed_path_() {}
+
+void PathParser::parse(std::string path) {
     if (path.length() > 0) {
 
         unsigned start(0);
@@ -25,6 +30,9 @@ PathParser::PathParser(std::string path) {
             parsed_path_.push_back(stream.str());
             stream.str("");
         }
+
+    } else {
+        ERROR("Path names must have at least one character!");
     }
 }
 

@@ -12,10 +12,13 @@ class SceneGraph {
         SceneGraph();
         virtual ~SceneGraph();
 
-        void add_node(std::string const& path_to_parent, std::string const& node_name, Eigen::Matrix4f const& transform, Core* core);
+        void add_node(std::string const& path_to_parent, std::string const& node_name,
+                      Eigen::Matrix4f const& transform = Eigen::Matrix4f::Identity(),
+                      Core* core = NULL);
 
         Eigen::Matrix4f const& get_transform(std::string const& path_to_node) const;
-        Eigen::Matrix4f const& get_relative_transform(std::string const& path_to_node, std::string const& path_to_relative_node = "/") const;
+        Eigen::Matrix4f const& get_relative_transform(std::string const& path_to_node,
+                                                      std::string const& path_to_relative_node = "/") const;
 
         template <typename T>
         T* get_core(std::string const& path_to_node) const {
@@ -30,7 +33,8 @@ class SceneGraph {
     private:
         class Node {
             public:
-                Node(std::string const& name, Core* core);
+                Node(std::string const& name, Eigen::Matrix4f transform = Eigen::Matrix4f::Identity(),
+                     Core* core = NULL);
                 virtual ~Node();
 
                 void add_child(Node* child);
@@ -53,6 +57,8 @@ class SceneGraph {
         };
 
         Node* root_;
+
+        Node* find_node(std::string const& path_to_node) const;
 
 
 };

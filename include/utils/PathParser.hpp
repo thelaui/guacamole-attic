@@ -6,8 +6,9 @@
 
 class PathParser {
     public:
-        PathParser(std::string path);
+        PathParser();
 
+        void parse(std::string path);
         std::vector<std::string> const& get_parsed_path() const;
 
     private:
