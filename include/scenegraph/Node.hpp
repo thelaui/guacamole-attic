@@ -18,6 +18,7 @@ class Node {
         void remove_child(Node* child);
 
         std::string const& get_name() const;
+        Node* get_parent() const;
         std::list<Node*> const& get_children() const;
 
         Eigen::Transform3f const& get_transform() const;

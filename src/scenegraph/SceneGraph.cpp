@@ -6,7 +6,6 @@
 
 SceneGraph::SceneGraph():
     root_(new Node("/")),
-    end_(new Node("end")),
     last_search_request_(),
     last_search_result_() {}
 
@@ -23,8 +22,9 @@ void SceneGraph::add_node(std::string const& path_to_parent, std::string const& 
     bool valid_name(true);
     for (auto child : searched_parents_children)
         if (child->get_name() == node_name) {
-            ERROR("A node with the name \"%s\" already exists at this level of the tree! Please choose another one",
-                   node_name.c_str());
+            ERROR("A node with the name \"%s\" already exists at \"%s\" of the tree! Please choose another one",
+                   node_name.c_str(),
+                   searched_parent->get_name().c_str());
             valid_name = false;
             break;
         }
@@ -71,11 +71,17 @@ SceneGraph::Iterator SceneGraph::get_iterator(std::string const& path_to_node) {
 }
 
 SceneGraph::Iterator SceneGraph::begin() {
-    return get_iterator("/");
+    auto root_children(root_->get_children());
+    if (!root_children.empty())
+        return Iterator(root_);
+    else {
+        WARNING("You are trying to iterate over an empty graph! Returning iterator on end.");
+        return end();
+    }
 }
 
 SceneGraph::Iterator SceneGraph::end() {
-    return Iterator(end_);
+    return Iterator();
 }
 
 Node* SceneGraph::find_node(std::string const& path_to_node,

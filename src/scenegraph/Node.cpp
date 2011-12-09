@@ -35,6 +35,10 @@ std::list<Node*> const& Node::get_children() const {
     return children_;
 }
 
+Node* Node::get_parent() const {
+    return parent_;
+}
+
 Eigen::Transform3f const& Node::get_transform() const {
     return transform_;
 }

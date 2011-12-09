@@ -17,8 +17,9 @@ class SceneGraph {
     public:
         class Iterator {
             public:
-                Iterator(Node* node);
+                Iterator(Node* node = NULL);
 
+                std::string name;
                 Eigen::Transform3f transform;
                 std::shared_ptr<Core> core;
 
@@ -30,6 +31,9 @@ class SceneGraph {
 
             private:
                 std::list<Node*> visited_nodes_;
+
+                void find_next_node();
+                void set_data(Node* node);
         };
 
     public:
@@ -64,10 +68,8 @@ class SceneGraph {
         void lock();
         void unlock();
 
-        friend class SceneGraphIterator;
-
     private:
-        Node *root_, *end_;
+        Node *root_;
 
         mutable std::string last_search_request_;
         mutable std::list<Node*> last_search_result_;

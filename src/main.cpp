@@ -24,10 +24,25 @@ int main() {
     graph.add_node("/", "auto", Eigen::Transform3f(transform1));
     graph.add_node("/auto", "rad1", Eigen::Transform3f(transform2));
     graph.add_node("/auto", "rad2", Eigen::Transform3f(transform3));
+    graph.add_node("/auto/rad1", "felge1", Eigen::Transform3f(transform3));
+    graph.add_node("/auto/rad1", "felge2", Eigen::Transform3f(transform3));
+    graph.add_node("/auto/rad2", "felge3", Eigen::Transform3f(transform3));
+    graph.add_node("/auto/rad2", "felge4", Eigen::Transform3f(transform3));
+    graph.add_node("/auto/rad2/felge4", "speiche1", Eigen::Transform3f(transform3));
+
+    graph.add_node("/", "auto2", Eigen::Transform3f(transform1));
+    graph.add_node("/auto2", "rad1", Eigen::Transform3f(transform2));
+    graph.add_node("/auto2", "rad2", Eigen::Transform3f(transform3));
+    graph.add_node("/auto2/rad1", "felge1", Eigen::Transform3f(transform3));
+    graph.add_node("/auto2/rad1", "felge2", Eigen::Transform3f(transform3));
+    graph.add_node("/auto2/rad2", "felge3", Eigen::Transform3f(transform3));
 
 
-    for (auto it(graph.begin()); it != graph.end(); ++it)
-        std::cout<<it.transform.matrix()<<std::endl;
+    for (auto it(graph.begin()); it != graph.end(); ++it) {
+
+        std::cout<<it.name<<std::endl;
+        std::cout<<it.depth<<std::endl;
+    }
 
     return 0;
 }
