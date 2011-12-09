@@ -84,6 +84,10 @@ SceneGraph::Iterator SceneGraph::end() {
     return Iterator();
 }
 
+SceneGraph::Iterator SceneGraph::operator [](std::string const& path_to_node) {
+    return get_iterator(path_to_node);
+}
+
 Node* SceneGraph::find_node(std::string const& path_to_node,
                                         std::string const& path_to_start) const {
 
@@ -113,7 +117,7 @@ Node* SceneGraph::find_node(std::string const& path_to_node,
                 }
 
                 if (to_be_found->get_name() != node_name) {
-                    WARNING("Node \"%s\" does not exist! Creating it with default parameters.",
+                    MESSAGE("Node \"%s\" does not exist! Creating it with default parameters.",
                              node_name.c_str());
                     Node* new_child(new Node(node_name));
                     to_be_found->add_child(new_child);

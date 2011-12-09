@@ -31,6 +31,10 @@ std::string const& Node::get_name() const {
     return name_;
 }
 
+std::string& Node::get_name() {
+    return name_;
+}
+
 std::list<Node*> const& Node::get_children() const {
     return children_;
 }
@@ -43,6 +47,14 @@ Eigen::Transform3f const& Node::get_transform() const {
     return transform_;
 }
 
+Eigen::Transform3f& Node::get_transform() {
+    return transform_;
+}
+
 std::shared_ptr<Core> Node::get_core() const {
+    return core_;
+}
+
+std::shared_ptr<Core> Node::get_core() {
     return core_;
 }

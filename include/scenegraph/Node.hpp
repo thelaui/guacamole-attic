@@ -18,11 +18,15 @@ class Node {
         void remove_child(Node* child);
 
         std::string const& get_name() const;
+        std::string& get_name();
+
         Node* get_parent() const;
         std::list<Node*> const& get_children() const;
 
         Eigen::Transform3f const& get_transform() const;
+        Eigen::Transform3f& get_transform();
         std::shared_ptr<Core> get_core() const;
+        std::shared_ptr<Core> get_core();
 
     private:
         std::string name_;

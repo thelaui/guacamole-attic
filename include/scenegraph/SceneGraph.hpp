@@ -19,9 +19,9 @@ class SceneGraph {
             public:
                 Iterator(Node* node = NULL);
 
-                std::string name;
-                Eigen::Transform3f transform;
-                std::shared_ptr<Core> core;
+                std::string& name();
+                Eigen::Transform3f& transform();
+                std::shared_ptr<Core> core();
 
                 int depth;
 
@@ -30,6 +30,10 @@ class SceneGraph {
                 bool operator !=(Iterator const& rhs);
 
             private:
+                std::string name_;
+                Eigen::Transform3f transform_;
+                std::shared_ptr<Core> core_;
+
                 std::list<Node*> visited_nodes_;
 
                 void find_next_node();
@@ -50,20 +54,18 @@ class SceneGraph {
                                                       std::string const& path_to_relative_node = "/") const;
 
         template <typename T>
-        T* get_core(std::string const& path_to_node) const {
+        std::shared_ptr<T> get_core(std::string const& path_to_node) const {
             Node* searched_node(find_node(path_to_node));
-            Core* searched_core(searched_node->get_core());
-            switch (searched_core->get_type()) {
-                case Core::GEOMETRY: return reinterpret_cast<GeometryCore*>(searched_core);
-                case Core::LIGHT: return reinterpret_cast<LightCore*>(searched_core);
-                case Core::CAMERA: return reinterpret_cast<CameraCore*>(searched_core);
-            }
+            std::shared_ptr<Core> searched_core(searched_node->get_core());
+            return std::static_pointer_cast<T>(searched_core);
         }
 
         Iterator get_iterator(std::string const& path_to_node);
 
         Iterator begin();
         Iterator end();
+
+        Iterator operator [](std::string const& path_to_node);
 
         void lock();
         void unlock();
