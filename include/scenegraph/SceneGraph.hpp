@@ -2,43 +2,35 @@
 #define SCENE_GRAPH_HPP
 
 #include "include/scenegraph/Core.hpp"
+#include "include/scenegraph/Node.hpp"
 
 #include <list>
 #include <memory>
-#include <eigen2/Eigen/Eigen>
+#include <eigen2/Eigen/Geometry>
 
-class Core;
 class GeometryCore;
 class LightCore;
 class CameraCore;
 
 class SceneGraph {
 
-    class Node {
-        public:
-            Node(std::string const& name, Eigen::Matrix4f transform = Eigen::Matrix4f::Identity(),
-                 Core* core = NULL);
+    public:
+        class Iterator {
+            public:
+                Iterator(Node* node);
 
-            virtual ~Node();
+                Eigen::Transform3f transform;
+                std::shared_ptr<Core> core;
 
-            void add_child(Node* child);
-            void remove_child(Node* child);
+                int depth;
 
-            std::string const& get_name() const;
-            std::list<Node*> const& get_children() const;
+                void operator ++();
+                bool operator ==(Iterator const& rhs);
+                bool operator !=(Iterator const& rhs);
 
-            Eigen::Matrix4f const& get_transform() const;
-            std::shared_ptr<Core> get_core() const;
-
-        private:
-            std::string name_;
-
-            Node* parent_;
-            std::list<Node*> children_;
-
-            Eigen::Matrix4f transform_;
-            std::shared_ptr<Core> core_;
-    };
+            private:
+                std::list<Node*> visited_nodes_;
+        };
 
     public:
         SceneGraph();
@@ -46,11 +38,11 @@ class SceneGraph {
         virtual ~SceneGraph();
 
         void add_node(std::string const& path_to_parent, std::string const& node_name,
-                      Eigen::Matrix4f const& transform = Eigen::Matrix4f::Identity(),
+                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity(),
                       Core* core = NULL);
 
-        Eigen::Matrix4f const& get_transform(std::string const& path_to_node) const;
-        Eigen::Matrix4f get_relative_transform(std::string const& path_to_node,
+        Eigen::Transform3f const& get_transform(std::string const& path_to_node) const;
+        Eigen::Transform3f get_relative_transform(std::string const& path_to_node,
                                                       std::string const& path_to_relative_node = "/") const;
 
         template <typename T>
@@ -64,11 +56,18 @@ class SceneGraph {
             }
         }
 
+        Iterator get_iterator(std::string const& path_to_node);
+
+        Iterator begin();
+        Iterator end();
+
         void lock();
         void unlock();
 
+        friend class SceneGraphIterator;
+
     private:
-        Node* root_;
+        Node *root_, *end_;
 
         mutable std::string last_search_request_;
         mutable std::list<Node*> last_search_result_;
@@ -77,5 +76,6 @@ class SceneGraph {
 
 
 };
+
 
 #endif // SCENE_GRAPH_HPP
