@@ -38,6 +38,10 @@
 			<Add library="GLEW" />
 			<Add library="assimp" />
 		</Linker>
+		<Unit filename="data/shaders/matt.frag" />
+		<Unit filename="data/shaders/matt.vert" />
+		<Unit filename="data/shaders/shiny.frag" />
+		<Unit filename="data/shaders/shiny.vert" />
 		<Unit filename="include/renderer/DataBase.hpp" />
 		<Unit filename="include/renderer/FragmentShader.hpp" />
 		<Unit filename="include/renderer/Geometry.hpp" />
@@ -78,7 +82,9 @@
 		<Unit filename="src/utils/PathParser.cpp" />
 		<Unit filename="src/renderer/FragmentShader.cpp" />
 		<Unit filename="src/renderer/Geometry.cpp" />
+		<Unit filename="src/renderer/GeometryBase.cpp" />
 		<Unit filename="src/renderer/Material.cpp" />
+		<Unit filename="src/renderer/MaterialBase.cpp" />
 		<Unit filename="src/renderer/Mesh.cpp" />
 		<Unit filename="src/renderer/RenderBackend.cpp" />
 		<Unit filename="src/renderer/RenderWindow.cpp" />

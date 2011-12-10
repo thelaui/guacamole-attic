@@ -27,8 +27,8 @@
 
 class FragmentShader: public Shader {
     public:
+        FragmentShader();
         FragmentShader( std::string const& file );
-        virtual ~FragmentShader();
 };
 
 #endif // FRAGMENTSHADER_HPP

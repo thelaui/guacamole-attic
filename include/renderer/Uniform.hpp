@@ -20,29 +20,15 @@
 /// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#ifndef UNIFORM_HPP
+#define UNIFORM_HPP
 
-#include <string>
-#include <vector>
+struct Uniform {
+    enum Type { FLOAT, INT, BOOL, VEC2, VEC3, VEC4, MAT2, MAT3, MAT4 };
 
-class RenderContext;
-
-class Shader {
-    public:
-        Shader();
-        Shader(std::string const& file_name, unsigned shader_type);
-        virtual ~Shader();
-
-        unsigned get_id(RenderContext const& context) const;
-
-    private:
-        void upload_to(RenderContext const& context) const;
-        void validate_shader(unsigned shader) const;
-
-        mutable std::vector<unsigned> shader_ids_;
-        unsigned shader_type_;
-        std::string file_name_;
+    Type type_;
+    unsigned location_;
 };
 
-#endif // SHADER_HPP
+#endif // UNIFORM_HPP
+

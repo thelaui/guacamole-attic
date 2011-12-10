@@ -31,6 +31,7 @@ struct RenderContext {
     Window window;
     int width;
     int height;
+    unsigned id;
 };
 
 #endif //RENDERCONTEXT_HPP

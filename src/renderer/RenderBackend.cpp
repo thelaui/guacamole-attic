@@ -22,12 +22,47 @@
 
 #include "include/renderer/RenderBackend.hpp"
 
-RenderBackend::RenderBackend( int width, int height, std::string const& display ) {}
+#include <eigen2/Eigen/LU>
 
-RenderBackend::~RenderBackend() {}
+#include "include/renderer/MaterialBase.hpp"
+#include "include/renderer/GeometryBase.hpp"
+#include "include/utils/debug.hpp"
+#include "include/renderer/tmp/tmp.hpp"
 
-void RenderBackend::render( std::vector<Geometry*> const& node_list,
-                            std::vector<Light*> const& light_list,
-                            Camera const& camera ) {}
+RenderBackend::RenderBackend( int width, int height, std::string const& display ):
+    window_(width, height, display) {}
+
+void RenderBackend::render( std::vector<GeometryCore*> const& node_list,
+                            std::vector<LightCore*> const& light_list,
+                            CameraCore const& camera ) {
+
+    window_.set_active();
+    window_.start_frame();
+
+    Eigen::Matrix4f view_matrix(camera.transform_.matrix().inverse());
+
+    for (auto& geometry_core: node_list) {
+
+        auto material = MaterialBase::pointer()->get(geometry_core->material_);
+        auto geometry = GeometryBase::pointer()->get(geometry_core->geometry_);
+
+        if (material) {
+            material->use(window_.get_context());
+            material->get_shader().set_projection_matrix(window_.get_context(), camera.projection_);
+            material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
+            material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_.matrix());
+        } else {
+            WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core->material_.c_str());
+        }
+
+        if (geometry) {
+            window_.draw(geometry);
+        } else {
+            WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core->geometry_.c_str());
+        }
+    }
+
+    window_.finish_frame();
+}
 
 

@@ -17,32 +17,21 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief A database for accessing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#include "include/renderer/MaterialBase.hpp"
 
-#include <string>
-#include <vector>
+void MaterialBase::load_presets() {
+    MaterialBase* m_base = new MaterialBase();
 
-class RenderContext;
+    ShaderProgram shiny(VertexShader("data/shaders/shiny.vert"), FragmentShader("data/shaders/shiny.frag"));
+    m_base->add("shiny", std::shared_ptr<Material>(new Material(shiny)));
 
-class Shader {
-    public:
-        Shader();
-        Shader(std::string const& file_name, unsigned shader_type);
-        virtual ~Shader();
+    ShaderProgram matt(VertexShader("data/shaders/matt.vert"), FragmentShader("data/shaders/matt.frag"));
+    m_base->add("matt", std::shared_ptr<Material>(new Material(matt)));
+}
 
-        unsigned get_id(RenderContext const& context) const;
 
-    private:
-        void upload_to(RenderContext const& context) const;
-        void validate_shader(unsigned shader) const;
 
-        mutable std::vector<unsigned> shader_ids_;
-        unsigned shader_type_;
-        std::string file_name_;
-};
 
-#endif // SHADER_HPP

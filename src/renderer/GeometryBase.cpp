@@ -17,32 +17,16 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief A database for accessing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#include "include/renderer/GeometryBase.hpp"
 
-#include <string>
-#include <vector>
+void GeometryBase::load_presets() {
+    GeometryBase* g_base = new GeometryBase();
+    g_base->add("ape", std::shared_ptr<Geometry>(new Geometry("data/objects/ape.obj")));
+    g_base->add("teapot", std::shared_ptr<Geometry>(new Geometry("data/objects/teapot.obj")));
+}
 
-class RenderContext;
 
-class Shader {
-    public:
-        Shader();
-        Shader(std::string const& file_name, unsigned shader_type);
-        virtual ~Shader();
 
-        unsigned get_id(RenderContext const& context) const;
-
-    private:
-        void upload_to(RenderContext const& context) const;
-        void validate_shader(unsigned shader) const;
-
-        mutable std::vector<unsigned> shader_ids_;
-        unsigned shader_type_;
-        std::string file_name_;
-};
-
-#endif // SHADER_HPP

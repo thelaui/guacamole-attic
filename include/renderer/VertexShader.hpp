@@ -27,8 +27,8 @@
 
 class VertexShader: public Shader {
     public:
+        VertexShader();
         VertexShader( std::string const& file );
-        virtual ~VertexShader();
 };
 
 #endif // VERTEXSHADER_HPP

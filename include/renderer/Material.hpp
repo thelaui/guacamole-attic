@@ -25,13 +25,17 @@
 
 #include "include/renderer/ShaderProgram.hpp"
 
+class RenderContext;
+
 class Material {
     public:
         Material();
         Material( ShaderProgram const& shader );
         ~Material();
 
-        void use() const;
+        void use(RenderContext const& context) const;
+
+        ShaderProgram const& get_shader() const;
 
     private:
         ShaderProgram shader_;

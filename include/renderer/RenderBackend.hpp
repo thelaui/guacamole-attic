@@ -26,21 +26,22 @@
 #include <vector>
 #include <string>
 
-class Camera;
-class Geometry;
-class Light;
+#include "include/renderer/RenderWindow.hpp"
+
+class CameraCore;
+class GeometryCore;
+class LightCore;
 
 class RenderBackend {
     public:
         RenderBackend( int width, int height, std::string const& display = ":0.0" );
-        virtual ~RenderBackend();
 
-        void render( std::vector<Geometry*> const& node_list,
-                     std::vector<Light*> const& light_list,
-                     Camera const& camera );
+        void render( std::vector<GeometryCore*> const& node_list,
+                     std::vector<LightCore*> const& light_list,
+                     CameraCore const& camera );
 
     private:
-
+        RenderWindow window_;
 };
 
 #endif // RENDER_BACKEND_HPP
