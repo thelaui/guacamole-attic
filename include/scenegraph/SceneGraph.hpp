@@ -19,17 +19,19 @@ class SceneGraph {
             public:
                 Iterator(Node* node = NULL);
 
+                int depth() const;
                 std::string& name();
+                std::string const& name() const;
                 Eigen::Transform3f& transform();
+                Eigen::Transform3f const& transform() const;
                 std::shared_ptr<Core> core();
-
-                int depth;
 
                 void operator ++();
                 bool operator ==(Iterator const& rhs);
                 bool operator !=(Iterator const& rhs);
 
             private:
+                int depth_;
                 std::string name_;
                 Eigen::Transform3f transform_;
                 std::shared_ptr<Core> core_;
@@ -49,11 +51,15 @@ class SceneGraph {
                       Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity(),
                       Core* core = NULL);
 
+        void remove_node(std::string const& path_to_node);
+
+        void set_working_node(std::string const& path_to_node);
+
         Eigen::Transform3f const& get_transform(std::string const& path_to_node) const;
         Eigen::Transform3f get_relative_transform(std::string const& path_to_node,
                                                       std::string const& path_to_relative_node = "/") const;
 
-        template <typename T>
+        template <class T>
         std::shared_ptr<T> get_core(std::string const& path_to_node) const {
             Node* searched_node(find_node(path_to_node));
             std::shared_ptr<Core> searched_core(searched_node->get_core());
@@ -71,7 +77,7 @@ class SceneGraph {
         void unlock();
 
     private:
-        Node *root_;
+        Node *root_, *working_node_;
 
         mutable std::string last_search_request_;
         mutable std::list<Node*> last_search_result_;

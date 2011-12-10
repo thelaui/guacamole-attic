@@ -6,6 +6,7 @@
 
 SceneGraph::SceneGraph():
     root_(new Node("/")),
+    working_node_(root_),
     last_search_request_(),
     last_search_result_() {}
 
@@ -31,6 +32,15 @@ void SceneGraph::add_node(std::string const& path_to_parent, std::string const& 
 
     if (valid_name)
         searched_parent->add_child(new Node(node_name, transform, core));
+}
+
+void SceneGraph::remove_node(std::string const& path_to_node) {
+    Node* searched_node(find_node(path_to_node));
+    delete searched_node;
+}
+
+void SceneGraph::set_working_node(std::string const& path_to_node) {
+    working_node_ = find_node(path_to_node);
 }
 
 Eigen::Transform3f const& SceneGraph::get_transform(std::string const& path_to_node) const {
@@ -99,7 +109,7 @@ Node* SceneGraph::find_node(std::string const& path_to_node,
         parser.parse(path_to_node);
         auto path_data(parser.get_parsed_path());
 
-        Node* to_be_found(path_to_start == "/" ? root_ : find_node(path_to_start));
+        Node* to_be_found(path_to_start == working_node_->get_name() ? working_node_ : find_node(path_to_start));
 
         last_search_request_ = path_to_node;
         last_search_result_.clear();

@@ -1,7 +1,8 @@
 #include "include/scenegraph/SceneGraph.hpp"
+#include "include/utils/debug.hpp"
 
 SceneGraph::Iterator::Iterator(Node* node):
-    depth(0),
+    depth_(0),
     name_(node ? node->get_name() : "end"),
     transform_(node ? node->get_transform() : (Eigen::Transform3f)Eigen::Transform3f::Identity()),
     core_(node ? node->get_core() : NULL) {
@@ -9,12 +10,28 @@ SceneGraph::Iterator::Iterator(Node* node):
             visited_nodes_.push_back(node);
     }
 
+int SceneGraph::Iterator::depth() const {
+    return depth_;
+}
+
 std::string& SceneGraph::Iterator::name() {
+    if (visited_nodes_.back()->get_name() == "/") {
+        WARNING("You are trying to change the name of root, which is is not allowed. Returning non-persistent name instead.");
+        return name_;
+    }
     return visited_nodes_.back()->get_name();
+}
+
+std::string const& SceneGraph::Iterator::name() const{
+    return name_;
 }
 
 Eigen::Transform3f& SceneGraph::Iterator::transform() {
     return visited_nodes_.back()->get_transform();
+}
+
+Eigen::Transform3f const& SceneGraph::Iterator::transform() const{
+    return transform_;
 }
 
 std::shared_ptr<Core> SceneGraph::Iterator::core() {
@@ -33,7 +50,7 @@ void SceneGraph::Iterator::operator ++() {
 
         } else find_next_node();
 
-        depth = visited_nodes_.size()-1;
+        depth_ = visited_nodes_.size()-1;
     }
 }
 

@@ -36,11 +36,11 @@
 		<Unit filename="include/renderer/GeometryBase.hpp" />
 		<Unit filename="include/renderer/MaterialBase.hpp" />
 		<Unit filename="include/renderer/RenderBackend.hpp" />
-		<Unit filename="include/scenegraph/Camera.hpp" />
+		<Unit filename="include/scenegraph/CameraCore.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />
-		<Unit filename="include/scenegraph/Geometry.hpp" />
 		<Unit filename="include/scenegraph/GeometryBase.hpp" />
-		<Unit filename="include/scenegraph/Light.hpp" />
+		<Unit filename="include/scenegraph/GeometryCore.hpp" />
+		<Unit filename="include/scenegraph/LightCore.hpp" />
 		<Unit filename="include/scenegraph/MaterialBase.hpp" />
 		<Unit filename="include/scenegraph/Node.hpp" />
 		<Unit filename="include/scenegraph/SceneGraph.hpp" />
@@ -51,7 +51,11 @@
 		<Unit filename="include/utils/PathParser.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
 		<Unit filename="src/main.cpp" />
+		<Unit filename="src/scenegraph/CameraCore.cpp" />
 		<Unit filename="src/scenegraph/Core.cpp" />
+		<Unit filename="src/scenegraph/GeometryCore.cpp" />
+		<Unit filename="src/scenegraph/Iterator.cpp" />
+		<Unit filename="src/scenegraph/LightCore.cpp" />
 		<Unit filename="src/scenegraph/Node.cpp" />
 		<Unit filename="src/scenegraph/SceneGraph.cpp" />
 		<Unit filename="src/utils/PathParser.cpp" />
