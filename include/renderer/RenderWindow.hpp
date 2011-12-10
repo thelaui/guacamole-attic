@@ -20,12 +20,26 @@
 /// \brief A database for accessing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef RENDERWINDOW_HPP
+#define RENDERWINDOW_HPP
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include <string>
 
-typedef DataBase<Material> MaterialBase;
+#include "include/renderer/RenderContext.hpp"
 
-#endif // MATERIAL_BASE_HPP
+class RenderWindow {
+    public:
+        RenderWindow( int width, int height, std::string const& display ) throw (std::string);
+        virtual ~RenderWindow();
+
+        void set_active();
+
+    private:
+        RenderContext ctx_;
+
+        int frames_;
+        int frame_count_;
+        long frames_start_;
+};
+
+#endif //RENDERWINDOW_HPP

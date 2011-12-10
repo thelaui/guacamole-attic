@@ -17,15 +17,22 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef FILEUTILS_HPP
+#define FILEUTILS_HPP
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include <string>
 
-typedef DataBase<Material> MaterialBase;
+namespace fileUtils {
 
-#endif // MATERIAL_BASE_HPP
+    char* text_file_read(std::string const& file_name);
+
+    bool file_exists( std::string const& file_name );
+}
+
+#endif // FILEUTILS_HPP
+
+
+

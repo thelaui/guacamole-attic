@@ -17,15 +17,26 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef MESH_HPP
+#define MESH_HPP
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+class aiMesh;
 
-typedef DataBase<Material> MaterialBase;
+class Mesh {
+    public:
+        Mesh();
+        Mesh( aiMesh* aMesh );
+        ~Mesh();
 
-#endif // MATERIAL_BASE_HPP
+        void draw() const;
+
+    private:
+        unsigned buffer_id_;
+};
+
+#endif // MESH_HPP
+
+

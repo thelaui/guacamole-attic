@@ -17,15 +17,25 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef SHADER_HPP
+#define SHADER_HPP
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include <string>
 
-typedef DataBase<Material> MaterialBase;
+class Shader {
+    public:
+        Shader(std::string const& fileName, unsigned shaderType);
+        virtual ~Shader();
 
-#endif // MATERIAL_BASE_HPP
+        unsigned get_id() const;
+
+    private:
+        void validate_shader(unsigned shader, const char* file = 0);
+
+        unsigned shader_id_;
+};
+
+#endif // SHADER_HPP

@@ -33,10 +33,26 @@
 			<Add option="-Wall" />
 			<Add directory="." />
 		</Compiler>
+		<Linker>
+			<Add library="GL" />
+			<Add library="GLEW" />
+			<Add library="assimp" />
+		</Linker>
+		<Unit filename="include/renderer/DataBase.hpp" />
+		<Unit filename="include/renderer/FragmentShader.hpp" />
+		<Unit filename="include/renderer/Geometry.hpp" />
 		<Unit filename="include/renderer/GeometryBase.hpp" />
+		<Unit filename="include/renderer/Material.hpp" />
 		<Unit filename="include/renderer/MaterialBase.hpp" />
+		<Unit filename="include/renderer/Mesh.hpp" />
 		<Unit filename="include/renderer/RenderBackend.hpp" />
 		<Unit filename="include/scenegraph/CameraCore.hpp" />
+		<Unit filename="include/renderer/RenderContext.hpp" />
+		<Unit filename="include/renderer/RenderWindow.hpp" />
+		<Unit filename="include/renderer/Shader.hpp" />
+		<Unit filename="include/renderer/ShaderProgram.hpp" />
+		<Unit filename="include/renderer/VertexShader.hpp" />
+		<Unit filename="include/renderer/glInclude.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />
 		<Unit filename="include/scenegraph/GeometryBase.hpp" />
 		<Unit filename="include/scenegraph/GeometryCore.hpp" />
@@ -50,6 +66,7 @@
 		<Unit filename="include/utils/KnownObject.hpp" />
 		<Unit filename="include/utils/PathParser.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
+		<Unit filename="include/utils/fileUtils.hpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/scenegraph/CameraCore.cpp" />
 		<Unit filename="src/scenegraph/Core.cpp" />
@@ -59,6 +76,16 @@
 		<Unit filename="src/scenegraph/Node.cpp" />
 		<Unit filename="src/scenegraph/SceneGraph.cpp" />
 		<Unit filename="src/utils/PathParser.cpp" />
+		<Unit filename="src/renderer/FragmentShader.cpp" />
+		<Unit filename="src/renderer/Geometry.cpp" />
+		<Unit filename="src/renderer/Material.cpp" />
+		<Unit filename="src/renderer/Mesh.cpp" />
+		<Unit filename="src/renderer/RenderBackend.cpp" />
+		<Unit filename="src/renderer/RenderWindow.cpp" />
+		<Unit filename="src/renderer/Shader.cpp" />
+		<Unit filename="src/renderer/ShaderProgram.cpp" />
+		<Unit filename="src/renderer/VertexShader.cpp" />
+		<Unit filename="src/utils/fileUtils.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

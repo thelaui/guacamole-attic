@@ -20,12 +20,34 @@
 /// \brief A database for accessing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef DATA_BASE_HPP
+#define DATA_BASE_HPP
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include <memory>
+#include <string>
+#include <map>
 
-typedef DataBase<Material> MaterialBase;
+#include "include/utils/KnownObject.hpp"
 
-#endif // MATERIAL_BASE_HPP
+template <typename T>
+
+class DataBase: public KnownObject<DataBase<T>> {
+    public:
+        void add( std::string const& id, std::shared_ptr<T> date ) {
+            data_.insert(std::make_pair(id, date));
+        }
+
+        bool is_supported( std::string const& id ) const {
+            return data_.find(id) != data_.end();
+        }
+
+        std::shared_ptr<T> get( std::string const& id ) {
+            return data_[id];
+        }
+
+    private:
+        std::map<std::string, std::shared_ptr<T>> data_;
+};
+
+#endif // DATA_BASE_HPP
+

@@ -17,15 +17,25 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
-
-#include "include/renderer/DataBase.hpp"
 #include "include/renderer/Material.hpp"
 
-typedef DataBase<Material> MaterialBase;
+#include "include/renderer/ShaderProgram.hpp"
 
-#endif // MATERIAL_BASE_HPP
+Material::Material():
+    shader_() {}
+
+Material::Material( ShaderProgram const& shader ):
+    shader_(shader) {}
+
+Material::~Material() {}
+
+void Material::use() const {
+    shader_.use();
+}
+
+
+
+

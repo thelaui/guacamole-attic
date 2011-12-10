@@ -17,15 +17,13 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief Includes all neccesary OpenGL headers.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef GLINCLUDE_HPP
+#define GLINCLUDE_HPP
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include <GL/glew.h>
+#include <GL/glxew.h>
 
-typedef DataBase<Material> MaterialBase;
-
-#endif // MATERIAL_BASE_HPP
+#endif //GLINCLUDE_HPP

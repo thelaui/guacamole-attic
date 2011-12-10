@@ -17,15 +17,19 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef FRAGMENTSHADER_HPP
+#define FRAGMENTSHADER_HPP
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include "include/renderer/Shader.hpp"
 
-typedef DataBase<Material> MaterialBase;
+class FragmentShader: public Shader {
+    public:
+        FragmentShader( std::string const& file );
+        virtual ~FragmentShader();
+};
 
-#endif // MATERIAL_BASE_HPP
+#endif // FRAGMENTSHADER_HPP
+

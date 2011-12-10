@@ -17,15 +17,17 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief Declaration of the internal renderer.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#include "include/renderer/RenderBackend.hpp"
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+RenderBackend::RenderBackend( int width, int height, std::string const& display ) {}
 
-typedef DataBase<Material> MaterialBase;
+RenderBackend::~RenderBackend() {}
 
-#endif // MATERIAL_BASE_HPP
+void RenderBackend::render( std::vector<Geometry*> const& node_list,
+                            std::vector<Light*> const& light_list,
+                            Camera const& camera ) {}
+
+

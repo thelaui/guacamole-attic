@@ -17,15 +17,15 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#include "include/renderer/VertexShader.hpp"
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include "include/renderer/glInclude.hpp"
 
-typedef DataBase<Material> MaterialBase;
+VertexShader::VertexShader( std::string const& file ):
+    Shader::Shader(file, GL_VERTEX_SHADER) {}
 
-#endif // MATERIAL_BASE_HPP
+VertexShader::~VertexShader() {}
+

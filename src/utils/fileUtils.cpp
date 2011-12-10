@@ -17,15 +17,47 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#include "include/utils/fileUtils.hpp"
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include <fstream>
 
-typedef DataBase<Material> MaterialBase;
+namespace fileUtils {
 
-#endif // MATERIAL_BASE_HPP
+    char* text_file_read(std::string const& file_name) {
+        char* text = 0;
+
+        FILE *file = fopen(file_name.c_str(), "rt");
+
+        if (file != 0) {
+            fseek(file, 0, SEEK_END);
+            int count = ftell(file);
+            rewind(file);
+
+            if (count > 0) {
+                text = (char*)malloc(sizeof(char) * (count + 1));
+                count = fread(text, sizeof(char), count, file);
+                text[count] = '\0';
+            }
+            fclose(file);
+        }
+
+        return text;
+    }
+
+    bool file_exists( std::string const& file_name ) {
+        std::ifstream fin(file_name.c_str());
+        if (!fin.fail()) {
+            fin.close();
+            return true;
+        }
+
+        return false;
+    }
+}
+
+
+
+

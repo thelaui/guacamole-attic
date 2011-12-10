@@ -17,15 +17,20 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A struct storing all information on a OpenGL context.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef RENDERCONTEXT_HPP
+#define RENDERCONTEXT_HPP
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include "include/renderer/glInclude.hpp"
 
-typedef DataBase<Material> MaterialBase;
+struct RenderContext {
+    GLXContext context;
+    Display *display;
+    Window window;
+    int width;
+    int height;
+};
 
-#endif // MATERIAL_BASE_HPP
+#endif //RENDERCONTEXT_HPP

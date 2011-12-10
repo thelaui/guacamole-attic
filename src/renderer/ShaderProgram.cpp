@@ -17,15 +17,31 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#include "include/renderer/ShaderProgram.hpp"
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include "include/renderer/VertexShader.hpp"
+#include "include/renderer/FragmentShader.hpp"
+#include "include/renderer/glInclude.hpp"
 
-typedef DataBase<Material> MaterialBase;
+ShaderProgram::ShaderProgram():
+    program_id_(0) {}
 
-#endif // MATERIAL_BASE_HPP
+ShaderProgram::ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader ):
+    program_id_(0) {
+
+    program_id_ = glCreateProgram();
+
+    glAttachShader(program_id_, v_shader.get_id());
+    glAttachShader(program_id_, f_shader.get_id());
+
+    glLinkProgram(program_id_);
+}
+
+ShaderProgram::~ShaderProgram() {}
+
+void ShaderProgram::use() const {
+    glUseProgram(program_id_);
+}

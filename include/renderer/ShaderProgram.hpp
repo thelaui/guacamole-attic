@@ -17,15 +17,25 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A database for accessing material data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef SHADERPROGRAM_HPP
+#define SHADERPROGRAM_HPP
 
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+class VertexShader;
+class FragmentShader;
 
-typedef DataBase<Material> MaterialBase;
+class ShaderProgram {
+    public:
+        ShaderProgram();
+        ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader );
+        virtual ~ShaderProgram();
 
-#endif // MATERIAL_BASE_HPP
+        void use() const;
+
+    private:
+        unsigned program_id_;
+};
+
+#endif // SHADERPROGRAM_HPP

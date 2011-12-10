@@ -18,9 +18,9 @@ class KnownObject {
             existing_objects_[object_id_] = NULL;
         }
 
-        static T* pointer(int index = existingObjects_.size()-1) {
-            if (index >= 0 && index < existingObjects_.size())
-                return existingObjects_[index];
+        static T* pointer(unsigned index = existing_objects_.size()-1) {
+            if (index >= 0 && index < existing_objects_.size())
+                return existing_objects_[index];
             return NULL;
         }
 
