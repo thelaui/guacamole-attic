@@ -1,0 +1,54 @@
+#ifndef ITERATOR_HPP
+#define ITERATOR_HPP
+
+#include "include/scenegraph/SceneGraph.hpp"
+#include "include/scenegraph/Node.hpp"
+#include "include/utils/debug.hpp"
+
+#include <memory>
+
+class SceneGraph::Iterator {
+    public:
+        Iterator(Node* node = NULL);
+
+        int get_depth() const;
+
+        std::string const& get_name() const;
+        void set_name(std::string const& name) const;
+
+        Eigen::Transform3f const& get_transform() const;
+        void set_transform(Eigen::Transform3f const& transform) const;
+
+        template <class T = Core>
+        std::shared_ptr<T> const get_core() const {
+            if (current_node_) {
+                auto casted_core(current_node_->get_core<T>());
+                if (!casted_core)
+                    WARNING("The core you are trying to get is not of the type you expect!");
+                return casted_core;
+            }
+            return NULL;
+        }
+
+
+        void set_core(std::shared_ptr<Core> const& core) const;
+
+        void operator ++();
+        bool operator ==(Iterator const& rhs);
+        bool operator !=(Iterator const& rhs);
+
+        Iterator& operator << (std::string const& name);
+        Iterator& operator << (Eigen::Transform3f const& transform);
+        Iterator& operator << (std::shared_ptr<Core> const& core);
+
+    private:
+        Node* current_node_;
+        Node* start_node_;
+
+        void find_next_node();
+
+        static const std::string end_name_;
+        static const Eigen::Transform3f end_transform_;
+};
+
+#endif //ITERATOR_HPP

@@ -1,37 +1,51 @@
 #include "include/scenegraph/SceneGraph.hpp"
 
+#include "include/scenegraph/Iterator.hpp"
+#include "include/scenegraph/Node.hpp"
 #include "include/scenegraph/Core.hpp"
 #include "include/utils/PathParser.hpp"
 #include "include/utils/debug.hpp"
 
 SceneGraph::SceneGraph():
     root_(new Node("/")),
-    working_node_(root_),
-    last_search_request_(),
-    last_search_result_() {}
+    working_node_(root_) {}
 
 
 SceneGraph::~SceneGraph() {
     delete root_;
 }
 
-void SceneGraph::add_node(std::string const& path_to_parent, std::string const& node_name,
+SceneGraph::Iterator SceneGraph::add_node(std::string const& path_to_parent, std::string const& node_name,
                           Eigen::Transform3f const& transform, Core* core) {
+
     Node* searched_parent(find_node(path_to_parent));
+    if (!searched_parent) {
+        WARNING("A node with the name %s does not exist!", path_to_parent.c_str());
+        return Iterator();
+    }
 
-    auto searched_parents_children(searched_parent->get_children());
-    bool valid_name(true);
-    for (auto child : searched_parents_children)
-        if (child->get_name() == node_name) {
-            ERROR("A node with the name \"%s\" already exists at \"%s\" of the tree! Please choose another one",
-                   node_name.c_str(),
-                   searched_parent->get_name().c_str());
-            valid_name = false;
-            break;
-        }
+    if (has_child(searched_parent, node_name)) {
+        WARNING("A node with the name %s already exists at %s!", node_name.c_str(), path_to_parent.c_str());
+        return Iterator();
+    }
 
-    if (valid_name)
-        searched_parent->add_child(new Node(node_name, transform, core));
+    Node* new_node(new Node(node_name, transform, core));
+    searched_parent->add_child(new_node);
+    return Iterator(new_node);
+}
+
+SceneGraph::Iterator SceneGraph::add_node_recursively(std::string const& path_to_parent, std::string const& node_name,
+              Eigen::Transform3f const& transform, Core* core) {
+
+    Node* searched_parent(find_node(path_to_parent, working_node_->get_path(), true));
+    if (searched_parent && !has_child(searched_parent, node_name)) {
+        Node* new_node(new Node(node_name, transform, core));
+        searched_parent->add_child(new_node);
+        return Iterator(new_node);
+    }
+
+    WARNING("A node with the name %s already exists at %s!", node_name.c_str(), path_to_parent.c_str());
+    return Iterator();
 }
 
 void SceneGraph::remove_node(std::string const& path_to_node) {
@@ -41,39 +55,6 @@ void SceneGraph::remove_node(std::string const& path_to_node) {
 
 void SceneGraph::set_working_node(std::string const& path_to_node) {
     working_node_ = find_node(path_to_node);
-}
-
-Eigen::Transform3f const& SceneGraph::get_transform(std::string const& path_to_node) const {
-    return find_node(path_to_node)->get_transform();
-}
-
-Eigen::Transform3f SceneGraph::get_relative_transform(std::string const& path_to_node,
-                                                          std::string const& path_to_relative_node) const {
-    Eigen::Transform3f result(Eigen::Transform3f::Identity());
-
-    find_node(path_to_node);
-    std::list<Node*> node_results(last_search_result_);
-
-    find_node(path_to_relative_node);
-    std::list<Node*> relative_node_results(last_search_result_);
-
-    auto starting_point(node_results.end());
-
-    for (auto it(node_results.begin()); it != node_results.end(); ++it)
-        if (*it == relative_node_results.back())
-            starting_point = it;
-
-    if (starting_point == node_results.end()) {
-        ERROR("\"%s\" and \"%s\" are not part of the same subtree! Returning identity matrix instead.",
-              path_to_node.c_str(),
-              path_to_relative_node.c_str());
-        return result;
-    } else {
-        for (auto node(starting_point); node != node_results.end(); ++node) {
-            result = result * (*node)->get_transform();
-        }
-        return result;
-    }
 }
 
 SceneGraph::Iterator SceneGraph::get_iterator(std::string const& path_to_node) {
@@ -95,50 +76,48 @@ SceneGraph::Iterator SceneGraph::end() {
 }
 
 SceneGraph::Iterator SceneGraph::operator [](std::string const& path_to_node) {
-    return get_iterator(path_to_node);
+    return Iterator(find_node(path_to_node, working_node_->get_path(), true));
 }
 
-Node* SceneGraph::find_node(std::string const& path_to_node,
-                                        std::string const& path_to_start) const {
+SceneGraph::Node* SceneGraph::find_node(std::string const& path_to_node, std::string const& path_to_start,
+                                        bool add_missing_nodes) const {
 
-    if (path_to_node == last_search_request_)
-        return last_search_result_.back();
+    PathParser parser;
+    parser.parse(path_to_node);
+    auto path_data(parser.get_parsed_path());
 
-    else {
-        PathParser parser;
-        parser.parse(path_to_node);
-        auto path_data(parser.get_parsed_path());
+    Node* to_be_found(path_to_start == working_node_->get_name() ? working_node_ : find_node(path_to_start));
 
-        Node* to_be_found(path_to_start == working_node_->get_name() ? working_node_ : find_node(path_to_start));
+    for (auto node_name : path_data) {
 
-        last_search_request_ = path_to_node;
-        last_search_result_.clear();
-        last_search_result_.push_back(to_be_found);
+        if (to_be_found->get_name() != node_name) {
 
-        for (auto node_name : path_data) {
+            for (auto child : to_be_found->get_children()) {
+                if (child->get_name() == node_name) {
+                    to_be_found = child;
+                    break;
+                }
+            }
 
             if (to_be_found->get_name() != node_name) {
+                if (!add_missing_nodes) return NULL;
 
-                for (auto child : to_be_found->get_children()) {
-                    if (child->get_name() == node_name) {
-                        to_be_found = child;
-                        break;
-                    }
-                }
-
-                if (to_be_found->get_name() != node_name) {
-                    MESSAGE("Node \"%s\" does not exist! Creating it with default parameters.",
-                             node_name.c_str());
-                    Node* new_child(new Node(node_name));
-                    to_be_found->add_child(new_child);
-                    to_be_found = new_child;
-                }
-
-                last_search_result_.push_back(to_be_found);
+                Node* new_child(new Node(node_name));
+                to_be_found->add_child(new_child);
+                to_be_found = new_child;
             }
         }
-
-        return to_be_found;
     }
+
+    return to_be_found;
+}
+
+bool SceneGraph::has_child(Node* parent, std::string const& child_name) const {
+    auto children(parent->get_children());
+    for (auto child : children)
+        if (child->get_name() == child_name) {
+            return true;
+        }
+    return false;
 }
 

@@ -1,83 +1,94 @@
-#include "include/scenegraph/SceneGraph.hpp"
+#include "include/scenegraph/Iterator.hpp"
+#include "include/scenegraph/Node.hpp"
 #include "include/utils/debug.hpp"
 
+const std::string SceneGraph::Iterator::end_name_("end");
+const Eigen::Transform3f SceneGraph::Iterator::end_transform_((Eigen::Transform3f)Eigen::Matrix3f::Identity());
+
 SceneGraph::Iterator::Iterator(Node* node):
-    depth_(0),
-    name_(node ? node->get_name() : "end"),
-    transform_(node ? node->get_transform() : (Eigen::Transform3f)Eigen::Transform3f::Identity()),
-    core_(node ? node->get_core() : NULL) {
-        if (node)
-            visited_nodes_.push_back(node);
+    current_node_(node),
+    start_node_(node) {}
+
+int SceneGraph::Iterator::get_depth() const {
+    if (current_node_) return current_node_->get_depth();
+    return 0;
+}
+
+std::string const& SceneGraph::Iterator::get_name() const {
+    if (current_node_) return current_node_->get_name();
+    return end_name_;
+}
+
+void SceneGraph::Iterator::set_name(std::string const& name) const {
+    if (current_node_) {
+        if (current_node_->get_name() == "/")
+            WARNING("You are trying to set the name of the root node, which is not allowed!");
+        else current_node_->set_name(name);
     }
-
-int SceneGraph::Iterator::depth() const {
-    return depth_;
 }
 
-std::string& SceneGraph::Iterator::name() {
-    if (visited_nodes_.back()->get_name() == "/") {
-        WARNING("You are trying to change the name of root, which is is not allowed. Returning non-persistent name instead.");
-        return name_;
-    }
-    return visited_nodes_.back()->get_name();
+Eigen::Transform3f const& SceneGraph::Iterator::get_transform() const {
+    if (current_node_) return current_node_->get_transform();
+    return end_transform_;
 }
 
-std::string const& SceneGraph::Iterator::name() const{
-    return name_;
+void SceneGraph::Iterator::set_transform(Eigen::Transform3f const& transform) const {
+    if (current_node_) current_node_->set_transform(transform);
 }
 
-Eigen::Transform3f& SceneGraph::Iterator::transform() {
-    return visited_nodes_.back()->get_transform();
-}
-
-Eigen::Transform3f const& SceneGraph::Iterator::transform() const{
-    return transform_;
-}
-
-std::shared_ptr<Core> SceneGraph::Iterator::core() {
-    return visited_nodes_.back()->get_core();
+void SceneGraph::Iterator::set_core(std::shared_ptr<Core> const& core) const {
+    if (current_node_) current_node_->set_core(core);
 }
 
 void SceneGraph::Iterator::operator ++() {
-    if (!visited_nodes_.empty()) {
-        Node* current_node(visited_nodes_.back());
-        auto current_children(current_node->get_children());
+    auto current_children(current_node_->get_children());
 
-        if (!current_children.empty()) {
-            Node* next_node(current_children.front());
-            set_data(next_node);
-            visited_nodes_.push_back(next_node);
-
-        } else find_next_node();
-
-        depth_ = visited_nodes_.size()-1;
-    }
+    if (!current_children.empty()) {
+        Node* next_node(current_children.front());
+        current_node_ = next_node;
+    } else find_next_node();
 }
 
 bool SceneGraph::Iterator::operator ==(Iterator const& rhs) {
-    return name_ == rhs.name_;
+    return (current_node_ == rhs.current_node_);
 }
 
 bool SceneGraph::Iterator::operator !=(Iterator const& rhs) {
-    return name_ != rhs.name_;
+    return (current_node_ != rhs.current_node_);
+}
+
+SceneGraph::Iterator& SceneGraph::Iterator::operator << (std::string const& name) {
+    set_name(name);
+    return *this;
+}
+
+SceneGraph::Iterator& SceneGraph::Iterator::operator << (Eigen::Transform3f const& transform) {
+    set_transform(transform);
+    return *this;
+}
+
+SceneGraph::Iterator& SceneGraph::Iterator::operator << (std::shared_ptr<Core> const& core) {
+    set_core(core);
+    return *this;
 }
 
 void SceneGraph::Iterator::find_next_node() {
     bool found_next(false);
     while (!found_next) {
-        Node* last_visited_node(visited_nodes_.back());
-        visited_nodes_.pop_back();
+        Node* current_parent(current_node_->get_parent());
 
-        if (!visited_nodes_.empty()) {
-            auto previous_children(visited_nodes_.back()->get_children());
+        if (current_node_ != start_node_) {
+            auto previous_children(current_parent->get_children());
             for (auto child(previous_children.begin()); child != previous_children.end(); ++child) {
-                if (*child == last_visited_node) {
+                if (*child == current_node_) {
                     if (++child != previous_children.end()) {
-                        visited_nodes_.push_back(*child);
-                        set_data(*child);
+                        current_node_ = *child;
                         found_next = true;
                         break;
-                    } else break;
+                    } else {
+                        current_node_ = current_parent;
+                        break;
+                    }
                 }
             }
         } else {
@@ -85,10 +96,4 @@ void SceneGraph::Iterator::find_next_node() {
             break;
         }
     }
-}
-
-void SceneGraph::Iterator::set_data(Node* node) {
-    name_ = node->get_name();
-    transform_ = node->get_transform();
-    core_ = node->get_core();
 }

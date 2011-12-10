@@ -1,14 +1,14 @@
 #include "include/scenegraph/Node.hpp"
 #include "include/scenegraph/Core.hpp"
 
-Node::Node(std::string const& name, Eigen::Transform3f transform, Core* core):
+SceneGraph::Node::Node(std::string const& name, Eigen::Transform3f transform, Core* core):
     name_(name),
     parent_(NULL),
     children_(),
     transform_(transform),
     core_(std::shared_ptr<Core>(core)) {}
 
-Node::~Node() {
+SceneGraph::Node::~Node() {
     if (parent_)
         parent_->remove_child(this);
 
@@ -18,43 +18,49 @@ Node::~Node() {
     }
 }
 
-void Node::add_child(Node* child) {
+void SceneGraph::Node::add_child(SceneGraph::Node* child) {
     children_.push_back(child);
     child->parent_ = this;
 }
 
-void Node::remove_child(Node* child) {
+void SceneGraph::Node::remove_child(SceneGraph::Node* child) {
     children_.remove(child);
 }
 
-std::string const& Node::get_name() const {
-    return name_;
-}
-
-std::string& Node::get_name() {
-    return name_;
-}
-
-std::list<Node*> const& Node::get_children() const {
+std::list<SceneGraph::Node*> const& SceneGraph::Node::get_children() const {
     return children_;
 }
 
-Node* Node::get_parent() const {
+SceneGraph::Node* SceneGraph::Node::get_parent() const {
     return parent_;
 }
 
-Eigen::Transform3f const& Node::get_transform() const {
+std::string const& SceneGraph::Node::get_name() const {
+    return name_;
+}
+
+void SceneGraph::Node::set_name(std::string const& name) {
+    name_ = name;
+}
+
+Eigen::Transform3f const& SceneGraph::Node::get_transform() const {
     return transform_;
 }
 
-Eigen::Transform3f& Node::get_transform() {
-    return transform_;
+void SceneGraph::Node::set_transform(Eigen::Transform3f const& transform) {
+    transform_ = transform;
 }
 
-std::shared_ptr<Core> Node::get_core() const {
-    return core_;
+void SceneGraph::Node::set_core(std::shared_ptr<Core> const& core) {
+    core_ = core;
 }
 
-std::shared_ptr<Core> Node::get_core() {
-    return core_;
+int SceneGraph::Node::get_depth() const {
+    if (!parent_) return 0;
+    return parent_->get_depth() + 1;
+}
+
+std::string const SceneGraph::Node::get_path() const {
+    if (!parent_) return "/";
+    return parent_->get_path() + "/" + name_;
 }

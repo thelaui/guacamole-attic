@@ -2,10 +2,8 @@
 #define SCENE_GRAPH_HPP
 
 #include "include/scenegraph/Core.hpp"
-#include "include/scenegraph/Node.hpp"
 
 #include <list>
-#include <memory>
 #include <eigen2/Eigen/Geometry>
 
 class GeometryCore;
@@ -14,57 +12,26 @@ class CameraCore;
 
 class SceneGraph {
 
-    public:
-        class Iterator {
-            public:
-                Iterator(Node* node = NULL);
-
-                int depth() const;
-                std::string& name();
-                std::string const& name() const;
-                Eigen::Transform3f& transform();
-                Eigen::Transform3f const& transform() const;
-                std::shared_ptr<Core> core();
-
-                void operator ++();
-                bool operator ==(Iterator const& rhs);
-                bool operator !=(Iterator const& rhs);
-
-            private:
-                int depth_;
-                std::string name_;
-                Eigen::Transform3f transform_;
-                std::shared_ptr<Core> core_;
-
-                std::list<Node*> visited_nodes_;
-
-                void find_next_node();
-                void set_data(Node* node);
-        };
+    public: class Iterator;
+    private: class Node;
 
     public:
         SceneGraph();
 
         virtual ~SceneGraph();
 
-        void add_node(std::string const& path_to_parent, std::string const& node_name,
+        Iterator add_node(std::string const& path_to_parent, std::string const& node_name,
                       Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity(),
                       Core* core = NULL);
+
+        Iterator add_node_recursively(std::string const& path_to_parent, std::string const& node_name,
+                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity(),
+                      Core* core = NULL);
+
 
         void remove_node(std::string const& path_to_node);
 
         void set_working_node(std::string const& path_to_node);
-
-        Eigen::Transform3f const& get_transform(std::string const& path_to_node) const;
-        Eigen::Transform3f get_relative_transform(std::string const& path_to_node,
-                                                      std::string const& path_to_relative_node = "/") const;
-
-        template <class T>
-        std::shared_ptr<T> get_core(std::string const& path_to_node) const {
-            Node* searched_node(find_node(path_to_node));
-            std::shared_ptr<Core> searched_core(searched_node->get_core());
-            return std::static_pointer_cast<T>(searched_core);
-        }
 
         Iterator get_iterator(std::string const& path_to_node);
 
@@ -79,12 +46,10 @@ class SceneGraph {
     private:
         Node *root_, *working_node_;
 
-        mutable std::string last_search_request_;
-        mutable std::list<Node*> last_search_result_;
+        Node* find_node(std::string const& path_to_node, std::string const& path_to_start = "/",
+                        bool add_missing_nodes = false) const;
 
-        Node* find_node(std::string const& path_to_node, std::string const& path_to_start = "/") const;
-
-
+        bool has_child(Node* parent, std::string const& child_name) const;
 };
 
 

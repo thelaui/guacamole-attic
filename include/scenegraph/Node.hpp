@@ -1,13 +1,13 @@
 #ifndef NODE_HPP
 #define NODE_HPP
 
-#include <memory>
 #include <list>
+#include <memory>
 #include <eigen2/Eigen/Geometry>
 
-class Core;
+#include "include/scenegraph/SceneGraph.hpp"
 
-class Node {
+class SceneGraph::Node {
     public:
         Node(std::string const& name, Eigen::Transform3f transform = (Eigen::Transform3f)Eigen::Matrix3f::Identity(),
              Core* core = NULL);
@@ -17,16 +17,26 @@ class Node {
         void add_child(Node* child);
         void remove_child(Node* child);
 
-        std::string const& get_name() const;
-        std::string& get_name();
-
         Node* get_parent() const;
         std::list<Node*> const& get_children() const;
 
+        std::string const& get_name() const;
+        void set_name(std::string const& name);
+
         Eigen::Transform3f const& get_transform() const;
-        Eigen::Transform3f& get_transform();
-        std::shared_ptr<Core> get_core() const;
-        std::shared_ptr<Core> get_core();
+        void set_transform(Eigen::Transform3f const& transform);
+
+        template <class T = Core>
+        std::shared_ptr<T> const get_core() const {
+            return std::static_pointer_cast<T>(core_);
+        }
+
+
+
+        void set_core(std::shared_ptr<Core> const& core);
+
+        int get_depth() const;
+        std::string const get_path() const;
 
     private:
         std::string name_;
