@@ -66,8 +66,8 @@
 		<Unit filename="include/traverser/Optimizer.hpp" />
 		<Unit filename="include/traverser/Renderer.hpp" />
 		<Unit filename="include/utils/KnownObject.hpp" />
+		<Unit filename="include/utils/TextFile.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
-		<Unit filename="include/utils/fileUtils.hpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/renderer/FragmentShader.cpp" />
 		<Unit filename="src/renderer/Geometry.cpp" />
@@ -80,7 +80,7 @@
 		<Unit filename="src/renderer/Shader.cpp" />
 		<Unit filename="src/renderer/ShaderProgram.cpp" />
 		<Unit filename="src/renderer/VertexShader.cpp" />
-		<Unit filename="src/utils/fileUtils.cpp" />
+		<Unit filename="src/utils/TextFile.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

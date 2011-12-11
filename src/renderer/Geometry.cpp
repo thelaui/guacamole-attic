@@ -4,7 +4,7 @@
 #include <assimp/aiPostProcess.h>
 #include <assimp/aiScene.h>
 
-#include "include/utils/fileUtils.hpp"
+#include "include/utils/TextFile.hpp"
 #include "include/utils/debug.hpp"
 
 Geometry::Geometry():
@@ -13,9 +13,11 @@ Geometry::Geometry():
 Geometry::Geometry(std::string const& file_name):
     meshes_() {
 
-    if (fileUtils::file_exists(file_name)) {
+    TextFile file(file_name);
+
+    if (file.is_valid()) {
         Assimp::Importer* importer = new Assimp::Importer();
-        aiScene const* scene = importer->ReadFile( file_name, aiProcessPreset_TargetRealtime_Quality);
+        aiScene const* scene = importer->ReadFile(file_name, aiProcessPreset_TargetRealtime_Quality);
 
         meshes_ = std::vector<Mesh>(scene->mNumMeshes);
 
