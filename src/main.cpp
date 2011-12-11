@@ -52,7 +52,7 @@ void thread() {
     GeometryCore ape1("teapot", "shiny");
     ape1.transform_.translate(Eigen::Vector3f(-2, 0, 0));
 
-    GeometryCore ape2("ape", "matt");
+    GeometryCore ape2("teapot", "matt");
     ape2.transform_.translate(Eigen::Vector3f(2, 0, 0));
     ape2.transform_.scale(1.3);
 

@@ -17,34 +17,33 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief A class storing geometry data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SHADER_HPP
-#define SHADER_HPP
+#ifndef TEXTFILE_HPP
+#define TEXTFILE_HPP
 
 #include <string>
-#include <vector>
 
-#include "include/utils/TextFile.hpp"
+class TextFile {
 
-class RenderContext;
-
-class Shader {
     public:
-        Shader();
-        Shader(std::string const& file_name, unsigned shader_type);
-        virtual ~Shader();
+        TextFile();
+        TextFile(std::string const& file_name);
 
-        unsigned get_id(RenderContext const& context) const;
+        bool is_valid() const;
+
+        std::string const& get_content();
+        std::string const& get_file_name();
 
     private:
-        void upload_to(RenderContext const& context) const;
-        void validate_shader(unsigned shader) const;
+        std::string file_name_;
+        std::string content_;
 
-        mutable std::vector<unsigned> shader_ids_;
-        unsigned shader_type_;
-        mutable TextFile source_;
+        bool is_loaded_;
 };
 
-#endif // SHADER_HPP
+#endif // TEXTFILE_HPP
+
+
+

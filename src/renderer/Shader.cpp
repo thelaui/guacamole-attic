@@ -30,20 +30,19 @@
 
 #include "include/renderer/RenderContext.hpp"
 #include "include/renderer/glInclude.hpp"
-#include "include/utils/fileUtils.hpp"
 #include "include/utils/debug.hpp"
 
 Shader::Shader():
     shader_ids_(),
     shader_type_(0),
-    file_name_("") {}
+    source_() {}
 
 Shader::Shader(std::string const& file_name, unsigned shader_type):
     shader_ids_(),
     shader_type_(shader_type),
-    file_name_(file_name) {
+    source_(file_name) {
 
-    if (!fileUtils::file_exists(file_name)) {
+    if (!source_.is_valid()) {
         WARNING("Failed to load shader \"%s\": File does not exist!", file_name.c_str());
     }
 }
@@ -60,9 +59,8 @@ unsigned Shader::get_id(RenderContext const& context) const {
 }
 
 void Shader::upload_to(RenderContext const& context) const {
-    if (fileUtils::file_exists(file_name_)) {
-        const char* glsl_source;
-        glsl_source = fileUtils::text_file_read(file_name_);
+    if (source_.is_valid()) {
+        const char* glsl_source(source_.get_content().c_str());
 
         if (shader_ids_.size() <= context.id) {
             shader_ids_.resize(context.id+1);
@@ -85,7 +83,7 @@ void Shader::validate_shader(unsigned shader) const {
 
     glGetShaderInfoLog(shader, BUFFER_SIZE, &length, buffer);
     if (length > 0) {
-        WARNING("Compile log for shader file \"%s\":", file_name_.c_str());
+        WARNING("Compile log for shader file \"%s\":", source_.get_file_name().c_str());
         std::cout << buffer << std::endl;
     }
 }
