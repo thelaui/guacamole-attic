@@ -50,16 +50,22 @@
 		<Unit filename="include/renderer/MaterialBase.hpp" />
 		<Unit filename="include/renderer/Mesh.hpp" />
 		<Unit filename="include/renderer/RenderBackend.hpp" />
-		<Unit filename="include/scenegraph/CameraCore.hpp" />
 		<Unit filename="include/renderer/RenderContext.hpp" />
 		<Unit filename="include/renderer/RenderWindow.hpp" />
 		<Unit filename="include/renderer/Shader.hpp" />
 		<Unit filename="include/renderer/ShaderProgram.hpp" />
+		<Unit filename="include/renderer/Uniform.hpp" />
 		<Unit filename="include/renderer/VertexShader.hpp" />
 		<Unit filename="include/renderer/glInclude.hpp" />
+		<Unit filename="include/renderer/tmp/tmp.hpp" />
+		<Unit filename="include/scenegraph/Camera.hpp" />
+		<Unit filename="include/scenegraph/CameraCore.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />
+		<Unit filename="include/scenegraph/Geometry.hpp" />
 		<Unit filename="include/scenegraph/GeometryBase.hpp" />
 		<Unit filename="include/scenegraph/GeometryCore.hpp" />
+		<Unit filename="include/scenegraph/Iterator.hpp" />
+		<Unit filename="include/scenegraph/Light.hpp" />
 		<Unit filename="include/scenegraph/LightCore.hpp" />
 		<Unit filename="include/scenegraph/MaterialBase.hpp" />
 		<Unit filename="include/scenegraph/Node.hpp" />
@@ -72,14 +78,6 @@
 		<Unit filename="include/utils/TextFile.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
 		<Unit filename="src/main.cpp" />
-		<Unit filename="src/scenegraph/CameraCore.cpp" />
-		<Unit filename="src/scenegraph/Core.cpp" />
-		<Unit filename="src/scenegraph/GeometryCore.cpp" />
-		<Unit filename="src/scenegraph/Iterator.cpp" />
-		<Unit filename="src/scenegraph/LightCore.cpp" />
-		<Unit filename="src/scenegraph/Node.cpp" />
-		<Unit filename="src/scenegraph/SceneGraph.cpp" />
-		<Unit filename="src/utils/PathParser.cpp" />
 		<Unit filename="src/renderer/FragmentShader.cpp" />
 		<Unit filename="src/renderer/Geometry.cpp" />
 		<Unit filename="src/renderer/GeometryBase.cpp" />
@@ -91,6 +89,14 @@
 		<Unit filename="src/renderer/Shader.cpp" />
 		<Unit filename="src/renderer/ShaderProgram.cpp" />
 		<Unit filename="src/renderer/VertexShader.cpp" />
+		<Unit filename="src/scenegraph/CameraCore.cpp" />
+		<Unit filename="src/scenegraph/Core.cpp" />
+		<Unit filename="src/scenegraph/GeometryCore.cpp" />
+		<Unit filename="src/scenegraph/Iterator.cpp" />
+		<Unit filename="src/scenegraph/LightCore.cpp" />
+		<Unit filename="src/scenegraph/Node.cpp" />
+		<Unit filename="src/scenegraph/SceneGraph.cpp" />
+		<Unit filename="src/utils/PathParser.cpp" />
 		<Unit filename="src/utils/TextFile.cpp" />
 		<Extensions>
 			<code_completion />
