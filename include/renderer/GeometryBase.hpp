@@ -23,12 +23,19 @@
 #ifndef GEOMETRY_BASE_HPP
 #define GEOMETRY_BASE_HPP
 
+#include "include/utils/Singleton.hpp"
 #include "include/renderer/DataBase.hpp"
 #include "include/renderer/Geometry.hpp"
 
-class GeometryBase: public DataBase<Geometry> {
+class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
     public:
         static void load_presets();
+
+        friend class Singleton<GeometryBase>;
+
+    private:
+        GeometryBase() {};
+        ~GeometryBase() {};
 };
 
 #endif // GEOMETRY_BASE_HPP

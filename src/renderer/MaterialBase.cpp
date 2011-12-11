@@ -23,13 +23,11 @@
 #include "include/renderer/MaterialBase.hpp"
 
 void MaterialBase::load_presets() {
-    MaterialBase* m_base = new MaterialBase();
-
     ShaderProgram shiny(VertexShader("data/shaders/shiny.vert"), FragmentShader("data/shaders/shiny.frag"));
-    m_base->add("shiny", std::shared_ptr<Material>(new Material(shiny)));
+    instance()->add("shiny", std::shared_ptr<Material>(new Material(shiny)));
 
     ShaderProgram matt(VertexShader("data/shaders/matt.vert"), FragmentShader("data/shaders/matt.frag"));
-    m_base->add("matt", std::shared_ptr<Material>(new Material(matt)));
+    instance()->add("matt", std::shared_ptr<Material>(new Material(matt)));
 }
 
 

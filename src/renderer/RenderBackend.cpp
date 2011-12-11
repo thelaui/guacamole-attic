@@ -43,8 +43,8 @@ void RenderBackend::render( std::vector<GeometryCore*> const& node_list,
 
     for (auto& geometry_core: node_list) {
 
-        auto material = MaterialBase::pointer()->get(geometry_core->material_);
-        auto geometry = GeometryBase::pointer()->get(geometry_core->geometry_);
+        auto material = MaterialBase::instance()->get(geometry_core->material_);
+        auto geometry = GeometryBase::instance()->get(geometry_core->geometry_);
 
         if (material) {
             material->use(window_.get_context());

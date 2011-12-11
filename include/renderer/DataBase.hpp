@@ -27,11 +27,9 @@
 #include <string>
 #include <map>
 
-#include "include/utils/KnownObject.hpp"
-
 template <typename T>
 
-class DataBase: public KnownObject<DataBase<T>> {
+class DataBase {
     public:
         void add( std::string const& id, std::shared_ptr<T> date ) {
             data_.insert(std::make_pair(id, date));

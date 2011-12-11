@@ -23,12 +23,19 @@
 #ifndef MATERIAL_BASE_HPP
 #define MATERIAL_BASE_HPP
 
+#include "include/utils/Singleton.hpp"
 #include "include/renderer/DataBase.hpp"
 #include "include/renderer/Material.hpp"
 
-class MaterialBase: public DataBase<Material> {
+class MaterialBase: public DataBase<Material>, public Singleton<MaterialBase> {
     public:
         static void load_presets();
+
+        friend class Singleton<MaterialBase>;
+
+    private:
+        MaterialBase() {};
+        ~MaterialBase() {};
 };
 
 #endif // MATERIAL_BASE_HPP

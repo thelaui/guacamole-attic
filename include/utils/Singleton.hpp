@@ -17,15 +17,44 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief A singleton base class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/GeometryBase.hpp"
+#ifndef SINGLETON_HPP
+#define SINGLETON_HPP
 
-void GeometryBase::load_presets() {
-    instance()->add("ape", std::shared_ptr<Geometry>(new Geometry("data/objects/ape.obj")));
-    instance()->add("teapot", std::shared_ptr<Geometry>(new Geometry("data/objects/teapot.obj")));
-}
+#include <cstddef>
 
+template <typename T>
 
+class Singleton {
+    public:
+        static T* instance() {
+            if (instance_ == NULL)
+                instance_ = new T;
+
+            return instance_;
+        };
+
+        static void destroy_instance() {
+            if (instance_ != NULL) {
+                delete instance_;
+                instance_ = NULL;
+            }
+        };
+
+    protected:
+        Singleton() {};
+        virtual ~Singleton() {};
+
+    private:
+        Singleton(Singleton const& copy) {};
+
+        static T* instance_;
+
+};
+
+template <typename T> T* Singleton<T>::instance_ = NULL;
+
+#endif //SINGLETON_HPP
 
