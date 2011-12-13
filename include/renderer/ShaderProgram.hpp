@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief Declaration of the FragmentShader class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef SHADERPROGRAM_HPP
@@ -28,6 +28,12 @@
 #include "include/renderer/FragmentShader.hpp"
 #include "include/renderer/VertexShader.hpp"
 #include "include/renderer/Uniform.hpp"
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+///
+///
+////////////////////////////////////////////////////////////////////////////////
 
 class ShaderProgram {
     public:

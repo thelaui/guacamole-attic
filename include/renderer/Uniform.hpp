@@ -17,11 +17,17 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief Declaration of the Uniform struct.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef UNIFORM_HPP
 #define UNIFORM_HPP
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief A struct with information on a uniform.
+///
+/// Stores information on a uniform on one context.
+////////////////////////////////////////////////////////////////////////////////
 
 struct Uniform {
     enum Type { FLOAT, INT, BOOL, VEC2, VEC3, VEC4, MAT2, MAT3, MAT4 };

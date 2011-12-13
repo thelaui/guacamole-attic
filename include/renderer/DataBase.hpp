@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing data.
+/// \brief Declaration and implementation of the DataBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef DATA_BASE_HPP
@@ -26,6 +26,13 @@
 #include <memory>
 #include <string>
 #include <map>
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief A database for accessing data.
+///
+/// It can store any type of Data. The data is mapped on strings, which then can
+/// be used to access this data.
+////////////////////////////////////////////////////////////////////////////////
 
 template <typename T>
 

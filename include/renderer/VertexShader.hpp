@@ -17,13 +17,19 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief Declaration of the VertexShader class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef VERTEXSHADER_HPP
 #define VERTEXSHADER_HPP
 
 #include "include/renderer/Shader.hpp"
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief A Vertex Shader abstraction.
+///
+/// Can be used to load a vertex shader from file.
+////////////////////////////////////////////////////////////////////////////////
 
 class VertexShader: public Shader {
     public:

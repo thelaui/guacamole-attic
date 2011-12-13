@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief Declaration of the FragmentShader class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GEOMETRY_BASE_HPP
@@ -26,6 +26,12 @@
 #include "include/utils/Singleton.hpp"
 #include "include/renderer/DataBase.hpp"
 #include "include/renderer/Geometry.hpp"
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+///
+///
+////////////////////////////////////////////////////////////////////////////////
 
 class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
     public:

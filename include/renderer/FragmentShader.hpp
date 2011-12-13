@@ -17,13 +17,19 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief Declaration of the FragmentShader class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef FRAGMENTSHADER_HPP
 #define FRAGMENTSHADER_HPP
 
 #include "include/renderer/Shader.hpp"
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief A Fragment Shader abstraction.
+///
+/// Can be used to load a fragment shader from file.
+////////////////////////////////////////////////////////////////////////////////
 
 class FragmentShader: public Shader {
     public:
