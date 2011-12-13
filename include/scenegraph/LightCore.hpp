@@ -36,7 +36,7 @@ class LightCore: public Core {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs a LightCore with the given parameter and calls
         /// the constructor of base class Core with the type LIGHT.
@@ -46,14 +46,14 @@ class LightCore: public Core {
         LightCore(std::string const& color);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor
+        ///\brief Destructor.
         ///
         /// This destructs a LightCore.
         ////////////////////////////////////////////////////////////////////////
         virtual ~LightCore();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the LightCore's name of color
+        ///\brief Returns the LightCore's name of color.
         ///
         ///\return color The color's name
         ////////////////////////////////////////////////////////////////////////

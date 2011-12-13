@@ -35,14 +35,14 @@ class TextFile {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs a TextFile without a file.
         ////////////////////////////////////////////////////////////////////////
         TextFile();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs a TextFile with a file.
         ///

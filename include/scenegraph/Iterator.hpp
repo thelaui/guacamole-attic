@@ -42,7 +42,7 @@ class SceneGraph::Iterator {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs a Iterator from a given Node.
         ///
@@ -51,7 +51,7 @@ class SceneGraph::Iterator {
         Iterator(Node* node = NULL);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the depth of the Iterator
+        ///\brief Returns the depth of the Iterator.
         ///
         /// This effectively returns the depth of the Node the Iterator is
         /// currently pointing on.
@@ -61,34 +61,35 @@ class SceneGraph::Iterator {
         int get_depth() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the name of the Iterator's Node
+        ///\brief Returns the name of the Iterator's Node.
         ///
         ///\return name       The depth of the Iterator' Node.
         ////////////////////////////////////////////////////////////////////////
         std::string const& get_name() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the name of the Iterator's Node
+        ///\brief Sets the name of the Iterator's Node.
         ///
         ///\param name        The new name of the Node.
         ////////////////////////////////////////////////////////////////////////
         void set_name(std::string const& name) const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the transformation of the Iterator's Node
+        ///\brief Returns the transformation of the Iterator's Node.
         ///
         ///\return transform  The Node's transformation.
         ////////////////////////////////////////////////////////////////////////
         Eigen::Transform3f const& get_transform() const;
 
-        ///\brief Sets the transformation of the Iterator's Node
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Sets the transformation of the Iterator's Node.
         ///
         ///\param transform   The new transformation of the Node.
         ////////////////////////////////////////////////////////////////////////
         void set_transform(Eigen::Transform3f const& transform) const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the core of the Iterator's Node
+        ///\brief Returns the core of the Iterator's Node.
         ///
         /// The Core's type may be given as template parameter. A dynamic_cast
         /// will be applied in the function Node::get_core().
@@ -107,14 +108,14 @@ class SceneGraph::Iterator {
         }
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the core of the Iterator's Node
+        ///\brief Sets the core of the Iterator's Node.
         ///
         ///\param core   The new core of the Node.
         ////////////////////////////////////////////////////////////////////////
         void set_core(Core* core) const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Applies a scaling on the Iterator's Node's transformation
+        ///\brief Applies a scaling on the Iterator's Node's transformation.
         ///
         ///\param x         The x value of the scaling.
         ///\param y         The y value of the scaling.
@@ -123,7 +124,7 @@ class SceneGraph::Iterator {
         void scale(double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Applies a rotation on the Iterator's Node's transformation
+        ///\brief Applies a rotation on the Iterator's Node's transformation.
         ///
         ///\param angle     The angle of the rotation in radians.
         ///\param x         The x factor of the rotation.
@@ -133,7 +134,7 @@ class SceneGraph::Iterator {
         void rotate(double angle, double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Applies a translation on the Iterator's Node's transformation
+        ///\brief Applies a translation on the Iterator's Node's transformation.
         ///
         ///\param x         The x value of the translation.
         ///\param y         The y value of the translation.
@@ -142,7 +143,7 @@ class SceneGraph::Iterator {
         void translate(double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Increments the Iterator
+        ///\brief Increments the Iterator.
         ///
         /// Increments the Iterator by detecting the next node of the SceneGraph
         /// in preorder traversion and setting the Iterator's node to this one.
@@ -151,7 +152,7 @@ class SceneGraph::Iterator {
         void operator ++();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Compares two Iterators
+        ///\brief Compares two Iterators.
         ///
         /// This function returns true if two Iterators point on the same Node.
         ///
@@ -162,7 +163,7 @@ class SceneGraph::Iterator {
         bool operator ==(Iterator const& rhs);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Compares two Iterators
+        ///\brief Compares two Iterators.
         ///
         /// This function returns true if two Iterators do not point on the same
         /// Node.
@@ -174,7 +175,7 @@ class SceneGraph::Iterator {
         bool operator !=(Iterator const& rhs);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the name of the Iterator's Node
+        ///\brief Sets the name of the Iterator's Node.
         ///
         ///\param name        The new name of the Node.
         ////////////////////////////////////////////////////////////////////////
@@ -188,7 +189,7 @@ class SceneGraph::Iterator {
         Iterator& operator << (Eigen::Transform3f const& transform);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the core of the Iterator's Node
+        ///\brief Sets the core of the Iterator's Node.
         ///
         ///\param core        The new core of the Node.
         ////////////////////////////////////////////////////////////////////////

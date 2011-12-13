@@ -43,7 +43,7 @@ class KnownObject {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs a KnownObject and stores a pointer on an object
         /// of a derived class into a static list.
@@ -55,7 +55,7 @@ class KnownObject {
         }
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This destructs a KnownObject frees the storage the deleted object
         /// used to allocate in the static vector
@@ -65,7 +65,7 @@ class KnownObject {
         }
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns a pointer on a derived object
+        ///\brief Returns a pointer on a derived object.
         ///
         /// This function returns a pointer on any of the already constructed
         /// derived objects.

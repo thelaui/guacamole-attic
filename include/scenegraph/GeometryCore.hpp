@@ -36,7 +36,7 @@ class GeometryCore: public Core {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs a GeometryCore with the given parameters and calls
         /// the constructor of base class Core with the type GEOMETRY.
@@ -47,21 +47,21 @@ class GeometryCore: public Core {
         GeometryCore(std::string const& geometry, std::string const& material);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor
+        ///\brief Destructor.
         ///
         /// This destructs a GeometryCore.
         ////////////////////////////////////////////////////////////////////////
         virtual ~GeometryCore();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the GeometryCore's name of geometry
+        ///\brief Returns the GeometryCore's name of geometry.
         ///
         ///\return geometry The geometry's name
         ////////////////////////////////////////////////////////////////////////
         std::string const& get_geometry() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the GeometryCore's name of material
+        ///\brief Returns the GeometryCore's name of material.
         ///
         ///\return material The material's name
         ////////////////////////////////////////////////////////////////////////

@@ -46,21 +46,21 @@ class SceneGraph {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs an empty SceneGraph.
         ////////////////////////////////////////////////////////////////////////
         SceneGraph();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor
+        ///\brief Destructor.
         ///
         /// This destructs the SceneGraph with all its contents.
         ////////////////////////////////////////////////////////////////////////
         virtual ~SceneGraph();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Adds a new Node
+        ///\brief Adds a new Node.
         ///
         /// This function adds a new Node to the graph. If the given path to a
         /// parent Node is invalid (this means this Node doesn't exist), an
@@ -82,7 +82,7 @@ class SceneGraph {
                       Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity());
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Adds a new Node
+        ///\brief Adds a new Node.
         ///
         /// This function adds a new Node to the graph. If the given path to a
         /// parent Node is invalid (this means this Node doesn't exist), all
@@ -102,7 +102,7 @@ class SceneGraph {
                       Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity());
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Removes a Node
+        ///\brief Removes a Node.
         ///
         /// This function removes a Node from the graph and returnes an Iterator
         /// on the next Node considering a preorder traversion.
@@ -114,7 +114,7 @@ class SceneGraph {
         Iterator remove_node(std::string const& path_to_node);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Moves a Node
+        ///\brief Moves a Node.
         ///
         /// This function moves a Node and all its children from one position in
         /// the graph to another one.
@@ -132,7 +132,7 @@ class SceneGraph {
         Iterator move_node(std::string const& path_to_node, std::string const& path_to_target);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Copies a Node
+        ///\brief Copies a Node.
         ///
         /// This function copies a Node and all its children from one position
         /// in the graph to another one.
@@ -150,7 +150,7 @@ class SceneGraph {
         Iterator copy_node(std::string const& path_to_node, std::string const& path_to_target);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the working Node
+        ///\brief Sets the working Node.
         ///
         /// This function sets the Node you are currently working at. This
         /// allows to operate on nodes from within a subtree and therefore
@@ -163,7 +163,7 @@ class SceneGraph {
         void set_working_node(std::string const& path_to_node);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns an iterator to a Node
+        ///\brief Returns an iterator to a Node.
         ///
         /// This function returns an iterator to a Node which may be used to
         /// apply operations.
@@ -176,7 +176,7 @@ class SceneGraph {
         Iterator get_iterator(std::string const& path_to_node);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns an iterator to the beginning of the SceneGraph
+        ///\brief Returns an iterator to the beginning of the SceneGraph.
         ///
         /// This function returns an iterator to the beginning of the
         /// SceneGraph which is a Node named "/".
@@ -186,7 +186,7 @@ class SceneGraph {
         Iterator begin() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns an iterator to the "end" of the SceneGraph
+        ///\brief Returns an iterator to the "end" of the SceneGraph.
         ///
         /// Because the SceneGraph is structured as a non-cyclic graph is
         /// expected to be, there is no real end. Therefore this function
@@ -199,7 +199,7 @@ class SceneGraph {
         Iterator end() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Locks the SceneGraph
+        ///\brief Locks the SceneGraph.
         ///
         /// This function locks the SceneGraph in order to have save accesses
         /// in multi-threaded applications.
@@ -207,7 +207,7 @@ class SceneGraph {
         void lock();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Unlocks the SceneGraph
+        ///\brief Unlocks the SceneGraph.
         ///
         /// This function unlocks the SceneGraph in order to have save accesses
         /// in multi-threaded applications.
@@ -215,7 +215,7 @@ class SceneGraph {
         void unlock();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Allows to access nodes via the index operator
+        ///\brief Allows to access nodes via the index operator.
         ///
         /// This operator allows to access nodes via the index operator. If a
         /// given path doesn't refer to an existing set of nodes, all missing
@@ -237,7 +237,7 @@ class SceneGraph {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-///\brief The stream operator
+///\brief The stream operator.
 ///
 /// This operator allows to stream the names of the SceneGraph's nodes into a
 /// given ostream.

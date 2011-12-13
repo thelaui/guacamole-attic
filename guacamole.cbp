@@ -61,11 +61,9 @@
 		<Unit filename="include/renderer/tmp/tmp.hpp" />
 		<Unit filename="include/scenegraph/CameraCore.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />
-		<Unit filename="include/scenegraph/GeometryBase.hpp" />
 		<Unit filename="include/scenegraph/GeometryCore.hpp" />
 		<Unit filename="include/scenegraph/Iterator.hpp" />
 		<Unit filename="include/scenegraph/LightCore.hpp" />
-		<Unit filename="include/scenegraph/MaterialBase.hpp" />
 		<Unit filename="include/scenegraph/Node.hpp" />
 		<Unit filename="include/scenegraph/SceneGraph.hpp" />
 		<Unit filename="include/traverser/ListNode.hpp" />
@@ -73,6 +71,7 @@
 		<Unit filename="include/traverser/Renderer.hpp" />
 		<Unit filename="include/utils/KnownObject.hpp" />
 		<Unit filename="include/utils/PathParser.hpp" />
+		<Unit filename="include/utils/Singleton.hpp" />
 		<Unit filename="include/utils/TextFile.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
 		<Unit filename="src/main.cpp" />

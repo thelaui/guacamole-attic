@@ -35,14 +35,14 @@ class PathParser {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs a PathParser
         ////////////////////////////////////////////////////////////////////////
         PathParser();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Parses a path
+        ///\brief Parses a path.
         ///
         /// This function parses a path and stores each substring of the path
         /// which is separated by "/" into a vector cell.
@@ -55,7 +55,7 @@ class PathParser {
         void parse(std::string path);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns a parsed path
+        ///\brief Returns a parsed path.
         ///
         /// This function returns the vector containing the parsed path's data.
         ///
@@ -64,7 +64,7 @@ class PathParser {
         std::vector<std::string> const& get_parsed_path() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns if the pars has a "/" at its end
+        ///\brief Returns if the pars has a "/" at its end.
         ///
         /// This function returns true if the trigger on a finishing "/" is set.
         ///

@@ -40,7 +40,7 @@ class Core {
         enum CoreType { CAMERA, GEOMETRY, LIGHT };
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs a Core.
         ///
@@ -49,14 +49,14 @@ class Core {
         Core(CoreType type);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor
+        ///\brief Destructor.
         ///
         /// This destructs a Core.
         ////////////////////////////////////////////////////////////////////////
         virtual ~Core();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the Core's type
+        ///\brief Returns the Core's type.
         ///
         /// This function can be used to find out on which derived Core class
         /// a Core pointer has to be casted.

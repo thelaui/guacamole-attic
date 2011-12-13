@@ -36,7 +36,7 @@ class CameraCore: public Core {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor
+        ///\brief Constructor.
         ///
         /// This constructs a CameraCore with the given parameters and calls
         /// the constructor of base class Core with the type CAMERA.
@@ -49,14 +49,14 @@ class CameraCore: public Core {
         CameraCore(float fovy, float aspect_ratio, float near_plane, float far_plane);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor
+        ///\brief Destructor.
         ///
         /// This destructs a CameraCore.
         ////////////////////////////////////////////////////////////////////////
         virtual ~CameraCore();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the CameraCore's viewing frustum
+        ///\brief Returns the CameraCore's viewing frustum.
         ///
         ///\return frustum The camera's frustum
         ////////////////////////////////////////////////////////////////////////
