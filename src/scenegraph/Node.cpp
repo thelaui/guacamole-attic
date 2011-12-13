@@ -24,6 +24,7 @@ void SceneGraph::Node::add_child(SceneGraph::Node* child) {
 }
 
 void SceneGraph::Node::remove_child(SceneGraph::Node* child) {
+    child->parent_ = NULL;
     children_.remove(child);
 }
 
@@ -33,6 +34,10 @@ std::list<SceneGraph::Node*> const& SceneGraph::Node::get_children() const {
 
 SceneGraph::Node* SceneGraph::Node::get_parent() const {
     return parent_;
+}
+
+void SceneGraph::Node::set_parent(SceneGraph::Node* parent) {
+    parent_ = parent;
 }
 
 std::string const& SceneGraph::Node::get_name() const {

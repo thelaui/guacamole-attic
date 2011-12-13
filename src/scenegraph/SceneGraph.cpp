@@ -48,9 +48,44 @@ SceneGraph::Iterator SceneGraph::add_node_recursively(std::string const& path_to
     return Iterator();
 }
 
-void SceneGraph::remove_node(std::string const& path_to_node) {
+SceneGraph::Iterator SceneGraph::remove_node(std::string const& path_to_node) {
     Node* searched_node(find_node(path_to_node));
+    Iterator it(searched_node);
+    ++it;
     delete searched_node;
+    return it;
+}
+
+SceneGraph::Iterator SceneGraph::move_node(std::string const& path_to_node, std::string const& path_to_target) {
+    PathParser parser;
+    parser.parse(path_to_target);
+
+    Node* parent(find_node(path_to_target));
+    Node* child(find_node(path_to_node));
+
+    if (parser.path_is_finished_by_slash()) {
+        if (child->get_parent())
+            child->get_parent()->remove_child(child);
+        parent->add_child(child);
+        return Iterator(child);
+    }
+
+    if (child->get_parent())
+        child->get_parent()->remove_child(child);
+
+    Node* parents_parent(parent->get_parent());
+    if (parents_parent) {
+        parents_parent->remove_child(parent);
+        parents_parent->add_child(child);
+    }
+
+    delete parent;
+    parent = child;
+    return Iterator(parent);
+}
+
+SceneGraph::Iterator SceneGraph::copy_node(std::string const& path_to_node, std::string const& path_to_target) {
+    return Iterator();
 }
 
 void SceneGraph::set_working_node(std::string const& path_to_node) {
