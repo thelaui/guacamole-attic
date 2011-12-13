@@ -36,6 +36,11 @@
 
 class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
     public:
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief
+        ///
+        ///
+        ////////////////////////////////////////////////////////////////////////
         static void load_presets();
 
         friend class Singleton<GeometryBase>;

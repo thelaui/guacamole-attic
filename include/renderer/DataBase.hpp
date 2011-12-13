@@ -38,14 +38,41 @@ template <typename T>
 
 class DataBase {
     public:
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Adds a new entry to the data base.
+        ///
+        /// It can be accessed later with the get() method.
+        ///
+        /// \param id   The unique ID of this entry.
+        /// \param date The newly added entry.
+        ////////////////////////////////////////////////////////////////////////
         void add( std::string const& id, std::shared_ptr<T> date ) {
             data_.insert(std::make_pair(id, date));
         }
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Check for existance of a ID.
+        ///
+        /// Returns true, if a entry with the given ID exists in the DataBase.
+        ///
+        /// \param id The ID to check for.
+        /// \return   Whether the given ID is stored in the DataBase.
+        ////////////////////////////////////////////////////////////////////////
         bool is_supported( std::string const& id ) const {
             return data_.find(id) != data_.end();
         }
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Gets an entry from the DataBase
+        ///
+        /// Returns a entry from the DataBase. It will return NULL if the entry
+        /// in question does not exist.
+        ///
+        /// \param  id The ID of the entry.
+        /// \return    A shared pointer to the data of the requested entry. NULL
+        ///            if the entry does not exist.
+        ////////////////////////////////////////////////////////////////////////
         std::shared_ptr<T> get( std::string const& id ) {
             auto result(data_.find(id));
             if (result == data_.end())

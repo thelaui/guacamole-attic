@@ -36,6 +36,11 @@
 
 class MaterialBase: public DataBase<Material>, public Singleton<MaterialBase> {
     public:
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief
+        ///
+        ///
+        ////////////////////////////////////////////////////////////////////////
         static void load_presets();
 
         friend class Singleton<MaterialBase>;

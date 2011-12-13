@@ -35,13 +35,30 @@ class LightNode;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief The internal renderer of guacamole.
 ///
-///
+/// It takes a list of meshes, lights and a camera and renders the output to a
+/// RenderWindow.
 ////////////////////////////////////////////////////////////////////////////////
 
 class RenderBackend {
     public:
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief
+        ///
+        ///
+        /// \param width
+        /// \param height
+        /// \param display
+        ////////////////////////////////////////////////////////////////////////
         RenderBackend( int width, int height, std::string const& display = ":0.0" );
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief
+        ///
+        ///
+        /// \param node_list
+        /// \param light_list
+        /// \param camera
+        ////////////////////////////////////////////////////////////////////////
         void render( std::vector<GeometryNode*> const& node_list,
                      std::vector<LightNode*> const& light_list,
                      CameraNode* camera );

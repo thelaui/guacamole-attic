@@ -33,7 +33,22 @@
 
 class FragmentShader: public Shader {
     public:
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Default constructor.
+        ///
+        /// Creates a new (invalid) FragmentShader. Use the other constructor in
+        /// order to retrieve a useful shader object.
+        ////////////////////////////////////////////////////////////////////////
         FragmentShader();
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Constructor from source file.
+        ///
+        /// This constructor will create a new FragmentShader object. It is
+        /// loaded from a given glsl source file.
+        ///
+        /// \param file The glsl source file.
+        ////////////////////////////////////////////////////////////////////////
         FragmentShader( std::string const& file );
 };
 

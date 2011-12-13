@@ -33,7 +33,22 @@
 
 class VertexShader: public Shader {
     public:
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Default constructor.
+        ///
+        /// Creates a new (invalid) VertexShader. Use the other constructor in
+        /// order to retrieve a useful shader object.
+        ////////////////////////////////////////////////////////////////////////
         VertexShader();
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Constructor from source file.
+        ///
+        /// This constructor will create a new VertexShader object. It is loaded
+        /// from a given glsl source file.
+        ///
+        /// \param file The glsl source file.
+        ////////////////////////////////////////////////////////////////////////
         VertexShader( std::string const& file );
 };
 
