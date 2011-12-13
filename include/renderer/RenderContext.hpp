@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the FragmentShader class.
+/// \brief Declaration of the RenderContext struct.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef RENDERCONTEXT_HPP

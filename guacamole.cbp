@@ -59,14 +59,11 @@
 		<Unit filename="include/renderer/VertexShader.hpp" />
 		<Unit filename="include/renderer/glInclude.hpp" />
 		<Unit filename="include/renderer/tmp/tmp.hpp" />
-		<Unit filename="include/scenegraph/Camera.hpp" />
 		<Unit filename="include/scenegraph/CameraCore.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />
-		<Unit filename="include/scenegraph/Geometry.hpp" />
 		<Unit filename="include/scenegraph/GeometryBase.hpp" />
 		<Unit filename="include/scenegraph/GeometryCore.hpp" />
 		<Unit filename="include/scenegraph/Iterator.hpp" />
-		<Unit filename="include/scenegraph/Light.hpp" />
 		<Unit filename="include/scenegraph/LightCore.hpp" />
 		<Unit filename="include/scenegraph/MaterialBase.hpp" />
 		<Unit filename="include/scenegraph/Node.hpp" />

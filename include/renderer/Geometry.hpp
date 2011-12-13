@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the FragmentShader class.
+/// \brief Declaration of the Geometry class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GEOMETRY_HPP
@@ -29,9 +29,10 @@
 #include "include/renderer/Mesh.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief
+/// \brief Loads and draws meshes.
 ///
-///
+/// This class can load mesh data from files and display them in multiple
+/// contexts.
 ////////////////////////////////////////////////////////////////////////////////
 
 class Geometry {

@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the FragmentShader class.
+/// \brief Declaration of the GeometryBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef GEOMETRY_BASE_HPP
@@ -28,9 +28,10 @@
 #include "include/renderer/Geometry.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief
+/// \brief A data base for meshes.
 ///
-///
+/// This DataBase stores geometry data. It can be accessed via string
+/// identifiers.
 ////////////////////////////////////////////////////////////////////////////////
 
 class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {

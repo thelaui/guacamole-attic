@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the FragmentShader class.
+/// \brief Declaration of the Mesh class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef MESH_HPP
@@ -29,9 +29,9 @@ class aiMesh;
 class RenderContext;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief
+/// \brief Stores geometry data.
 ///
-///
+/// A mesh can be loaded from a Assimp mesh and the draw onto multiple contexts.
 ////////////////////////////////////////////////////////////////////////////////
 
 class Mesh {

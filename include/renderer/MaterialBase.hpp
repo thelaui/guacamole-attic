@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the FragmentShader class.
+/// \brief Declaration of the MaterialBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef MATERIAL_BASE_HPP
@@ -28,9 +28,10 @@
 #include "include/renderer/Material.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief
+/// \brief A data base for materials.
 ///
-///
+/// This DataBase stores material data. It can be accessed via string
+/// identifiers.
 ////////////////////////////////////////////////////////////////////////////////
 
 class MaterialBase: public DataBase<Material>, public Singleton<MaterialBase> {
