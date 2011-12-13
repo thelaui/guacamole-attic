@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class storing geometry data.
+/// \brief A simple file reader to get data out of text files.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "include/utils/TextFile.hpp"

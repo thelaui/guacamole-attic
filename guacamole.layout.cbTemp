@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="Debug" />
+	<File name="include/scenegraph/CameraCore.hpp" open="0" top="0" tabpos="11">
+		<Cursor position="287" topLine="0" />
+	</File>
+	<File name="include/scenegraph/GeometryCore.hpp" open="0" top="0" tabpos="10">
+		<Cursor position="111" topLine="0" />
+	</File>
+	<File name="include/scenegraph/LightCore.hpp" open="0" top="0" tabpos="12">
+		<Cursor position="86" topLine="0" />
+	</File>
+	<File name="include/scenegraph/Node.hpp" open="1" top="1" tabpos="2">
+		<Cursor position="814" topLine="0" />
+	</File>
+	<File name="include/scenegraph/SceneGraph.hpp" open="1" top="0" tabpos="1">
+		<Cursor position="1242" topLine="0" />
+	</File>
+	<File name="include/utils/debug.hpp" open="0" top="0" tabpos="7">
+		<Cursor position="12" topLine="0" />
+	</File>
+	<File name="src/main.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="1544" topLine="18" />
+	</File>
+	<File name="src/renderer/Geometry.cpp" open="0" top="0" tabpos="6">
+		<Cursor position="42" topLine="0" />
+	</File>
+	<File name="src/renderer/RenderWindow.cpp" open="0" top="0" tabpos="8">
+		<Cursor position="3808" topLine="48" />
+	</File>
+	<File name="src/scenegraph/CameraCore.cpp" open="0" top="0" tabpos="6">
+		<Cursor position="210" topLine="0" />
+	</File>
+	<File name="src/scenegraph/Core.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="87" topLine="0" />
+	</File>
+	<File name="src/scenegraph/GeometryCore.cpp" open="0" top="0" tabpos="5">
+		<Cursor position="359" topLine="0" />
+	</File>
+	<File name="src/scenegraph/Iterator.cpp" open="0" top="0" tabpos="2">
+		<Cursor position="2157" topLine="18" />
+	</File>
+	<File name="src/scenegraph/LightCore.cpp" open="0" top="0" tabpos="7">
+		<Cursor position="67" topLine="0" />
+	</File>
+	<File name="src/scenegraph/Node.cpp" open="0" top="0" tabpos="3">
+		<Cursor position="1230" topLine="0" />
+	</File>
+	<File name="src/scenegraph/SceneGraph.cpp" open="0" top="0" tabpos="1">
+		<Cursor position="242" topLine="0" />
+	</File>
+</CodeBlocks_layout_file>
