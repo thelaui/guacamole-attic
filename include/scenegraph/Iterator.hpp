@@ -151,7 +151,7 @@ class SceneGraph::Iterator {
         void operator ++();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Compares to Iterators
+        ///\brief Compares two Iterators
         ///
         /// This function returns true if two Iterators point on the same Node.
         ///
@@ -162,7 +162,7 @@ class SceneGraph::Iterator {
         bool operator ==(Iterator const& rhs);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Compares to Iterators
+        ///\brief Compares two Iterators
         ///
         /// This function returns true if two Iterators do not point on the same
         /// Node.
