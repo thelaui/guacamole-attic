@@ -28,17 +28,17 @@
 
 #include "include/renderer/RenderWindow.hpp"
 
-class CameraCore;
-class GeometryCore;
-class LightCore;
+class CameraNode;
+class GeometryNode;
+class LightNode;
 
 class RenderBackend {
     public:
         RenderBackend( int width, int height, std::string const& display = ":0.0" );
 
-        void render( std::vector<GeometryCore*> const& node_list,
-                     std::vector<LightCore*> const& light_list,
-                     CameraCore const& camera );
+        void render( std::vector<GeometryNode*> const& node_list,
+                     std::vector<LightNode*> const& light_list,
+                     CameraNode* camera );
 
     private:
         RenderWindow window_;

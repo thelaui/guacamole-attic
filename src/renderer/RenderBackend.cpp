@@ -32,33 +32,35 @@
 RenderBackend::RenderBackend( int width, int height, std::string const& display ):
     window_(width, height, display) {}
 
-void RenderBackend::render( std::vector<GeometryCore*> const& node_list,
-                            std::vector<LightCore*> const& light_list,
-                            CameraCore const& camera ) {
+void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
+                            std::vector<LightNode*> const& light_list,
+                            CameraNode* camera ) {
 
     window_.set_active();
     window_.start_frame();
 
-    Eigen::Matrix4f view_matrix(camera.transform_.matrix().inverse());
+    if (camera) {
+        Eigen::Matrix4f view_matrix(camera->transform_.inverse());
 
-    for (auto& geometry_core: node_list) {
+        for (auto& geometry_core: node_list) {
 
-        auto material = MaterialBase::instance()->get(geometry_core->material_);
-        auto geometry = GeometryBase::instance()->get(geometry_core->geometry_);
+            auto material = MaterialBase::instance()->get(geometry_core->material_);
+            auto geometry = GeometryBase::instance()->get(geometry_core->geometry_);
 
-        if (material) {
-            material->use(window_.get_context());
-            material->get_shader().set_projection_matrix(window_.get_context(), camera.projection_);
-            material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
-            material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_.matrix());
-        } else {
-            WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core->material_.c_str());
-        }
+            if (material) {
+                material->use(window_.get_context());
+                material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
+                material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
+                material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
+            } else {
+                WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core->material_.c_str());
+            }
 
-        if (geometry) {
-            window_.draw(geometry);
-        } else {
-            WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core->geometry_.c_str());
+            if (geometry) {
+                window_.draw(geometry);
+            } else {
+                WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core->geometry_.c_str());
+            }
         }
     }
 
