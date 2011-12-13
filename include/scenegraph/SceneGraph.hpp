@@ -27,7 +27,11 @@ class SceneGraph {
                       Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity());
 
 
-        void remove_node(std::string const& path_to_node);
+        Iterator remove_node(std::string const& path_to_node);
+
+        Iterator move_node(std::string const& path_to_node, std::string const& path_to_target);
+
+        Iterator copy_node(std::string const& path_to_node, std::string const& path_to_target);
 
         void set_working_node(std::string const& path_to_node);
 

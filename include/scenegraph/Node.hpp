@@ -18,6 +18,7 @@ class SceneGraph::Node {
         void remove_child(Node* child);
 
         Node* get_parent() const;
+        void set_parent(Node* parent);
         std::list<Node*> const& get_children() const;
 
         std::string const& get_name() const;
