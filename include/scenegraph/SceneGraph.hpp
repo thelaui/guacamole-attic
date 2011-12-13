@@ -20,13 +20,11 @@ class SceneGraph {
 
         virtual ~SceneGraph();
 
-        Iterator add_node(std::string const& path_to_parent, std::string const& node_name,
-                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity(),
-                      Core* core = NULL);
+        Iterator add_node(std::string const& path_to_parent, std::string const& node_name, Core* core = NULL,
+                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity());
 
-        Iterator add_node_recursively(std::string const& path_to_parent, std::string const& node_name,
-                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity(),
-                      Core* core = NULL);
+        Iterator add_node_recursively(std::string const& path_to_parent, std::string const& node_name, Core* core = NULL,
+                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity());
 
 
         void remove_node(std::string const& path_to_node);
@@ -35,13 +33,13 @@ class SceneGraph {
 
         Iterator get_iterator(std::string const& path_to_node);
 
-        Iterator begin();
-        Iterator end();
-
-        Iterator operator [](std::string const& path_to_node);
+        Iterator begin() const;
+        Iterator end() const;
 
         void lock();
         void unlock();
+
+        Iterator operator [](std::string const& path_to_node);
 
     private:
         Node *root_, *working_node_;
@@ -52,5 +50,6 @@ class SceneGraph {
         bool has_child(Node* parent, std::string const& child_name) const;
 };
 
+std::ostream& operator<<(std::ostream& os, SceneGraph const& graph);
 
 #endif // SCENE_GRAPH_HPP

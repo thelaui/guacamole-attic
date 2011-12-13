@@ -1,14 +1,16 @@
 #ifndef RENDERER_HPP
 #define RENDERER_HPP
 
+#include "include/renderer/RenderWindow.hpp"
+
+class SceneGraph;
+
 class Renderer {
     public:
-        Renderer();
-        virtual ~Renderer();
+        Renderer(int width, int height, std::string const& display = ":0.0") {}
+        virtual ~Renderer() {}
 
-        void open_display( int width, int height, std::string const& display = ":0.0" );
-
-        void start_render_loop( SceneGraph const* scene_graph );
+        void start_render_loop( SceneGraph const& scene_graph ) {}
 
     private:
 

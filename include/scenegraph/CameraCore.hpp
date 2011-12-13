@@ -7,13 +7,13 @@
 
 class CameraCore: public Core {
     public:
-        CameraCore(Eigen::Transform3f const& frustum);
+        CameraCore(float fovy, float aspect_ratio, float near_plane, float far_plane);
         virtual ~CameraCore();
 
-        Eigen::Transform3f const& get_frustum() const;
+        Eigen::Matrix4f const& get_frustum() const;
 
     private:
-        Eigen::Transform3f frustum_;
+        Eigen::Matrix4f frustum_;
 };
 
 #endif // CAMERA_CORE_HPP

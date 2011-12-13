@@ -15,8 +15,8 @@ SceneGraph::~SceneGraph() {
     delete root_;
 }
 
-SceneGraph::Iterator SceneGraph::add_node(std::string const& path_to_parent, std::string const& node_name,
-                          Eigen::Transform3f const& transform, Core* core) {
+SceneGraph::Iterator SceneGraph::add_node(std::string const& path_to_parent, std::string const& node_name, Core* core,
+                          Eigen::Transform3f const& transform) {
 
     Node* searched_parent(find_node(path_to_parent));
     if (!searched_parent) {
@@ -34,8 +34,8 @@ SceneGraph::Iterator SceneGraph::add_node(std::string const& path_to_parent, std
     return Iterator(new_node);
 }
 
-SceneGraph::Iterator SceneGraph::add_node_recursively(std::string const& path_to_parent, std::string const& node_name,
-              Eigen::Transform3f const& transform, Core* core) {
+SceneGraph::Iterator SceneGraph::add_node_recursively(std::string const& path_to_parent, std::string const& node_name, Core* core,
+              Eigen::Transform3f const& transform) {
 
     Node* searched_parent(find_node(path_to_parent, working_node_->get_path(), true));
     if (searched_parent && !has_child(searched_parent, node_name)) {
@@ -61,7 +61,7 @@ SceneGraph::Iterator SceneGraph::get_iterator(std::string const& path_to_node) {
     return Iterator(find_node(path_to_node));
 }
 
-SceneGraph::Iterator SceneGraph::begin() {
+SceneGraph::Iterator SceneGraph::begin() const {
     auto root_children(root_->get_children());
     if (!root_children.empty())
         return Iterator(root_);
@@ -71,7 +71,7 @@ SceneGraph::Iterator SceneGraph::begin() {
     }
 }
 
-SceneGraph::Iterator SceneGraph::end() {
+SceneGraph::Iterator SceneGraph::end() const {
     return Iterator();
 }
 
@@ -118,3 +118,11 @@ bool SceneGraph::has_child(Node* parent, std::string const& child_name) const {
     return false;
 }
 
+std::ostream& operator<<(std::ostream& os, SceneGraph const& graph) {
+    for (SceneGraph::Iterator it(graph.begin()); it!=graph.end(); ++it) {
+        for (int i(0); i<it.get_depth(); ++i)
+            os << "  ";
+        os << it.get_name() << std::endl;
+    }
+    return os;
+}

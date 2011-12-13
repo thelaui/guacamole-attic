@@ -1,83 +1,61 @@
-#include "include/scenegraph/Iterator.hpp"
-#include "include/scenegraph/GeometryCore.hpp"
+#include "include/guacamole.hpp"
 
-#include <iostream>
+#include <thread>
+
+//void render(SceneGraph* graph, std::string const& display) {
+//    Renderer renderer(800, 600, display);
+//    renderer.start_render_loop(*graph);
+//}
 
 int main() {
+    RenderWindow::init();
+
+    GeometryBase::load_presets();
+    MaterialBase::load_presets();
+
     SceneGraph graph;
 
-    auto geo_core = new GeometryCore("hakaskönni", "holz");
+    auto camera_core = new CameraCore(60.f, 4.f/3.f, 0.1f, 1000.f);
+    auto camera = graph.add_node("/", "camera", camera_core);
+    camera.translate(0.5, 1, 2);
+    camera.rotate(0.2, 0, 1, 0);
 
-    graph["/tisch1"] << geo_core;
+    auto cube_core = new GeometryCore("cube", "matt");
+    auto floor = graph.add_node("/", "floor", cube_core);
+    floor.scale(4, 0.1, 4);
 
-    graph["/tisch1/bein1"].rotate(2, 0.1, 1, 0.4);
+    auto box = graph.add_node("/", "box", cube_core);
+    box.scale(0.5, 0.5, 0.5);
+    box.translate(-1, 1, 0);
 
-    graph["/tisch1/bein2"];
-    graph["/tisch1/bein3"];
-    graph["/tisch1/bein4"];
+    auto monkey_core = new GeometryCore("teapot", "shiny");
+    auto monkey = graph.add_node("/box", "monkey", monkey_core);
+    monkey.translate(0, 2, 0);
 
-    graph["/tisch2"];
-    graph["/tisch2/bein1"];
-    graph["/tisch2/bein2"];
-    graph["/tisch2/bein2/schraube1"];
-    graph["/tisch2/bein2/schraube2"];
-    graph["/tisch2/bein3"];
-    graph["/tisch2/bein4"];
-    graph["/tisch2/bein4"].set_core(geo_core);
+    monkey = graph.add_node("/", "monkey", monkey_core);
+    monkey.scale(0.3, 0.3, 0.3);
+    monkey.translate(4, 1, 0);
 
-    for (SceneGraph::Iterator it(graph.begin()); it!=graph.end(); ++it) {
-        std::cout<<it.get_name()<<std::endl;
-    }
+
+    monkey = graph.add_node("/box/monkey", "monkey", monkey_core);
+    monkey.scale(0.3, 0.3, 0.3);
+    monkey.translate(0, 5, 0);
+
+    std::cout << graph << std::endl;
+
+    //std::thread render_thread1(render, &graph, ":0.0");
+    //std::thread render_thread2(render, &graph, ":0.0");
+
+//    int frame(0);
+//
+//    while (true) {
+//        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+//        graph["/box"].rotate(0.001, 0, 1, 0);
+//        graph["/box/monkey"].rotate(0.001, 1, 0, 0);
+//        graph["/box/monkey/monkey"].rotate(0.01, 0, 1, 0);
+//
+//        graph["/monkey"].translate(0, std::sin(0.01*++frame)*0.001, 0);
+//    }
 
     return 0;
 }
-
-//#include "include/renderer/MaterialBase.hpp"
-//#include "include/utils/debug.hpp"
-//
-//#include "include/utils/debug.hpp"
-//
-//#include <eigen2/Eigen/Geometry>
-//
-//#include "include/renderer/GeometryBase.hpp"
-//#include "include/renderer/MaterialBase.hpp"
-//#include "include/renderer/RenderBackend.hpp"
-//#include "include/renderer/tmp/tmp.hpp"
-//
-//#include <thread>
-//
-//void thread() {
-//    RenderBackend renderer(800, 600, ":0.0");
-//
-//    GeometryCore ape1("teapot", "shiny");
-//    ape1.transform_.translate(Eigen::Vector3f(-2, 0, 0));
-//
-//    GeometryCore ape2("teapot", "matt");
-//    ape2.transform_.translate(Eigen::Vector3f(2, 0, 0));
-//    ape2.transform_.scale(1.3);
-//
-//    CameraCore cam(60.f, 4.f/3.f, 0.1f, 1000.f);
-//    cam.transform_.translate(Eigen::Vector3f(0, 0, 4));
-//
-//    while (true) {
-//        ape1.transform_.rotate(Eigen::AngleAxisf(0.01, Eigen::Vector3f(0, 1, 0)));
-//        ape2.transform_.rotate(Eigen::AngleAxisf(-0.01, Eigen::Vector3f(0, 1, 0)));
-//
-//        renderer.render({&ape1, &ape2}, {}, cam);
-//    }
-//}
-//
-//int main() {
-//    GeometryBase::load_presets();
-//    MaterialBase::load_presets();
-//
-//    RenderWindow::init();
-//
-//    std::thread thread1(&thread);
-//    //std::thread thread2(&thread);
-//
-//    thread1.join();
-//    //thread2.join();
-//
-//    return 0;
-//}
