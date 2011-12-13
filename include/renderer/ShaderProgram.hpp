@@ -39,70 +39,78 @@
 class ShaderProgram {
     public:
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Default constructor.
         ///
-        ///
+        /// Creates a new (invalid) shader program.
         ////////////////////////////////////////////////////////////////////////
         ShaderProgram();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Constructor from shaders.
         ///
+        /// This method takes a VertexShader and a FragmentShader and combines
+        /// them to a ShaderProgram.
         ///
-        /// \param v_shader
-        /// \param f_shader
+        /// \param v_shader The VertexShader.
+        /// \param f_shader The FragmentShader.
         ////////////////////////////////////////////////////////////////////////
         ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader );
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Destructor
         ///
-        ///
+        /// Cleans all associated memory.
         ////////////////////////////////////////////////////////////////////////
         virtual ~ShaderProgram();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Applies this shader.
         ///
+        /// All preceeding draw calls on the given context will be affected by
+        /// this shader.
         ///
-        /// \param context
+        /// \param context The context which should use this shader.
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Sets the projection matrix.
         ///
+        /// Sets the projection uniform for this shader.
         ///
-        /// \param context
-        /// \param projection_matrix
+        /// \param context           The context to be affected.
+        /// \param projection_matrix The matrix which should be used for the
+        ///                          projection matrix.
         ////////////////////////////////////////////////////////////////////////
         void set_projection_matrix(RenderContext const& context, Eigen::Matrix4f const& projection_matrix) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Sets the view matrix.
         ///
         ///
-        /// \param context
-        /// \param view_matrix
+        /// \param context     The context to be affected.
+        /// \param view_matrix The matrix which should be used for the
+        ///                    view matrix.
         ////////////////////////////////////////////////////////////////////////
         void set_view_matrix(RenderContext const& context, Eigen::Matrix4f const& view_matrix) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Sets the model matrix.
         ///
         ///
-        /// \param context
-        /// \param model_matrix
+        /// \param context      The context to be affected.
+        /// \param model_matrix The matrix which should be used for the
+        ///                     model matrix.
         ////////////////////////////////////////////////////////////////////////
         void set_model_matrix(RenderContext const& context, Eigen::Matrix4f const& model_matrix) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief The layout location of the vertex attribute.
         ////////////////////////////////////////////////////////////////////////
         const static unsigned vertex_location = 0;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief The layout location of the normal attribute.
         ////////////////////////////////////////////////////////////////////////
         const static unsigned normal_location = 1;
 

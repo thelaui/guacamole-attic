@@ -36,40 +36,37 @@ class RenderContext;
 class Material {
     public:
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Default constructor.
         ///
-        ///
+        /// Creates a new (invalid) material. It won't do anything until being
+        /// initialized with the non-default constructor.
         ////////////////////////////////////////////////////////////////////////
         Material();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Constructor from a ShaderProgram.
         ///
+        /// Creates a new Material from a given Shader.
         ///
-        /// \param shader
+        /// \param shader The shader used by this material.
         ////////////////////////////////////////////////////////////////////////
         Material( ShaderProgram const& shader );
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Applies the Material.
         ///
+        /// Any preceeding draw call will use this Material.
         ///
-        ////////////////////////////////////////////////////////////////////////
-        ~Material();
-
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief
-        ///
-        ///
-        /// \param context
+        /// \param context The context which should use this Material.
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Get the internal shader.
         ///
+        /// Returns the internally used ShaderProgram.
         ///
-        /// \return
+        /// \return The shader of this Material.
         ////////////////////////////////////////////////////////////////////////
         ShaderProgram const& get_shader() const;
 

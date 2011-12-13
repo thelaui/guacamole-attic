@@ -32,37 +32,41 @@ class RenderContext;
 /// \brief Stores geometry data.
 ///
 /// A mesh can be loaded from a Assimp mesh and the draw onto multiple contexts.
+/// Do not use this class directly, it is just used by the Geometry class to
+/// store the individual meshes of a file.
 ////////////////////////////////////////////////////////////////////////////////
 
 class Mesh {
     public:
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Default constructor.
         ///
-        ///
+        /// Creates a new and empty Mesh.
         ////////////////////////////////////////////////////////////////////////
         Mesh();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Constructor from an Assimp mesh.
         ///
+        /// Initializes the mesh from a given Assimp mesh.
         ///
-        /// \param mesh
+        /// \param mesh The Assimp mesh to load the data from.
         ////////////////////////////////////////////////////////////////////////
         Mesh( aiMesh* mesh );
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Destructor.
         ///
-        ///
+        /// Cleans up and frees all associated memory.
         ////////////////////////////////////////////////////////////////////////
         ~Mesh();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Draws the Mesh.
         ///
+        /// Draws the Mesh to the given context.
         ///
-        /// \param context
+        /// \param context The RenderContext to draw onto.
         ////////////////////////////////////////////////////////////////////////
         void draw(RenderContext const& context) const;
 

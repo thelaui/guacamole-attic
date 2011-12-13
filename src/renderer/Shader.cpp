@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief Definition of the Shader class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "include/renderer/Shader.hpp"
@@ -46,8 +46,6 @@ Shader::Shader(std::string const& file_name, unsigned shader_type):
         WARNING("Failed to load shader \"%s\": File does not exist!", file_name.c_str());
     }
 }
-
-Shader::~Shader() {}
 
 unsigned Shader::get_id(RenderContext const& context) const {
     // upload to GPU if neccessary

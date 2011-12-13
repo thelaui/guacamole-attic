@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing material data.
+/// \brief Definition of the ShaderProgram class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "include/renderer/ShaderProgram.hpp"

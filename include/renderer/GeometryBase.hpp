@@ -37,9 +37,11 @@
 class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
     public:
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Pre-loads some meshes.
         ///
-        ///
+        /// This method loads some default meshes to the data base. For example
+        /// a simple cube ("cube"), the famous Utah Teapot ("teapot") and
+        /// Suzanne from Blender ("monkey").
         ////////////////////////////////////////////////////////////////////////
         static void load_presets();
 

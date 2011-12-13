@@ -36,28 +36,34 @@ class LightNode;
 /// \brief The internal renderer of guacamole.
 ///
 /// It takes a list of meshes, lights and a camera and renders the output to a
-/// RenderWindow.
+/// RenderWindow. Each call of render() will draw an entire new frame.
 ////////////////////////////////////////////////////////////////////////////////
 
 class RenderBackend {
     public:
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Constructor.
         ///
+        /// Creates a new RenderBackend. The internal RenderWindow is
+        /// initialized by this constructor.
         ///
-        /// \param width
-        /// \param height
-        /// \param display
+        /// \param width   The width of the window to be opened.
+        /// \param height  The height of the window to be opened,
+        /// \param display The display where the window should be placed.
         ////////////////////////////////////////////////////////////////////////
         RenderBackend( int width, int height, std::string const& display = ":0.0" );
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Renders the given objects.
         ///
+        /// When this method is called, all given objects will be rendered to
+        /// the associated RenderWindow.
         ///
-        /// \param node_list
-        /// \param light_list
-        /// \param camera
+        /// \param node_list  A list of Meshes to be drawn, with materials and
+        ///                   transformations.
+        /// \param light_list A list of lights to be drawn.
+        /// \param camera     The Camera and it's transformation used for
+        ///                   drawing.
         ////////////////////////////////////////////////////////////////////////
         void render( std::vector<GeometryNode*> const& node_list,
                      std::vector<LightNode*> const& light_list,

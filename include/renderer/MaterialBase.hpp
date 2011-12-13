@@ -37,9 +37,9 @@
 class MaterialBase: public DataBase<Material>, public Singleton<MaterialBase> {
     public:
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Pre-loads some Materials.
         ///
-        ///
+        /// This method loads some default materials to the data base.
         ////////////////////////////////////////////////////////////////////////
         static void load_presets();
 

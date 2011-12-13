@@ -33,40 +33,36 @@ class RenderContext;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A base class for Fragment- and VertexShaders.
 ///
-/// It is used to upload shader information to the GPU.
+/// It is used to upload shader information to the GPU. It should not be
+/// directly instanciated, use the derived class instead.
 ////////////////////////////////////////////////////////////////////////////////
 
 class Shader {
     public:
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Default constructor.
         ///
-        ///
+        /// Creates a new (invalid) shader.
         ////////////////////////////////////////////////////////////////////////
         Shader();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Loads a shader from file.
         ///
+        /// Loads a shader from the given glsl source file.
         ///
-        /// \param file_name
-        /// \param shader_type
+        /// \param file_name   The source file for this shader.
+        /// \param shader_type Either GL_FRAGMENT_SHADER of GL_VERTEX_SHADER
         ////////////////////////////////////////////////////////////////////////
         Shader(std::string const& file_name, unsigned shader_type);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Get the ID of this shader.
         ///
+        /// Returns the ID of this shader for the given OpenGL context.
         ///
-        ////////////////////////////////////////////////////////////////////////
-        virtual ~Shader();
-
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief
-        ///
-        ///
-        /// \param context
-        /// \return
+        /// \param context The context for which the ID should be returned.
+        /// \return        The ID of the shader.
         ////////////////////////////////////////////////////////////////////////
         unsigned get_id(RenderContext const& context) const;
 

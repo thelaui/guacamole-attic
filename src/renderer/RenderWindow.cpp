@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A database for accessing geometry data.
+/// \brief Definition of the RenderWindow class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "include/renderer/RenderWindow.hpp"

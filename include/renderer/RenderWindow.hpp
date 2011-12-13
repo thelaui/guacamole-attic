@@ -39,64 +39,70 @@ class Geometry;
 class RenderWindow {
     public:
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Constructor.
         ///
+        /// Creates a new RenderWindow. It owns a RenderContext where Geomtries
+        /// can be drawn to.
         ///
-        /// \param width
-        /// \param height
-        /// \param display
-        /// \throw
+        /// \param width   The width of the window.
+        /// \param height  The height of the window.
+        /// \param display The display where this window should be opened.
+        /// \throw An error message.
         ////////////////////////////////////////////////////////////////////////
         RenderWindow( int width, int height, std::string const& display ) throw (std::string);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Destructor.
         ///
-        ///
+        /// Cleans all associated memory.
         ////////////////////////////////////////////////////////////////////////
         virtual ~RenderWindow();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Activate the context of this window.
         ///
-        ///
+        /// Makes the RenderContext of this window current. All preceeding
+        /// OpenGL calls will be invoked on this window.
         ////////////////////////////////////////////////////////////////////////
         void set_active() const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Starts the drawing of a new frame.
         ///
-        ///
+        /// This should be called when a new frame is about to be drawn.
         ////////////////////////////////////////////////////////////////////////
         void start_frame() const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Ends the drawing of a new frame.
         ///
-        ///
+        /// This should be called when drawing a frame has been done.
         ////////////////////////////////////////////////////////////////////////
         void finish_frame() const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Draws the given Geometry.
         ///
+        /// The given Geometry is drawn to the window.
         ///
-        /// \param geometry
+        /// \param geometry The Geometry to be drawn.
         ////////////////////////////////////////////////////////////////////////
         void draw(std::shared_ptr<Geometry> geometry) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Get the RenderContext of this window.
         ///
+        /// Can be called in order to retrieve the RenderContext of this
+        /// RenderWindow.
         ///
-        /// \return
+        /// \return The context owned by this window.
         ////////////////////////////////////////////////////////////////////////
         RenderContext const& get_context() const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Initialize RenderWindows.
         ///
-        ///
+        /// This should be called once in every application using guacamole.
         ////////////////////////////////////////////////////////////////////////
         static void init();
 

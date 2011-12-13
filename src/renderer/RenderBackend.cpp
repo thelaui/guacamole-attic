@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the internal renderer.
+/// \brief Definition of the RenderBackend class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "include/renderer/RenderBackend.hpp"

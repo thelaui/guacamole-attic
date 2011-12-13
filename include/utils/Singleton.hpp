@@ -25,10 +25,26 @@
 
 #include <cstddef>
 
+////////////////////////////////////////////////////////////////////////////////
+/// \brief This is base class for singletons.
+///
+/// Singletons are classes, which are only instanciated once.
+////////////////////////////////////////////////////////////////////////////////
+
 template <typename T>
 
 class Singleton {
     public:
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Gets the instance.
+        ///
+        /// Singletons are classes, which are only instanciated once. This
+        /// method will create this instance if necessary and return a pointer
+        /// to it.
+        ///
+        /// \return The instance of this singleton.
+        ////////////////////////////////////////////////////////////////////////
         static T* instance() {
             if (instance_ == NULL)
                 instance_ = new T;
@@ -36,6 +52,11 @@ class Singleton {
             return instance_;
         };
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Deletes the instance of this Singleton.
+        ///
+        /// The instance of this singleton will be deleted by this method.
+        ////////////////////////////////////////////////////////////////////////
         static void destroy_instance() {
             if (instance_ != NULL) {
                 delete instance_;
@@ -44,7 +65,19 @@ class Singleton {
         };
 
     protected:
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Constructor.
+        ///
+        /// Has to be private in derived classe.
+        ////////////////////////////////////////////////////////////////////////
         Singleton() {};
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Has to be private in derived classe.
+        ////////////////////////////////////////////////////////////////////////
         virtual ~Singleton() {};
 
     private:

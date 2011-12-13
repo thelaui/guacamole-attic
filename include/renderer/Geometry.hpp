@@ -32,38 +32,34 @@
 /// \brief Loads and draws meshes.
 ///
 /// This class can load mesh data from files and display them in multiple
-/// contexts.
+/// contexts. A Geometry object is made of several Mesh objects.
 ////////////////////////////////////////////////////////////////////////////////
 
 class Geometry {
     public:
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Default constructor.
         ///
-        ///
+        /// Constructs a new and empty Geometry.
         ////////////////////////////////////////////////////////////////////////
         Geometry();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Constructor from a file.
         ///
+        /// Creates a new Geometry from a given file.
         ///
-        /// \param file_name
+        /// \param file_name The file to load the mehs data from.
         ////////////////////////////////////////////////////////////////////////
         Geometry( std::string const& file_name );
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief
+        /// \brief Draws the Geometry.
         ///
+        /// Draws this Geometry object to the given context.
         ///
-        ////////////////////////////////////////////////////////////////////////
-        ~Geometry();
-
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief
-        ///
-        ///
-        /// \param context
+        /// \param context The RenderContext to which this object should be
+        ///                drawn.
         ////////////////////////////////////////////////////////////////////////
         void draw(RenderContext const& context) const;
 

@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class storing geometry data.
+/// \brief Definition of the Material class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "include/renderer/Material.hpp"
@@ -30,8 +30,6 @@ Material::Material():
 
 Material::Material( ShaderProgram const& shader ):
     shader_(shader) {}
-
-Material::~Material() {}
 
 void Material::use(RenderContext const& context) const {
     shader_.use(context);

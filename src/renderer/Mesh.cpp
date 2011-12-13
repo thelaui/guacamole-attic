@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class storing geometry data.
+/// \brief Definition of the Mesh class.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "include/renderer/Mesh.hpp"
