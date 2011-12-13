@@ -19,7 +19,7 @@ int main() {
     graph.add_node("/tisch1", "bein4");
     graph.add_node("/", "tisch2");
 
-    graph.move_node("/tisch2", "/tisch3");
+    graph.move_node("/tisch2", "/tisch1/");
 
     std::cout<<graph<<std::endl;
 
