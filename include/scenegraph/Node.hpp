@@ -27,13 +27,15 @@ class SceneGraph::Node {
         void set_transform(Eigen::Transform3f const& transform);
 
         template <class T = Core>
-        std::shared_ptr<T> const get_core() const {
-            return std::static_pointer_cast<T>(core_);
+        T* get_core() const {
+            return dynamic_cast<T*>(core_);
         }
 
+        void set_core(Core* core);
 
-
-        void set_core(std::shared_ptr<Core> const& core);
+        void scale(double x, double y, double z);
+        void rotate(double angle, double x, double y, double z);
+        void translate(double x, double y, double z);
 
         int get_depth() const;
         std::string const get_path() const;
@@ -45,7 +47,7 @@ class SceneGraph::Node {
         std::list<Node*> children_;
 
         Eigen::Transform3f transform_;
-        std::shared_ptr<Core> core_;
+        Core* core_;
 };
 
 

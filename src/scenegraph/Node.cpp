@@ -6,7 +6,7 @@ SceneGraph::Node::Node(std::string const& name, Eigen::Transform3f transform, Co
     parent_(NULL),
     children_(),
     transform_(transform),
-    core_(std::shared_ptr<Core>(core)) {}
+    core_(core) {}
 
 SceneGraph::Node::~Node() {
     if (parent_)
@@ -51,8 +51,20 @@ void SceneGraph::Node::set_transform(Eigen::Transform3f const& transform) {
     transform_ = transform;
 }
 
-void SceneGraph::Node::set_core(std::shared_ptr<Core> const& core) {
+void SceneGraph::Node::set_core(Core* core) {
     core_ = core;
+}
+
+void SceneGraph::Node::scale(double x, double y, double z) {
+    transform_.scale(Eigen::Vector3f(x, y, z));
+}
+
+void SceneGraph::Node::rotate(double angle, double x, double y, double z) {
+    transform_.rotate(Eigen::AngleAxisf(angle, Eigen::Vector3f(x, y, z)));
+}
+
+void SceneGraph::Node::translate(double x, double y, double z) {
+    transform_.translate(Eigen::Vector3f(x, y, z));
 }
 
 int SceneGraph::Node::get_depth() const {

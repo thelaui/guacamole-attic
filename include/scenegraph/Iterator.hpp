@@ -20,7 +20,7 @@ class SceneGraph::Iterator {
         void set_transform(Eigen::Transform3f const& transform) const;
 
         template <class T = Core>
-        std::shared_ptr<T> const get_core() const {
+        T* get_core() const {
             if (current_node_) {
                 auto casted_core(current_node_->get_core<T>());
                 if (!casted_core)
@@ -31,7 +31,11 @@ class SceneGraph::Iterator {
         }
 
 
-        void set_core(std::shared_ptr<Core> const& core) const;
+        void set_core(Core* core) const;
+
+        void scale(double x, double y, double z);
+        void rotate(double angle, double x, double y, double z);
+        void translate(double x, double y, double z);
 
         void operator ++();
         bool operator ==(Iterator const& rhs);
@@ -39,7 +43,7 @@ class SceneGraph::Iterator {
 
         Iterator& operator << (std::string const& name);
         Iterator& operator << (Eigen::Transform3f const& transform);
-        Iterator& operator << (std::shared_ptr<Core> const& core);
+        Iterator& operator << (Core*core);
 
     private:
         Node* current_node_;

@@ -90,22 +90,19 @@ SceneGraph::Node* SceneGraph::find_node(std::string const& path_to_node, std::st
 
     for (auto node_name : path_data) {
 
+        for (auto child : to_be_found->get_children()) {
+            if (child->get_name() == node_name) {
+                to_be_found = child;
+                break;
+            }
+        }
+
         if (to_be_found->get_name() != node_name) {
+            if (!add_missing_nodes) return NULL;
 
-            for (auto child : to_be_found->get_children()) {
-                if (child->get_name() == node_name) {
-                    to_be_found = child;
-                    break;
-                }
-            }
-
-            if (to_be_found->get_name() != node_name) {
-                if (!add_missing_nodes) return NULL;
-
-                Node* new_child(new Node(node_name));
-                to_be_found->add_child(new_child);
-                to_be_found = new_child;
-            }
+            Node* new_child(new Node(node_name));
+            to_be_found->add_child(new_child);
+            to_be_found = new_child;
         }
     }
 

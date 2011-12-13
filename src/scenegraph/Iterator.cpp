@@ -36,8 +36,20 @@ void SceneGraph::Iterator::set_transform(Eigen::Transform3f const& transform) co
     if (current_node_) current_node_->set_transform(transform);
 }
 
-void SceneGraph::Iterator::set_core(std::shared_ptr<Core> const& core) const {
+void SceneGraph::Iterator::set_core(Core* core) const {
     if (current_node_) current_node_->set_core(core);
+}
+
+void SceneGraph::Iterator::scale(double x, double y, double z) {
+    if (current_node_) current_node_->scale(x, y, z);
+}
+
+void SceneGraph::Iterator::rotate(double angle, double x, double y, double z) {
+    if (current_node_) current_node_->rotate(angle, x, y, z);
+}
+
+void SceneGraph::Iterator::translate(double x, double y, double z) {
+    if (current_node_) current_node_->translate(x, y, z);
 }
 
 void SceneGraph::Iterator::operator ++() {
@@ -67,7 +79,7 @@ SceneGraph::Iterator& SceneGraph::Iterator::operator << (Eigen::Transform3f cons
     return *this;
 }
 
-SceneGraph::Iterator& SceneGraph::Iterator::operator << (std::shared_ptr<Core> const& core) {
+SceneGraph::Iterator& SceneGraph::Iterator::operator << (Core* core) {
     set_core(core);
     return *this;
 }
