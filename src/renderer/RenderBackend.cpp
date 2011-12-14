@@ -27,8 +27,9 @@
 #include "include/renderer/MaterialBase.hpp"
 #include "include/renderer/GeometryBase.hpp"
 #include "include/utils/debug.hpp"
-#include "include/renderer/tmp/tmp.hpp"
-
+#include "include/traverser/LightNode.hpp"
+#include "include/traverser/GeometryNode.hpp"
+#include "include/traverser/CameraNode.hpp"
 RenderBackend::RenderBackend( int width, int height, std::string const& display ):
     window_(width, height, display) {}
 
