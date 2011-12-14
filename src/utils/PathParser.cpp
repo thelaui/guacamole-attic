@@ -35,11 +35,11 @@ void PathParser::parse(std::string path) {
     if (path.length() > 0) {
         parsed_path_.clear();
         unsigned start(0);
-        unsigned last_slash_occur(-1);
+//        unsigned last_slash_occur(-1);
         if (path[0] == '/') {
             parsed_path_.push_back("/");
             start = 1;
-            last_slash_occur = 0;
+//           last_slash_occur = 0;
         }
 
         if (path[path.length()-1] == '/')

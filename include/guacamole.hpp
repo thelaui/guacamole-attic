@@ -28,6 +28,7 @@
 #include "include/scenegraph/GeometryCore.hpp"
 #include "include/scenegraph/CameraCore.hpp"
 #include "include/scenegraph/LightCore.hpp"
+#include "include/utils/DotParser.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \mainpage

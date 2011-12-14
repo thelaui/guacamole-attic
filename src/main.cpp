@@ -3,11 +3,9 @@
 #include <thread>
 #include <sstream>
 
-
-#include "include/utils/PathParser.hpp"
-
 void render(SceneGraph* graph, std::string const& display) {
-    Renderer renderer(800, 600, display);
+    Renderer renderer;
+    renderer.add_display(800, 600, display);
     renderer.start_render_loop(graph);
 }
 
@@ -68,7 +66,7 @@ int main() {
 //            monkey.scale(0.5, 0.5, 0.5);
 //        }
 //    }
-
+//
     for (int i(0); i < 10; ++i) {
         std::stringstream papa;
         papa << "papa" << i;
@@ -77,7 +75,7 @@ int main() {
         monkey.scale(0.1, 0.1, 0.1);
 
         std::string path("/" + papa.str());
-        for (int j(0); j < 1000; ++j) {
+        for (int j(0); j < 10; ++j) {
             std::stringstream child;
             child << "monk" << j;
             monkey = graph.add_node(path, child.str(), monkey_core);
@@ -93,6 +91,10 @@ int main() {
 
     std::thread render_thread1(render, &graph, ":0.0");
     //std::thread render_thread2(render, &graph, ":0.0");
+
+    DotParser dot_parser;
+    dot_parser.parse_graph(&graph, "TollerGraph");
+    dot_parser.save_to_file("toller_graph.gv");
 
     int frame(0);
 
