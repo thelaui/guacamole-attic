@@ -32,7 +32,7 @@ PathParser::PathParser():
 
 void PathParser::parse(std::string path) {
     if (path.length() > 0) {
-            parsed_path_.clear();
+        parsed_path_.clear();
         unsigned start(0);
         if (path[0] == '/') {
             parsed_path_.push_back("/");

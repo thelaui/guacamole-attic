@@ -147,7 +147,7 @@ void RenderWindow::finish_frame() const {
     glXSwapBuffers(ctx_.display, ctx_.window);
 }
 
-void RenderWindow::draw(std::shared_ptr<Geometry> geometry) const {
+void RenderWindow::draw(std::shared_ptr<Geometry> const& geometry) const {
     geometry->draw(ctx_);
 }
 

@@ -60,7 +60,7 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
 
 	Eigen::Matrix4f identity_matrix = Eigen::Matrix4f::Identity();
 
-	Eigen::Matrix4f current_matrix;
+
 	std::stack< Eigen::Matrix4f > matrix_stack;
 
 	matrix_stack.push(identity_matrix);
@@ -69,7 +69,7 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
 	do {
 
 		Core* current_core( node.get_core() );
-		current_matrix =  matrix_stack.top() * node.get_transform() ;
+		Eigen::Matrix4f  current_matrix( matrix_stack.top() * node.get_transform() );
 
 		if (current_core) {
             switch ( current_core->get_type() ) {

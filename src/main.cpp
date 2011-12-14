@@ -1,6 +1,7 @@
 #include "include/guacamole.hpp"
 
 #include <thread>
+#include <sstream>
 
 void render(SceneGraph* graph, std::string const& display) {
     Renderer renderer(800, 600, display);
@@ -29,7 +30,7 @@ int main() {
     box.scale(0.5, 0.5, 0.5);
     box.translate(-1, 1, 0);
 
-    auto monkey_core = new GeometryCore("teapot", "shiny");
+    auto monkey_core = new GeometryCore("monkey", "shiny");
     auto monkey = graph.add_node("/box", "monkey", monkey_core);
     monkey.translate(0, 2, 0);
 
@@ -37,12 +38,47 @@ int main() {
     monkey.scale(0.3, 0.3, 0.3);
     monkey.translate(4, 1, 0);
 
-
     monkey = graph.add_node("/box/monkey", "monkey", monkey_core);
     monkey.scale(0.3, 0.3, 0.3);
     monkey.translate(0, 5, 0);
 
-    std::cout << graph << std::endl;
+//    for (int i(0); i < 10; ++i) {
+//        std::stringstream papa;
+//        papa << "papa" << i;
+//        monkey = graph.add_node("/", papa.str(), monkey_core);
+//        monkey.translate(0.3*i-2, 1, 0);
+//        monkey.scale(0.1, 0.1, 0.1);
+//
+//        for (int j(0); j < 10; ++j) {
+//            std::stringstream child;
+//            child << "monk" << j;
+//            monkey = graph.add_node("/" + papa.str(), child.str(), monkey_core);
+//            monkey.translate(0, j, 0);
+//            monkey.scale(0.5, 0.5, 0.5);
+//        }
+//    }
+
+    for (int i(0); i < 10; ++i) {
+        std::stringstream papa;
+        papa << "papa" << i;
+        monkey = graph.add_node("/", papa.str(), monkey_core);
+        monkey.translate(0.3*i-2, 1, 0);
+        monkey.scale(0.1, 0.1, 0.1);
+
+        std::string path("/" + papa.str());
+        for (int j(0); j < 10; ++j) {
+            std::stringstream child;
+            child << "monk" << j;
+            monkey = graph.add_node(path, child.str(), monkey_core);
+            monkey.translate(0, j, 0);
+            monkey.scale(0.9, 0.9, 0.9);
+
+            path = path + "/" + child.str();
+        }
+    }
+
+
+    //std::cout << graph << std::endl;
 
     std::thread render_thread1(render, &graph, ":0.0");
     //std::thread render_thread2(render, &graph, ":0.0");

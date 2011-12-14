@@ -87,7 +87,7 @@ class RenderWindow {
         ///
         /// \param geometry The Geometry to be drawn.
         ////////////////////////////////////////////////////////////////////////
-        void draw(std::shared_ptr<Geometry> geometry) const;
+        void draw(std::shared_ptr<Geometry> const& geometry) const;
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the RenderContext of this window.

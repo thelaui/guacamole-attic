@@ -116,18 +116,16 @@ SceneGraph::Iterator& SceneGraph::Iterator::operator << (Core* core) {
 void SceneGraph::Iterator::find_next_node() {
     bool found_next(false);
     while (!found_next) {
-        Node* current_parent(current_node_->get_parent());
-
         if (current_node_ != start_node_) {
-            auto previous_children(current_parent->get_children());
-            for (auto child(previous_children.begin()); child != previous_children.end(); ++child) {
+            auto end(current_node_->get_parent()->get_children().end());
+            for (auto child(current_node_->get_parent()->get_children().begin()); child != end; ++child) {
                 if (*child == current_node_) {
-                    if (++child != previous_children.end()) {
+                    if (++child != current_node_->get_parent()->get_children().end()) {
                         current_node_ = *child;
                         found_next = true;
                         break;
                     } else {
-                        current_node_ = current_parent;
+                        current_node_ = current_node_->get_parent();
                         break;
                     }
                 }
