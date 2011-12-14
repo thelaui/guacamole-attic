@@ -31,12 +31,15 @@ PathParser::PathParser():
     finished_by_slash_(false) {}
 
 void PathParser::parse(std::string path) {
+
     if (path.length() > 0) {
         parsed_path_.clear();
         unsigned start(0);
+        unsigned last_slash_occur(-1);
         if (path[0] == '/') {
             parsed_path_.push_back("/");
             start = 1;
+            last_slash_occur = 0;
         }
 
         if (path[path.length()-1] == '/')
@@ -56,6 +59,18 @@ void PathParser::parse(std::string path) {
             parsed_path_.push_back(string);
             string = "";
         }
+
+//        unsigned current_string_length(0);
+//        for (unsigned i(start); i < path.length(); ++i) {
+//            if (path[i] != '/') {
+//                ++current_string_length;
+//            } else {
+//                DEBUG("%c", path[i]);
+//                parsed_path_.push_back(std::string(path, last_slash_occur+1, last_slash_occur+current_string_length));
+//                last_slash_occur = i;
+//                current_string_length = 0;
+//            }
+//        }
 
     } else {
         ERROR("Path names must have at least one character!");
