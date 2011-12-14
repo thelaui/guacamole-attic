@@ -45,11 +45,8 @@ class Renderer {
         ///
         /// This constructs a new Renderer.
         ///
-        ///\param width   Width of the new display in Pixel.
-        ///\param height  Height of the display in Pixel.
-        ///\param display    Defines the Xdisplay id that is used to render the scene. Defaults to :0.0 .
         ////////////////////////////////////////////////////////////////////////
-        Renderer(int width, int height, std::string const& display = ":0.0");
+        Renderer();
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -58,6 +55,18 @@ class Renderer {
         ///
         ////////////////////////////////////////////////////////////////////////
         virtual ~Renderer();
+
+
+		////////////////////////////////////////////////////////////////////////
+		///\brief Add a Display.
+        ///
+        /// Takes a Scenegraph and starts to render.
+        ///
+        ///\param width   Width of the new display in Pixel.
+        ///\param height  Height of the display in Pixel.
+        ///\param display    Defines the Xdisplay id that is used to render the scene. Defaults to :0.0 .
+        ////////////////////////////////////////////////////////////////////////
+        void add_display( int width, int height, std::string const& display = ":0.0");
 
 		////////////////////////////////////////////////////////////////////////
 		///\brief Start the Render Loop

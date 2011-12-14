@@ -25,11 +25,8 @@
 #include "include/renderer/RenderBackend.hpp"
 #include "include/traverser/Optimizer.hpp"
 
-Renderer::Renderer(int width, int height, std::string const& display):
+Renderer::Renderer( ):
     optimizer_( new Optimizer() ) {
-
-    RenderBackend* the_new_backend( new RenderBackend( width , height, display ) );
-    render_backend_list_.push_back( the_new_backend );
 }
 
 Renderer::~Renderer(){
@@ -38,6 +35,13 @@ Renderer::~Renderer(){
             delete (*backend);
     }
 }
+
+void Renderer::add_display(int width, int height, std::string const& display) {
+    RenderBackend* the_new_backend( new RenderBackend( width , height, display ) );
+    render_backend_list_.push_back( the_new_backend );
+}
+
+
 
 void Renderer::start_render_loop( SceneGraph const* scene_graph ) {
 	while (true) {

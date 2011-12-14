@@ -62,7 +62,7 @@ class Optimizer {
         ///\param scene_graph          The SceneGraph to be processed.
         ////////////////////////////////////////////////////////////////////////
 		void check( SceneGraph const* scene_graph );
-	
+
 	////////////////////////////////////////////////////////////////////////
 	///\brief get the list of geometry
         ///
@@ -85,7 +85,7 @@ class Optimizer {
         ///
         ///\return camera_data     a vector containing the camera in the scene
         ////////////////////////////////////////////////////////////////////////
-		std::vector<CameraNode*> const& get_camera_data() const;	
+		std::vector<CameraNode*> const& get_camera_data() const;
 
 	private:
 
