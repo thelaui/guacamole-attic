@@ -66,7 +66,7 @@ int main() {
         monkey.scale(0.1, 0.1, 0.1);
 
         std::string path("/" + papa.str());
-        for (int j(0); j < 10; ++j) {
+        for (int j(0); j < 1000; ++j) {
             std::stringstream child;
             child << "monk" << j;
             monkey = graph.add_node(path, child.str(), monkey_core);
