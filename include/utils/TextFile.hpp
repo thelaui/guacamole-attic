@@ -27,7 +27,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class is used to read text files.
-///
 ////////////////////////////////////////////////////////////////////////////////
 
 class TextFile {
@@ -35,39 +34,39 @@ class TextFile {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs a TextFile without a file.
         ////////////////////////////////////////////////////////////////////////
         TextFile();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs a TextFile with a file.
         ///
-        ///\param file_name The file to be read.
+        /// \param file_name The file to be read.
         ////////////////////////////////////////////////////////////////////////
         TextFile(std::string const& file_name);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns if the given file is valid.
+        /// \brief Returns if the given file is valid.
         ///
-        ///\param valid The validity of the file.
+        /// \return The validity of the file.
         ////////////////////////////////////////////////////////////////////////
         bool is_valid() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the given file's content.
+        /// \brief Returns the given file's content.
         ///
-        ///\param content The given file's content.
+        /// \return The given file's content.
         ////////////////////////////////////////////////////////////////////////
         std::string const& get_content();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the given file's name.
+        /// \brief Returns the given file's name.
         ///
-        ///\param name The given file's name.
+        /// \return The given file's name.
         ////////////////////////////////////////////////////////////////////////
         std::string const& get_file_name();
 
