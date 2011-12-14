@@ -9,17 +9,16 @@ class RenderBackend;
 #include <string>
 
 class Renderer {
-    public:
-        Renderer();
-        virtual ~Renderer();
+	public:
+		Renderer();
+		virtual ~Renderer();
 
-        void open_display( int width, int height, std::string const& display = ":0.0" );
+		void open_display( int width, int height, std::string const& display = ":0.0" );
+		void start_render_loop( SceneGraph const* scene_graph );
 
-        void start_render_loop( SceneGraph const* scene_graph );
-
-    private:
-        std::vector<RenderBackend*> render_backend_list_;
-        Optimizer* optimizer_;
+	private:
+		std::vector<RenderBackend*> render_backend_list_;
+		Optimizer* optimizer_;
 };
 
 #endif // RENDERER_HPP

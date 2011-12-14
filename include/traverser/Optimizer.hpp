@@ -2,13 +2,12 @@
 #define OPTIMIZER_HPP
 
 #include <vector>
-#include <eigen2/Eigen/Eigen>
 #include <memory>
 
-class Geometry;
-class Light;
-class Camera;
-class Node;
+class GeometryNode;
+class LightNode;
+class CameraNode;
+
 class SceneGraph;
 
 class Optimizer {
@@ -16,17 +15,15 @@ class Optimizer {
         Optimizer();
         virtual ~Optimizer();
 	
-	void check( SceneGraph const* scene_graph );
-	std::vector<Geometry*> const& get_geometry_data() const;
-	std::vector<Light*> const& get_light_data() const;
-	std::vector<Camera*> const& get_camera_data() const;	
+		void check( SceneGraph const* scene_graph );
+		std::vector<GeometryNode*> const& get_geometry_data() const;
+		std::vector<LightNode*> const& get_light_data() const;
+		std::vector<CameraNode*> const& get_camera_data() const;	
 
 	private:
-        	std::vector<Geometry*> geometry_data_;
-        	std::vector<Light*> light_data_;
-        	std::vecotr<Camera*> camera_data_;
-		void traverse_( Node* current_node, Eigen::Matrix4f current_matrix );  
-
+		std::vector<GeometryNode*> geometry_data_;
+		std::vector<LightNode*> light_data_;
+		std::vector<CameraNode*> camera_data_;
 
 };
 
