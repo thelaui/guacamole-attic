@@ -3,12 +3,23 @@
 #include <thread>
 #include <sstream>
 
+
+#include "include/utils/PathParser.hpp"
+
 void render(SceneGraph* graph, std::string const& display) {
     Renderer renderer(800, 600, display);
     renderer.start_render_loop(graph);
 }
 
 int main() {
+
+//    PathParser parser;
+//    parser.parse("/huhu/haha/hoho");
+//    auto data(parser.get_parsed_path());
+//
+//    for (auto word : data)
+//        std::cout << word << " ";
+//    std::cout<<std::endl;
 
     RenderWindow::init();
 
@@ -70,8 +81,8 @@ int main() {
             std::stringstream child;
             child << "monk" << j;
             monkey = graph.add_node(path, child.str(), monkey_core);
-            monkey.translate(0, j, 0);
             monkey.scale(0.9, 0.9, 0.9);
+            monkey.translate(0, j, 0);
 
             path = path + "/" + child.str();
         }

@@ -141,11 +141,10 @@ SceneGraph::Node* SceneGraph::find_node(std::string const& path_to_node, std::st
 
     PathParser parser;
     parser.parse(path_to_node);
-    auto path_data(parser.get_parsed_path());
 
     Node* to_be_found(path_to_start == working_node_->get_name() ? working_node_ : find_node(path_to_start));
 
-    for (auto node_name : path_data) {
+    for (auto const& node_name : parser.get_parsed_path()) {
 
         for (auto child : to_be_found->get_children()) {
             if (child->get_name() == node_name) {
