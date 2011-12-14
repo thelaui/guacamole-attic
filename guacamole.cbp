@@ -93,6 +93,8 @@
 		<Unit filename="src/scenegraph/LightCore.cpp" />
 		<Unit filename="src/scenegraph/Node.cpp" />
 		<Unit filename="src/scenegraph/SceneGraph.cpp" />
+		<Unit filename="src/traverser/Optimizer.cpp" />
+		<Unit filename="src/traverser/Renderer.cpp" />
 		<Unit filename="src/utils/PathParser.cpp" />
 		<Unit filename="src/utils/TextFile.cpp" />
 		<Extensions>

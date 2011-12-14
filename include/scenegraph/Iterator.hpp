@@ -91,15 +91,24 @@ class SceneGraph::Iterator {
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the core of the Iterator's Node.
         ///
+        /// Returns the base of the contained Core.
+        ///
+        ///\return Core  The Node's Core.
+        ////////////////////////////////////////////////////////////////////////
+        Core* get_core() const;
+
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Returns a casted core of the Iterator's Node.
+        ///
         /// The Core's type may be given as template parameter. A dynamic_cast
         /// will be applied in the function Node::get_core().
         ///
         ///\return Core  The Node's Core.
         ////////////////////////////////////////////////////////////////////////
-        template <class T = Core>
-        T* get_core() const {
+        template <class T>
+        T* get_core_casted() const {
             if (current_node_) {
-                auto casted_core(current_node_->get_core<T>());
+                auto casted_core(current_node_->get_core_casted<T>());
                 if (!casted_core)
                     WARNING("The core you are trying to get is not of the type you expect!");
                 return casted_core;

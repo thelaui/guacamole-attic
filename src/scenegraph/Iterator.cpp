@@ -59,6 +59,12 @@ void SceneGraph::Iterator::set_transform(Eigen::Transform3f const& transform) co
     if (current_node_) current_node_->set_transform(transform);
 }
 
+Core* SceneGraph::Iterator::get_core() const {
+    if (current_node_)
+        return current_node_->get_core();
+    return NULL;
+}
+
 void SceneGraph::Iterator::set_core(Core* core) const {
     if (current_node_) current_node_->set_core(core);
 }

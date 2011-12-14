@@ -133,14 +133,24 @@ class SceneGraph::Node {
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the Node's Core.
         ///
+        /// Nodes carry base class pointers on Cores. This base class can be
+        /// obtained with this method.
+        ///
+        ///\return Core     The Node's Core.
+        ////////////////////////////////////////////////////////////////////////
+        Core* get_core() const;
+
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Returns the Node's Core, casted to it's type.
+        ///
         /// Nodes carry base class pointers on Cores. Therefore a dynamic_cast
         /// is necessary. The resulting type of the returned core may be given
         /// as template parameter.
         ///
         ///\return Core     The Node's Core.
         ////////////////////////////////////////////////////////////////////////
-        template <class T = Core>
-        T* get_core() const {
+        template <class T>
+        T* get_core_casted() const {
             return dynamic_cast<T*>(core_);
         }
 

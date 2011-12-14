@@ -78,6 +78,10 @@ void SceneGraph::Node::set_transform(Eigen::Transform3f const& transform) {
     transform_ = transform;
 }
 
+Core* SceneGraph::Node::get_core() const {
+    return core_;
+}
+
 void SceneGraph::Node::set_core(Core* core) {
     core_ = core;
 }
