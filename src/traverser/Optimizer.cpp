@@ -1,6 +1,8 @@
 #include "include/traverser/Optimizer.hpp"
 
-#include "include/renderer/tmp/tmp.hpp"
+#include "include/traverser/LightNode.hpp"
+#include "include/traverser/GeometryNode.hpp"
+#include "include/traverser/CameraNode.hpp"
 #include "include/scenegraph/Core.hpp"
 #include "include/scenegraph/CameraCore.hpp"
 #include "include/scenegraph/GeometryCore.hpp"

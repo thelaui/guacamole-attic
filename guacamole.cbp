@@ -58,7 +58,6 @@
 		<Unit filename="include/renderer/Uniform.hpp" />
 		<Unit filename="include/renderer/VertexShader.hpp" />
 		<Unit filename="include/renderer/glInclude.hpp" />
-		<Unit filename="include/renderer/tmp/tmp.hpp" />
 		<Unit filename="include/scenegraph/CameraCore.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />
 		<Unit filename="include/scenegraph/GeometryCore.hpp" />
@@ -66,6 +65,9 @@
 		<Unit filename="include/scenegraph/LightCore.hpp" />
 		<Unit filename="include/scenegraph/Node.hpp" />
 		<Unit filename="include/scenegraph/SceneGraph.hpp" />
+		<Unit filename="include/traverser/CameraNode.hpp" />
+		<Unit filename="include/traverser/GeometryNode.hpp" />
+		<Unit filename="include/traverser/LightNode.hpp" />
 		<Unit filename="include/traverser/Optimizer.hpp" />
 		<Unit filename="include/traverser/Renderer.hpp" />
 		<Unit filename="include/utils/KnownObject.hpp" />
