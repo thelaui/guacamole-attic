@@ -42,19 +42,19 @@ void PathParser::parse(std::string path) {
         if (path[path.length()-1] == '/')
             finished_by_slash_ = true;
 
-        std::stringstream stream;
+        std::string string;
         for (unsigned i(start); i < path.length(); ++i) {
             if (path[i] != '/') {
-                stream << path[i];
+                string += path[i];
             } else {
-                parsed_path_.push_back(stream.str());
-                stream.str("");
+                parsed_path_.push_back(string);
+                string = "";
             }
         }
 
-        if (stream.str().size() > 0) {
-            parsed_path_.push_back(stream.str());
-            stream.str("");
+        if (string.size() > 0) {
+            parsed_path_.push_back(string);
+            string = "";
         }
 
     } else {

@@ -17,7 +17,7 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A non-cycling graph used as a powerfull tool to set up scenes.
+/// \brief A non-cyclic graph used as a powerfull tool to set up scenes.
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "include/scenegraph/SceneGraph.hpp"
