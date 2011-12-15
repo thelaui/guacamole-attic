@@ -52,7 +52,32 @@ void DotParser::parse_graph(SceneGraph const* graph, std::string const& name) {
 
         parse_data_ += ";\n    " + node_name.str() + " [label="
                     + (node.get_name() == "/" ? "root" : node.get_name())
-                    + "]" + ";\n";
+                    + "]" + " [shape = box]"
+                    + " [style=filled] ";
+
+        std::string fillcolor("[fillcolor =");
+
+        auto current_core(node.get_core());
+
+        if (!current_core)
+            fillcolor += " \"#FFFFFF\"";
+
+        else {
+            switch(current_core->get_type()) {
+                case Core::CAMERA:
+                    fillcolor += " \"#BB1111\"";
+                    break;
+                case Core::LIGHT:
+                    fillcolor += " \"#AAAA11\"";
+                    break;
+                default :
+                    fillcolor += " \"#BBBBBB\"";
+                    break;
+            }
+        }
+        fillcolor += "]";
+
+        parse_data_ += fillcolor + ";\n";
 
         added_nodes[current_depth] =  node_count;
         ++node_count;
