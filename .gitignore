@@ -5,3 +5,5 @@ doc/html
 *.layout
 guacamole
 guacamole-d
+*.gv
+*.dot
