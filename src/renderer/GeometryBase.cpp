@@ -22,11 +22,13 @@
 
 #include "include/renderer/GeometryBase.hpp"
 
+namespace gua {
+
 void GeometryBase::load_presets() {
     instance()->add("monkey", std::shared_ptr<Geometry>(new Geometry("data/objects/monkey.obj")));
     instance()->add("cube", std::shared_ptr<Geometry>(new Geometry("data/objects/cube.obj")));
     instance()->add("teapot", std::shared_ptr<Geometry>(new Geometry("data/objects/teapot.obj")));
 }
 
-
+}
 

@@ -34,6 +34,8 @@
 /// identifiers.
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class MaterialBase: public DataBase<Material>, public Singleton<MaterialBase> {
     public:
         ////////////////////////////////////////////////////////////////////////
@@ -49,5 +51,7 @@ class MaterialBase: public DataBase<Material>, public Singleton<MaterialBase> {
         MaterialBase() {};
         ~MaterialBase() {};
 };
+
+}
 
 #endif // MATERIAL_BASE_HPP

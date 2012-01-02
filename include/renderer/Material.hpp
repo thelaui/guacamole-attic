@@ -25,6 +25,8 @@
 
 #include "include/renderer/ShaderProgram.hpp"
 
+namespace gua {
+
 class RenderContext;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,6 +75,8 @@ class Material {
     private:
         ShaderProgram shader_;
 };
+
+}
 
 #endif // MATERIAL_HPP
 

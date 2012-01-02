@@ -34,6 +34,8 @@
 /// be used to access this data.
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 template <typename T>
 
 class DataBase {
@@ -85,4 +87,5 @@ class DataBase {
         std::map<std::string, std::shared_ptr<T>> data_;
 };
 
+}
 #endif // DATA_BASE_HPP

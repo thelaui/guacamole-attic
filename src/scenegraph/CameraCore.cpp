@@ -22,6 +22,8 @@
 
 #include "include/scenegraph/CameraCore.hpp"
 
+namespace gua {
+
 CameraCore::CameraCore(float fovy, float aspect_ratio, float near_plane, float far_plane):
     Core(Core::CAMERA),
     frustum_(Eigen::Matrix4f::Identity()) {
@@ -43,3 +45,4 @@ Eigen::Matrix4f const& CameraCore::get_frustum() const {
     return frustum_;
 }
 
+}

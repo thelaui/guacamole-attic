@@ -26,6 +26,9 @@
 #include <vector>
 
 class aiMesh;
+
+namespace gua {
+
 class RenderContext;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,6 +79,8 @@ class Mesh {
         mutable std::vector<unsigned> vaos_;
         aiMesh* mesh_;
 };
+
+}
 
 #endif // MESH_HPP
 

@@ -23,6 +23,8 @@
 #include "include/scenegraph/Node.hpp"
 #include "include/scenegraph/Core.hpp"
 
+namespace gua {
+
 SceneGraph::Node::Node(std::string const& name, Eigen::Transform3f transform, Core* core):
     name_(name),
     parent_(NULL),
@@ -106,4 +108,6 @@ int SceneGraph::Node::get_depth() const {
 std::string const SceneGraph::Node::get_path() const {
     if (!parent_) return "/";
     return parent_->get_path() + "/" + name_;
+}
+
 }

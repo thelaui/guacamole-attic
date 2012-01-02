@@ -24,8 +24,12 @@
 
 #include "include/renderer/glInclude.hpp"
 
+namespace gua {
+
 VertexShader::VertexShader():
     Shader::Shader() {}
 
 VertexShader::VertexShader( std::string const& file ):
     Shader::Shader(file, GL_VERTEX_SHADER) {}
+
+}

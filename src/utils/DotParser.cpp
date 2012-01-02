@@ -28,6 +28,8 @@
 #include <fstream>
 #include <map>
 
+namespace gua {
+
 DotParser::DotParser():
     parse_data_() {}
 
@@ -92,4 +94,6 @@ void DotParser::save_to_file(std::string const& file_name) const {
     file.open(file_name, std::fstream::out);
     file.write(parse_data_.c_str(), parse_data_.size());
     file.close();
+}
+
 }

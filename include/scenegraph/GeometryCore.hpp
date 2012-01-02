@@ -32,6 +32,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class GeometryCore: public Core {
     public:
 
@@ -71,5 +73,7 @@ class GeometryCore: public Core {
         std::string geometry_, material_;
 
 };
+
+}
 
 #endif // GEOMETRY_CORE_HPP

@@ -29,6 +29,8 @@
 #include "include/utils/TextFile.hpp"
 #include "include/utils/debug.hpp"
 
+namespace gua {
+
 Geometry::Geometry():
     meshes_() {}
 
@@ -54,4 +56,6 @@ Geometry::Geometry(std::string const& file_name):
 void Geometry::draw(RenderContext const& context) const {
     for (auto& mesh: meshes_)
         mesh.draw(context);
+}
+
 }

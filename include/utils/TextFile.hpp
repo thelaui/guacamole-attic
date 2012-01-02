@@ -29,6 +29,8 @@
 /// \brief This class is used to read text files.
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class TextFile {
 
     public:
@@ -76,6 +78,8 @@ class TextFile {
 
         bool is_loaded_;
 };
+
+}
 
 #endif // TEXTFILE_HPP
 

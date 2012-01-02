@@ -31,6 +31,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class PathParser {
     public:
 
@@ -76,5 +78,7 @@ class PathParser {
         std::vector<std::string> parsed_path_;
         bool finished_by_slash_;
 };
+
+}
 
 #endif //PATH_PARSER_HPP

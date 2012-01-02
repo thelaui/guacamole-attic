@@ -34,6 +34,8 @@
 /// identifiers.
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
     public:
         ////////////////////////////////////////////////////////////////////////
@@ -51,6 +53,8 @@ class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
         GeometryBase() {};
         ~GeometryBase() {};
 };
+
+}
 
 #endif // GEOMETRY_BASE_HPP
 

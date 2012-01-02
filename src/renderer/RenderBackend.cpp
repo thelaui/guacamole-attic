@@ -30,6 +30,9 @@
 #include "include/traverser/LightNode.hpp"
 #include "include/traverser/GeometryNode.hpp"
 #include "include/traverser/CameraNode.hpp"
+
+namespace gua {
+
 RenderBackend::RenderBackend( int width, int height, std::string const& display ):
     window_(width, height, display) {}
 
@@ -68,4 +71,4 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
     window_.finish_frame();
 }
 
-
+}

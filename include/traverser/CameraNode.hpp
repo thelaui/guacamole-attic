@@ -31,6 +31,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 struct CameraNode {
     CameraNode() {};
     CameraNode(Eigen::Matrix4f const& projection, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
@@ -39,6 +41,8 @@ struct CameraNode {
     Eigen::Matrix4f projection_;
     Eigen::Matrix4f transform_;
 };
+
+}
 
 #endif //CAMERA_NODE_HPP
 

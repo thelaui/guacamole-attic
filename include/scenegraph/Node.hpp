@@ -41,6 +41,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class SceneGraph::Node {
     public:
 
@@ -218,5 +220,6 @@ class SceneGraph::Node {
         Core* core_;
 };
 
+}
 
 #endif //Node_HPP

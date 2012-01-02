@@ -22,6 +22,8 @@
 
 #include "include/scenegraph/GeometryCore.hpp"
 
+namespace gua {
+
 GeometryCore::GeometryCore(std::string const& geometry, std::string const& material):
     Core(Core::GEOMETRY),
     geometry_(geometry),
@@ -35,4 +37,6 @@ std::string const& GeometryCore::get_geometry() const {
 
 std::string const& GeometryCore::get_material() const {
     return material_;
+}
+
 }

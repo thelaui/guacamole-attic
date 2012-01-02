@@ -32,6 +32,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class LightCore: public Core {
     public:
 
@@ -63,5 +65,7 @@ class LightCore: public Core {
         std::string color_;
 
 };
+
+}
 
 #endif // LIGHT_CORE_HPP

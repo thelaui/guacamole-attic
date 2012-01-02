@@ -32,6 +32,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class CameraCore: public Core {
     public:
 
@@ -65,5 +67,7 @@ class CameraCore: public Core {
     private:
         Eigen::Matrix4f frustum_;
 };
+
+}
 
 #endif // CAMERA_CORE_HPP

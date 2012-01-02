@@ -25,6 +25,8 @@
 #include "include/renderer/RenderBackend.hpp"
 #include "include/traverser/Optimizer.hpp"
 
+namespace gua {
+
 Renderer::Renderer( ):
     optimizer_( new Optimizer() ) {
 }
@@ -52,3 +54,4 @@ void Renderer::start_render_loop( SceneGraph const* scene_graph ) {
 	}
 }
 
+}

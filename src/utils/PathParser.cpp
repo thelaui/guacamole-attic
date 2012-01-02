@@ -26,6 +26,8 @@
 
 #include <sstream>
 
+namespace gua {
+
 PathParser::PathParser():
     parsed_path_(),
     finished_by_slash_(false) {}
@@ -83,4 +85,6 @@ std::vector<std::string> const& PathParser::get_parsed_path() const {
 
 bool PathParser::path_is_finished_by_slash() const {
     return finished_by_slash_;
+}
+
 }

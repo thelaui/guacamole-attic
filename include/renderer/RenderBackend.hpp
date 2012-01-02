@@ -28,6 +28,8 @@
 
 #include "include/renderer/RenderWindow.hpp"
 
+namespace gua {
+
 class CameraNode;
 class GeometryNode;
 class LightNode;
@@ -72,5 +74,7 @@ class RenderBackend {
     private:
         RenderWindow window_;
 };
+
+}
 
 #endif // RENDER_BACKEND_HPP

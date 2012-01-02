@@ -32,6 +32,8 @@
 #include "include/renderer/glInclude.hpp"
 #include "include/utils/debug.hpp"
 
+namespace gua {
+
 Shader::Shader():
     shader_ids_(),
     shader_type_(0),
@@ -84,4 +86,6 @@ void Shader::validate_shader(unsigned shader) const {
         WARNING("Compile log for shader file \"%s\":", source_.get_file_name().c_str());
         std::cout << buffer << std::endl;
     }
+}
+
 }

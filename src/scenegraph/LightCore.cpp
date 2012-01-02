@@ -22,6 +22,8 @@
 
 #include "include/scenegraph/LightCore.hpp"
 
+namespace gua {
+
 LightCore::LightCore(std::string const& color):
     Core(Core::LIGHT),
     color_(color) {}
@@ -32,4 +34,4 @@ std::string const& LightCore::get_color() const {
     return color_;
 }
 
-
+}

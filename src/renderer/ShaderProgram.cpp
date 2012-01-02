@@ -29,6 +29,8 @@
 #include "include/renderer/RenderContext.hpp"
 #include "include/renderer/glInclude.hpp"
 
+namespace gua {
+
 ShaderProgram::ShaderProgram():
     program_ids_() {}
 
@@ -95,4 +97,6 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
 	glBindFragDataLocation(program_id, 3, "out_color");
 
 	program_ids_[context.id] = program_id;
+}
+
 }

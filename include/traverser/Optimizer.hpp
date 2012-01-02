@@ -26,6 +26,8 @@
 #include <vector>
 #include <memory>
 
+namespace gua {
+
 class GeometryNode;
 class LightNode;
 class CameraNode;
@@ -94,5 +96,7 @@ class Optimizer {
 		std::vector<CameraNode*> camera_data_;
 
 };
+
+}
 
 #endif // OPTIMIZER_HPP

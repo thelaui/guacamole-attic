@@ -27,6 +27,8 @@
 
 #include "include/utils/debug.hpp"
 
+namespace gua {
+
 TextFile::TextFile():
     file_name_(""),
     content_(""),
@@ -75,7 +77,7 @@ std::string const& TextFile::get_file_name() {
     return file_name_;
 }
 
-
+}
 
 
 

@@ -38,6 +38,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class SceneGraph::Iterator {
     public:
 
@@ -213,5 +215,7 @@ class SceneGraph::Iterator {
         static const std::string end_name_;
         static const Eigen::Transform3f end_transform_;
 };
+
+}
 
 #endif //ITERATOR_HPP

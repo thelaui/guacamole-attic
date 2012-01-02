@@ -25,6 +25,8 @@
 #include "include/renderer/ShaderProgram.hpp"
 #include "include/renderer/RenderContext.hpp"
 
+namespace gua {
+
 Material::Material():
     shader_() {}
 
@@ -39,5 +41,5 @@ ShaderProgram const& Material::get_shader() const {
     return shader_;
 }
 
-
+}
 

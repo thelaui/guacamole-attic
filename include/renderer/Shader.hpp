@@ -28,6 +28,8 @@
 
 #include "include/utils/TextFile.hpp"
 
+namespace gua {
+
 class RenderContext;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,5 +76,7 @@ class Shader {
         unsigned shader_type_;
         mutable TextFile source_;
 };
+
+}
 
 #endif // SHADER_HPP

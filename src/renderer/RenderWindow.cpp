@@ -25,6 +25,8 @@
 #include "include/utils/debug.hpp"
 #include "include/renderer/Geometry.hpp"
 
+namespace gua {
+
 unsigned RenderWindow::last_context_id_ = 0;
 
 RenderWindow::RenderWindow( int width, int height, std::string const& display ) throw (std::string):
@@ -160,4 +162,6 @@ void RenderWindow::init() {
 
 RenderContext const& RenderWindow::get_context() const {
     return ctx_;
+}
+
 }

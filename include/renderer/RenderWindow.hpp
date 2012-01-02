@@ -28,6 +28,8 @@
 
 #include "include/renderer/RenderContext.hpp"
 
+namespace gua {
+
 class Geometry;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -115,5 +117,7 @@ class RenderWindow {
         int frame_count_;
         long frames_start_;
 };
+
+}
 
 #endif //RENDERWINDOW_HPP

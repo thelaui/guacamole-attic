@@ -28,6 +28,8 @@
 #include <list>
 #include <eigen2/Eigen/Geometry>
 
+namespace gua {
+
 class GeometryCore;
 class LightCore;
 class CameraCore;
@@ -249,5 +251,7 @@ class SceneGraph {
 ///                  function.
 ////////////////////////////////////////////////////////////////////////////////
 std::ostream& operator<<(std::ostream& os, SceneGraph const& graph);
+
+}
 
 #endif // SCENE_GRAPH_HPP

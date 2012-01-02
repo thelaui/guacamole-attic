@@ -37,6 +37,8 @@
 /// NOTE: This class is NOT ment for objects created in a really big amount!
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 template <typename T>
 
 class KnownObject {
@@ -91,5 +93,7 @@ class KnownObject {
 
 template <typename T>
 std::vector<T*> KnownObject<T>::existing_objects_;
+
+}
 
 #endif //KNOWN_OBJECT_HPP

@@ -22,6 +22,8 @@
 
 #include "include/renderer/MaterialBase.hpp"
 
+namespace gua {
+
 void MaterialBase::load_presets() {
     ShaderProgram shiny(VertexShader("data/shaders/shiny.vert"), FragmentShader("data/shaders/shiny.frag"));
     instance()->add("shiny", std::shared_ptr<Material>(new Material(shiny)));
@@ -30,6 +32,6 @@ void MaterialBase::load_presets() {
     instance()->add("matt", std::shared_ptr<Material>(new Material(matt)));
 }
 
-
+}
 
 

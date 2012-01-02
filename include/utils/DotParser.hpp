@@ -31,6 +31,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class SceneGraph;
 
 class DotParser {
@@ -69,6 +71,8 @@ class DotParser {
         std::string parse_data_, graph_name_;
 
 };
+
+}
 
 #endif //PATH_PARSER_HPP
 

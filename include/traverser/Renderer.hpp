@@ -28,6 +28,8 @@
 
 #include "include/renderer/RenderWindow.hpp"
 
+namespace gua {
+
 class SceneGraph;
 class Optimizer;
 class RenderBackend;
@@ -81,5 +83,7 @@ class Renderer {
 		std::vector<RenderBackend*> render_backend_list_;
 		Optimizer* optimizer_;
 };
+
+}
 
 #endif // RENDERER_HPP

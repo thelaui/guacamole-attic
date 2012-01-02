@@ -31,6 +31,8 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 struct GeometryNode {
     GeometryNode(std::string const& g, std::string const& m, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
         geometry_(g), material_(m), transform_(t) {}
@@ -40,6 +42,8 @@ struct GeometryNode {
 
     Eigen::Matrix4f transform_;
 };
+
+}
 
 #endif //GEOMETRY_NODE_HPP
 

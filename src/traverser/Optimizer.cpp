@@ -35,6 +35,8 @@
 #include <stack>
 #include <eigen2/Eigen/Geometry>
 
+namespace gua {
+
 Optimizer::Optimizer() {
 }
 
@@ -146,4 +148,6 @@ std::vector<LightNode*> const& Optimizer::get_light_data() const {
 
 std::vector<CameraNode*> const& Optimizer::get_camera_data() const {
 	return camera_data_;
+}
+
 }

@@ -31,6 +31,8 @@
 /// Singletons are classes, which are only instanciated once.
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 template <typename T>
 
 class Singleton {
@@ -88,6 +90,8 @@ class Singleton {
 };
 
 template <typename T> T* Singleton<T>::instance_ = NULL;
+
+}
 
 #endif //SINGLETON_HPP
 

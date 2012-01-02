@@ -23,6 +23,8 @@
 
 #include "include/scenegraph/Core.hpp"
 
+namespace gua {
+
 Core::Core(CoreType type):
     type_(type) {}
 
@@ -31,4 +33,6 @@ Core::~Core() {}
 
 Core::CoreType Core::get_type() const {
     return type_;
+}
+
 }

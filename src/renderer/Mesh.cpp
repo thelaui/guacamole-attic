@@ -30,6 +30,8 @@
 #include "include/renderer/ShaderProgram.hpp"
 #include "include/utils/debug.hpp"
 
+namespace gua {
+
 Mesh::Mesh():
     vaos_(),
     mesh_(NULL) {}
@@ -108,5 +110,5 @@ void Mesh::draw(RenderContext const& context) const {
     glBindVertexArray(0);
 }
 
-
+}
 

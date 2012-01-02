@@ -28,6 +28,8 @@
 #include "include/utils/PathParser.hpp"
 #include "include/utils/debug.hpp"
 
+namespace gua {
+
 SceneGraph::SceneGraph():
     root_(new Node("/")),
     working_node_(root_) {}
@@ -181,4 +183,6 @@ std::ostream& operator<<(std::ostream& os, SceneGraph const& graph) {
         os << it.get_name() << std::endl;
     }
     return os;
+}
+
 }

@@ -31,12 +31,16 @@
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 struct LightNode {
     LightNode(Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
         transform_(t) {}
 
     Eigen::Matrix4f transform_;
 };
+
+}
 
 #endif //LIGHT_NODE_HPP
 

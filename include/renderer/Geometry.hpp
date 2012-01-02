@@ -35,6 +35,8 @@
 /// contexts. A Geometry object is made of several Mesh objects.
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class Geometry {
     public:
         ////////////////////////////////////////////////////////////////////////
@@ -66,6 +68,8 @@ class Geometry {
     private:
         std::vector<Mesh> meshes_;
 };
+
+}
 
 #endif // GEOMETRY_HPP
 

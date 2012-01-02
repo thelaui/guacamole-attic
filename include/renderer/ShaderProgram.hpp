@@ -36,6 +36,8 @@
 /// achieve different visual appearances of the same mesh.
 ////////////////////////////////////////////////////////////////////////////////
 
+namespace gua {
+
 class ShaderProgram {
     public:
         ////////////////////////////////////////////////////////////////////////
@@ -126,5 +128,7 @@ class ShaderProgram {
         VertexShader v_shader_;
         FragmentShader f_shader_;
 };
+
+}
 
 #endif // SHADERPROGRAM_HPP

@@ -25,6 +25,8 @@
 #include "include/scenegraph/Node.hpp"
 #include "include/utils/debug.hpp"
 
+namespace gua {
+
 const std::string SceneGraph::Iterator::end_name_("end");
 const Eigen::Transform3f SceneGraph::Iterator::end_transform_((Eigen::Transform3f)Eigen::Matrix3f::Identity());
 
@@ -135,4 +137,6 @@ void SceneGraph::Iterator::find_next_node() {
             break;
         }
     }
+}
+
 }
