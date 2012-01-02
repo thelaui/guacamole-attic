@@ -26,7 +26,7 @@
 #include <vector>
 #include <string>
 
-#include "include/renderer/RenderWindow.hpp"
+#include "renderer/RenderWindow.hpp"
 
 namespace gua {
 

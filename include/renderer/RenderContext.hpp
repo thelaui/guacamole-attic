@@ -23,7 +23,7 @@
 #ifndef RENDERCONTEXT_HPP
 #define RENDERCONTEXT_HPP
 
-#include "include/renderer/glInclude.hpp"
+#include "renderer/glInclude.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Information on a specific context.

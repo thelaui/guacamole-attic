@@ -23,9 +23,9 @@
 #ifndef MATERIAL_BASE_HPP
 #define MATERIAL_BASE_HPP
 
-#include "include/utils/Singleton.hpp"
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Material.hpp"
+#include "utils/Singleton.hpp"
+#include "renderer/DataBase.hpp"
+#include "renderer/Material.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A data base for materials.

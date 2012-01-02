@@ -20,15 +20,15 @@
 /// \brief The main include file of guacamole.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/GeometryBase.hpp"
-#include "include/renderer/MaterialBase.hpp"
-#include "include/traverser/Renderer.hpp"
-#include "include/scenegraph/Iterator.hpp"
-#include "include/scenegraph/SceneGraph.hpp"
-#include "include/scenegraph/GeometryCore.hpp"
-#include "include/scenegraph/CameraCore.hpp"
-#include "include/scenegraph/LightCore.hpp"
-#include "include/utils/DotParser.hpp"
+#include "renderer/GeometryBase.hpp"
+#include "renderer/MaterialBase.hpp"
+#include "traverser/Renderer.hpp"
+#include "scenegraph/Iterator.hpp"
+#include "scenegraph/SceneGraph.hpp"
+#include "scenegraph/GeometryCore.hpp"
+#include "scenegraph/CameraCore.hpp"
+#include "scenegraph/LightCore.hpp"
+#include "utils/DotParser.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \mainpage
@@ -40,7 +40,7 @@
 /// Below you can discover a little example of guacamole displaying some
 /// rotating monkeys.
 /// \code
-/// #include "include/guacamole.hpp"
+/// #include "guacamole.hpp"
 ///
 /// #include <thread>
 ///

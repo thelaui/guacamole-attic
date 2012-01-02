@@ -23,7 +23,7 @@
 #ifndef MATERIAL_HPP
 #define MATERIAL_HPP
 
-#include "include/renderer/ShaderProgram.hpp"
+#include "renderer/ShaderProgram.hpp"
 
 namespace gua {
 

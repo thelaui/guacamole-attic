@@ -23,7 +23,7 @@
 #ifndef VERTEXSHADER_HPP
 #define VERTEXSHADER_HPP
 
-#include "include/renderer/Shader.hpp"
+#include "renderer/Shader.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A Vertex Shader abstraction.

@@ -23,9 +23,9 @@
 #ifndef ITERATOR_HPP
 #define ITERATOR_HPP
 
-#include "include/scenegraph/SceneGraph.hpp"
-#include "include/scenegraph/Node.hpp"
-#include "include/utils/debug.hpp"
+#include "scenegraph/SceneGraph.hpp"
+#include "scenegraph/Node.hpp"
+#include "utils/debug.hpp"
 
 #include <memory>
 

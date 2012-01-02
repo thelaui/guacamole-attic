@@ -25,9 +25,9 @@
 
 #include <eigen2/Eigen/Core>
 
-#include "include/renderer/FragmentShader.hpp"
-#include "include/renderer/VertexShader.hpp"
-#include "include/renderer/Uniform.hpp"
+#include "renderer/FragmentShader.hpp"
+#include "renderer/VertexShader.hpp"
+#include "renderer/Uniform.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief An actual shader which can be applied to the Graphics pipeline.

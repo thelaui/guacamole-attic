@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#include "include/renderer/Mesh.hpp"
+#include "renderer/Mesh.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Loads and draws meshes.

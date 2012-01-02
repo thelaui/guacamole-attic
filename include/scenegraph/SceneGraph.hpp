@@ -23,7 +23,7 @@
 #ifndef SCENE_GRAPH_HPP
 #define SCENE_GRAPH_HPP
 
-#include "include/scenegraph/Core.hpp"
+#include "scenegraph/Core.hpp"
 
 #include <list>
 #include <eigen2/Eigen/Geometry>

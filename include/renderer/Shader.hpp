@@ -26,7 +26,7 @@
 #include <string>
 #include <vector>
 
-#include "include/utils/TextFile.hpp"
+#include "utils/TextFile.hpp"
 
 namespace gua {
 

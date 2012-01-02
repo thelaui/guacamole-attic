@@ -23,7 +23,7 @@
 #ifndef CAMERA_CORE_HPP
 #define CAMERA_CORE_HPP
 
-#include "include/scenegraph/Core.hpp"
+#include "scenegraph/Core.hpp"
 
 #include <eigen2/Eigen/Geometry>
 

@@ -7,3 +7,6 @@ guacamole
 guacamole-d
 *.gv
 *.dot
+*.so
+example/obj/*
+example/bin/*

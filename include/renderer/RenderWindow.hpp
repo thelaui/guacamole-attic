@@ -26,7 +26,7 @@
 #include <memory>
 #include <string>
 
-#include "include/renderer/RenderContext.hpp"
+#include "renderer/RenderContext.hpp"
 
 namespace gua {
 

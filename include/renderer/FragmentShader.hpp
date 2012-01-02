@@ -23,7 +23,7 @@
 #ifndef FRAGMENTSHADER_HPP
 #define FRAGMENTSHADER_HPP
 
-#include "include/renderer/Shader.hpp"
+#include "renderer/Shader.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A Fragment Shader abstraction.

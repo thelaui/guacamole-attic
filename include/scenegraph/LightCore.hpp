@@ -23,7 +23,7 @@
 #ifndef LIGHT_CORE_HPP
 #define LIGHT_CORE_HPP
 
-#include "include/scenegraph/Core.hpp"
+#include "scenegraph/Core.hpp"
 
 #include <string>
 

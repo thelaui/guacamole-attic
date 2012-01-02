@@ -23,9 +23,9 @@
 #ifndef GEOMETRY_BASE_HPP
 #define GEOMETRY_BASE_HPP
 
-#include "include/utils/Singleton.hpp"
-#include "include/renderer/DataBase.hpp"
-#include "include/renderer/Geometry.hpp"
+#include "utils/Singleton.hpp"
+#include "renderer/DataBase.hpp"
+#include "renderer/Geometry.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A data base for meshes.

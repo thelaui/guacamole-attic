@@ -27,7 +27,7 @@
 #include <memory>
 #include <eigen2/Eigen/Geometry>
 
-#include "include/scenegraph/SceneGraph.hpp"
+#include "scenegraph/SceneGraph.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class is used to build the internal structure of a SceneGraph.

@@ -23,7 +23,7 @@
 #ifndef GEOMETRY_CORE_HPP
 #define GEOMETRY_CORE_HPP
 
-#include "include/scenegraph/Core.hpp"
+#include "scenegraph/Core.hpp"
 
 #include <string>
 
