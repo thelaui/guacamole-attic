@@ -22,12 +22,27 @@
 
 #include "include/renderer/GeometryBase.hpp"
 
+#include "include/utils/Directory.hpp"
+
+#include <sstream>
+
 namespace gua {
 
-void GeometryBase::load_presets() {
-    instance()->add("monkey", std::shared_ptr<Geometry>(new Geometry("data/objects/monkey.obj")));
-    instance()->add("cube", std::shared_ptr<Geometry>(new Geometry("data/objects/cube.obj")));
-    instance()->add("teapot", std::shared_ptr<Geometry>(new Geometry("data/objects/teapot.obj")));
+void GeometryBase::load_objects_from(std::string const& path_to_objects) {
+
+    gua::Directory directory(path_to_objects);
+
+    std::stringstream content(directory.get_content());
+
+    std::string parse_string;
+    while (content >> parse_string) {
+        unsigned suffix_pos(parse_string.find(".obj"));
+        if(suffix_pos != std::string::npos) {
+            instance()->add(parse_string.substr(0, suffix_pos),
+                            std::shared_ptr<Geometry>(new Geometry(path_to_objects + parse_string)));
+        }
+    }
+
 }
 
 }

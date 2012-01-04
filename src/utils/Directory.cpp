@@ -17,67 +17,65 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A simple file reader to get data out of text files.
+/// \brief A simple directory reader to get the members of a directory.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/utils/TextFile.hpp"
+#include "include/utils/Directory.hpp"
 
-#include <sstream>
-#include <fstream>
+#include <iostream>
+#include <dirent.h>
 
 #include "include/utils/debug.hpp"
 
 namespace gua {
 
-TextFile::TextFile():
-    file_name_(""),
+Directory::Directory():
+    path_name_(""),
     content_(""),
     is_loaded_(false) {}
 
-TextFile::TextFile(std::string const& file_name):
-    file_name_(file_name),
+Directory::Directory(std::string const& path_name):
+    path_name_(path_name),
     content_(""),
     is_loaded_(false) {}
 
-bool TextFile::is_valid() const {
-    std::ifstream file(file_name_.c_str());
-
-    if (file.fail())
-        return false;
-
-    file.close();
-    return true;
+bool Directory::is_valid() const {
+    return opendir(path_name_.c_str());
 }
 
-std::string const& TextFile::get_content() const{
+std::string const& Directory::get_content() const {
     if (is_loaded_)
         return content_;
 
     is_loaded_ = true;
 
-    std::ifstream ifs(file_name_.c_str());
-    if(!ifs) {
-        WARNING("Cannot open file \"%s\"", file_name_.c_str());
+    DIR* directory;
+    directory = opendir(path_name_.c_str());
+
+    if(!directory) {
+        WARNING("Cannot access directory \"%s\"", path_name_.c_str());
         return content_;
     }
 
-    std::stringstream oss;
-    oss << ifs.rdbuf();
+    dirent* entry(readdir(directory));
 
-    if(!ifs && !ifs.eof()) {
-        WARNING("Error reading file \"%s\"", file_name_.c_str());
-        return content_;
+    while(entry){
+        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+            content_ += entry->d_name + std::string(" ");
+        entry = readdir(directory);
     }
 
-    content_ = std::string(oss.str());
+    closedir(directory);
+
     return content_;
 }
 
-std::string const& TextFile::get_file_name() const{
-    return file_name_;
+std::string const& Directory::get_directory_name() const{
+    return path_name_;
 }
 
 }
+
 
 
 

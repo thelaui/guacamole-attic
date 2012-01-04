@@ -1,0 +1,3 @@
+color: 150 150 150
+vertex_shader: ../shaders/matt.vert
+fragment_shader: ../shaders/matt.frag

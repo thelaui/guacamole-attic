@@ -28,6 +28,7 @@
 namespace gua {
 
 class RenderContext;
+class TextFile;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a Material.
@@ -46,13 +47,13 @@ class Material {
         Material();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Constructor from a ShaderProgram.
+        /// \brief Constructor from a material description.
         ///
-        /// Creates a new Material from a given Shader.
+        /// Creates a new Material from a given material description.
         ///
-        /// \param shader The shader used by this material.
+        /// \param file_name The file used to describe this material.
         ////////////////////////////////////////////////////////////////////////
-        Material( ShaderProgram const& shader );
+        Material(std::string const& file_name);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Applies the Material.
@@ -74,6 +75,8 @@ class Material {
 
     private:
         ShaderProgram shader_;
+
+        void construct_from_file(TextFile const& file);
 };
 
 }

@@ -28,7 +28,9 @@
 #include "scenegraph/GeometryCore.hpp"
 #include "scenegraph/CameraCore.hpp"
 #include "scenegraph/LightCore.hpp"
+#include "utils/PathParser.hpp"
 #include "utils/DotParser.hpp"
+#include "utils/Directory.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \mainpage

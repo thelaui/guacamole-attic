@@ -17,72 +17,72 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the PathParser class.
+/// \brief Declaration of the Directory class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef PATH_PARSER_HPP
-#define PATH_PARSER_HPP
+#ifndef DIRECTORY_HPP
+#define DIRECTORY_HPP
 
-#include <vector>
 #include <string>
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief This class may be used to parse a path.
-///
+/// \brief This class is used to read the contents of a directory.
 ////////////////////////////////////////////////////////////////////////////////
 
 namespace gua {
 
-class PathParser {
+class Directory {
+
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
-        /// This constructs a PathParser
+        /// This constructs a Directory without a path.
         ////////////////////////////////////////////////////////////////////////
-        PathParser();
+        Directory();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Parses a path.
+        /// \brief Constructor.
         ///
-        /// This function parses a path and stores each substring of the path
-        /// which is separated by "/" into a vector cell.
-        /// Special attention is payed to a leading "/", which is considered
-        /// as part of the path and therefore also added to the vector.
-        /// Furthermore a finishing "/" sets a trigger.
+        /// This constructs a Directory with a path.
         ///
-        ///\param path       The path to be parsed.
+        /// \param path_name The path to the directory to be read.
         ////////////////////////////////////////////////////////////////////////
-        void parse(std::string path);
-
-        std::string get_path(bool ignore_last_entry = false) const;
+        Directory(std::string const& path_name);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns a parsed path.
+        /// \brief Returns if the given path to the directory is valid.
         ///
-        /// This function returns the vector containing the parsed path's data.
-        ///
-        ///\return path_data The parsed path's data.
+        /// \return The validity of the path.
         ////////////////////////////////////////////////////////////////////////
-        std::vector<std::string> const& get_parsed_path() const;
+        bool is_valid() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns if the pars has a "/" at its end.
+        /// \brief Returns the given directory's content.
         ///
-        /// This function returns true if the trigger on a finishing "/" is set.
-        ///
-        ///\return finished_by_slash The value of the trigger.
+        /// \return The given directory's content.
         ////////////////////////////////////////////////////////////////////////
-        bool path_is_finished_by_slash() const;
+        std::string const& get_content() const;
 
-        void make_absolute(std::string const& path_from_cwd);
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the given directory's name.
+        ///
+        /// \return The given directory's name.
+        ////////////////////////////////////////////////////////////////////////
+        std::string const& get_directory_name() const;
 
     private:
-        std::vector<std::string> parsed_path_;
-        bool finished_by_slash_;
+        std::string path_name_;
+        mutable std::string content_;
+
+        mutable bool is_loaded_;
 };
 
 }
 
-#endif //PATH_PARSER_HPP
+#endif // DIRECTORY_HPP
+
+
+
+

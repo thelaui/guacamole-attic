@@ -63,20 +63,20 @@ class TextFile {
         ///
         /// \return The given file's content.
         ////////////////////////////////////////////////////////////////////////
-        std::string const& get_content();
+        std::string const& get_content() const;
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Returns the given file's name.
         ///
         /// \return The given file's name.
         ////////////////////////////////////////////////////////////////////////
-        std::string const& get_file_name();
+        std::string const& get_file_name() const;
 
     private:
         std::string file_name_;
-        std::string content_;
+        mutable std::string content_;
 
-        bool is_loaded_;
+        mutable bool is_loaded_;
 };
 
 }

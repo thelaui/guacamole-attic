@@ -45,7 +45,7 @@ class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
         /// a simple cube ("cube"), the famous Utah Teapot ("teapot") and
         /// Suzanne from Blender ("monkey").
         ////////////////////////////////////////////////////////////////////////
-        static void load_presets();
+        static void load_objects_from(std::string const& path_to_objects);
 
         friend class Singleton<GeometryBase>;
 
