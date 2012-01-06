@@ -73,7 +73,7 @@
 		<Unit filename="include/traverser/Optimizer.hpp" />
 		<Unit filename="include/traverser/Renderer.hpp" />
 		<Unit filename="include/utils/Directory.hpp" />
-		<Unit filename="include/utils/DotParser.hpp" />
+		<Unit filename="include/utils/DotGenerator.hpp" />
 		<Unit filename="include/utils/KnownObject.hpp" />
 		<Unit filename="include/utils/PathParser.hpp" />
 		<Unit filename="include/utils/Singleton.hpp" />
@@ -100,7 +100,7 @@
 		<Unit filename="src/traverser/Optimizer.cpp" />
 		<Unit filename="src/traverser/Renderer.cpp" />
 		<Unit filename="src/utils/Directory.cpp" />
-		<Unit filename="src/utils/DotParser.cpp" />
+		<Unit filename="src/utils/DotGenerator.cpp" />
 		<Unit filename="src/utils/PathParser.cpp" />
 		<Unit filename="src/utils/TextFile.cpp" />
 		<Extensions>

@@ -29,7 +29,7 @@
 #include "scenegraph/CameraCore.hpp"
 #include "scenegraph/LightCore.hpp"
 #include "utils/PathParser.hpp"
-#include "utils/DotParser.hpp"
+#include "utils/DotGenerator.hpp"
 #include "utils/Directory.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////

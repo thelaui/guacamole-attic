@@ -44,6 +44,10 @@ int main() {
 
     std::thread render_thread(render, &graph, ":0.0");
 
+    gua::DotGenerator dot_generator;
+    dot_generator.parse_graph(&graph, "guacamole_scenegraph");
+    dot_generator.save_to_file("guacamole_scenegraph.gv");
+
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         graph["/box"].rotate(0.001, 0, 1, 0);
