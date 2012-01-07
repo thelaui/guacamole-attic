@@ -43,7 +43,7 @@ class MaterialBase: public DataBase<Material>, public Singleton<MaterialBase> {
         ///
         /// This method loads some default materials to the data base.
         ////////////////////////////////////////////////////////////////////////
-        static void load_material_from(std::string const& path_to_materials);
+        static void load_materials_from(std::string const& path_to_materials);
 
         friend class Singleton<MaterialBase>;
 

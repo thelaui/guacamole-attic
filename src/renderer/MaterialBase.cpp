@@ -28,7 +28,7 @@
 
 namespace gua {
 
-void MaterialBase::load_material_from(std::string const& path_to_materials) {
+void MaterialBase::load_materials_from(std::string const& path_to_materials) {
     gua::Directory directory(path_to_materials);
 
     std::stringstream content(directory.get_content());

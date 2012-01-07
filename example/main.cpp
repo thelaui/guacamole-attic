@@ -17,7 +17,7 @@ int main() {
     gua::RenderWindow::init();
 
     gua::GeometryBase::load_objects_from("data/objects/");
-    gua::MaterialBase::load_material_from("data/materials/");
+    gua::MaterialBase::load_materials_from("data/materials/");
 
     gua::SceneGraph graph;
 
