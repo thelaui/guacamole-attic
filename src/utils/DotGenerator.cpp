@@ -53,7 +53,7 @@ void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name)
             parse_data_ += "    " + node_name.str();
 
         parse_data_ += ";\n    " + node_name.str() + " [label="
-                    + (node.get_name() == "/" ? "root" : node.get_name())
+                    + (node.get_name() == "/" ? name : node.get_name())
                     + "]" + " [shape = box]"
                     + " [style=filled] ";
 
