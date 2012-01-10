@@ -49,8 +49,9 @@ class SceneGraph::Iterator {
         /// This constructs a Iterator from a given Node.
         ///
         ///\param node      The Node the Iterator shall contain.
+        ///\param type           The type of the Iterator.
         ////////////////////////////////////////////////////////////////////////
-        Iterator(Node* node = NULL);
+        Iterator(Node* node = NULL, IterationType type = DEPTH_FIRST);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the depth of the Iterator.
@@ -210,7 +211,12 @@ class SceneGraph::Iterator {
         Node* current_node_;
         Node* start_node_;
 
-        void find_next_node();
+        SceneGraph::IterationType type_;
+
+        void find_next_node_depth();
+        void find_next_node_breadth();
+
+        Node* get_neighbour(Node* to_be_checked);
 
         static const std::string end_name_;
         static const Eigen::Transform3f end_transform_;

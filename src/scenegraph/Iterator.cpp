@@ -21,18 +21,19 @@
 ///        directly.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/scenegraph/Iterator.hpp"
-#include "include/scenegraph/Node.hpp"
-#include "include/utils/debug.hpp"
+#include "scenegraph/Iterator.hpp"
+#include "scenegraph/Node.hpp"
+#include "utils/debug.hpp"
 
 namespace gua {
 
 const std::string SceneGraph::Iterator::end_name_("end");
 const Eigen::Transform3f SceneGraph::Iterator::end_transform_((Eigen::Transform3f)Eigen::Matrix3f::Identity());
 
-SceneGraph::Iterator::Iterator(Node* node):
+SceneGraph::Iterator::Iterator(Node* node, IterationType type):
     current_node_(node),
-    start_node_(node) {}
+    start_node_(node),
+    type_(type) {}
 
 int SceneGraph::Iterator::get_depth() const {
     if (current_node_) return current_node_->get_depth();
@@ -84,12 +85,15 @@ void SceneGraph::Iterator::translate(double x, double y, double z) {
 }
 
 void SceneGraph::Iterator::operator ++() {
-    auto current_children(current_node_->get_children());
-
-    if (!current_children.empty()) {
-        Node* next_node(current_children.front());
-        current_node_ = next_node;
-    } else find_next_node();
+    switch (type_) {
+        case SceneGraph::DEPTH_FIRST:
+            find_next_node_depth();
+            break;
+        case SceneGraph::BREADTH_FIRST:
+            find_next_node_breadth();
+            break;
+        default: break;
+    }
 }
 
 bool SceneGraph::Iterator::operator ==(Iterator const& rhs) {
@@ -115,28 +119,64 @@ SceneGraph::Iterator& SceneGraph::Iterator::operator << (Core* core) {
     return *this;
 }
 
-void SceneGraph::Iterator::find_next_node() {
-    bool found_next(false);
-    while (!found_next) {
-        if (current_node_ != start_node_) {
-            auto end(current_node_->get_parent()->get_children().end());
-            for (auto child(current_node_->get_parent()->get_children().begin()); child != end; ++child) {
-                if (*child == current_node_) {
-                    if (++child != current_node_->get_parent()->get_children().end()) {
-                        current_node_ = *child;
-                        found_next = true;
-                        break;
-                    } else {
-                        current_node_ = current_node_->get_parent();
-                        break;
-                    }
+void SceneGraph::Iterator::find_next_node_depth() {
+    if (!current_node_->get_children().empty()) {
+        current_node_ = current_node_->get_children().front();
+    } else {
+        bool found_next(false);
+        while (!found_next) {
+            if (current_node_ != start_node_) {
+                auto neighbour(get_neighbour(current_node_));
+                if (neighbour) {
+                    current_node_ = neighbour;
+                    found_next = true;
                 }
+                else current_node_ = current_node_->get_parent();
+            } else {
+                *this = Iterator();
+                break;
             }
-        } else {
-            *this = Iterator();
-            break;
         }
     }
+}
+
+void SceneGraph::Iterator::find_next_node_breadth() {
+    int went_up(0);
+
+    if (current_node_ == start_node_) {
+        if (!current_node_->get_children().empty())
+            current_node_ = current_node_->get_children().front();
+        else *this = Iterator();
+    } else {
+        auto neighbour(get_neighbour(current_node_));
+        while (!neighbour) {
+            if (current_node_->get_parent() == start_node_)
+                break;
+            current_node_ = current_node_->get_parent();
+            neighbour = get_neighbour(current_node_);
+            ++went_up;
+        }
+
+        current_node_ = neighbour;
+
+        while (went_up > 0) {
+            current_node_ = current_node_->get_children().front();
+            --went_up;
+        }
+    }
+}
+
+gua::SceneGraph::Node* SceneGraph::Iterator::get_neighbour(Node* to_be_checked) {
+    auto end(to_be_checked->get_parent()->get_children().end());
+    for (auto child(to_be_checked->get_parent()->get_children().begin()); child != end; ++child) {
+        if (*child == to_be_checked) {
+            if (++child != end) {
+                return *child;
+            } else break;
+        }
+    }
+
+    return NULL;
 }
 
 }
