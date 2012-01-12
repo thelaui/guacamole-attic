@@ -24,6 +24,7 @@
 
 #include "scenegraph/SceneGraph.hpp"
 #include "scenegraph/Iterator.hpp"
+#include "scenegraph/GeometryCore.hpp"
 
 #include <fstream>
 #include <map>
@@ -52,10 +53,9 @@ void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name)
         } else
             parse_data_ += "    " + node_name.str();
 
-        parse_data_ += ";\n    " + node_name.str() + " [label="
-                    + (node.get_name() == "/" ? name : node.get_name())
-                    + "]" + " [shape = box]"
-                    + " [style=filled] ";
+        parse_data_ += ";\n    " + node_name.str() + " [label= \"{"
+                    +(node.get_name() == "/" ? name : node.get_name());
+
 
         std::string fillcolor("[fillcolor =");
 
@@ -72,12 +72,19 @@ void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name)
                 case Core::LIGHT:
                     fillcolor += " \"#AAAA11\"";
                     break;
-                default :
+                default: {
+                    auto geometry_core(reinterpret_cast<GeometryCore*>(current_core));
                     fillcolor += " \"#BBBBBB\"";
-                    break;
+                    parse_data_ +=  "| geometry: " + geometry_core->get_geometry()
+                                +   "| material: " + geometry_core->get_material();
+                } break;
             }
         }
+
         fillcolor += "]";
+
+        parse_data_ += "}\"]" + std::string(" [shape = record]")
+                    + " [style=filled] ";
 
         parse_data_ += fillcolor + ";\n";
 
