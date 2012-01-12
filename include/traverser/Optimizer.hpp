@@ -25,6 +25,7 @@
 
 #include <vector>
 #include <memory>
+#include <map>
 
 namespace gua {
 
@@ -58,42 +59,42 @@ class Optimizer {
         ////////////////////////////////////////////////////////////////////////
         virtual ~Optimizer();
 
-	////////////////////////////////////////////////////////////////////////
-	///\brief Takes the Scengraph and processes geometry, light and camera lists.
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Takes the Scengraph and processes geometry, light and camera lists.
         ///
         ///\param scene_graph          The SceneGraph to be processed.
         ////////////////////////////////////////////////////////////////////////
-		void check( SceneGraph const* scene_graph );
+        void check( SceneGraph const* scene_graph );
 
-	////////////////////////////////////////////////////////////////////////
-	///\brief get the list of geometry
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief get the list of geometry
         ///
         ///
         ///\return geometry_data     a vector containing the scenes geometry data
         ////////////////////////////////////////////////////////////////////////
-		std::vector<GeometryNode*> const& get_geometry_data() const;
+        std::vector<GeometryNode*> const& get_geometry_data() const;
 
-	////////////////////////////////////////////////////////////////////////
-	///\brief get the list of ligths
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief get the list of ligths
         ///
         ///
         ///\return light_data     a vector containing the lights within the scene
         ////////////////////////////////////////////////////////////////////////
-		std::vector<LightNode*> const& get_light_data() const;
+        std::vector<LightNode*> const& get_light_data() const;
 
-	////////////////////////////////////////////////////////////////////////
-	///\brief get the list of cameras
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief get the list of cameras
         ///
         ///
         ///\return camera_data     a vector containing the camera in the scene
         ////////////////////////////////////////////////////////////////////////
-		std::vector<CameraNode*> const& get_camera_data() const;
+        CameraNode* get_camera_data(std::string const& camera_name) const;
 
-	private:
+    private:
 
-		std::vector<GeometryNode*> geometry_data_;
-		std::vector<LightNode*> light_data_;
-		std::vector<CameraNode*> camera_data_;
+        std::vector<GeometryNode*> geometry_data_;
+        std::vector<LightNode*> light_data_;
+        std::map<std::string, CameraNode*> camera_data_;
 
 };
 

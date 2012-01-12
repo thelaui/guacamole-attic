@@ -59,8 +59,8 @@ class Renderer {
         virtual ~Renderer();
 
 
-		////////////////////////////////////////////////////////////////////////
-		///\brief Add a Display.
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Add a Display.
         ///
         /// Takes a Scenegraph and starts to render.
         ///
@@ -68,20 +68,20 @@ class Renderer {
         ///\param height  Height of the display in Pixel.
         ///\param display    Defines the Xdisplay id that is used to render the scene. Defaults to :0.0 .
         ////////////////////////////////////////////////////////////////////////
-        void add_display( int width, int height, std::string const& display = ":0.0");
+        void add_display( int width, int height, std::string const& camera, std::string const& display = ":0.0");
 
-		////////////////////////////////////////////////////////////////////////
-		///\brief Start the Render Loop
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Start the Render Loop
         ///
         /// Takes a Scenegraph and starts to render.
         ///
         ///\param scene_graph          The SceneGraph to be processed.
         ////////////////////////////////////////////////////////////////////////
-		void start_render_loop( SceneGraph const* scene_graph );
+        void start_render_loop( SceneGraph const* scene_graph );
 
-	private:
-		std::vector<RenderBackend*> render_backend_list_;
-		Optimizer* optimizer_;
+    private:
+        std::vector<RenderBackend*> render_backend_list_;
+        Optimizer* optimizer_;
 };
 
 }

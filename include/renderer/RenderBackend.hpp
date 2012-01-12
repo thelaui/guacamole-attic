@@ -53,7 +53,7 @@ class RenderBackend {
         /// \param height  The height of the window to be opened,
         /// \param display The display where the window should be placed.
         ////////////////////////////////////////////////////////////////////////
-        RenderBackend( int width, int height, std::string const& display = ":0.0" );
+        RenderBackend( int width, int height, std::string const& camera, std::string const& display = ":0.0" );
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Renders the given objects.
@@ -71,8 +71,11 @@ class RenderBackend {
                      std::vector<LightNode*> const& light_list,
                      CameraNode* camera );
 
+        std::string const& get_camera_name() const;
+
     private:
         RenderWindow window_;
+        std::string camera_name_;
 };
 
 }

@@ -33,8 +33,9 @@
 
 namespace gua {
 
-RenderBackend::RenderBackend( int width, int height, std::string const& display ):
-    window_(width, height, display) {}
+RenderBackend::RenderBackend( int width, int height, std::string const& camera, std::string const& display ):
+    window_(width, height, display),
+    camera_name_(camera) {}
 
 void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
                             std::vector<LightNode*> const& light_list,
@@ -69,6 +70,10 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
     }
 
     window_.finish_frame();
+}
+
+std::string const& RenderBackend::get_camera_name() const {
+    return camera_name_;
 }
 
 }

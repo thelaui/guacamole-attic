@@ -2,10 +2,11 @@
 
 #include <thread>
 
-void render(gua::SceneGraph* graph, std::string const& display) {
+void render(gua::SceneGraph* graph, std::vector<std::pair<const char*, const char*>> windows) {
     gua::Renderer renderer;
     try {
-        renderer.add_display(800, 600, display);
+        for (auto& window: windows)
+            renderer.add_display(800, 600, window.first, window.second);
         renderer.start_render_loop(graph);
     } catch (std::string& error) {
         std::cerr<<error<<std::endl;
@@ -13,7 +14,6 @@ void render(gua::SceneGraph* graph, std::string const& display) {
 }
 
 int main() {
-
     gua::RenderWindow::init();
 
     gua::GeometryBase::load_objects_from("data/objects/");
@@ -42,7 +42,12 @@ int main() {
     monkey.scale(0.3, 0.3, 0.3);
     monkey.translate(0, 5, 0);
 
-    std::thread render_thread(render, &graph, ":0.0");
+    camera = graph.add_node("/box", "camera2", camera_core);
+    camera.translate(0.5, 1, 4);
+    camera.rotate(0.2, 0, 1, 0);
+
+    std::thread render_thread(render, &graph, {std::make_pair("camera2", ":0.0"),
+                                               std::make_pair("camera",  ":0.0")});
 
     gua::DotGenerator dot_generator;
     dot_generator.parse_graph(&graph, "guacamole_scenegraph");
