@@ -2,7 +2,7 @@
 
 #include <thread>
 
-void render(gua::SceneGraph* graph, std::vector<std::pair<const char*, const char*>> windows) {
+void render(gua::SceneGraph* graph, std::vector<std::pair<const char*, const char*>> const& windows) {
     gua::Renderer renderer;
     try {
         for (auto& window: windows)
@@ -20,6 +20,7 @@ int main() {
     gua::MaterialBase::load_materials_from("data/materials/");
 
     gua::SceneGraph graph;
+
 
     auto camera_core = new gua::CameraCore(60.f, 4.f/3.f, 0.1f, 1000.f);
     auto camera = graph.add_node("/", "camera", camera_core);
@@ -46,8 +47,12 @@ int main() {
     camera.translate(0.5, 1, 4);
     camera.rotate(0.2, 0, 1, 0);
 
-    std::thread render_thread(render, &graph, {std::make_pair("camera2", ":0.0"),
-                                               std::make_pair("camera",  ":0.0")});
+    std::vector<std::pair<const char*, const char*>> windows;
+    windows.push_back(std::make_pair("camera2", ":0.0"));
+    windows.push_back(std::make_pair("camera", ":0.0"));
+
+    std::thread render_thread(render, &graph, windows);
+
 
     gua::DotGenerator dot_generator;
     dot_generator.parse_graph(&graph, "guacamole_scenegraph");

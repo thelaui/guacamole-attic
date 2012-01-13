@@ -40,6 +40,7 @@
 			<Add directory="../include" />
 		</Compiler>
 		<Linker>
+			<Add library="pthread" />
 			<Add directory="../lib" />
 		</Linker>
 		<Unit filename="main.cpp" />
