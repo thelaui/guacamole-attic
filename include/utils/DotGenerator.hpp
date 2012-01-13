@@ -64,7 +64,7 @@ class DotGenerator {
         ///\param file_name The name of the file the DOT-graph will be saved to.
         ///                 The ending has to be .gv or .dot.
         ////////////////////////////////////////////////////////////////////////
-        void save_to_file(std::string const& file_name) const;
+        void save(std::string const& path_to_file = "./") const;
 
     private:
 

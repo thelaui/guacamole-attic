@@ -56,7 +56,7 @@ int main() {
 
     gua::DotGenerator dot_generator;
     dot_generator.parse_graph(&graph, "guacamole_scenegraph");
-    dot_generator.save_to_file("guacamole_scenegraph.gv");
+    dot_generator.save();
 
     while (true) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));

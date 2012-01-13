@@ -32,10 +32,12 @@
 namespace gua {
 
 DotGenerator::DotGenerator():
-    parse_data_() {}
+    parse_data_(),
+    graph_name_() {}
 
 void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name) {
-    parse_data_ += "graph " + name + " { \n";
+    graph_name_ = name;
+    parse_data_ += "graph " + graph_name_ + " { \n";
 
     std::map<int, int> added_nodes;
 
@@ -54,7 +56,7 @@ void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name)
             parse_data_ += "    " + node_name.str();
 
         parse_data_ += ";\n    " + node_name.str() + " [label= \"{"
-                    +(node.get_name() == "/" ? name : node.get_name());
+                    +(node.get_name() == "/" ? graph_name_ : node.get_name());
 
 
         std::string fillcolor("[fillcolor =");
@@ -96,9 +98,9 @@ void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name)
     parse_data_ += "} \n";
 }
 
-void DotGenerator::save_to_file(std::string const& file_name) const {
+void DotGenerator::save(std::string const& path_to_file) const {
     std::fstream file;
-    file.open(file_name, std::fstream::out);
+    file.open(path_to_file + graph_name_ + ".gv", std::fstream::out);
     file.write(parse_data_.c_str(), parse_data_.size());
     file.close();
 }
