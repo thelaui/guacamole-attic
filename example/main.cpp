@@ -21,7 +21,6 @@ int main() {
 
     gua::SceneGraph graph;
 
-
     auto camera_core = new gua::CameraCore(60.f, 4.f/3.f, 0.1f, 1000.f);
     auto camera = graph.add_node("/", "camera", camera_core);
     camera.translate(0.5, 1, 2);

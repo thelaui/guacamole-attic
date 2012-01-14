@@ -47,6 +47,8 @@ class SceneGraph {
 
     public:
 
+        enum IterationType {DEPTH_FIRST, BREADTH_FIRST};
+
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.
         ///
@@ -172,10 +174,11 @@ class SceneGraph {
         ///
         ///\param path_to_node   The location of the Node to be encapsuled in
         ///                      the Iterator.
+        ///\param type           The type of the Iterator.
         ///
         ///\return Iterator      An Iterator on the given Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator get_iterator(std::string const& path_to_node);
+        Iterator get_iterator(std::string const& path_to_node, IterationType type = DEPTH_FIRST);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns an iterator to the beginning of the SceneGraph.
@@ -183,9 +186,11 @@ class SceneGraph {
         /// This function returns an iterator to the beginning of the
         /// SceneGraph which is a Node named "/".
         ///
+        ///\param type           The type of the Iterator.
+        ///
         ///\return Iterator      An Iterator on the Node "/".
         ////////////////////////////////////////////////////////////////////////
-        Iterator begin() const;
+        Iterator begin(IterationType type = DEPTH_FIRST) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns an iterator to the "end" of the SceneGraph.

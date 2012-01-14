@@ -116,14 +116,14 @@ void SceneGraph::set_working_node(std::string const& path_to_node) {
     working_node_ = find_node(path_to_node);
 }
 
-SceneGraph::Iterator SceneGraph::get_iterator(std::string const& path_to_node) {
-    return Iterator(find_node(path_to_node));
+SceneGraph::Iterator SceneGraph::get_iterator(std::string const& path_to_node, IterationType type) {
+    return Iterator(find_node(path_to_node), type);
 }
 
-SceneGraph::Iterator SceneGraph::begin() const {
+SceneGraph::Iterator SceneGraph::begin(IterationType type) const {
     auto root_children(root_->get_children());
     if (!root_children.empty())
-        return Iterator(root_);
+        return Iterator(root_, type);
     else {
         WARNING("You are trying to iterate over an empty graph! Returning iterator on end.");
         return end();
