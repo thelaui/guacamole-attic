@@ -28,6 +28,7 @@
 #include "utils/debug.hpp"
 
 #include <memory>
+#include <map>
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class is used to iterate over the SceneGraph.
@@ -155,6 +156,13 @@ class SceneGraph::Iterator {
         void translate(double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
+        ///\brief Sets the Iterator's type.
+        ///
+        /// This can be used to change the way the Iterator is incremented.
+        ////////////////////////////////////////////////////////////////////////
+        void set_iteration_type(IterationType type);
+
+        ////////////////////////////////////////////////////////////////////////
         ///\brief Increments the Iterator.
         ///
         /// Increments the Iterator by detecting the next node of the SceneGraph
@@ -212,6 +220,9 @@ class SceneGraph::Iterator {
         Node* start_node_;
 
         SceneGraph::IterationType type_;
+
+        std::map<int, std::list<Node*>> breadth_nodes_;
+        unsigned current_depth_;
 
         void find_next_node_depth();
         void find_next_node_breadth();

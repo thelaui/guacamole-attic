@@ -33,8 +33,22 @@ int main() {
 
     std::cout<<graph<<std::endl;
 
-    for (auto node(graph.begin(gua::SceneGraph::BREADTH_FIRST)); node != graph.end(); ++node)
-        std::cout<<node.get_name()<<std::endl;
+
+    auto node(graph.begin(gua::SceneGraph::BREADTH_FIRST));
+
+    std::cout<<node.get_name()<<std::endl;
+    ++node;
+    std::cout<<node.get_name()<<std::endl;
+    ++node;
+    std::cout<<node.get_name()<<std::endl;
+    node.set_iteration_type(gua::SceneGraph::DEPTH_FIRST);
+    ++node;
+    std::cout<<node.get_name()<<std::endl;
+    ++node;
+    std::cout<<node.get_name()<<std::endl;
+    node.set_iteration_type(gua::SceneGraph::BREADTH_FIRST);
+    ++node;
+    std::cout<<node.get_name()<<std::endl;
 
 //    auto camera_core = new gua::CameraCore(60.f, 4.f/3.f, 0.1f, 1000.f);
 //    auto camera = graph.add_node("/", "camera", camera_core);

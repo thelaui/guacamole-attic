@@ -33,7 +33,9 @@ const Eigen::Transform3f SceneGraph::Iterator::end_transform_((Eigen::Transform3
 SceneGraph::Iterator::Iterator(Node* node, IterationType type):
     current_node_(node),
     start_node_(node),
-    type_(type) {}
+    type_(type),
+    breadth_nodes_(),
+    current_depth_(0) {}
 
 int SceneGraph::Iterator::get_depth() const {
     if (current_node_) return current_node_->get_depth();
@@ -84,6 +86,10 @@ void SceneGraph::Iterator::translate(double x, double y, double z) {
     if (current_node_) current_node_->translate(x, y, z);
 }
 
+void SceneGraph::Iterator::set_iteration_type(IterationType type) {
+    type_ = type;
+}
+
 void SceneGraph::Iterator::operator ++() {
     switch (type_) {
         case SceneGraph::DEPTH_FIRST:
@@ -122,6 +128,7 @@ SceneGraph::Iterator& SceneGraph::Iterator::operator << (Core* core) {
 void SceneGraph::Iterator::find_next_node_depth() {
     if (!current_node_->get_children().empty()) {
         current_node_ = current_node_->get_children().front();
+        ++current_depth_;
     } else {
         bool found_next(false);
         while (!found_next) {
@@ -130,8 +137,10 @@ void SceneGraph::Iterator::find_next_node_depth() {
                 if (neighbour) {
                     current_node_ = neighbour;
                     found_next = true;
+                } else {
+                    current_node_ = current_node_->get_parent();
+                    --current_depth_;
                 }
-                else current_node_ = current_node_->get_parent();
             } else {
                 *this = Iterator();
                 break;
@@ -141,27 +150,21 @@ void SceneGraph::Iterator::find_next_node_depth() {
 }
 
 void SceneGraph::Iterator::find_next_node_breadth() {
-    int went_up(0);
+    if (breadth_nodes_.empty()) {
+        Iterator end;
+        for (Iterator it(start_node_); it != end; ++it)
+            breadth_nodes_[it.get_depth()].push_back(it.current_node_);
+    }
 
-    if (current_node_ == start_node_) {
-        if (!current_node_->get_children().empty())
-            current_node_ = current_node_->get_children().front();
-        else *this = Iterator();
-    } else {
-        auto neighbour(get_neighbour(current_node_));
-        while (!neighbour) {
-            if (current_node_->get_parent() == start_node_)
-                break;
-            current_node_ = current_node_->get_parent();
-            neighbour = get_neighbour(current_node_);
-            ++went_up;
-        }
-
-        current_node_ = neighbour;
-
-        while (went_up > 0) {
-            current_node_ = current_node_->get_children().front();
-            --went_up;
+    auto end(breadth_nodes_[current_depth_].end());
+    for (auto node(breadth_nodes_[current_depth_].begin()); node != end; ++node) {
+        if (*node == current_node_) {
+            if (++node != end) {
+                current_node_ = *node;
+            } else if (++current_depth_ < breadth_nodes_.size()) {
+                current_node_ = breadth_nodes_[current_depth_].front();
+            } else *this = Iterator();
+            break;
         }
     }
 }
