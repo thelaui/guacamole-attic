@@ -37,13 +37,16 @@
 		</Build>
 		<Compiler>
 			<Add option="-std=c++0x" />
-			<Add library="pthread" />
 			<Add option="-Wall" />
 			<Add directory="../include" />
 		</Compiler>
 		<Linker>
 			<Add directory="../lib" />
 		</Linker>
+		<Unit filename="data/shaders/matt.frag" />
+		<Unit filename="data/shaders/matt.vert" />
+		<Unit filename="data/shaders/shiny.frag" />
+		<Unit filename="data/shaders/shiny.vert" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

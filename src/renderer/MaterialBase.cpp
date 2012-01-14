@@ -38,7 +38,7 @@ void MaterialBase::load_materials_from(std::string const& path_to_materials) {
         unsigned suffix_pos(parse_string.find(".gmd"));
         if(parse_string.length() - suffix_pos == 4) {
             instance()->add(parse_string.substr(0, suffix_pos),
-                            std::shared_ptr<Material>(new Material(path_to_materials + parse_string)));
+                            std::shared_ptr<Material>(new Material(directory.get_directory_name() + parse_string)));
         }
     }
 }

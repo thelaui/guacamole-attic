@@ -40,10 +40,6 @@
 			<Add library="GLEW" />
 			<Add library="assimp" />
 		</Linker>
-		<Unit filename="data/shaders/matt.frag" />
-		<Unit filename="data/shaders/matt.vert" />
-		<Unit filename="data/shaders/shiny.frag" />
-		<Unit filename="data/shaders/shiny.vert" />
 		<Unit filename="include/guacamole.hpp" />
 		<Unit filename="include/renderer/DataBase.hpp" />
 		<Unit filename="include/renderer/FragmentShader.hpp" />

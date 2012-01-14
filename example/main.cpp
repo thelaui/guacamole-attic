@@ -16,8 +16,8 @@ void render(gua::SceneGraph* graph, std::vector<std::pair<const char*, const cha
 int main() {
     gua::RenderWindow::init();
 
-    gua::GeometryBase::load_objects_from("data/objects/");
-    gua::MaterialBase::load_materials_from("data/materials/");
+    gua::GeometryBase::load_objects_from("data/objects");
+    gua::MaterialBase::load_materials_from("data/materials");
 
     gua::SceneGraph graph;
 
@@ -26,7 +26,7 @@ int main() {
     camera.translate(0.5, 1, 2);
     camera.rotate(0.2, 0, 1, 0);
 
-    auto cube_core = new gua::GeometryCore("cube", "matt");
+    auto cube_core = new gua::GeometryCore("cube", "shiny");
     auto floor = graph.add_node("/", "floor", cube_core);
     floor.scale(4, 0.1, 4);
 
@@ -34,7 +34,7 @@ int main() {
     box.scale(0.5, 0.5, 0.5);
     box.translate(-1, 1, 0);
 
-    auto monkey_core = new gua::GeometryCore("monkey", "shiny");
+    auto monkey_core = new gua::GeometryCore("monkey", "matt");
     auto monkey = graph.add_node("/box", "monkey", monkey_core);
     monkey.translate(0, 2, 0);
 

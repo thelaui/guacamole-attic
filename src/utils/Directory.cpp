@@ -25,6 +25,7 @@
 #include <iostream>
 #include <dirent.h>
 
+#include "include/utils/PathParser.hpp"
 #include "include/utils/debug.hpp"
 
 namespace gua {
@@ -37,7 +38,12 @@ Directory::Directory():
 Directory::Directory(std::string const& path_name):
     path_name_(path_name),
     content_(""),
-    is_loaded_(false) {}
+    is_loaded_(false) {
+        PathParser path_parser;
+        path_parser.parse(path_name_);
+        if (!path_parser.path_is_finished_by_slash())
+            path_name_ += "/";
+    }
 
 bool Directory::is_valid() const {
     return opendir(path_name_.c_str());

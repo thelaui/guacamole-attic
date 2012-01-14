@@ -39,7 +39,7 @@ void GeometryBase::load_objects_from(std::string const& path_to_objects) {
         unsigned suffix_pos(parse_string.find(".obj"));
         if(suffix_pos != std::string::npos) {
             instance()->add(parse_string.substr(0, suffix_pos),
-                            std::shared_ptr<Geometry>(new Geometry(path_to_objects + parse_string)));
+                            std::shared_ptr<Geometry>(new Geometry(directory.get_directory_name() + parse_string)));
         }
     }
 
