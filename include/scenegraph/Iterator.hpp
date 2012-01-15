@@ -55,6 +55,24 @@ class SceneGraph::Iterator {
         Iterator(Node* node = NULL, IterationType type = DEPTH_FIRST);
 
         ////////////////////////////////////////////////////////////////////////
+        ///\brief Adds a new Node.
+        ///
+        /// This function adds a new Node beyond the Node the Iterator holds.
+        ///
+        ///\param node_name      The name of the new Node.
+        ///\param core           The core the new Node shall refer to.
+        ///\param transform      The transformation of the object the new Node
+        ///                      carries.
+        ///
+        ///\return Iterator      An Iterator on the recently added Node. If the
+        ///                      path to the parent was invalid, the returned
+        ///                      Iterator points to the SceneGraph's "end".
+        ////////////////////////////////////////////////////////////////////////
+        Iterator add_node(std::string const& node_name, Core* core = NULL,
+                          Eigen::Transform3f const& transform =
+                          (Eigen::Transform3f) Eigen::Transform3f::Identity());
+
+        ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the depth of the Iterator.
         ///
         /// This effectively returns the depth of the Node the Iterator is

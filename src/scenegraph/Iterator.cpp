@@ -37,6 +37,12 @@ SceneGraph::Iterator::Iterator(Node* node, IterationType type):
     breadth_nodes_(),
     current_depth_(0) {}
 
+SceneGraph::Iterator SceneGraph::Iterator::add_node(std::string const& node_name, Core* core, Eigen::Transform3f const& transform) {
+    Node* new_node(new Node(node_name, transform, core));
+    current_node_->add_child(new_node);
+    return Iterator(new_node);
+}
+
 int SceneGraph::Iterator::get_depth() const {
     if (current_node_) return current_node_->get_depth();
     return 0;
