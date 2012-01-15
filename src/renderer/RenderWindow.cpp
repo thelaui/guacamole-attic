@@ -25,6 +25,8 @@
 #include "include/utils/debug.hpp"
 #include "include/renderer/Geometry.hpp"
 
+#include <sstream>
+
 namespace gua {
 
 unsigned RenderWindow::last_context_id_ = 0;
@@ -115,14 +117,23 @@ RenderWindow::RenderWindow( int width, int height, std::string const& display ) 
 
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
+
     if (GLEW_OK != err)
         throw std::string("Failed to initialize GLEW!");
 
-    if (!glxewIsSupported("GLX_NV_swap_group"))
-        throw std::string("Swap groups are not supported!");
+    auto vendor_char(glGetString(GL_VENDOR));
+    std::stringstream vendor_stream;
+    for (unsigned i(0); i<sizeof(vendor_char); ++i)
+        vendor_stream << vendor_char[i];
 
-    if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 101))
-        throw std::string("Failed to join swap group");
+    std::string vendor_string(vendor_stream.str());
+    if (vendor_string.find("NVIDIA") != std::string::npos) {
+        if (!glxewIsSupported("GLX_NV_swap_group"))
+            throw std::string("Swap groups are not supported!");
+
+        if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 101))
+            throw std::string("Failed to join swap group");
+    }
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
