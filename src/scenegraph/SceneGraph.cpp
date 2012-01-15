@@ -158,6 +158,8 @@ SceneGraph::Node* SceneGraph::find_node(std::string const& path_to_node, std::st
         if (to_be_found->get_name() != node_name) {
             if (!add_missing_nodes) return NULL;
 
+            MESSAGE("A node with the name %s does not exist! Creating it with default parameters.",
+                    node_name.c_str());
             Node* new_child(new Node(node_name));
             to_be_found->add_child(new_child);
             to_be_found = new_child;
