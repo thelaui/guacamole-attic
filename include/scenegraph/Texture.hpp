@@ -1,0 +1,60 @@
+////////////////////////////////////////////////////////////////////
+/// \file
+/// \brief A class which can load and render meshes.
+//
+// CG-Beleg 2, by Felix Lauer (90404) & Simon Schneegans (90405)
+////////////////////////////////////////////////////////////////////
+
+# ifndef TEXTURE_HPP
+# define TEXTURE_HPP
+
+# include <string>
+
+////////////////////////////////////////////////////////////////////
+/// \brief A class representing texture.
+///
+/// This class allows to load texture data from a file and bind the
+/// texture to an OpenGL context.
+////////////////////////////////////////////////////////////////////
+class Texture {
+    public:
+
+        ////////////////////////////////////////////////////////////
+        /// \brief Constructor.
+        ///
+        /// This constructs a new texture form a given file.
+        /// \param file The file which contains the texture data
+        ////////////////////////////////////////////////////////////
+        Texture(std::string const& file);
+
+        ////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// This will delete all associated buffers
+        ////////////////////////////////////////////////////////////
+        ~Texture();
+
+        ////////////////////////////////////////////////////////////
+        /// \brief Bind the texture.
+        ///
+        /// This will bind the texture to the current OpenGL context.
+        ////////////////////////////////////////////////////////////
+        void bind(unsigned texPos);
+
+        ////////////////////////////////////////////////////////////
+        /// \brief Unbind a texture.
+        ///
+        /// This will unbind the texture with the given position.
+        /// \param texPos Position of the texture.
+        ////////////////////////////////////////////////////////////
+        static void unbind(unsigned texPos);
+
+    private:
+        unsigned texID_;
+};
+
+# endif //TEXTURE_HPP
+
+
+
+
