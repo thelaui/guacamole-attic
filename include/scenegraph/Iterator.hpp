@@ -64,9 +64,7 @@ class SceneGraph::Iterator {
         ///\param transform      The transformation of the object the new Node
         ///                      carries.
         ///
-        ///\return Iterator      An Iterator on the recently added Node. If the
-        ///                      path to the parent was invalid, the returned
-        ///                      Iterator points to the SceneGraph's "end".
+        ///\return Iterator      An Iterator on the recently added Node.
         ////////////////////////////////////////////////////////////////////////
         Iterator add_node(std::string const& node_name, Core* core = NULL,
                           Eigen::Transform3f const& transform =

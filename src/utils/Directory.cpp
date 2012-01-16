@@ -25,8 +25,8 @@
 #include <iostream>
 #include <dirent.h>
 
-#include "include/utils/PathParser.hpp"
-#include "include/utils/debug.hpp"
+#include "utils/PathParser.hpp"
+#include "utils/debug.hpp"
 
 namespace gua {
 
