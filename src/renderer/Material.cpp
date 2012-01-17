@@ -50,6 +50,10 @@ void Material::use(RenderContext const& context) const {
     shader_.use(context);
 }
 
+Texture const& Material::get_texture() const {
+    return texture_;
+}
+
 ShaderProgram const& Material::get_shader() const {
     return shader_;
 }

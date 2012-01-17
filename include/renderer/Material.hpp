@@ -66,6 +66,15 @@ class Material {
         void use(RenderContext const& context) const;
 
         ////////////////////////////////////////////////////////////////////////
+        /// \brief Get the internal texture.
+        ///
+        /// Returns the internally used Texture.
+        ///
+        /// \return The texture of this Material.
+        ////////////////////////////////////////////////////////////////////////
+        Texture const& get_texture() const;
+
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Get the internal shader.
         ///
         /// Returns the internally used ShaderProgram.

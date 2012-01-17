@@ -96,6 +96,14 @@ class Texture {
         static void unbind(unsigned texture_position);
 
         ////////////////////////////////////////////////////////////
+        /// \brief Get the textures id.
+        ///
+        /// This returns the textures id on the current context.
+        /// \return texture_id The texture's id.
+        ////////////////////////////////////////////////////////////
+        unsigned get_id() const;
+
+        ////////////////////////////////////////////////////////////
         /// \brief Set a texture parameter.
         ///
         /// This will set a texture parameter with the given value.
@@ -108,11 +116,15 @@ class Texture {
     private:
         unsigned width_, height_, texture_id_;
         GLvoid* data_;
+
+        void generate_texture(unsigned width, unsigned height, unsigned color_depth = GL_RGB32F,
+                              unsigned color_format = GL_RGB, unsigned type = GL_FLOAT);
 };
 
+}
 # endif //TEXTURE_HPP
 
-}
+
 
 
 

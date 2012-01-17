@@ -26,9 +26,9 @@
 #include <assimp/aiPostProcess.h>
 #include <assimp/aiScene.h>
 
-#include "include/renderer/RenderContext.hpp"
-#include "include/renderer/ShaderProgram.hpp"
-#include "include/utils/debug.hpp"
+#include "renderer/RenderContext.hpp"
+#include "renderer/ShaderProgram.hpp"
+#include "utils/debug.hpp"
 
 namespace gua {
 
@@ -90,6 +90,15 @@ void Mesh::upload_to(RenderContext const& context) const {
         glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*mesh_->mNumVertices, mesh_->mNormals, GL_STATIC_DRAW);
         glEnableVertexAttribArray(ShaderProgram::normal_location);
         glVertexAttribPointer(ShaderProgram::normal_location, 3, GL_FLOAT, 0, 0, 0);
+    }
+
+    // buffer for texture coords
+    if (mesh_->HasTextureCoords(0)) {
+        glGenBuffers(1, &buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*mesh_->mNumVertices, mesh_->mTextureCoords, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ShaderProgram::texture_location);
+        glVertexAttribPointer(ShaderProgram::texture_location, 3, GL_FLOAT, 0, 0, 0);
     }
 
     // unbind buffers

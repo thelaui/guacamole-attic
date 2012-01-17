@@ -45,6 +45,8 @@
 		</Linker>
 		<Unit filename="data/shaders/matt.frag" />
 		<Unit filename="data/shaders/matt.vert" />
+		<Unit filename="data/shaders/red.frag" />
+		<Unit filename="data/shaders/red.vert" />
 		<Unit filename="data/shaders/shiny.frag" />
 		<Unit filename="data/shaders/shiny.vert" />
 		<Unit filename="main.cpp" />

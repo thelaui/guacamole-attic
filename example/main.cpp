@@ -26,7 +26,7 @@ int main() {
     camera.translate(0.5, 1, 2);
     camera.rotate(0.2, 0, 1, 0);
 
-    auto cube_core = new gua::GeometryCore("cube", "shiny");
+    auto cube_core = new gua::GeometryCore("cube", "red");
     auto floor = graph.add_node("/", "floor", cube_core);
     floor.scale(4, 0.1, 4);
 
@@ -47,7 +47,7 @@ int main() {
     camera.rotate(0.2, 0, 1, 0);
 
     std::vector<std::pair<const char*, const char*>> windows;
-    windows.push_back(std::make_pair("camera2", ":0.0"));
+   // windows.push_back(std::make_pair("camera2", ":0.0"));
     windows.push_back(std::make_pair("camera", ":0.0"));
 
     std::thread render_thread(render, &graph, windows);

@@ -27,6 +27,7 @@
 
 #include "renderer/FragmentShader.hpp"
 #include "renderer/VertexShader.hpp"
+#include "renderer/Texture.hpp"
 #include "renderer/Uniform.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,6 +108,16 @@ class ShaderProgram {
         void set_model_matrix(RenderContext const& context, Eigen::Matrix4f const& model_matrix) const;
 
         ////////////////////////////////////////////////////////////////////////
+        /// \brief Sets the diffuse texture.
+        ///
+        ///
+        /// \param context      The context to be affected.
+        /// \param texture      The matrix which should be used for the
+        ///                     diffuse texture.
+        ////////////////////////////////////////////////////////////////////////
+        void set_diffuse(RenderContext const& context, Texture const& texture) const;
+
+        ////////////////////////////////////////////////////////////////////////
         /// \brief The layout location of the vertex attribute.
         ////////////////////////////////////////////////////////////////////////
         const static unsigned vertex_location = 0;
@@ -116,6 +127,11 @@ class ShaderProgram {
         ////////////////////////////////////////////////////////////////////////
         const static unsigned normal_location = 1;
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief The layout location of the texture attribute.
+        ////////////////////////////////////////////////////////////////////////
+        const static unsigned texture_location = 2;
+
     private:
         void upload_to(RenderContext const& context) const;
         mutable std::vector<unsigned> program_ids_;
@@ -124,6 +140,7 @@ class ShaderProgram {
         mutable std::vector<Uniform> view_matrix_;
         mutable std::vector<Uniform> model_matrix_;
         mutable std::vector<Uniform> normal_matrix_;
+        mutable std::vector<Uniform> diffuse_;
 
         VertexShader v_shader_;
         FragmentShader f_shader_;

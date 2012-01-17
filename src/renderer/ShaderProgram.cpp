@@ -68,6 +68,11 @@ void ShaderProgram::set_model_matrix(RenderContext const& context, Eigen::Matrix
     }
 }
 
+void ShaderProgram::set_diffuse(RenderContext const& context, Texture const& texture) const {
+     if (diffuse_.size() > context.id)
+        glUniform1i(diffuse_[context.id].location_, texture.get_id());
+}
+
 void ShaderProgram::upload_to(RenderContext const& context) const {
 
     if (program_ids_.size() <= context.id) {
@@ -76,6 +81,7 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
         view_matrix_.resize(context.id+1);
         model_matrix_.resize(context.id+1);
         normal_matrix_.resize(context.id+1);
+        diffuse_.resize(context.id+1);
     }
 
     unsigned program_id = glCreateProgram();
@@ -90,13 +96,16 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
     view_matrix_[context.id].location_ = glGetUniformLocation(program_id, "view_matrix");
     model_matrix_[context.id].location_ = glGetUniformLocation(program_id, "model_matrix");
     normal_matrix_[context.id].location_ = glGetUniformLocation(program_id, "normal_matrix");
+    diffuse_[context.id].location_ = glGetUniformLocation(program_id, "diffuse");
 
     glBindAttribLocation(program_id, vertex_location, "in_position");
 	glBindAttribLocation(program_id, normal_location, "in_normal");
+	glBindAttribLocation(program_id, texture_location, "in_tex_coord");
 
 	glBindFragDataLocation(program_id, 3, "out_color");
 
 	program_ids_[context.id] = program_id;
+
 }
 
 }

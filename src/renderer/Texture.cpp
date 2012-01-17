@@ -25,6 +25,7 @@
 #include "utils/debug.hpp"
 
 #include <IL/il.h>
+#include <iostream>
 
 namespace gua {
 
@@ -40,21 +41,7 @@ Texture::Texture(unsigned width, unsigned height, unsigned color_depth,
                  height_(height),
                  texture_id_(0),
                  data_(NULL) {
-
-    // generate texture id
-    glGenTextures(1, &texture_id_);
-
-    if (texture_id_ == 0) {
-        // OpenGL was not able to generate additional texture
-        return;
-    }
-
-    glEnable(GL_TEXTURE_2D);
-    // bind texture object
-    glBindTexture(GL_TEXTURE_2D, texture_id_);
-    // load data as texture
-    glTexImage2D(GL_TEXTURE_2D, 0, color_depth, width, height,
-                 0, color_format, type, data_);
+    generate_texture(width, height, color_depth, color_format, type);
 }
 
 Texture::Texture(std::string const& file):
@@ -68,8 +55,8 @@ Texture::Texture(std::string const& file):
         ERROR("Failed to load texture %s!", file.c_str());
 
     data_ = ilGetData();
-    Texture(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), GL_RGB,
-            GL_RGB, GL_UNSIGNED_BYTE);
+    generate_texture(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), GL_RGB,
+                     GL_RGB, GL_UNSIGNED_BYTE);
 
     //setting Texture Parameters
     set_parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -97,9 +84,31 @@ void Texture::unbind(unsigned texture_position){
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+unsigned Texture::get_id() const{
+    return texture_id_;
+}
+
 void Texture::set_parameter(unsigned parameter_name, unsigned value) {
     glTexParameteri(GL_TEXTURE_2D, parameter_name, value);
 }
 
+void Texture::generate_texture(unsigned width, unsigned height, unsigned color_depth,
+                               unsigned color_format, unsigned type) {
+
+    // generate texture id
+    glGenTextures(1, &texture_id_);
+
+    if (texture_id_ == 0) {
+        // OpenGL was not able to generate additional texture
+        return;
+    }
+
+    glEnable(GL_TEXTURE_2D);
+    // bind texture object
+    glBindTexture(GL_TEXTURE_2D, texture_id_);
+    // load data as texture
+    glTexImage2D(GL_TEXTURE_2D, 0, color_depth, width, height,
+                 0, color_format, type, data_);
 }
 
+}
