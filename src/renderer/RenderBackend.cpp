@@ -47,6 +47,9 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
     if (camera) {
         Eigen::Matrix4f view_matrix(camera->transform_.inverse());
 
+        // --- bind g buffer
+        // --- use fill shader
+
         for (auto& geometry_core: node_list) {
 
             auto material = MaterialBase::instance()->get(geometry_core->material_);
@@ -67,6 +70,17 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
                 WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core->geometry_.c_str());
             }
         }
+
+        // --- unuse fill shader
+        // --- unbind g buffer
+
+        // --- bind light sphere
+        // --- bind deferred shader
+        // --- use g buffer as sampler3D
+
+        // --- render lights
+
+        // --- unbind stuff
     }
 
     window_.finish_frame();

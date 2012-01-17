@@ -43,9 +43,9 @@ void FrameBufferObject::attach_buffer(unsigned buffer_type, unsigned buffer_id, 
         case GL_TEXTURE_1D:
             glFramebufferTexture1D(GL_FRAMEBUFFER, attachment_id, GL_TEXTURE_1D, buffer_id, mip_level);
             break;
-//        case GL_TEXTURE_2D_ARRAY:
-//            glFrameBufferTexture(GL_FRAMEBUFFER, attachment_id, buffer_id, z_slice);
-//            break;
+        case GL_TEXTURE_2D_ARRAY:
+            glFramebufferTexture(GL_FRAMEBUFFER, attachment_id, buffer_id, z_slice);
+            break;
         case GL_TEXTURE_3D:
             glFramebufferTexture3D(GL_FRAMEBUFFER, attachment_id, GL_TEXTURE_3D, buffer_id, mip_level, z_slice);
             break;
