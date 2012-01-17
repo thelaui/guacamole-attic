@@ -32,6 +32,7 @@
 namespace gua {
 
 Material::Material():
+    texture_(),
     shader_() {}
 
 Material::Material(std::string const& file_name) {
@@ -57,6 +58,7 @@ void Material::construct_from_file(TextFile const& file) {
     std::stringstream parse_stream(content);
 
     std::string current_string;
+    std::string texture_string;
     std::string vertex_string;
     std::string fragment_string;
 
@@ -65,6 +67,8 @@ void Material::construct_from_file(TextFile const& file) {
             parse_stream >> current_string;
             parse_stream >> current_string;
             parse_stream >> current_string;
+        } else if (current_string == "texture:") {
+            parse_stream >> texture_string;
         } else if (current_string == "vertex_shader:") {
             parse_stream >> vertex_string;
         } else if (current_string == "fragment_shader:") {
@@ -77,18 +81,25 @@ void Material::construct_from_file(TextFile const& file) {
     PathParser location_parser;
     location_parser.parse(file.get_file_name());
 
-    PathParser shader_parser;
-    shader_parser.parse(vertex_string);
-    shader_parser.make_absolute(location_parser.get_path(true));
+    PathParser path_parser;
 
-    VertexShader vertex_shader(shader_parser.get_path());
+    if (texture_string.length() > 0) {
+        path_parser.parse(texture_string);
+        path_parser.make_absolute(location_parser.get_path(true));
+        texture_ = Texture(path_parser.get_path());
+    }
 
-    shader_parser.parse(fragment_string);
-    shader_parser.make_absolute(location_parser.get_path(true));
+    path_parser.parse(vertex_string);
+    path_parser.make_absolute(location_parser.get_path(true));
 
-    FragmentShader fragment_shader(shader_parser.get_path());
+    VertexShader vertex_shader(path_parser.get_path());
 
-    shader_ = gua::ShaderProgram(vertex_shader, fragment_shader);
+    path_parser.parse(fragment_string);
+    path_parser.make_absolute(location_parser.get_path(true));
+
+    FragmentShader fragment_shader(path_parser.get_path());
+
+    shader_ = ShaderProgram(vertex_shader, fragment_shader);
 }
 
 }

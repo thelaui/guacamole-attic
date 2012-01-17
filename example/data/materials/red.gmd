@@ -1,0 +1,3 @@
+texture: ../textures/test_texture.jpg
+vertex_shader: ../shaders/matt.vert
+fragment_shader: ../shaders/matt.frag

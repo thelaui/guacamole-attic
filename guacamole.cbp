@@ -44,6 +44,7 @@
 		<Unit filename="include/guacamole.hpp" />
 		<Unit filename="include/renderer/DataBase.hpp" />
 		<Unit filename="include/renderer/FragmentShader.hpp" />
+		<Unit filename="include/renderer/FrameBufferObject.hpp" />
 		<Unit filename="include/renderer/Geometry.hpp" />
 		<Unit filename="include/renderer/GeometryBase.hpp" />
 		<Unit filename="include/renderer/Material.hpp" />

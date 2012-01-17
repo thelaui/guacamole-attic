@@ -24,6 +24,7 @@
 #define MATERIAL_HPP
 
 #include "renderer/ShaderProgram.hpp"
+#include "renderer/Texture.hpp"
 
 namespace gua {
 
@@ -74,6 +75,7 @@ class Material {
         ShaderProgram const& get_shader() const;
 
     private:
+        Texture texture_;
         ShaderProgram shader_;
 
         void construct_from_file(TextFile const& file);

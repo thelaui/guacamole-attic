@@ -48,7 +48,6 @@
 		<Unit filename="data/shaders/shiny.frag" />
 		<Unit filename="data/shaders/shiny.vert" />
 		<Unit filename="main.cpp" />
-		<Unit filename="../include/renderer/FrameBufferObject.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

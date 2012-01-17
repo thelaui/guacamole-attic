@@ -25,6 +25,7 @@
 #include "include/utils/debug.hpp"
 #include "include/renderer/Geometry.hpp"
 
+#include <IL/il.h>
 #include <sstream>
 
 namespace gua {
@@ -165,6 +166,7 @@ void RenderWindow::draw(std::shared_ptr<Geometry> const& geometry) const {
 }
 
 void RenderWindow::init() {
+    ilInit();
     XInitThreads();
     glXCreateContextAttribsARB = (GLXContext(*)(Display* dpy, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list))glXGetProcAddressARB((GLubyte*)"glXCreateContextAttribsARB");
     glXChooseFBConfig = (GLXFBConfig*(*)(Display *dpy, int screen, const int *attrib_list, int *nelements))glXGetProcAddressARB((GLubyte*)"glXChooseFBConfig");

@@ -39,6 +39,14 @@ class Texture {
         ////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
+        /// This constructs a new texture.
+        ///
+        ////////////////////////////////////////////////////////////
+        Texture();
+
+        ////////////////////////////////////////////////////////////
+        /// \brief Constructor.
+        ///
         /// This constructs a new texture with the given parameters.
         ///
         /// \param width        The width of the resulting texture.
@@ -98,7 +106,7 @@ class Texture {
         void set_parameter(unsigned parameter_name, unsigned value);
 
     private:
-        unsigned width_, height_, tex_id_;
+        unsigned width_, height_, texture_id_;
         GLvoid* data_;
 };
 
