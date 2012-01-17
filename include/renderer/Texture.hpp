@@ -85,7 +85,7 @@ class Texture {
         ///
         ///\param layer_position The position of the layer.
         ////////////////////////////////////////////////////////////
-        void bind(unsigned layer_position);
+        void bind(unsigned layer_position) const;
 
         ////////////////////////////////////////////////////////////
         /// \brief Unbind a texture.

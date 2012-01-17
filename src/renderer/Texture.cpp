@@ -87,12 +87,12 @@ Texture::~Texture() {
     glDeleteTextures(1, &texture_id_);
 }
 
-void Texture::bind(unsigned layer_position) {
+void Texture::bind(unsigned layer_position) const{
     glActiveTexture(GL_TEXTURE0 + layer_position);
     glBindTexture(GL_TEXTURE_2D, texture_id_);
 }
 
-void Texture::unbind(unsigned texture_position) {
+void Texture::unbind(unsigned texture_position){
     glActiveTexture(GL_TEXTURE0 + texture_position);
     glBindTexture(GL_TEXTURE_2D, 0);
 }

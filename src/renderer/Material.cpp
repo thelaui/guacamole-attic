@@ -46,6 +46,7 @@ Material::Material(std::string const& file_name) {
 }
 
 void Material::use(RenderContext const& context) const {
+    texture_.bind(0);
     shader_.use(context);
 }
 
