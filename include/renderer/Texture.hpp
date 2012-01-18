@@ -87,27 +87,17 @@ class Texture {
         /// with the given layer.
         ///
         ///\param context  The current context.
-        ///\param layer_position The position of the layer.
+        ///\param texture_type The type of the texture.
         ////////////////////////////////////////////////////////////
-        void bind(RenderContext const& context, unsigned layer_position) const;
+        void bind(RenderContext const& context, unsigned texture_type) const;
 
         ////////////////////////////////////////////////////////////
         /// \brief Unbind a texture.
         ///
         /// This will unbind the texture with the given position.
-        /// \param texture_position Position of the texture.
+        /// \param texture_type The type of the texture.
         ////////////////////////////////////////////////////////////
-        static void unbind(unsigned texture_position);
-
-        ////////////////////////////////////////////////////////////
-        /// \brief Get the textures id.
-        ///
-        /// This returns the textures id on the current context.
-        ///
-        /// \param context  The current context.
-        /// \return texture_id The texture's id.
-        ////////////////////////////////////////////////////////////
-        unsigned get_id(RenderContext const& context) const;
+        static void unbind(unsigned texture_type);
 
         ////////////////////////////////////////////////////////////
         /// \brief Set a texture parameter.
@@ -121,7 +111,7 @@ class Texture {
 
     private:
         unsigned width_, height_, color_depth_, color_format_, type_;
-        GLvoid* data_;
+        std::vector<unsigned char> data_;
 
         mutable std::vector<unsigned> texture_ids_;
 

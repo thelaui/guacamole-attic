@@ -57,6 +57,13 @@ class Material {
         Material(std::string const& file_name);
 
         ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
+        ~Material();
+
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Applies the Material.
         ///
         /// Any preceeding draw call will use this Material.
@@ -72,7 +79,7 @@ class Material {
         ///
         /// \return The texture of this Material.
         ////////////////////////////////////////////////////////////////////////
-        Texture const& get_texture() const;
+        Texture* get_texture() const;
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the internal shader.
@@ -84,7 +91,7 @@ class Material {
         ShaderProgram const& get_shader() const;
 
     private:
-        Texture texture_;
+        Texture* texture_;
         ShaderProgram shader_;
 
         void construct_from_file(TextFile const& file);

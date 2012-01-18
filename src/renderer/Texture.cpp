@@ -35,7 +35,7 @@ Texture::Texture():
     color_depth_(0),
     color_format_(0),
     type_(0),
-    data_(NULL),
+    data_(),
     texture_ids_() {}
 
 Texture::Texture(unsigned width, unsigned height, unsigned color_depth,
@@ -45,7 +45,7 @@ Texture::Texture(unsigned width, unsigned height, unsigned color_depth,
                  color_depth_(color_depth),
                  color_format_(color_format),
                  type_(type),
-                 data_(NULL),
+                 data_(),
                  texture_ids_() {}
 
 Texture::Texture(std::string const& file):
@@ -54,7 +54,7 @@ Texture::Texture(std::string const& file):
     color_depth_(0),
     color_format_(0),
     type_(0),
-    data_(NULL),
+    data_(),
     texture_ids_() {
 
     ILuint image_id (0);
@@ -64,12 +64,15 @@ Texture::Texture(std::string const& file):
     if (!ilLoadImage(file.c_str()))
         ERROR("Failed to load texture %s!", file.c_str());
 
-    data_ = ilGetData();
+    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+
     width_ = ilGetInteger(IL_IMAGE_WIDTH);
     height_ = ilGetInteger(IL_IMAGE_HEIGHT);
-    color_depth_ = GL_RGB;
-    color_format_ = GL_RGB;
-    type_ = (GL_UNSIGNED_BYTE);
+    color_depth_ = GL_RGBA;
+    color_format_ = GL_RGBA;
+    type_ = GL_UNSIGNED_BYTE;
+
+    data_ = std::vector<unsigned char>(ilGetData(), ilGetData()+height_*width_*4);
 
     ilBindImage(0);
     ilDeleteImage(image_id);
@@ -83,21 +86,17 @@ Texture::~Texture() {
         }
 }
 
-void Texture::bind(RenderContext const& context, unsigned layer_position) const {
+void Texture::bind(RenderContext const& context, unsigned texture_type) const {
     if (texture_ids_.size() <= context.id || texture_ids_[context.id] == 0)
         upload_to(context);
 
-    glActiveTexture(GL_TEXTURE0 + layer_position);
+    glActiveTexture(GL_TEXTURE0 + texture_type);
     glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
 }
 
-void Texture::unbind(unsigned texture_position) {
-    glActiveTexture(GL_TEXTURE0 + texture_position);
+void Texture::unbind(unsigned texture_type) {
+    glActiveTexture(GL_TEXTURE0 + texture_type);
     glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-unsigned Texture::get_id(RenderContext const& context) const {
-    return texture_ids_[context.id];
 }
 
 void Texture::set_parameter(unsigned parameter_name, unsigned value) const {
@@ -105,8 +104,6 @@ void Texture::set_parameter(unsigned parameter_name, unsigned value) const {
 }
 
 void Texture::upload_to(RenderContext const& context) const{
-
-
     // generate texture id
     unsigned texture_id(0);
     glGenTextures(1, &texture_id);
@@ -123,9 +120,6 @@ void Texture::upload_to(RenderContext const& context) const{
     glEnable(GL_TEXTURE_2D);
     // bind texture object
     glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
-    // load data as texture
-    glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
-                 0, color_format_, type_, data_);
 
     //setting Texture Parameters
     set_parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -134,6 +128,11 @@ void Texture::upload_to(RenderContext const& context) const{
     set_parameter(GL_TEXTURE_WRAP_S, GL_CLAMP);
     set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);
 
+    // load data as texture
+    glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
+                 0, color_format_, type_, &(*data_.begin()));
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 }

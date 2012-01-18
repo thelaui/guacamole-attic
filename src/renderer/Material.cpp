@@ -32,10 +32,12 @@
 namespace gua {
 
 Material::Material():
-    texture_(),
+    texture_(NULL),
     shader_() {}
 
-Material::Material(std::string const& file_name) {
+Material::Material(std::string const& file_name):
+    texture_(NULL) {
+
     TextFile file(file_name);
 
     if (file.is_valid()) {
@@ -45,12 +47,18 @@ Material::Material(std::string const& file_name) {
     }
 }
 
-void Material::use(RenderContext const& context) const {
-    texture_.bind(context, 0);
-    shader_.use(context);
+Material::~Material() {
+    if (texture_)
+        delete texture_;
 }
 
-Texture const& Material::get_texture() const {
+void Material::use(RenderContext const& context) const {
+    shader_.use(context);
+    if (texture_)
+        texture_->bind(context, 0);
+}
+
+Texture* Material::get_texture() const {
     return texture_;
 }
 
@@ -91,7 +99,7 @@ void Material::construct_from_file(TextFile const& file) {
     if (texture_string.length() > 0) {
         path_parser.parse(texture_string);
         path_parser.make_absolute(location_parser.get_path(true));
-        texture_ = Texture(path_parser.get_path());
+        texture_ = new Texture(path_parser.get_path());
     }
 
     path_parser.parse(vertex_string);

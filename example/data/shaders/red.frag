@@ -40,6 +40,7 @@ void main() {
 //
 //	out_color = vec4(intensityTop*top + intensityFill*fill + amb, 1.0);
 
-    out_color = vec4(texture2D(diffuse, tex_coord).rgb, 1);
+    //out_color = vec4(tex_coord, 0, 1);
+    out_color = texture2D(diffuse, tex_coord);
     //out_color = vec4(1,0,0,1);
 }

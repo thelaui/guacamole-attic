@@ -60,7 +60,6 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
                 material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
                 material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
                 material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
-                material->get_shader().set_diffuse(window_.get_context(), material->get_texture());
             } else {
                 WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core->material_.c_str());
             }

@@ -94,11 +94,18 @@ void Mesh::upload_to(RenderContext const& context) const {
 
     // buffer for texture coords
     if (mesh_->HasTextureCoords(0)) {
+        std::vector<float> uv_array(mesh_->mNumVertices * 2);
+
+        for (unsigned int k = 0; k < mesh_->mNumVertices; ++k) {
+            uv_array[k*2]   = mesh_->mTextureCoords[0][k].x;
+            uv_array[k*2+1] = mesh_->mTextureCoords[0][k].y;
+        }
+
         glGenBuffers(1, &buffer);
         glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*mesh_->mNumVertices, mesh_->mTextureCoords, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*mesh_->mNumUVComponents[0]*mesh_->mNumVertices, &(*uv_array.begin()), GL_STATIC_DRAW);
         glEnableVertexAttribArray(ShaderProgram::texture_location);
-        glVertexAttribPointer(ShaderProgram::texture_location, 3, GL_FLOAT, 0, 0, 0);
+        glVertexAttribPointer(ShaderProgram::texture_location, mesh_->mNumUVComponents[0], GL_FLOAT, 0, 0, 0);
     }
 
     // unbind buffers

@@ -108,16 +108,6 @@ class ShaderProgram {
         void set_model_matrix(RenderContext const& context, Eigen::Matrix4f const& model_matrix) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Sets the diffuse texture.
-        ///
-        ///
-        /// \param context      The context to be affected.
-        /// \param texture      The matrix which should be used for the
-        ///                     diffuse texture.
-        ////////////////////////////////////////////////////////////////////////
-        void set_diffuse(RenderContext const& context, Texture const& texture) const;
-
-        ////////////////////////////////////////////////////////////////////////
         /// \brief The layout location of the vertex attribute.
         ////////////////////////////////////////////////////////////////////////
         const static unsigned vertex_location = 0;
@@ -140,7 +130,6 @@ class ShaderProgram {
         mutable std::vector<Uniform> view_matrix_;
         mutable std::vector<Uniform> model_matrix_;
         mutable std::vector<Uniform> normal_matrix_;
-        mutable std::vector<Uniform> diffuse_;
 
         VertexShader v_shader_;
         FragmentShader f_shader_;
