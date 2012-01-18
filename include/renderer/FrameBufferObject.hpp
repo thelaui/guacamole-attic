@@ -20,12 +20,16 @@
 /// \brief Declaration of the FrameBufferObject class.
 ////////////////////////////////////////////////////////////////////////////////
 
-# ifndef TEXTURE_HPP
-# define TEXTURE_HPP
+# ifndef FRAMEBUFFEROBJECT_HPP
+# define FRAMEBUFFEROBJECT_HPP
 
 #include <GL/glew.h>
+#include <vector>
 
 namespace gua {
+
+class RenderContext;
+
 ////////////////////////////////////////////////////////////////////
 /// \brief A class representing a FrameBufferObject.
 ///
@@ -54,14 +58,16 @@ class FrameBufferObject {
         ///
         /// This will attach a buffer to the FrameBufferObject.
         ///
-        ///\param buffer_type   The GL-type of the buffer
+        /// \param context The RenderContext to bind to.
+        /// \param buffer_type   The GL-type of the buffer
         ///                     (e.g. GL_TEXTURE_2D).
-        ///\param buffer_id     The buffer's id.
-        ///\param attachment_id The buffer's attachment id.
-        ///\param mip_level     The buffer's mip_level.
-        ///\param z_slice       The buffer's z_slice.
+        /// \param buffer_id     The buffer's id.
+        /// \param attachment_id The buffer's attachment id.
+        /// \param mip_level     The buffer's mip_level.
+        /// \param z_slice       The buffer's z_slice.
         ////////////////////////////////////////////////////////////
-        void attach_buffer(unsigned buffer_type, unsigned buffer_id,
+        void attach_buffer(RenderContext const& context,
+                           unsigned buffer_type, unsigned buffer_id,
                            unsigned attachment_id, int mip_level = 0,
                            int z_slice = 0);
 
@@ -71,9 +77,11 @@ class FrameBufferObject {
         /// This will bind a FrameBufferObject to the current
         /// OpenGL context.
         ///
-        ///\param attachment_id The id of the attachment to be bound.
+        /// \param context The RenderContext to bind to.
+        /// \param attachment_id The id of the attachment to be bound.
         ////////////////////////////////////////////////////////////
-        void bind(unsigned attachment_id = GL_COLOR_ATTACHMENT0);
+        void bind(RenderContext const& context,
+                  std::vector<unsigned> const& attachments);
 
         ////////////////////////////////////////////////////////////
         /// \brief Unbind the FrameBufferObject.
@@ -83,12 +91,16 @@ class FrameBufferObject {
         void unbind();
 
     private:
-        unsigned fbo_id_;
+        void upload_to(RenderContext const& context) const;
+
+        mutable std::vector<unsigned> fbos_;
 };
 
-# endif //TEXTURE_HPP
-
 }
+
+# endif //FRAMEBUFFEROBJECT_HPP
+
+
 
 
 

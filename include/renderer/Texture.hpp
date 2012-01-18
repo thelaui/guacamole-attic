@@ -109,6 +109,13 @@ class Texture {
         ////////////////////////////////////////////////////////////
         void set_parameter(unsigned parameter_name, unsigned value) const;
 
+        ////////////////////////////////////////////////////////////
+        /// \brief Get the Texture-ID.
+        ///
+        /// \return The texture's ID
+        ////////////////////////////////////////////////////////////
+        unsigned get_id(RenderContext const& context) const;
+
     private:
         unsigned width_, height_, color_depth_, color_format_, type_;
         std::vector<unsigned char> data_;

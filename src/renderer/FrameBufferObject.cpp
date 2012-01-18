@@ -22,22 +22,25 @@
 
 #include "renderer/FrameBufferObject.hpp"
 
+#include "renderer/RenderContext.hpp"
+
 #include <GL/gl.h>
 
 namespace gua {
 
 FrameBufferObject::FrameBufferObject():
-    fbo_id_(0) {
-    glGenFramebuffers(1, &fbo_id_);
-}
+    fbos_() {}
 
 FrameBufferObject::~FrameBufferObject() {
-    glDeleteFramebuffers(1, &fbo_id_);
+    for (auto fbo: fbos_)
+        if (fbo)
+            glDeleteFramebuffers(1, &fbo);
 }
 
-void FrameBufferObject::attach_buffer(unsigned buffer_type, unsigned buffer_id, unsigned attachment_id,
+void FrameBufferObject::attach_buffer(RenderContext const& context,
+                                      unsigned buffer_type, unsigned buffer_id, unsigned attachment_id,
                                       int mip_level, int z_slice) {
-    bind();
+    bind(context, {});
 
     switch (buffer_type) {
         case GL_TEXTURE_1D:
@@ -57,15 +60,39 @@ void FrameBufferObject::attach_buffer(unsigned buffer_type, unsigned buffer_id, 
     unbind();
 }
 
-void FrameBufferObject::bind(unsigned attachment_id) {
-    glBindFramebuffer(GL_FRAMEBUFFER, fbo_id_);
-    glDrawBuffer(attachment_id);
+void FrameBufferObject::bind(RenderContext const& context,
+                             std::vector<unsigned> const& attachments) {
+    // upload to GPU if neccessary
+    if (fbos_.size() <= context.id || fbos_[context.id] == 0) {
+        upload_to(context);
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, fbos_[context.id]);
+
+    glDrawBuffer(GL_COLOR_ATTACHMENT0);
+
+    glViewport(0, 0, 800, 600);
+
+    if (attachments.size() > 0)
+        glDrawBuffers(attachments.size(), &(*attachments.begin()));
 }
 
 void FrameBufferObject::unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void FrameBufferObject::upload_to(RenderContext const& context) const {
+    if (fbos_.size() <= context.id) {
+        fbos_.resize(context.id+1);
+    }
+
+    unsigned fbo_id(0);
+    glGenFramebuffers(1, &fbo_id);
+    fbos_[context.id] = fbo_id;
 }
+
+}
+
+
 
 

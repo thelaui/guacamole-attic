@@ -103,6 +103,13 @@ void Texture::set_parameter(unsigned parameter_name, unsigned value) const {
     glTexParameteri(GL_TEXTURE_2D, parameter_name, value);
 }
 
+unsigned Texture::get_id(RenderContext const& context) const {
+    if (texture_ids_.size() <= context.id || texture_ids_[context.id] == 0)
+        upload_to(context);
+
+    return texture_ids_[context.id];
+}
+
 void Texture::upload_to(RenderContext const& context) const{
     // generate texture id
     unsigned texture_id(0);
