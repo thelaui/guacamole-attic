@@ -70,7 +70,7 @@ void ShaderProgram::set_model_matrix(RenderContext const& context, Eigen::Matrix
 
 void ShaderProgram::set_diffuse(RenderContext const& context, Texture const& texture) const {
      if (diffuse_.size() > context.id)
-        glUniform1i(diffuse_[context.id].location_, texture.get_id());
+        glUniform1i(diffuse_[context.id].location_, texture.get_id(context));
 }
 
 void ShaderProgram::upload_to(RenderContext const& context) const {

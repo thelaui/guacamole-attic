@@ -23,7 +23,10 @@
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 
+#include "renderer/RenderContext.hpp"
+
 #include <string>
+#include <vector>
 #include <GL/glew.h>
 
 namespace gua {
@@ -83,9 +86,10 @@ class Texture {
         /// This will bind the texture to the current OpenGL context
         /// with the given layer.
         ///
+        ///\param context  The current context.
         ///\param layer_position The position of the layer.
         ////////////////////////////////////////////////////////////
-        void bind(unsigned layer_position) const;
+        void bind(RenderContext const& context, unsigned layer_position) const;
 
         ////////////////////////////////////////////////////////////
         /// \brief Unbind a texture.
@@ -99,9 +103,11 @@ class Texture {
         /// \brief Get the textures id.
         ///
         /// This returns the textures id on the current context.
+        ///
+        /// \param context  The current context.
         /// \return texture_id The texture's id.
         ////////////////////////////////////////////////////////////
-        unsigned get_id() const;
+        unsigned get_id(RenderContext const& context) const;
 
         ////////////////////////////////////////////////////////////
         /// \brief Set a texture parameter.
@@ -111,14 +117,15 @@ class Texture {
         /// \param parameter_name The name of the parameter.
         /// \param value          The new value of the parameter.
         ////////////////////////////////////////////////////////////
-        void set_parameter(unsigned parameter_name, unsigned value);
+        void set_parameter(unsigned parameter_name, unsigned value) const;
 
     private:
-        unsigned width_, height_, texture_id_;
+        unsigned width_, height_, color_depth_, color_format_, type_;
         GLvoid* data_;
 
-        void generate_texture(unsigned width, unsigned height, unsigned color_depth = GL_RGB32F,
-                              unsigned color_format = GL_RGB, unsigned type = GL_FLOAT);
+        mutable std::vector<unsigned> texture_ids_;
+
+        void upload_to(RenderContext const& context) const;
 };
 
 }

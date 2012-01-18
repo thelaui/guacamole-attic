@@ -20,10 +20,10 @@
 /// \brief Definition of the RenderWindow class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/RenderWindow.hpp"
+#include "renderer/RenderWindow.hpp"
 
-#include "include/utils/debug.hpp"
-#include "include/renderer/Geometry.hpp"
+#include "utils/debug.hpp"
+#include "renderer/Geometry.hpp"
 
 #include <IL/il.h>
 #include <sstream>

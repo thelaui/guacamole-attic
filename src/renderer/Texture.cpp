@@ -32,20 +32,30 @@ namespace gua {
 Texture::Texture():
     width_(0),
     height_(0),
-    texture_id_(0),
-    data_(NULL) {}
+    color_depth_(0),
+    color_format_(0),
+    type_(0),
+    data_(NULL),
+    texture_ids_() {}
 
 Texture::Texture(unsigned width, unsigned height, unsigned color_depth,
                  unsigned color_format, unsigned type):
                  width_(width),
                  height_(height),
-                 texture_id_(0),
-                 data_(NULL) {
-    generate_texture(width, height, color_depth, color_format, type);
-}
+                 color_depth_(color_depth),
+                 color_format_(color_format),
+                 type_(type),
+                 data_(NULL),
+                 texture_ids_() {}
 
 Texture::Texture(std::string const& file):
-    texture_id_(0) {
+    width_(0),
+    height_(0),
+    color_depth_(0),
+    color_format_(0),
+    type_(0),
+    data_(NULL),
+    texture_ids_() {
 
     ILuint image_id (0);
     ilGenImages(1, &image_id);
@@ -55,8 +65,67 @@ Texture::Texture(std::string const& file):
         ERROR("Failed to load texture %s!", file.c_str());
 
     data_ = ilGetData();
-    generate_texture(ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT), GL_RGB,
-                     GL_RGB, GL_UNSIGNED_BYTE);
+    width_ = ilGetInteger(IL_IMAGE_WIDTH);
+    height_ = ilGetInteger(IL_IMAGE_HEIGHT);
+    color_depth_ = GL_RGB;
+    color_format_ = GL_RGB;
+    type_ = (GL_UNSIGNED_BYTE);
+
+    ilBindImage(0);
+    ilDeleteImage(image_id);
+}
+
+Texture::~Texture() {
+    for (auto texture_id : texture_ids_)
+        if (texture_id) {
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glDeleteTextures(1, &texture_id);
+        }
+}
+
+void Texture::bind(RenderContext const& context, unsigned layer_position) const {
+    if (texture_ids_.size() <= context.id || texture_ids_[context.id] == 0)
+        upload_to(context);
+
+    glActiveTexture(GL_TEXTURE0 + layer_position);
+    glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
+}
+
+void Texture::unbind(unsigned texture_position) {
+    glActiveTexture(GL_TEXTURE0 + texture_position);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+unsigned Texture::get_id(RenderContext const& context) const {
+    return texture_ids_[context.id];
+}
+
+void Texture::set_parameter(unsigned parameter_name, unsigned value) const {
+    glTexParameteri(GL_TEXTURE_2D, parameter_name, value);
+}
+
+void Texture::upload_to(RenderContext const& context) const{
+
+
+    // generate texture id
+    unsigned texture_id(0);
+    glGenTextures(1, &texture_id);
+    if (texture_id == 0) {
+        // OpenGL was not able to generate additional texture
+        return;
+    }
+
+    if (texture_ids_.size() <= context.id)
+        texture_ids_.resize(context.id + 1);
+
+    texture_ids_[context.id] = texture_id;
+
+    glEnable(GL_TEXTURE_2D);
+    // bind texture object
+    glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
+    // load data as texture
+    glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
+                 0, color_format_, type_, data_);
 
     //setting Texture Parameters
     set_parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -65,50 +134,6 @@ Texture::Texture(std::string const& file):
     set_parameter(GL_TEXTURE_WRAP_S, GL_CLAMP);
     set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-    ilBindImage(0);
-    ilDeleteImage(image_id);
-}
-
-Texture::~Texture() {
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glDeleteTextures(1, &texture_id_);
-}
-
-void Texture::bind(unsigned layer_position) const{
-    glActiveTexture(GL_TEXTURE0 + layer_position);
-    glBindTexture(GL_TEXTURE_2D, texture_id_);
-}
-
-void Texture::unbind(unsigned texture_position){
-    glActiveTexture(GL_TEXTURE0 + texture_position);
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-unsigned Texture::get_id() const{
-    return texture_id_;
-}
-
-void Texture::set_parameter(unsigned parameter_name, unsigned value) {
-    glTexParameteri(GL_TEXTURE_2D, parameter_name, value);
-}
-
-void Texture::generate_texture(unsigned width, unsigned height, unsigned color_depth,
-                               unsigned color_format, unsigned type) {
-
-    // generate texture id
-    glGenTextures(1, &texture_id_);
-
-    if (texture_id_ == 0) {
-        // OpenGL was not able to generate additional texture
-        return;
-    }
-
-    glEnable(GL_TEXTURE_2D);
-    // bind texture object
-    glBindTexture(GL_TEXTURE_2D, texture_id_);
-    // load data as texture
-    glTexImage2D(GL_TEXTURE_2D, 0, color_depth, width, height,
-                 0, color_format, type, data_);
 }
 
 }
