@@ -49,7 +49,10 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
 
     if (!tmptex) {
         tmptex = new Texture(800, 600);
-        tmpdepth = new Texture(800, 600);
+        tmpdepth = new Texture(800, 600, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT);
+        tmpdepth->set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
+        tmpdepth->set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
+
         tmpfbo = new FrameBufferObject();
 
         tmpfbo->attach_buffer(window_.get_context(), GL_TEXTURE_2D, tmptex->get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
@@ -72,28 +75,28 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-//        for (auto& geometry_core: node_list) {
-//
-//            auto material = MaterialBase::instance()->get(geometry_core->material_);
-//            auto geometry = GeometryBase::instance()->get(geometry_core->geometry_);
-//
-//            if (material) {
-//                material->use(window_.get_context());
-//                if (material->get_texture())
-//                    material->get_texture()->bind(window_.get_context(), 0);
-//                material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
-//                material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
-//                material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
-//            } else {
-//                WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core->material_.c_str());
-//            }
-//
-//            if (geometry) {
-//                window_.draw(geometry);
-//            } else {
-//                WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core->geometry_.c_str());
-//            }
-//        }
+        for (auto& geometry_core: node_list) {
+
+            auto material = MaterialBase::instance()->get(geometry_core->material_);
+            auto geometry = GeometryBase::instance()->get(geometry_core->geometry_);
+
+            if (material) {
+                material->use(window_.get_context());
+                if (material->get_texture())
+                    material->get_texture()->bind(window_.get_context(), 0);
+                material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
+                material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
+                material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
+            } else {
+                WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core->material_.c_str());
+            }
+
+            if (geometry) {
+                window_.draw(geometry);
+            } else {
+                WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core->geometry_.c_str());
+            }
+        }
 
         tmpfbo->unbind();
 

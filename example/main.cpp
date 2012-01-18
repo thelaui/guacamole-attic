@@ -23,7 +23,7 @@ int main() {
 
     auto camera_core = new gua::CameraCore(60.f, 4.f/3.f, 0.1f, 1000.f);
     auto camera = graph.add_node("/", "camera", camera_core);
-    camera.translate(0.5, 1, 2);
+    camera.translate(0.5, 1, 5);
     camera.rotate(0.2, 0, 1, 0);
 
     auto cube_core = new gua::GeometryCore("cube", "red");
