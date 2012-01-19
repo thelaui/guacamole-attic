@@ -65,15 +65,15 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
         // --- bind g buffer
         // --- use fill shader
 
+
         g_buffer_.bind(window_.get_context(), {GL_COLOR_ATTACHMENT0,
                                                GL_COLOR_ATTACHMENT0 +1,
-                                               GL_COLOR_ATTACHMENT0 +2,
-                                               GL_DEPTH_ATTACHMENT});
+                                               GL_COLOR_ATTACHMENT0 +2});
 
         // clear the G-Buffer
+        glViewport(0, 0, window_.get_context().width, window_.get_context().height);
         glClearColor(1.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0, 0, window_.get_context().width, window_.get_context().height);
 
         for (auto& geometry_core: node_list) {
 
@@ -108,7 +108,7 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
             if (material) {
                 material->use(window_.get_context());
 
-                color_buffer_.bind(window_.get_context(), 0);
+                normal_buffer_.bind(window_.get_context(), 0);
 
                 material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
                 material->get_shader().set_view_matrix(window_.get_context(), view_matrix);

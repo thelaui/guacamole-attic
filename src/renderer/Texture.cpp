@@ -129,8 +129,8 @@ void Texture::upload_to(RenderContext const& context) const{
     glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
 
     //setting Texture Parameters
-    set_parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    set_parameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    set_parameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    set_parameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     set_parameter(GL_TEXTURE_WRAP_S, GL_CLAMP);
     set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);

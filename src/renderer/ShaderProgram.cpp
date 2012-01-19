@@ -20,14 +20,16 @@
 /// \brief Definition of the ShaderProgram class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/ShaderProgram.hpp"
+#include "renderer/ShaderProgram.hpp"
 
 #include <eigen2/Eigen/LU>
 
-#include "include/renderer/VertexShader.hpp"
-#include "include/renderer/FragmentShader.hpp"
-#include "include/renderer/RenderContext.hpp"
-#include "include/renderer/glInclude.hpp"
+#include "renderer/VertexShader.hpp"
+#include "renderer/FragmentShader.hpp"
+#include "renderer/RenderContext.hpp"
+#include "renderer/glInclude.hpp"
+
+#include "utils/debug.hpp"
 
 namespace gua {
 
@@ -48,6 +50,8 @@ void ShaderProgram::use(RenderContext const& context) const {
     }
 
     glUseProgram(program_ids_[context.id]);
+
+    //MESSAGE ("%u", glGetFragDataLocation(program_ids_[context.id],"out_normal"));
 }
 
 void ShaderProgram::set_projection_matrix(RenderContext const& context, Eigen::Matrix4f const& projection_matrix) const {
@@ -83,6 +87,10 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
     glAttachShader(program_id, v_shader_.get_id(context));
     glAttachShader(program_id, f_shader_.get_id(context));
 
+	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0, "out_color");
+	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT1, "out_position");
+	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT2, "out_normal");
+
     glLinkProgram(program_id);
     glValidateProgram(program_id);
 
@@ -96,9 +104,6 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
     glBindAttribLocation(program_id, vertex_location, "in_position");
 	glBindAttribLocation(program_id, normal_location, "in_normal");
 	glBindAttribLocation(program_id, texture_location, "in_tex_coord");
-
-	glBindFragDataLocation(program_id, 0, "out_color");
-	glBindFragDataLocation(program_id, 1, "out_position");
 
 	program_ids_[context.id] = program_id;
 

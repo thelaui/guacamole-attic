@@ -23,8 +23,10 @@
 #include "renderer/FrameBufferObject.hpp"
 
 #include "renderer/RenderContext.hpp"
+#include "utils/debug.hpp"
 
-#include <GL/gl.h>
+#include <GL/glew.h>
+#include <string>
 
 namespace gua {
 
@@ -75,6 +77,55 @@ void FrameBufferObject::bind(RenderContext const& context,
 
 void FrameBufferObject::unbind() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+bool FrameBufferObject::is_valid(RenderContext const& context) {
+  bind(context, {});
+
+  bool is_valid(false);
+
+  GLenum status;
+  status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
+  switch (status)
+  {
+  case GL_FRAMEBUFFER_COMPLETE:
+    is_valid = true;
+    break;
+  case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+    WARNING("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+    is_valid = false;
+    break;
+  case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+    WARNING("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
+    is_valid = false;
+    break;
+  case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
+    WARNING("GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS");
+    is_valid = false;
+    break;
+  case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
+    WARNING("GL_FRAMEBUFFER_INCOMPLETE_FORMATS");
+    is_valid = false;
+    break;
+  case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+    WARNING("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");
+    is_valid = false;
+    break;
+  case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+    WARNING("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
+    is_valid = false;
+    break;
+  case GL_FRAMEBUFFER_UNSUPPORTED:
+    WARNING("GL_FRAMEBUFFER_UNSUPPORTED");
+    is_valid = false;
+    break;
+  default:
+    WARNING("Unknown error occured!");
+    is_valid = false;
+  }
+
+  unbind();
+  return is_valid;
 }
 
 void FrameBufferObject::upload_to(RenderContext const& context) const {

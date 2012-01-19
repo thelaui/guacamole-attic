@@ -90,6 +90,16 @@ class FrameBufferObject {
         ////////////////////////////////////////////////////////////
         void unbind();
 
+        ////////////////////////////////////////////////////////////
+        /// \brief Checks whether the FrameBufferObject is set up
+        ///        correctly.
+        ///
+        /// \param context The RenderContext of the FBO to be checked.
+        ///
+        /// \param The FBO's validity.
+        ////////////////////////////////////////////////////////////
+        bool is_valid(RenderContext const& context);
+
     private:
         void upload_to(RenderContext const& context) const;
 
