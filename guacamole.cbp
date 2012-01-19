@@ -47,6 +47,7 @@
 		<Unit filename="include/renderer/FrameBufferObject.hpp" />
 		<Unit filename="include/renderer/Geometry.hpp" />
 		<Unit filename="include/renderer/GeometryBase.hpp" />
+		<Unit filename="include/renderer/LightSphere.hpp" />
 		<Unit filename="include/renderer/Material.hpp" />
 		<Unit filename="include/renderer/MaterialBase.hpp" />
 		<Unit filename="include/renderer/Mesh.hpp" />
@@ -72,6 +73,7 @@
 		<Unit filename="include/traverser/LightNode.hpp" />
 		<Unit filename="include/traverser/Optimizer.hpp" />
 		<Unit filename="include/traverser/Renderer.hpp" />
+		<Unit filename="include/utils/Color3f.hpp" />
 		<Unit filename="include/utils/Directory.hpp" />
 		<Unit filename="include/utils/DotGenerator.hpp" />
 		<Unit filename="include/utils/DotParser.hpp" />
@@ -80,6 +82,7 @@
 		<Unit filename="include/utils/Singleton.hpp" />
 		<Unit filename="include/utils/TextFile.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
+		<Unit filename="include/utils/randomizer.hpp" />
 		<Unit filename="src/renderer/FragmentShader.cpp" />
 		<Unit filename="src/renderer/FrameBufferObject.cpp" />
 		<Unit filename="src/renderer/Geometry.cpp" />
@@ -102,11 +105,13 @@
 		<Unit filename="src/scenegraph/SceneGraph.cpp" />
 		<Unit filename="src/traverser/Optimizer.cpp" />
 		<Unit filename="src/traverser/Renderer.cpp" />
+		<Unit filename="src/utils/Color3f.cpp" />
 		<Unit filename="src/utils/Directory.cpp" />
 		<Unit filename="src/utils/DotGenerator.cpp" />
 		<Unit filename="src/utils/DotParser.cpp" />
 		<Unit filename="src/utils/PathParser.cpp" />
 		<Unit filename="src/utils/TextFile.cpp" />
+		<Unit filename="src/utils/randomizer.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

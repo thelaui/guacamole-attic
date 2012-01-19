@@ -17,26 +17,14 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A Core representing light in a SceneGraph.
+/// \brief Declaration a simple randomizer utility.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/scenegraph/LightCore.hpp"
+namespace randomizer {
 
-namespace gua {
+    void set_seed(unsigned int seed);
+    unsigned int get_seed();
 
-LightCore::LightCore(Color3f const& color, float radius):
-    Core(Core::LIGHT),
-    color_(color),
-    radius_(radius) {}
-
-LightCore::~LightCore() {}
-
-Color3f const& LightCore::get_color() const {
-    return color_;
-}
-
-float LightCore::get_radius() const {
-    return radius_;
-}
-
+    float random(float begin, float end);
+    int random(int begin, int end);
 }

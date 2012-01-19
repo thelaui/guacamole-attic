@@ -3,6 +3,7 @@ obj/*
 doc/html
 *.depend
 *.layout
+*.cbTemp
 guacamole
 guacamole-d
 *.gv

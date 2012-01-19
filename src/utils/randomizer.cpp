@@ -17,26 +17,38 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A Core representing light in a SceneGraph.
+/// \brief Implementation of the randomizer utility.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/scenegraph/LightCore.hpp"
+#include "utils/randomizer.hpp"
 
-namespace gua {
+#include <cstdlib>
+#include <ctime>
 
-LightCore::LightCore(Color3f const& color, float radius):
-    Core(Core::LIGHT),
-    color_(color),
-    radius_(radius) {}
+namespace {
 
-LightCore::~LightCore() {}
+    unsigned int init_seed() {
+        unsigned int seed = static_cast<unsigned int>(std::time(NULL));
+        std::srand(seed);
+        return seed;
+    }
 
-Color3f const& LightCore::get_color() const {
-    return color_;
+    unsigned int global_seed = init_seed();
 }
 
-float LightCore::get_radius() const {
-    return radius_;
+void randomizer::set_seed(unsigned int seed) {
+    std::srand(seed);
+    global_seed = seed;
 }
 
+unsigned int randomizer::get_seed() {
+    return global_seed;
+}
+
+float randomizer::random(float begin, float end) {
+    return static_cast<float>(std::rand()) / RAND_MAX * (end - begin) + begin;
+}
+
+int randomizer::random(int begin, int end) {
+    return std::rand() % (end - begin + 1) + begin;
 }

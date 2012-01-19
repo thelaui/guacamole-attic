@@ -25,6 +25,8 @@
 
 #include "scenegraph/Core.hpp"
 
+#include "utils/Color3f.hpp"
+
 #include <string>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -40,12 +42,13 @@ class LightCore: public Core {
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.
         ///
-        /// This constructs a LightCore with the given parameter and calls
+        /// This constructs a LightCore with the given parameters and calls
         /// the constructor of base class Core with the type LIGHT.
         ///
-        ///\param color  The name of the LightCore's color.
+        ///\param color   The light's color.
+        ///\param radius  The light's radius.
         ////////////////////////////////////////////////////////////////////////
-        LightCore(std::string const& color);
+        LightCore(Color3f const& color, float radius);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -55,14 +58,22 @@ class LightCore: public Core {
         virtual ~LightCore();
 
         ////////////////////////////////////////////////////////////////////////
+        ///\brief Returns the LightCore's color.
+        ///
+        ///\return color The light's color.
+        ////////////////////////////////////////////////////////////////////////
+        Color3f const& get_color() const;
+
+        ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the LightCore's name of color.
         ///
-        ///\return color The color's name
+        ///\return radius The light's radius.
         ////////////////////////////////////////////////////////////////////////
-        std::string const& get_color() const;
+        float get_radius() const;
 
     private:
-        std::string color_;
+        Color3f color_;
+        float radius_;
 
 };
 

@@ -71,7 +71,7 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
         tmpfbo->bind(window_.get_context(), {GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT});
 
         // clear the G-Buffer
-        glClearColor(0.0, 1.0, 0.0, 1.0);
+        glClearColor(1.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
@@ -82,8 +82,6 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
 
             if (material) {
                 material->use(window_.get_context());
-                if (material->get_texture())
-                    material->get_texture()->bind(window_.get_context(), 0);
                 material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
                 material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
                 material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
