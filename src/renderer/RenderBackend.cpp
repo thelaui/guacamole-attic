@@ -20,45 +20,42 @@
 /// \brief Definition of the RenderBackend class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/RenderBackend.hpp"
+#include "renderer/RenderBackend.hpp"
 
 #include <eigen2/Eigen/LU>
 
-#include "include/renderer/MaterialBase.hpp"
-#include "include/renderer/GeometryBase.hpp"
-#include "include/utils/debug.hpp"
-#include "include/traverser/LightNode.hpp"
-#include "include/traverser/GeometryNode.hpp"
-#include "include/traverser/CameraNode.hpp"
-
-#include "include/renderer/FrameBufferObject.hpp"
+#include "renderer/MaterialBase.hpp"
+#include "renderer/GeometryBase.hpp"
+#include "renderer/LightSphere.hpp"
+#include "utils/debug.hpp"
+#include "traverser/LightNode.hpp"
+#include "traverser/GeometryNode.hpp"
+#include "traverser/CameraNode.hpp"
 
 namespace gua {
 
-    Texture* tmptex(NULL);
-    Texture* tmpdepth(NULL);
-    FrameBufferObject* tmpfbo(NULL);
-
 RenderBackend::RenderBackend( int width, int height, std::string const& camera, std::string const& display ):
     window_(width, height, display),
-    camera_name_(camera) {}
+    camera_name_(camera),
+    light_sphere_(LIGHT_SPHERE_DATA.c_str(), LIGHT_SPHERE_DATA.length()),
+    depth_buffer_(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT),
+    color_buffer_(width, height),
+    position_buffer_(width, height),
+    normal_buffer_(width, height),
+    g_buffer_() {
+
+        depth_buffer_.set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
+        depth_buffer_.set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
+
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, color_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, position_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +1);
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, normal_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +2);
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, depth_buffer_.get_id(window_.get_context()), GL_DEPTH_ATTACHMENT);
+    }
 
 void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
                             std::vector<LightNode*> const& light_list,
                             CameraNode* camera ) {
-
-    if (!tmptex) {
-        tmptex = new Texture(800, 600);
-        tmpdepth = new Texture(800, 600, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT);
-        tmpdepth->set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
-        tmpdepth->set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
-
-        tmpfbo = new FrameBufferObject();
-
-        tmpfbo->attach_buffer(window_.get_context(), GL_TEXTURE_2D, tmptex->get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
-        tmpfbo->attach_buffer(window_.get_context(), GL_TEXTURE_2D, tmpdepth->get_id(window_.get_context()), GL_DEPTH_ATTACHMENT);
-    }
-
     window_.set_active();
     window_.start_frame();
 
@@ -68,12 +65,15 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
         // --- bind g buffer
         // --- use fill shader
 
-        tmpfbo->bind(window_.get_context(), {GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT});
+        g_buffer_.bind(window_.get_context(), {GL_COLOR_ATTACHMENT0,
+                                               GL_COLOR_ATTACHMENT0 +1,
+                                               GL_COLOR_ATTACHMENT0 +2,
+                                               GL_DEPTH_ATTACHMENT});
 
         // clear the G-Buffer
         glClearColor(1.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        glViewport(0, 0, window_.get_context().width, window_.get_context().height);
 
         for (auto& geometry_core: node_list) {
 
@@ -82,6 +82,7 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
 
             if (material) {
                 material->use(window_.get_context());
+
                 material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
                 material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
                 material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
@@ -96,11 +97,7 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
             }
         }
 
-        tmpfbo->unbind();
-
-
-
-
+        g_buffer_.unbind();
 
 
         for (auto& geometry_core: node_list) {
@@ -111,7 +108,7 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
             if (material) {
                 material->use(window_.get_context());
 
-                tmptex->bind(window_.get_context(), 0);
+                color_buffer_.bind(window_.get_context(), 0);
 
                 material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
                 material->get_shader().set_view_matrix(window_.get_context(), view_matrix);

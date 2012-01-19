@@ -69,10 +69,6 @@ void FrameBufferObject::bind(RenderContext const& context,
 
     glBindFramebuffer(GL_FRAMEBUFFER, fbos_[context.id]);
 
-    glDrawBuffer(GL_COLOR_ATTACHMENT0);
-
-    glViewport(0, 0, 800, 600);
-
     if (attachments.size() > 0)
         glDrawBuffers(attachments.size(), &(*attachments.begin()));
 }

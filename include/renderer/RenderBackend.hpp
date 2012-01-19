@@ -26,13 +26,17 @@
 #include <vector>
 #include <string>
 
-#include "include/renderer/RenderWindow.hpp"
+#include "renderer/RenderWindow.hpp"
+#include "renderer/Geometry.hpp"
+#include "renderer/Texture.hpp"
+#include "renderer/FrameBufferObject.hpp"
 
 namespace gua {
 
 class CameraNode;
 class GeometryNode;
 class LightNode;
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief The internal renderer of guacamole.
@@ -76,6 +80,10 @@ class RenderBackend {
     private:
         RenderWindow window_;
         std::string camera_name_;
+
+        Geometry light_sphere_;
+        Texture depth_buffer_, color_buffer_, position_buffer_, normal_buffer_;
+        FrameBufferObject g_buffer_;
 };
 
 }

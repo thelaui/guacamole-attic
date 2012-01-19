@@ -25,7 +25,9 @@
 
 #include <string>
 
-const std::string sphere_data("o Icosphere_Icosphere.001\
+namespace gua {
+
+const std::string LIGHT_SPHERE_DATA("o Icosphere_Icosphere.001\
 v 0.000000 -1.000000 0.000000\
 v 0.723600 -0.447215 0.525720\
 v -0.276385 -0.447215 0.850640\
@@ -830,5 +832,7 @@ f 102//317 42//317 161//317\
 f 161//318 92//318 102//318\
 f 10//319 102//319 92//319\
 f 92//320 161//320 37//320 ");
+
+}
 
 #endif //LIGHT_SPHERE_HPP

@@ -51,9 +51,19 @@ class Geometry {
         ///
         /// Creates a new Geometry from a given file.
         ///
-        /// \param file_name The file to load the mehs data from.
+        /// \param file_name The file to load the meh's data from.
         ////////////////////////////////////////////////////////////////////////
-        Geometry( std::string const& file_name );
+        Geometry(std::string const& file_name);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Constructor from memory buffer.
+        ///
+        /// Creates a new Geometry from a existing memory buffer.
+        ///
+        /// \param buffer_name The buffer to load the meh's data from.
+        /// \param buffer_size The buffer's size.
+        ////////////////////////////////////////////////////////////////////////
+        Geometry(char const* buffer_name, unsigned buffer_size);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Draws the Geometry.

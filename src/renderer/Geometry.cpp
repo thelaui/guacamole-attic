@@ -53,6 +53,18 @@ Geometry::Geometry(std::string const& file_name):
     }
 }
 
+Geometry::Geometry(char const* buffer_name, unsigned buffer_size):
+    meshes_() {
+    Assimp::Importer* importer = new Assimp::Importer();
+    aiScene const* scene = importer->ReadFileFromMemory(buffer_name, buffer_size, aiProcessPreset_TargetRealtime_Quality);
+
+    meshes_ = std::vector<Mesh>(scene->mNumMeshes);
+
+    for (unsigned int n = 0; n < scene->mNumMeshes; ++n) {
+        meshes_[n] = Mesh(scene->mMeshes[n]);
+    }
+}
+
 void Geometry::draw(RenderContext const& context) const {
     for (auto& mesh: meshes_)
         mesh.draw(context);

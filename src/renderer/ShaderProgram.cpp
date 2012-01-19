@@ -98,6 +98,7 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
 	glBindAttribLocation(program_id, texture_location, "in_tex_coord");
 
 	glBindFragDataLocation(program_id, 0, "out_color");
+	glBindFragDataLocation(program_id, 1, "out_position");
 
 	program_ids_[context.id] = program_id;
 
