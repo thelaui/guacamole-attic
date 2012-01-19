@@ -42,6 +42,7 @@
 			<Add library="IL" />
 		</Linker>
 		<Unit filename="include/guacamole.hpp" />
+		<Unit filename="include/renderer/BufferFillShaders.hpp" />
 		<Unit filename="include/renderer/DataBase.hpp" />
 		<Unit filename="include/renderer/FragmentShader.hpp" />
 		<Unit filename="include/renderer/FrameBufferObject.hpp" />

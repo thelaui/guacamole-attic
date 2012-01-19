@@ -51,7 +51,16 @@ class FragmentShader: public Shader {
         ///
         /// \param file The glsl source file.
         ////////////////////////////////////////////////////////////////////////
-        FragmentShader( std::string const& file );
+        FragmentShader(std::string const& file);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Constructor from data buffer.
+        ///
+        /// Loads a shader from a data buffer.
+        ///
+        /// \param data The data buffer for this shader.
+        ////////////////////////////////////////////////////////////////////////
+        FragmentShader(char const* data);
 };
 
 }

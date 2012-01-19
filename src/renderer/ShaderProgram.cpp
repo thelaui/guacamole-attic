@@ -50,8 +50,10 @@ void ShaderProgram::use(RenderContext const& context) const {
     }
 
     glUseProgram(program_ids_[context.id]);
+}
 
-    //MESSAGE ("%u", glGetFragDataLocation(program_ids_[context.id],"out_normal"));
+void ShaderProgram::unuse() const {
+    glUseProgram(0);
 }
 
 void ShaderProgram::set_projection_matrix(RenderContext const& context, Eigen::Matrix4f const& projection_matrix) const {
@@ -87,9 +89,9 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
     glAttachShader(program_id, v_shader_.get_id(context));
     glAttachShader(program_id, f_shader_.get_id(context));
 
-	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0, "out_color");
-	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT1, "out_position");
-	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT2, "out_normal");
+	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0, "out_position");
+	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0+1, "out_normal");
+    glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0+2, "out_color");
 
     glLinkProgram(program_id);
     glValidateProgram(program_id);

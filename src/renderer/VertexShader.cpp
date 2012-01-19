@@ -29,7 +29,11 @@ namespace gua {
 VertexShader::VertexShader():
     Shader::Shader() {}
 
-VertexShader::VertexShader( std::string const& file ):
+VertexShader::VertexShader(std::string const& file):
     Shader::Shader(file, GL_VERTEX_SHADER) {}
+
+
+VertexShader::VertexShader(char const* data):
+    Shader::Shader(data, GL_VERTEX_SHADER) {}
 
 }

@@ -37,17 +37,27 @@ namespace gua {
 Shader::Shader():
     shader_ids_(),
     shader_type_(0),
-    source_() {}
+    source_(),
+    data_() {}
 
 Shader::Shader(std::string const& file_name, unsigned shader_type):
     shader_ids_(),
     shader_type_(shader_type),
-    source_(file_name) {
+    source_(file_name),
+    data_() {
 
     if (!source_.is_valid()) {
         WARNING("Failed to load shader \"%s\": File does not exist!", file_name.c_str());
     }
+
+    else data_ = source_.get_content().c_str();
 }
+
+Shader::Shader(char const* data, unsigned shader_type):
+    shader_ids_(),
+    shader_type_(shader_type),
+    source_(),
+    data_(data) {}
 
 unsigned Shader::get_id(RenderContext const& context) const {
     // upload to GPU if neccessary
@@ -59,20 +69,16 @@ unsigned Shader::get_id(RenderContext const& context) const {
 }
 
 void Shader::upload_to(RenderContext const& context) const {
-    if (source_.is_valid()) {
-        const char* glsl_source(source_.get_content().c_str());
-
-        if (shader_ids_.size() <= context.id) {
-            shader_ids_.resize(context.id+1);
-        }
-
-        shader_ids_[context.id] = glCreateShader(shader_type_);
-
-        glShaderSource(shader_ids_[context.id], 1, &glsl_source, 0);
-        glCompileShader(shader_ids_[context.id]);
-
-        validate_shader(shader_ids_[context.id]);
+    if (shader_ids_.size() <= context.id) {
+        shader_ids_.resize(context.id+1);
     }
+
+    shader_ids_[context.id] = glCreateShader(shader_type_);
+
+    glShaderSource(shader_ids_[context.id], 1, &data_, 0);
+    glCompileShader(shader_ids_[context.id]);
+
+    validate_shader(shader_ids_[context.id]);
 }
 
 void Shader::validate_shader(unsigned shader) const {

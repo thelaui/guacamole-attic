@@ -51,7 +51,16 @@ class VertexShader: public Shader {
         ///
         /// \param file The glsl source file.
         ////////////////////////////////////////////////////////////////////////
-        VertexShader( std::string const& file );
+        VertexShader(std::string const& file);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Constructor from data buffer.
+        ///
+        /// Loads a shader from a data buffer.
+        ///
+        /// \param data The data buffer for this shader.
+        ////////////////////////////////////////////////////////////////////////
+        VertexShader(char const* data);
 };
 
 }

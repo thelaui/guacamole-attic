@@ -26,7 +26,7 @@ int main() {
     camera.translate(0.5, 1, 2);
     camera.rotate(0.2, 0, 1, 0);
 
-    auto cube_core = new gua::GeometryCore("cube", "red");
+    auto cube_core = new gua::GeometryCore("cube", "shiny");
     auto floor = graph.add_node("/", "floor", cube_core);
     floor.scale(4, 0.1, 4);
 
@@ -41,10 +41,6 @@ int main() {
     monkey = graph.add_node("/box/monkey", "monkey", monkey_core);
     monkey.scale(0.3, 0.3, 0.3);
     monkey.translate(0, 5, 0);
-
-    camera = graph.add_node("/box", "camera2", camera_core);
-    camera.translate(0.5, 1, 4);
-    camera.rotate(0.2, 0, 1, 0);
 
     auto point_light_core = new gua::LightCore(gua::Color3f(0.5f, 0.5f, 0.5f), 10.f);
     auto point_light1 = graph.add_node("/", "point_light1", point_light_core);

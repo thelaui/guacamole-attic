@@ -30,6 +30,7 @@
 #include "renderer/Geometry.hpp"
 #include "renderer/Texture.hpp"
 #include "renderer/FrameBufferObject.hpp"
+#include "renderer/ShaderProgram.hpp"
 
 namespace gua {
 
@@ -84,6 +85,8 @@ class RenderBackend {
         Geometry light_sphere_;
         Texture depth_buffer_, color_buffer_, position_buffer_, normal_buffer_;
         FrameBufferObject g_buffer_;
+
+        ShaderProgram buffer_fill_shader_, deferred_light_shader_;
 };
 
 }

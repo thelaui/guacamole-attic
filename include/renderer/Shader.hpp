@@ -59,6 +59,16 @@ class Shader {
         Shader(std::string const& file_name, unsigned shader_type);
 
         ////////////////////////////////////////////////////////////////////////
+        /// \brief Loads a shader from buffer.
+        ///
+        /// Loads a shader from given buffer data.
+        ///
+        /// \param data        The data buffer for this shader.
+        /// \param shader_type Either GL_FRAGMENT_SHADER of GL_VERTEX_SHADER
+        ////////////////////////////////////////////////////////////////////////
+        Shader(char const* data, unsigned shader_type);
+
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Get the ID of this shader.
         ///
         /// Returns the ID of this shader for the given OpenGL context.
@@ -75,6 +85,7 @@ class Shader {
         mutable std::vector<unsigned> shader_ids_;
         unsigned shader_type_;
         mutable TextFile source_;
+        mutable char const* data_;
 };
 
 }

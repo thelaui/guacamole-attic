@@ -27,6 +27,7 @@
 #include "renderer/MaterialBase.hpp"
 #include "renderer/GeometryBase.hpp"
 #include "renderer/LightSphere.hpp"
+#include "renderer/BufferFillShaders.hpp"
 #include "utils/debug.hpp"
 #include "traverser/LightNode.hpp"
 #include "traverser/GeometryNode.hpp"
@@ -42,14 +43,17 @@ RenderBackend::RenderBackend( int width, int height, std::string const& camera, 
     color_buffer_(width, height),
     position_buffer_(width, height),
     normal_buffer_(width, height),
-    g_buffer_() {
+    g_buffer_(),
+    buffer_fill_shader_(VertexShader(BUFFER_FILL_VERTEX_SHADER.c_str()),
+                        FragmentShader(BUFFER_FILL_FRAGMENT_SHADER.c_str())),
+    deferred_light_shader_() {
 
         depth_buffer_.set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
         depth_buffer_.set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
 
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, color_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, position_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +1);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, normal_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +2);
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, position_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, normal_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +1);
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, color_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +2);
         g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, depth_buffer_.get_id(window_.get_context()), GL_DEPTH_ATTACHMENT);
     }
 
@@ -75,6 +79,8 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
         glClearColor(1.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+        buffer_fill_shader_.use(window_.get_context());
+
         for (auto& geometry_core: node_list) {
 
             auto material = MaterialBase::instance()->get(geometry_core->material_);
@@ -96,6 +102,8 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
                 WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core->geometry_.c_str());
             }
         }
+
+        buffer_fill_shader_.unuse();
 
         g_buffer_.unbind();
 
@@ -108,8 +116,6 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
             if (material) {
                 material->use(window_.get_context());
 
-                normal_buffer_.bind(window_.get_context(), 0);
-
                 material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
                 material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
                 material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
@@ -124,8 +130,7 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
             }
         }
 
-        // --- unuse fill shader
-        // --- unbind g buffer
+
 
         // --- bind light sphere
         // --- bind deferred shader
