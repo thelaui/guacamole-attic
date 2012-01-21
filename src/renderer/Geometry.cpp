@@ -29,6 +29,9 @@
 #include "include/utils/TextFile.hpp"
 #include "include/utils/debug.hpp"
 
+#include "renderer/LightSphere.hpp"
+
+
 namespace gua {
 
 Geometry::Geometry():
@@ -51,6 +54,7 @@ Geometry::Geometry(std::string const& file_name):
     } else {
         WARNING("Failed to load object \"%s\": File does not exist!", file_name.c_str());
     }
+
 }
 
 Geometry::Geometry(char const* buffer_name, unsigned buffer_size):

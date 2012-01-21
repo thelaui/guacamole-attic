@@ -66,10 +66,6 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
     if (camera) {
         Eigen::Matrix4f view_matrix(camera->transform_.inverse());
 
-        // --- bind g buffer
-        // --- use fill shader
-
-
         g_buffer_.bind(window_.get_context(), {GL_COLOR_ATTACHMENT0,
                                                GL_COLOR_ATTACHMENT0 +1,
                                                GL_COLOR_ATTACHMENT0 +2});
@@ -106,7 +102,6 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
         buffer_fill_shader_.unuse();
 
         g_buffer_.unbind();
-
 
         for (auto& geometry_core: node_list) {
 
