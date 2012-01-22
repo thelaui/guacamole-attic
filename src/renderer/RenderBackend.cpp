@@ -106,10 +106,17 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
 
     deferred_light_shader_.set_mat4(window_.get_context(), "projection_matrix", camera_projection);
     deferred_light_shader_.set_mat4(window_.get_context(), "view_matrix", view_matrix);
+    deferred_light_shader_.set_sampler2D(window_.get_context(), "color_buffer", color_buffer_);
+    deferred_light_shader_.set_sampler2D(window_.get_context(), "position_buffer", position_buffer_);
+    deferred_light_shader_.set_sampler2D(window_.get_context(), "normal_buffer", normal_buffer_);
+    deferred_light_shader_.set_float(window_.get_context(), "texel_width", 1.f/window_.get_context().width);
+    deferred_light_shader_.set_float(window_.get_context(), "texel_height", 1.f/window_.get_context().height);
 
     for (auto& light: light_list) {
         deferred_light_shader_.set_mat4(window_.get_context(), "model_matrix", light.transform_);
         deferred_light_shader_.set_mat4(window_.get_context(), "normal_matrix", light.transform_.inverse().transpose());
+        deferred_light_shader_.set_vec3(window_.get_context(), "light_color", light.color_);
+        deferred_light_shader_.set_float(window_.get_context(), "light_radius", light.radius_);
 
         window_.draw(light_sphere_);
     }

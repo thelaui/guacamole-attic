@@ -134,6 +134,10 @@ void Shader::find_uniforms() {
                 new_uniform.type_ = Uniform::SAMPLER2D;
                 new_uniform.name_ = name;
                 uniforms_.push_back(new_uniform);
+            } else if (type == "float") {
+                new_uniform.type_ = Uniform::FLOAT;
+                new_uniform.name_ = name;
+                uniforms_.push_back(new_uniform);
             } else WARNING("Unknown uniform type %s!", type.c_str());
         }
     }

@@ -81,6 +81,13 @@ void ShaderProgram::set_vec3(RenderContext const& context, std::string const& ve
     }
 }
 
+void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, Color3f const& vec) {
+    if (uniforms_.size() > context.id) {
+        unsigned loc(check_uniform(context, vec_name, Uniform::VEC3));
+        if(loc >= 0) glUniform3f(loc, vec.r(), vec.g(), vec.b());
+    }
+}
+
 void ShaderProgram::set_vec4(RenderContext const& context, std::string const& vec_name, Eigen::Vector4f const& vec) {
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, vec_name, Uniform::VEC4));
@@ -88,7 +95,7 @@ void ShaderProgram::set_vec4(RenderContext const& context, std::string const& ve
     }
 }
 
-void ShaderProgram::set_sampler2d(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) {
+void ShaderProgram::set_sampler2D(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) {
     if (uniforms_.size() > context.id) {
         sampler.bind(context, GL_TEXTURE0 + texture_offset_);
 
@@ -96,6 +103,13 @@ void ShaderProgram::set_sampler2d(RenderContext const& context, std::string cons
         glUniform1i(sampler_location, texture_offset_);
 
         ++texture_offset_;
+    }
+}
+
+void ShaderProgram::set_float(RenderContext const& context, std::string const& float_name, float value) {
+    if (uniforms_.size() > context.id) {
+        unsigned loc(check_uniform(context, float_name, Uniform::FLOAT));
+        if(loc >= 0) glUniform1f(loc, value);
     }
 }
 

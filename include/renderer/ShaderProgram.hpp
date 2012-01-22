@@ -30,6 +30,7 @@
 #include "renderer/VertexShader.hpp"
 #include "renderer/Texture.hpp"
 #include "renderer/Uniform.hpp"
+#include "utils/Color3f.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief An actual shader which can be applied to the Graphics pipeline.
@@ -92,11 +93,17 @@ class ShaderProgram {
         void set_vec3(RenderContext const& context, std::string const& vec_name,
                       Eigen::Vector3f const& vec);
 
+        void set_vec3(RenderContext const& context, std::string const& vec_name,
+                      Color3f const& vec);
+
         void set_vec4(RenderContext const& context, std::string const& vec_name,
                       Eigen::Vector4f const& vec);
 
-        void set_sampler2d(RenderContext const& context, std::string const& sampler_name,
+        void set_sampler2D(RenderContext const& context, std::string const& sampler_name,
                            Texture const& sampler);
+
+        void set_float(RenderContext const& context, std::string const& float_name,
+                       float value);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief The layout location of the vertex attribute.
