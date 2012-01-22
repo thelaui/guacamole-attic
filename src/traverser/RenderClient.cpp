@@ -19,36 +19,53 @@
 /// \file
 /// \brief Definition of the Render class.
 ////////////////////////////////////////////////////////////////////////////////
-#include "include/traverser/Renderer.hpp"
+#include "include/traverser/RenderClient.hpp"
 
 #include "include/scenegraph/SceneGraph.hpp"
-#include "include/traverser/RenderClient.hpp"
-#include "include/traverser/Optimizer.hpp"
+#include "include/renderer/RenderBackend.hpp"
 
 namespace gua {
 
-Renderer::Renderer(std::vector<std::pair<std::string, std::string>> const& windows):
-    optimizer_( new Optimizer() ) {
+RenderClient::RenderClient(int width, int height, std::string const& camera, std::string const& display):
+    draw_thread_(NULL),
+    render_backend_(NULL),
+    width_(width),
+    height_(height),
+    camera_(camera),
+    display_(display) {}
 
-    for (auto& window: windows)
-        render_clients_.push_back(new RenderClient(1280 , 720, window.first, window.second));
+RenderClient::~RenderClient() {
+    if (draw_thread_) {
+        draw_thread_->detach();
+        delete draw_thread_;
+    }
+
+    if (render_backend_)
+        delete render_backend_;
 }
 
-Renderer::~Renderer(){
-    if (optimizer_)
-        delete optimizer_;
+void RenderClient::queue_draw(OptimizedScene const& scene) {
 
-    for ( auto client( render_clients_.begin() ); client != render_clients_.end(); ++client ){
-        delete (*client);
+    current_scene_ = scene;
+
+    if(!draw_thread_)
+        draw_thread_ = new std::thread(&RenderClient::draw_loop, this);
+
+
+}
+
+std::string const& RenderClient::get_camera_name() const {
+    return camera_;
+}
+
+void RenderClient::draw_loop() {
+    if (!render_backend_)
+        render_backend_ = new RenderBackend(width_, height_, camera_, display_);
+
+    while (true) {
+        render_backend_->render(current_scene_);
     }
 }
 
-void Renderer::queue_draw( SceneGraph const* scene_graph ) {
-    optimizer_->check( scene_graph );
-
-    for ( auto client(render_clients_.begin()); client != render_clients_.end(); ++ client ) {
-        (*client)->queue_draw( optimizer_->get_data() );
-    }
 }
 
-}

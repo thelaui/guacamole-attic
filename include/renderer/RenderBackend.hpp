@@ -31,12 +31,14 @@
 #include "renderer/Texture.hpp"
 #include "renderer/FrameBufferObject.hpp"
 #include "renderer/ShaderProgram.hpp"
+#include "scenegraph/CameraCore.hpp"
 
 namespace gua {
 
 class CameraNode;
 class GeometryNode;
 class LightNode;
+struct OptimizedScene;
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +60,7 @@ class RenderBackend {
         /// \param height  The height of the window to be opened,
         /// \param display The display where the window should be placed.
         ////////////////////////////////////////////////////////////////////////
-        RenderBackend( int width, int height, std::string const& camera, std::string const& display = ":0.0" );
+        RenderBackend(int width, int height, std::string const& camera, std::string const& display = ":0.0");
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Renders the given objects.
@@ -72,17 +74,29 @@ class RenderBackend {
         /// \param camera     The Camera and it's transformation used for
         ///                   drawing.
         ////////////////////////////////////////////////////////////////////////
-        void render( std::vector<GeometryNode*> const& node_list,
-                     std::vector<LightNode*> const& light_list,
-                     CameraNode* camera );
+        void render(OptimizedScene const& scene);
 
         std::string const& get_camera_name() const;
 
     private:
+        void render_eye(std::vector<GeometryNode> const& node_list,
+                        std::vector<LightNode> const& light_list,
+                        Eigen::Matrix4f const& camera_projection,
+                        Eigen::Matrix4f const& camera_transform,
+                        CameraCore::Type camera_type,
+                        bool is_left_eye);
+
+        void fill_g_buffer(std::vector<GeometryNode> const& node_list,
+                           Eigen::Matrix4f const& camera_projection,
+                           Eigen::Matrix4f const& view_matrix);
+
+        void enable_stereo(CameraCore::Type camera_type, bool is_left_eye);
+        void disable_stereo();
+
         RenderWindow window_;
         std::string camera_name_;
 
-        Geometry light_sphere_;
+        std::shared_ptr<Geometry> light_sphere_;
         Texture depth_buffer_, color_buffer_, position_buffer_, normal_buffer_;
         FrameBufferObject g_buffer_;
 

@@ -15,41 +15,22 @@
 //
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-/// \file
-/// \brief Declaration and definition of the CameraNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef CAMERA_NODE_HPP
-#define CAMERA_NODE_HPP
+#version 330
 
-#include <eigen2/Eigen/Geometry>
-#include <string>
+layout(location=0) in vec3 in_position;
+layout(location=1) in vec3 in_normal;
 
-#include "include/scenegraph/CameraCore.hpp"
+uniform mat4 projection_matrix;
+uniform mat4 view_matrix;
+uniform mat4 model_matrix;
+uniform mat4 normal_matrix;
 
-////////////////////////////////////////////////////////////////////////////////
-/// \brief Stores information on a camera for rendering.
-///
-////////////////////////////////////////////////////////////////////////////////
+out vec3 normal;
 
-namespace gua {
-
-struct CameraNode {
-    CameraNode() {};
-    CameraNode(CameraCore const& core, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
-        projection_(core.get_frustum()),
-        transform_(t),
-        type_(core.get_type()),
-        stereo_width_(core.get_stereo_width()) {}
-
-    Eigen::Matrix4f projection_;
-    Eigen::Matrix4f transform_;
-    CameraCore::Type type_;
-    float stereo_width_;
-};
-
+void main() {
+	normal = normalize(vec3(normal_matrix * vec4(in_normal, 0.0)));
+	gl_Position = (projection_matrix * view_matrix * model_matrix) * vec4(in_position, 1.0);
 }
-
-#endif //CAMERA_NODE_HPP
 

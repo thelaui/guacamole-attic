@@ -20,59 +20,66 @@
 /// \brief Declaration of the CameraCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDERER_HPP
-#define RENDERER_HPP
+#ifndef RENDERCLIENT_HPP
+#define RENDERCLIENT_HPP
 
 #include <vector>
 #include <string>
 #include <thread>
 
 #include "renderer/RenderWindow.hpp"
+#include "include/traverser/OptimizedScene.hpp"
 
 namespace gua {
 
-class SceneGraph;
-class Optimizer;
-class RenderClient;
+class RenderBackend;
+class CameraNode;
+class GeometryNode;
+class LightNode;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief This class is used to provide a renderer frontend interface to the user.
+/// \brief This class represents one render thread.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-class Renderer {
+class RenderClient {
     public:
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.
         ///
-        /// This constructs a new Renderer.
+        /// This constructs a new RenderClient.
         ///
         ////////////////////////////////////////////////////////////////////////
-        Renderer(std::vector<std::pair<std::string, std::string>> const& windows);
+        RenderClient(int width, int height, std::string const& camera, std::string const& display);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
         ///
-        /// This destroys a Renderer.
+        /// This destroys a RenderClient.
         ///
         ////////////////////////////////////////////////////////////////////////
-        virtual ~Renderer();
+        virtual ~RenderClient();
 
-        ////////////////////////////////////////////////////////////////////////
-        ///\brief Start the Render Loop
-        ///
-        /// Takes a Scenegraph and starts to render.
-        ///
-        ///\param scene_graph          The SceneGraph to be processed.
-        ////////////////////////////////////////////////////////////////////////
-        void queue_draw( SceneGraph const* scene_graph );
+        void queue_draw(OptimizedScene const& scene);
+
+        std::string const& get_camera_name() const;
 
     private:
-        std::vector<RenderClient*> render_clients_;
-        Optimizer* optimizer_;
+        void draw_loop();
+
+        std::thread* draw_thread_;
+        RenderBackend* render_backend_;
+
+        int width_;
+        int height_;
+        std::string camera_;
+        std::string display_;
+
+        OptimizedScene current_scene_;
 };
 
 }
 
-#endif // RENDERER_HPP
+#endif // RENDERCLIENT_HPP
+

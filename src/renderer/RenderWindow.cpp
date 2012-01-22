@@ -132,7 +132,7 @@ RenderWindow::RenderWindow( int width, int height, std::string const& display ) 
         if (!glxewIsSupported("GLX_NV_swap_group"))
             throw std::string("Swap groups are not supported!");
 
-        if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 101))
+        if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 0))
             throw std::string("Failed to join swap group");
     }
 

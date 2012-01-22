@@ -37,6 +37,8 @@ namespace gua {
 class CameraCore: public Core {
     public:
 
+        enum Type { MONO, SIDE_BY_SIDE, ANAGLYPH_RED_GREEN, ANAGLYPH_RED_CYAN };
+
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.
         ///
@@ -47,8 +49,11 @@ class CameraCore: public Core {
         ///\param aspect_ratio  The frustum's aspect ratio.
         ///\param near_plane    The frustum's near_plane.
         ///\param far_plane     The frustum's far_plane.
+        ///\param stereo_width  The gap between the eyes.
+        ///\param type          The type of the camera.
         ////////////////////////////////////////////////////////////////////////
-        CameraCore(float fovy, float aspect_ratio, float near_plane, float far_plane);
+        CameraCore(float fovy, float aspect_ratio, float near_plane, float far_plane,
+                   float stereo_width = 0.f, Type type = MONO);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -64,8 +69,24 @@ class CameraCore: public Core {
         ////////////////////////////////////////////////////////////////////////
         Eigen::Matrix4f const& get_frustum() const;
 
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Returns the StereoCameraCore's gap between the eyes.
+        ///
+        ///\return The camera's eye gap.
+        ////////////////////////////////////////////////////////////////////////
+        float get_stereo_width() const;
+
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Returns the StereoCameraCore's type.
+        ///
+        ///\return The camera's type.
+        ////////////////////////////////////////////////////////////////////////
+        Type get_type() const;
+
     private:
         Eigen::Matrix4f frustum_;
+        float stereo_width_;
+        Type type_;
 };
 
 }

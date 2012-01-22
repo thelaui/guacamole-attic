@@ -43,6 +43,8 @@
 		<Linker>
 			<Add directory="../lib" />
 		</Linker>
+		<Unit filename="data/shaders/deferred_light.frag" />
+		<Unit filename="data/shaders/deferred_light.vert" />
 		<Unit filename="data/shaders/matt.frag" />
 		<Unit filename="data/shaders/matt.vert" />
 		<Unit filename="data/shaders/pass_through.frag" />

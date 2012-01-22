@@ -23,10 +23,7 @@
 #include "include/renderer/Shader.hpp"
 
 # include <iostream>
-# include <fstream>
-# include <stdio.h>
-# include <stdlib.h>
-# include <cstring>
+# include <sstream>
 
 #include "include/renderer/RenderContext.hpp"
 #include "include/renderer/glInclude.hpp"
@@ -38,26 +35,31 @@ Shader::Shader():
     shader_ids_(),
     shader_type_(0),
     source_(),
-    data_() {}
+    data_(),
+    uniforms_() {}
 
 Shader::Shader(std::string const& file_name, unsigned shader_type):
     shader_ids_(),
     shader_type_(shader_type),
     source_(file_name),
-    data_() {
+    data_(),
+    uniforms_() {
 
     if (!source_.is_valid()) {
         WARNING("Failed to load shader \"%s\": File does not exist!", file_name.c_str());
+    } else {
+        data_ = source_.get_content().c_str();
+        find_uniforms();
     }
-
-    else data_ = source_.get_content().c_str();
 }
 
 Shader::Shader(char const* data, unsigned shader_type):
     shader_ids_(),
     shader_type_(shader_type),
     source_(),
-    data_(data) {}
+    data_(data) {
+        find_uniforms();
+}
 
 unsigned Shader::get_id(RenderContext const& context) const {
     // upload to GPU if neccessary
@@ -66,6 +68,10 @@ unsigned Shader::get_id(RenderContext const& context) const {
     }
 
     return shader_ids_[context.id];
+}
+
+std::vector<Uniform> const& Shader::get_uniforms() const{
+    return uniforms_;
 }
 
 void Shader::upload_to(RenderContext const& context) const {
@@ -91,6 +97,45 @@ void Shader::validate_shader(unsigned shader) const {
     if (length > 0) {
         WARNING("Compile log for shader file \"%s\":", source_.get_file_name().c_str());
         std::cout << buffer << std::endl;
+    }
+}
+
+void Shader::find_uniforms() {
+    std::stringstream shader_stream(data_);
+    std::string current_string;
+
+    while (shader_stream >> current_string) {
+        if (current_string == "uniform") {
+            Uniform new_uniform;
+            new_uniform.location_ = 0;
+            std::string type, name;
+            shader_stream >> type >> name;
+
+            if (name[name.length()-1] == ';')
+                name = name.substr(0, name.length()-1);
+
+            if (type == "mat4") {
+                new_uniform.type_ = Uniform::MAT4;
+                new_uniform.name_ = name;
+                uniforms_.push_back(new_uniform);
+            } else if (type == "vec2") {
+                new_uniform.type_ = Uniform::VEC2;
+                new_uniform.name_ = name;
+                uniforms_.push_back(new_uniform);
+            } else if (type == "vec3") {
+                new_uniform.type_ = Uniform::VEC3;
+                new_uniform.name_ = name;
+                uniforms_.push_back(new_uniform);
+            } else if (type == "vec4") {
+                new_uniform.type_ = Uniform::VEC4;
+                new_uniform.name_ = name;
+                uniforms_.push_back(new_uniform);
+            } else if (type == "sampler2D") {
+                new_uniform.type_ = Uniform::SAMPLER2D;
+                new_uniform.name_ = name;
+                uniforms_.push_back(new_uniform);
+            } else WARNING("Unknown uniform type %s!", type.c_str());
+        }
     }
 }
 
