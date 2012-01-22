@@ -35,6 +35,10 @@
 
 namespace gua {
 
+    std::shared_ptr<Geometry> debug_plane(NULL);
+    Material* debug_material(NULL);
+
+
 RenderBackend::RenderBackend( int width, int height, std::string const& camera, std::string const& display ):
     window_(width, height, display),
     camera_name_(camera),
@@ -51,15 +55,23 @@ RenderBackend::RenderBackend( int width, int height, std::string const& camera, 
         depth_buffer_.set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
         depth_buffer_.set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
 
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, position_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, normal_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +1);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, color_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +2);
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, color_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, position_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +1);
+        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, normal_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +2);
         g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, depth_buffer_.get_id(window_.get_context()), GL_DEPTH_ATTACHMENT);
+
     }
 
 void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
                             std::vector<LightNode*> const& light_list,
                             CameraNode* camera ) {
+
+    if (!debug_plane)
+        debug_plane = std::shared_ptr<Geometry>(new Geometry("data/objects/plane.obj"));
+
+    if (!debug_material)
+        debug_material = new Material("data/materials/pass_through.gmd");
+
     window_.set_active();
     window_.start_frame();
 
@@ -72,25 +84,18 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
 
         // clear the G-Buffer
         glViewport(0, 0, window_.get_context().width, window_.get_context().height);
-        glClearColor(1.0, 0.0, 0.0, 1.0);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         buffer_fill_shader_.use(window_.get_context());
 
         for (auto& geometry_core: node_list) {
 
-            auto material = MaterialBase::instance()->get(geometry_core->material_);
             auto geometry = GeometryBase::instance()->get(geometry_core->geometry_);
 
-            if (material) {
-                material->use(window_.get_context());
-
-                material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
-                material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
-                material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
-            } else {
-                WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core->material_.c_str());
-            }
+            buffer_fill_shader_.set_projection_matrix(window_.get_context(), camera->projection_);
+            buffer_fill_shader_.set_view_matrix(window_.get_context(), view_matrix);
+            buffer_fill_shader_.set_model_matrix(window_.get_context(), geometry_core->transform_);
 
             if (geometry) {
                 window_.draw(geometry);
@@ -125,6 +130,21 @@ void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
             }
         }
 
+        debug_material->use(window_.get_context());
+
+        debug_material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
+        debug_material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
+
+        Eigen::Transform3f debug_transform((Eigen::Transform3f)Eigen::Matrix4f::Identity());
+
+        debug_transform.scale(Eigen::Vector3f(0.5f, 0.5f, 0.5f));
+        debug_transform.translate(Eigen::Vector3f(3.f, 2.4f, 0.2f));
+        debug_transform.rotate(Eigen::AngleAxisf(-1.56f, Eigen::Vector3f(1, 0, 0)));
+
+        debug_material->get_shader().set_model_matrix(window_.get_context(), debug_transform.matrix());
+        position_buffer_.bind(window_.get_context(), 0);
+
+        window_.draw(debug_plane);
 
 
         // --- bind light sphere

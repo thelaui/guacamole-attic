@@ -124,10 +124,6 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
     glAttachShader(program_id, v_shader_.get_id(context));
     glAttachShader(program_id, f_shader_.get_id(context));
 
-	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0, "out_position");
-	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0+1, "out_normal");
-    glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0+2, "out_color");
-
     glLinkProgram(program_id);
     glValidateProgram(program_id);
 
@@ -137,6 +133,10 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
     normal_matrix_[context.id].location_ = glGetUniformLocation(program_id, "normal_matrix");
     unsigned diffuse_loc = glGetUniformLocation(program_id, "diffuse");
     glUniform1i(diffuse_loc, 0);
+
+//    glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0, "out_position");
+//	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0+1, "out_normal");
+//    glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0+2, "out_color");
 
     glBindAttribLocation(program_id, vertex_location, "in_position");
 	glBindAttribLocation(program_id, normal_location, "in_normal");
