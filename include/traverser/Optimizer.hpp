@@ -27,6 +27,8 @@
 #include <memory>
 #include <map>
 
+#include "include/traverser/OptimizedScene.hpp"
+
 namespace gua {
 
 class GeometryNode;
@@ -66,35 +68,10 @@ class Optimizer {
         ////////////////////////////////////////////////////////////////////////
         void check( SceneGraph const* scene_graph );
 
-        ////////////////////////////////////////////////////////////////////////
-        ///\brief get the list of geometry
-        ///
-        ///
-        ///\return geometry_data     a vector containing the scenes geometry data
-        ////////////////////////////////////////////////////////////////////////
-        std::vector<GeometryNode*> const& get_geometry_data() const;
-
-        ////////////////////////////////////////////////////////////////////////
-        ///\brief get the list of ligths
-        ///
-        ///
-        ///\return light_data     a vector containing the lights within the scene
-        ////////////////////////////////////////////////////////////////////////
-        std::vector<LightNode*> const& get_light_data() const;
-
-        ////////////////////////////////////////////////////////////////////////
-        ///\brief get the list of cameras
-        ///
-        ///
-        ///\return camera_data     a vector containing the camera in the scene
-        ////////////////////////////////////////////////////////////////////////
-        CameraNode* get_camera_data(std::string const& camera_name) const;
+        OptimizedScene const& get_data() const;
 
     private:
-
-        std::vector<GeometryNode*> geometry_data_;
-        std::vector<LightNode*> light_data_;
-        std::map<std::string, CameraNode*> camera_data_;
+        OptimizedScene data_;
 
 };
 

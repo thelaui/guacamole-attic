@@ -26,6 +26,8 @@
 #include <eigen2/Eigen/Geometry>
 #include <string>
 
+#include "include/scenegraph/CameraCore.hpp"
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a camera for rendering.
 ///
@@ -35,11 +37,16 @@ namespace gua {
 
 struct CameraNode {
     CameraNode() {};
-    CameraNode(Eigen::Matrix4f const& projection, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
-        projection_(projection), transform_(t) {}
+    CameraNode(CameraCore const& core, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
+        projection_(core.get_frustum()),
+        transform_(t),
+        type_(core.get_type()),
+        stereo_width_(core.get_stereo_width()) {}
 
     Eigen::Matrix4f projection_;
     Eigen::Matrix4f transform_;
+    CameraCore::Type type_;
+    float stereo_width_;
 };
 
 }

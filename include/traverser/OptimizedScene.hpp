@@ -17,38 +17,29 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Definition of the Render class.
+/// \brief Declaration of the OptimizedScene struct.
 ////////////////////////////////////////////////////////////////////////////////
-#include "include/traverser/Renderer.hpp"
 
-#include "include/scenegraph/SceneGraph.hpp"
-#include "include/traverser/RenderClient.hpp"
-#include "include/traverser/Optimizer.hpp"
+#ifndef OPTIMIZED_SCENE_HPP
+#define OPTIMIZED_SCENE_HPP
+
+#include <vector>
+#include <string>
+#include <map>
+
+#include "include/traverser/LightNode.hpp"
+#include "include/traverser/GeometryNode.hpp"
+#include "include/traverser/CameraNode.hpp"
 
 namespace gua {
 
-Renderer::Renderer(std::vector<std::pair<std::string, std::string>> const& windows):
-    optimizer_( new Optimizer() ) {
-
-    for (auto& window: windows)
-        render_clients_.push_back(new RenderClient(1280 , 720, window.first, window.second));
-}
-
-Renderer::~Renderer(){
-    if (optimizer_)
-        delete optimizer_;
-
-    for ( auto client( render_clients_.begin() ); client != render_clients_.end(); ++client ){
-        delete (*client);
-    }
-}
-
-void Renderer::queue_draw( SceneGraph const* scene_graph ) {
-    optimizer_->check( scene_graph );
-
-    for ( auto client(render_clients_.begin()); client != render_clients_.end(); ++ client ) {
-        (*client)->queue_draw( optimizer_->get_data() );
-    }
-}
+struct OptimizedScene {
+    std::vector<GeometryNode> nodes_;
+    std::vector<LightNode> lights_;
+    std::map<std::string, CameraNode> cameras_;
+};
 
 }
+
+#endif // OPTIMIZED_SCENE_HPP
+

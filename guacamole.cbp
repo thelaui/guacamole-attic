@@ -72,7 +72,9 @@
 		<Unit filename="include/traverser/CameraNode.hpp" />
 		<Unit filename="include/traverser/GeometryNode.hpp" />
 		<Unit filename="include/traverser/LightNode.hpp" />
+		<Unit filename="include/traverser/OptimizedScene.hpp" />
 		<Unit filename="include/traverser/Optimizer.hpp" />
+		<Unit filename="include/traverser/RenderClient.hpp" />
 		<Unit filename="include/traverser/Renderer.hpp" />
 		<Unit filename="include/utils/Color3f.hpp" />
 		<Unit filename="include/utils/Directory.hpp" />
@@ -105,6 +107,7 @@
 		<Unit filename="src/scenegraph/Node.cpp" />
 		<Unit filename="src/scenegraph/SceneGraph.cpp" />
 		<Unit filename="src/traverser/Optimizer.cpp" />
+		<Unit filename="src/traverser/RenderClient.cpp" />
 		<Unit filename="src/traverser/Renderer.cpp" />
 		<Unit filename="src/utils/Color3f.cpp" />
 		<Unit filename="src/utils/Directory.cpp" />

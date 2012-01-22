@@ -35,9 +35,8 @@
 
 namespace gua {
 
-RenderBackend::RenderBackend( int width, int height, std::string const& camera, std::string const& display ):
+RenderBackend::RenderBackend( int width, int height, std::string const& display ):
     window_(width, height, display),
-    camera_name_(camera),
     light_sphere_(LIGHT_SPHERE_DATA.c_str(), LIGHT_SPHERE_DATA.length()),
     depth_buffer_(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT),
     color_buffer_(width, height),
@@ -57,90 +56,125 @@ RenderBackend::RenderBackend( int width, int height, std::string const& camera, 
         g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, depth_buffer_.get_id(window_.get_context()), GL_DEPTH_ATTACHMENT);
     }
 
-void RenderBackend::render( std::vector<GeometryNode*> const& node_list,
-                            std::vector<LightNode*> const& light_list,
-                            CameraNode* camera ) {
+void RenderBackend::render( std::vector<GeometryNode> const& node_list,
+                            std::vector<LightNode> const& light_list,
+                            CameraNode const& camera ) {
     window_.set_active();
+
+    glColorMask(true, true, true, true);
+
     window_.start_frame();
 
-    if (camera) {
-        Eigen::Matrix4f view_matrix(camera->transform_.inverse());
+    switch(camera.type_) {
+        case CameraCore::MONO: {
+            draw(node_list, light_list, camera.projection_, camera.transform_);
+        } break;
 
-        g_buffer_.bind(window_.get_context(), {GL_COLOR_ATTACHMENT0,
-                                               GL_COLOR_ATTACHMENT0 +1,
-                                               GL_COLOR_ATTACHMENT0 +2});
+        case CameraCore::ANAGLYPH_RED_CYAN: case CameraCore::ANAGLYPH_RED_GREEN: {
+            Eigen::Transform3f transform(camera.transform_);
 
-        // clear the G-Buffer
-        glViewport(0, 0, window_.get_context().width, window_.get_context().height);
-        glClearColor(1.0, 0.0, 0.0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glColorMask(true, false, false, false);
+            transform.translate(Eigen::Vector3f(-camera.stereo_width_*0.5, 0, 0));
+            draw(node_list, light_list, camera.projection_, transform.matrix());
 
-        buffer_fill_shader_.use(window_.get_context());
+            glClear(GL_DEPTH_BUFFER_BIT);
 
-        for (auto& geometry_core: node_list) {
+            glColorMask(false, true, camera.type_ == CameraCore::ANAGLYPH_RED_CYAN, true);
+            transform.translate(Eigen::Vector3f(camera.stereo_width_, 0, 0));
+            draw(node_list, light_list, camera.projection_, transform.matrix());
+        } break;
 
-            auto material = MaterialBase::instance()->get(geometry_core->material_);
-            auto geometry = GeometryBase::instance()->get(geometry_core->geometry_);
+        case CameraCore::SIDE_BY_SIDE: {
+            Eigen::Transform3f transform(camera.transform_);
 
-            if (material) {
-                material->use(window_.get_context());
+            glViewport(0, 0, window_.get_context().width*0.5, window_.get_context().height);
+            transform.translate(Eigen::Vector3f(-camera.stereo_width_*0.5, 0, 0));
+            draw(node_list, light_list, camera.projection_, transform.matrix());
 
-                material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
-                material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
-                material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
-            } else {
-                WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core->material_.c_str());
-            }
-
-            if (geometry) {
-                window_.draw(geometry);
-            } else {
-                WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core->geometry_.c_str());
-            }
-        }
-
-        buffer_fill_shader_.unuse();
-
-        g_buffer_.unbind();
-
-        for (auto& geometry_core: node_list) {
-
-            auto material = MaterialBase::instance()->get(geometry_core->material_);
-            auto geometry = GeometryBase::instance()->get(geometry_core->geometry_);
-
-            if (material) {
-                material->use(window_.get_context());
-
-                material->get_shader().set_projection_matrix(window_.get_context(), camera->projection_);
-                material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
-                material->get_shader().set_model_matrix(window_.get_context(), geometry_core->transform_);
-            } else {
-                WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core->material_.c_str());
-            }
-
-            if (geometry) {
-                window_.draw(geometry);
-            } else {
-                WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core->geometry_.c_str());
-            }
-        }
-
-
-
-        // --- bind light sphere
-        // --- bind deferred shader
-        // --- use g buffer as sampler3D
-
-        // --- render lights
-
-        // --- unbind stuff
+            glViewport(window_.get_context().width*0.5, 0, window_.get_context().width*0.5, window_.get_context().height);
+            transform.translate(Eigen::Vector3f(camera.stereo_width_, 0, 0));
+            draw(node_list, light_list, camera.projection_, transform.matrix());
+        } break;
     }
 
     window_.finish_frame();
 }
 
-std::string const& RenderBackend::get_camera_name() const {
-    return camera_name_;
+void RenderBackend::draw( std::vector<GeometryNode> const& node_list,
+                   std::vector<LightNode> const& light_list,
+                   Eigen::Matrix4f const& camera_projection,
+                   Eigen::Matrix4f const& camera_transform ) {
+
+    Eigen::Matrix4f view_matrix(camera_transform.inverse());
+
+//    g_buffer_.bind(window_.get_context(), {GL_COLOR_ATTACHMENT0,
+//                                           GL_COLOR_ATTACHMENT0 +1,
+//                                           GL_COLOR_ATTACHMENT0 +2});
+
+    // clear the G-Buffer
+    //glViewport(0, 0, window_.get_context().width, window_.get_context().height);
+//    glClearColor(1.0, 0.0, 0.0, 1.0);
+//    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//
+//    buffer_fill_shader_.use(window_.get_context());
+//
+//    for (auto& geometry_core: node_list) {
+//
+//        auto material = MaterialBase::instance()->get(geometry_core.material_);
+//        auto geometry = GeometryBase::instance()->get(geometry_core.geometry_);
+//
+//        if (material) {
+//            material->use(window_.get_context());
+//
+//            material->get_shader().set_projection_matrix(window_.get_context(), camera_projection);
+//            material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
+//            material->get_shader().set_model_matrix(window_.get_context(), geometry_core.transform_);
+//        } else {
+//            WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core.material_.c_str());
+//        }
+//
+//        if (geometry) {
+//            window_.draw(geometry);
+//        } else {
+//            WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core.geometry_.c_str());
+//        }
+//    }
+//
+//    buffer_fill_shader_.unuse();
+//
+//    g_buffer_.unbind();
+
+    for (auto& geometry_core: node_list) {
+
+        auto material = MaterialBase::instance()->get(geometry_core.material_);
+        auto geometry = GeometryBase::instance()->get(geometry_core.geometry_);
+
+        if (material) {
+            material->use(window_.get_context());
+
+            material->get_shader().set_projection_matrix(window_.get_context(), camera_projection);
+            material->get_shader().set_view_matrix(window_.get_context(), view_matrix);
+            material->get_shader().set_model_matrix(window_.get_context(), geometry_core.transform_);
+        } else {
+            WARNING("Cannot use material \"%s\": Undefined material name!", geometry_core.material_.c_str());
+        }
+
+        if (geometry) {
+            window_.draw(geometry);
+        } else {
+            WARNING("Cannot draw geometry \"%s\": Undefined geometry name!", geometry_core.geometry_.c_str());
+        }
+    }
+
+
+
+    // --- bind light sphere
+    // --- bind deferred shader
+    // --- use g buffer as sampler3D
+
+    // --- render lights
+
+    // --- unbind stuff
 }
 
 }

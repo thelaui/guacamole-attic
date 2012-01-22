@@ -132,7 +132,7 @@ RenderWindow::RenderWindow( int width, int height, std::string const& display ) 
         if (!glxewIsSupported("GLX_NV_swap_group"))
             throw std::string("Swap groups are not supported!");
 
-        if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 101))
+        if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 0))
             throw std::string("Failed to join swap group");
     }
 
@@ -154,7 +154,7 @@ void RenderWindow::set_active() const {
 }
 
 void RenderWindow::start_frame() const {
-    glClearColor(1.0, 0.0, 0.0, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
