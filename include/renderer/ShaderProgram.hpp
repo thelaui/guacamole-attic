@@ -24,6 +24,7 @@
 #define SHADERPROGRAM_HPP
 
 #include <eigen2/Eigen/Core>
+#include <map>
 
 #include "renderer/FragmentShader.hpp"
 #include "renderer/VertexShader.hpp"
@@ -82,6 +83,20 @@ class ShaderProgram {
         ////////////////////////////////////////////////////////////////////////
         void unuse() const;
 
+        void set_mat4(RenderContext const& context, std::string const& mat_name,
+                      Eigen::Matrix4f const& mat);
+
+        void set_vec2(RenderContext const& context, std::string const& vec_name,
+                      Eigen::Vector2f const& vec);
+
+        void set_vec3(RenderContext const& context, std::string const& vec_name,
+                      Eigen::Vector3f const& vec);
+
+        void set_vec4(RenderContext const& context, std::string const& vec_name,
+                      Eigen::Vector4f const& vec);
+
+        void set_sampler2d(RenderContext const& context, std::string const& sampler_name,
+                           Texture const& sampler);
         ////////////////////////////////////////////////////////////////////////
         /// \brief Sets the projection matrix.
         ///
@@ -136,6 +151,9 @@ class ShaderProgram {
         mutable std::vector<Uniform> view_matrix_;
         mutable std::vector<Uniform> model_matrix_;
         mutable std::vector<Uniform> normal_matrix_;
+
+        std::map<std::string, std::vector<Uniform>> uniforms_;
+        unsigned texture_offset_;
 
         VertexShader v_shader_;
         FragmentShader f_shader_;

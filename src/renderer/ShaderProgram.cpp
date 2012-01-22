@@ -34,10 +34,14 @@
 namespace gua {
 
 ShaderProgram::ShaderProgram():
-    program_ids_() {}
+    program_ids_(),
+    uniforms_(),
+    texture_offset_(0) {}
 
 ShaderProgram::ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader ):
     program_ids_(),
+    uniforms_(),
+    texture_offset_(0),
     v_shader_(v_shader),
     f_shader_(f_shader) {}
 
@@ -54,6 +58,37 @@ void ShaderProgram::use(RenderContext const& context) const {
 
 void ShaderProgram::unuse() const {
     glUseProgram(0);
+}
+
+void ShaderProgram::set_mat4(RenderContext const& context, std::string const& mat_name, Eigen::Matrix4f const& mat) {
+    if (uniforms_[mat_name].size() > context.id)
+        glUniformMatrix4fv(uniforms_[mat_name][context.id].location_, 1, GL_FALSE, mat.data());
+}
+
+void ShaderProgram::set_vec2(RenderContext const& context, std::string const& vec_name, Eigen::Vector2f const& vec) {
+    if (uniforms_[vec_name].size() > context.id)
+        glUniform2f(uniforms_[vec_name][context.id].location_, vec.x(), vec.y());
+}
+
+void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, Eigen::Vector3f const& vec) {
+    if (uniforms_[vec_name].size() > context.id)
+        glUniform3f(uniforms_[vec_name][context.id].location_, vec.x(), vec.y(), vec.z());
+}
+
+void ShaderProgram::set_vec4(RenderContext const& context, std::string const& vec_name, Eigen::Vector4f const& vec) {
+    if (uniforms_[vec_name].size() > context.id)
+        glUniform4f(uniforms_[vec_name][context.id].location_, vec[0], vec[1], vec[2], vec[3]);
+}
+
+void ShaderProgram::set_sampler2d(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) {
+    if (uniforms_[sampler_name].size() > context.id) {
+        sampler.bind(context, GL_TEXTURE0 + texture_offset_);
+
+        unsigned sampler_location(glGetUniformLocation(program_ids_[context.id], sampler_name.c_str()));
+        glUniform1i(sampler_location, texture_offset_);
+
+        ++texture_offset_;
+    }
 }
 
 void ShaderProgram::set_projection_matrix(RenderContext const& context, Eigen::Matrix4f const& projection_matrix) const {
