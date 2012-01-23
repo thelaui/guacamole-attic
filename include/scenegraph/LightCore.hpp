@@ -46,9 +46,8 @@ class LightCore: public Core {
         /// the constructor of base class Core with the type LIGHT.
         ///
         ///\param color   The light's color.
-        ///\param radius  The light's radius.
         ////////////////////////////////////////////////////////////////////////
-        LightCore(Color3f const& color, float radius);
+        LightCore(Color3f const& color);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -64,17 +63,8 @@ class LightCore: public Core {
         ////////////////////////////////////////////////////////////////////////
         Color3f const& get_color() const;
 
-        ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the LightCore's name of color.
-        ///
-        ///\return radius The light's radius.
-        ////////////////////////////////////////////////////////////////////////
-        float get_radius() const;
-
     private:
         Color3f color_;
-        float radius_;
-
 };
 
 }

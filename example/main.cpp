@@ -2,6 +2,34 @@
 
 #include <thread>
 
+
+void setup_lights(gua::SceneGraph& graph) {
+
+    auto point_light_core1 = new gua::LightCore(gua::Color3f(1.f, 1.f, 0.f));
+    auto point_light_core2 = new gua::LightCore(gua::Color3f(1.f, 0.f, 1.f));
+    auto point_light_core3 = new gua::LightCore(gua::Color3f(0.f, 1.f, 1.f));
+    auto point_light_core4 = new gua::LightCore(gua::Color3f(0.f, 1.f, 1.f));
+
+    auto point_light1 = graph.add_node("/", "point_light1", point_light_core1);
+    auto point_light2 = graph.add_node("/", "point_light2", point_light_core2);
+    auto point_light3 = graph.add_node("/", "point_light3", point_light_core3);
+    auto point_light4 = graph.add_node("/", "point_light4", point_light_core4);
+
+    point_light1.translate(2.f, 2.5f, -2.f);
+    point_light2.translate(2.f, 2.5f, 2.f);
+    point_light3.translate(-2.f,2.5f, 2.f);
+    point_light4.translate(-2.f, 2.5f, -2.f);
+
+    point_light1.scale(15.f, 15.f, 15.f);
+    point_light2.scale(15.f, 15.f, 15.f);
+    point_light3.scale(15.f, 15.f, 15.f);
+    point_light4.scale(15.f, 15.f, 15.f);
+
+
+
+
+}
+
 int main() {
     gua::RenderWindow::init();
 
@@ -33,17 +61,13 @@ int main() {
     monkey.scale(0.3, 0.3, 0.3);
     monkey.translate(0, 5, 0);
 
-    auto point_light_core = new gua::LightCore(gua::Color3f(0.5f, 0.5f, 0.5f), 10.f);
-    auto point_light1 = graph.add_node("/", "point_light1", point_light_core);
-    auto point_light2 = graph.add_node("/", "point_light2", point_light_core);
-    point_light2.translate(2.f, 0.f, 0.f);
+    setup_lights(graph);
 
     gua::DotGenerator dot_generator;
     dot_generator.parse_graph(&graph, "guacamole_scenegraph");
     dot_generator.save();
 
     std::vector<std::pair<std::string, std::string>> windows;
-    windows.push_back(std::make_pair("camera", ":0.0"));
     windows.push_back(std::make_pair("camera", ":0.0"));
     gua::Renderer renderer(windows);
 

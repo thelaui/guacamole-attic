@@ -37,14 +37,12 @@ namespace gua {
 
 struct LightNode {
     LightNode(Eigen::Matrix4f const& transform = Eigen::Matrix4f::Identity(),
-              Color3f const& color = Color3f(), float radius = 1.f):
+              Color3f const& color = Color3f()):
         transform_(transform),
-        color_(color),
-        radius_(radius) {}
+        color_(color) {}
 
     Eigen::Matrix4f transform_;
     Color3f color_;
-    float radius_;
 };
 
 }

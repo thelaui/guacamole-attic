@@ -27,19 +27,18 @@ uniform mat4 view_matrix;
 uniform mat4 model_matrix;
 uniform mat4 normal_matrix;
 
-uniform vec3 light_position;
-
 out vec3 position;
 out vec3 normal;
 out vec3 light_position_camera_space;
+out float light_radius;
 
 void main() {
     position = ((view_matrix * model_matrix) * vec4(in_position, 1.0)).xyz;
 	normal = normalize(vec3(normal_matrix * vec4(in_normal, 0.0)));
 
-	//light_position_camera_space = (view_matrix * vec4(light_position, 1.0)).xyz;
 	light_position_camera_space = (view_matrix * model_matrix * vec4(0.f, 0.f, 0.f, 1.0)).xyz;
+	light_radius = length(position - light_position_camera_space);
 
-	gl_Position = (projection_matrix * view_matrix * model_matrix) * vec4(in_position, 1.0);
+	gl_Position = projection_matrix * vec4(position, 1.0);
 }
 

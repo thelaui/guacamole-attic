@@ -57,6 +57,7 @@ void ShaderProgram::use(RenderContext const& context) const {
 }
 
 void ShaderProgram::unuse() const {
+    texture_offset_ = 0;
     glUseProgram(0);
 }
 
@@ -97,10 +98,9 @@ void ShaderProgram::set_vec4(RenderContext const& context, std::string const& ve
 
 void ShaderProgram::set_sampler2D(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) {
     if (uniforms_.size() > context.id) {
-        sampler.bind(context, GL_TEXTURE0 + texture_offset_);
-
-        unsigned sampler_location(glGetUniformLocation(program_ids_[context.id], sampler_name.c_str()));
-        glUniform1i(sampler_location, texture_offset_);
+        sampler.bind(context, texture_offset_);
+        unsigned loc(check_uniform(context, sampler_name, Uniform::SAMPLER2D));
+        if(loc >= 0) glUniform1i(loc, texture_offset_);
 
         ++texture_offset_;
     }

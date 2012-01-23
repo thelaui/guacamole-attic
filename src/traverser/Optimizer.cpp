@@ -73,7 +73,8 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
                 break;
             }
             case Core::CoreType::LIGHT : {
-                data_.lights_.push_back( LightNode( current_matrix ) );
+                auto light_core = reinterpret_cast<LightCore*>  ( current_core );
+                data_.lights_.push_back( LightNode( current_matrix, light_core->get_color()) );
                 break;
             }
             case Core::CoreType::GEOMETRY : {

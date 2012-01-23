@@ -24,19 +24,14 @@
 
 namespace gua {
 
-LightCore::LightCore(Color3f const& color, float radius):
+LightCore::LightCore(Color3f const& color):
     Core(Core::LIGHT),
-    color_(color),
-    radius_(radius) {}
+    color_(color) {}
 
 LightCore::~LightCore() {}
 
 Color3f const& LightCore::get_color() const {
     return color_;
-}
-
-float LightCore::get_radius() const {
-    return radius_;
 }
 
 }

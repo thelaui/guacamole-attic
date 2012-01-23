@@ -100,7 +100,19 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
     Eigen::Matrix4f view_matrix(camera_transform.inverse());
 
     fill_g_buffer(node_list, camera_projection, view_matrix);
+
     enable_stereo(camera_type, is_left_eye);
+
+    glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_FRONT);
+
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
 
     deferred_light_shader_.use(window_.get_context());
 
@@ -116,15 +128,15 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
         deferred_light_shader_.set_mat4(window_.get_context(), "model_matrix", light.transform_);
         deferred_light_shader_.set_mat4(window_.get_context(), "normal_matrix", light.transform_.inverse().transpose());
         deferred_light_shader_.set_vec3(window_.get_context(), "light_color", light.color_);
-        deferred_light_shader_.set_float(window_.get_context(), "light_radius", light.radius_);
 
         window_.draw(light_sphere_);
     }
 
     deferred_light_shader_.unuse();
 
-    disable_stereo();
+    glPopAttrib();
 
+    disable_stereo();
 }
 
 void RenderBackend::fill_g_buffer(std::vector<GeometryNode> const& node_list,

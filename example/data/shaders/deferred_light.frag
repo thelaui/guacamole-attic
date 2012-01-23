@@ -22,11 +22,11 @@
 in vec3 position;
 in vec3 normal;
 in vec3 light_position_camera_space;
+in float light_radius;
 
 out vec4 out_color;
 
 uniform vec3      light_color;
-uniform float     light_radius;
 uniform sampler2D color_buffer;
 uniform sampler2D position_buffer;
 uniform sampler2D normal_buffer;
@@ -46,7 +46,7 @@ void main(void)
   vec3 fragment_position = texture2D( position_buffer, screen_tex_coords).rgb;
   vec3 fragment_normal = texture2D( normal_buffer, screen_tex_coords).rgb;
 
-
+    fragment_color = vec4(0.5, 0.5, 0.5, 1.0);
 
   // discards all fragments outside the light radius
 
