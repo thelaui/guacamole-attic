@@ -60,14 +60,10 @@ std::string const& RenderClient::get_camera_name() const {
 
 void RenderClient::draw_loop() {
     if (!render_backend_)
-        render_backend_ = new RenderBackend(width_, height_, display_);
+        render_backend_ = new RenderBackend(width_, height_, camera_, display_);
 
     while (true) {
-        auto camera = current_scene_.cameras_.find(camera_);
-
-        if (camera != current_scene_.cameras_.end()) {
-            render_backend_->render(current_scene_.nodes_, current_scene_.lights_, camera->second);
-        }
+        render_backend_->render(current_scene_);
     }
 }
 

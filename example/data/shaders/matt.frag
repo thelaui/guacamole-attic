@@ -21,7 +21,9 @@
 
 in vec3 normal;
 
-out vec4 out_color;
+layout (location = 0) out vec4 out_color;
+layout (location = 1) out vec3 out_position;
+layout (location = 2) out vec3 out_normal;
 
 void main() {
 	vec3 lightDirTop  = normalize(vec3(1.0,2.0,1.0));
@@ -36,4 +38,5 @@ void main() {
 	vec3 amb = vec3(0.2, 0.2, 0.2);
 
 	out_color = vec4(intensityTop*top + intensityFill*fill + amb, 1.0);
+	out_normal = normal;
 }

@@ -24,8 +24,6 @@ in vec2 tex_coord;
 
 uniform sampler2D diffuse;
 
-out vec3 out_position;
-out vec3 out_normal;
 out vec4 out_color;
 
 void main() {
@@ -40,7 +38,5 @@ void main() {
 
 	vec3 amb = vec3(0.2, 0.2, 0.2);
 
-    out_color = texture2D(diffuse, tex_coord)*vec4(intensityTop*top + intensityFill*fill + amb, 1.0);
-    out_position = vec3(0,0,1);
-    out_normal = vec3(1,1,1);
+    out_color = texture2D(diffuse, tex_coord);//*vec4(intensityTop*top + intensityFill*fill + amb, 1.0);
 }

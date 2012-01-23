@@ -15,39 +15,31 @@
 //
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-/// \file
-/// \brief Declaration and definition of the LightNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef LIGHT_NODE_HPP
-#define LIGHT_NODE_HPP
+#version 330
 
-#include "utils/Color3f.hpp"
+layout(location=0) in vec3 in_position;
+layout(location=1) in vec3 in_normal;
 
-#include <eigen2/Eigen/Geometry>
-#include <string>
+uniform mat4 projection_matrix;
+uniform mat4 view_matrix;
+uniform mat4 model_matrix;
+uniform mat4 normal_matrix;
 
-////////////////////////////////////////////////////////////////////////////////
-/// \brief Stores information on a light for rendering.
-///
-////////////////////////////////////////////////////////////////////////////////
+uniform vec3 light_position;
 
-namespace gua {
+out vec3 position;
+out vec3 normal;
+out vec3 light_position_camera_space;
 
-struct LightNode {
-    LightNode(Eigen::Matrix4f const& transform = Eigen::Matrix4f::Identity(),
-              Color3f const& color = Color3f(), float radius = 1.f):
-        transform_(transform),
-        color_(color),
-        radius_(radius) {}
+void main() {
+    position = ((view_matrix * model_matrix) * vec4(in_position, 1.0)).xyz;
+	normal = normalize(vec3(normal_matrix * vec4(in_normal, 0.0)));
 
-    Eigen::Matrix4f transform_;
-    Color3f color_;
-    float radius_;
-};
+	//light_position_camera_space = (view_matrix * vec4(light_position, 1.0)).xyz;
+	light_position_camera_space = (view_matrix * model_matrix * vec4(0.f, 0.f, 0.f, 1.0)).xyz;
 
+	gl_Position = (projection_matrix * view_matrix * model_matrix) * vec4(in_position, 1.0);
 }
-
-#endif //LIGHT_NODE_HPP
 

@@ -15,39 +15,16 @@
 //
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-/// \file
-/// \brief Declaration and definition of the LightNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef LIGHT_NODE_HPP
-#define LIGHT_NODE_HPP
+#version 330
 
-#include "utils/Color3f.hpp"
+in vec2 tex_coord;
 
-#include <eigen2/Eigen/Geometry>
-#include <string>
+uniform sampler2D diffuse;
 
-////////////////////////////////////////////////////////////////////////////////
-/// \brief Stores information on a light for rendering.
-///
-////////////////////////////////////////////////////////////////////////////////
+layout (location = 0) out vec4 out_color;
 
-namespace gua {
-
-struct LightNode {
-    LightNode(Eigen::Matrix4f const& transform = Eigen::Matrix4f::Identity(),
-              Color3f const& color = Color3f(), float radius = 1.f):
-        transform_(transform),
-        color_(color),
-        radius_(radius) {}
-
-    Eigen::Matrix4f transform_;
-    Color3f color_;
-    float radius_;
-};
-
+void main() {
+    out_color = texture2D(diffuse, tex_coord);
 }
-
-#endif //LIGHT_NODE_HPP
-

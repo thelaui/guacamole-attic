@@ -33,6 +33,6 @@ FragmentShader::FragmentShader( std::string const& file ):
     Shader::Shader(file, GL_FRAGMENT_SHADER) {}
 
 FragmentShader::FragmentShader(char const* data):
-    Shader::Shader(data, GL_VERTEX_SHADER) {}
+    Shader::Shader(data, GL_FRAGMENT_SHADER) {}
 
 }

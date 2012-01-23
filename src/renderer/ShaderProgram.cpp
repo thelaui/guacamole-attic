@@ -61,27 +61,42 @@ void ShaderProgram::unuse() const {
 }
 
 void ShaderProgram::set_mat4(RenderContext const& context, std::string const& mat_name, Eigen::Matrix4f const& mat) {
-    if (uniforms_[mat_name].size() > context.id)
-        glUniformMatrix4fv(uniforms_[mat_name][context.id].location_, 1, GL_FALSE, mat.data());
+    if (uniforms_.size() > context.id) {
+        unsigned loc(check_uniform(context, mat_name, Uniform::MAT4));
+        if(loc >= 0) glUniformMatrix4fv(loc, 1, GL_FALSE, mat.data());
+    }
 }
 
 void ShaderProgram::set_vec2(RenderContext const& context, std::string const& vec_name, Eigen::Vector2f const& vec) {
-    if (uniforms_[vec_name].size() > context.id)
-        glUniform2f(uniforms_[vec_name][context.id].location_, vec.x(), vec.y());
+    if (uniforms_.size() > context.id) {
+        unsigned loc(check_uniform(context, vec_name, Uniform::VEC2));
+        if (loc >= 0) glUniform2f(loc, vec.x(), vec.y());
+    }
 }
 
 void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, Eigen::Vector3f const& vec) {
-    if (uniforms_[vec_name].size() > context.id)
-        glUniform3f(uniforms_[vec_name][context.id].location_, vec.x(), vec.y(), vec.z());
+    if (uniforms_.size() > context.id) {
+        unsigned loc(check_uniform(context, vec_name, Uniform::VEC3));
+        if(loc >= 0) glUniform3f(loc, vec.x(), vec.y(), vec.z());
+    }
+}
+
+void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, Color3f const& vec) {
+    if (uniforms_.size() > context.id) {
+        unsigned loc(check_uniform(context, vec_name, Uniform::VEC3));
+        if(loc >= 0) glUniform3f(loc, vec.r(), vec.g(), vec.b());
+    }
 }
 
 void ShaderProgram::set_vec4(RenderContext const& context, std::string const& vec_name, Eigen::Vector4f const& vec) {
-    if (uniforms_[vec_name].size() > context.id)
-        glUniform4f(uniforms_[vec_name][context.id].location_, vec[0], vec[1], vec[2], vec[3]);
+    if (uniforms_.size() > context.id) {
+        unsigned loc(check_uniform(context, vec_name, Uniform::VEC4));
+        if(loc >= 0) glUniform4f(loc, vec[0], vec[1], vec[2], vec[3]);
+    }
 }
 
-void ShaderProgram::set_sampler2d(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) {
-    if (uniforms_[sampler_name].size() > context.id) {
+void ShaderProgram::set_sampler2D(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) {
+    if (uniforms_.size() > context.id) {
         sampler.bind(context, GL_TEXTURE0 + texture_offset_);
 
         unsigned sampler_location(glGetUniformLocation(program_ids_[context.id], sampler_name.c_str()));
@@ -91,32 +106,32 @@ void ShaderProgram::set_sampler2d(RenderContext const& context, std::string cons
     }
 }
 
-void ShaderProgram::set_projection_matrix(RenderContext const& context, Eigen::Matrix4f const& projection_matrix) const {
-    if (projection_matrix_.size() > context.id)
-        glUniformMatrix4fv(projection_matrix_[context.id].location_, 1, GL_FALSE, projection_matrix.data());
-}
-
-void ShaderProgram::set_view_matrix(RenderContext const& context, Eigen::Matrix4f const& view_matrix) const {
-    if (view_matrix_.size() > context.id)
-        glUniformMatrix4fv(view_matrix_[context.id].location_, 1, GL_FALSE, view_matrix.data());
-}
-
-void ShaderProgram::set_model_matrix(RenderContext const& context, Eigen::Matrix4f const& model_matrix) const {
-    if (model_matrix_.size() > context.id && normal_matrix_.size() > context.id ) {
-        Eigen::Matrix4f normal_matrix(model_matrix.inverse().transpose());
-        glUniformMatrix4fv(model_matrix_[context.id].location_, 1, GL_FALSE, model_matrix.data());
-        glUniformMatrix4fv(normal_matrix_[context.id].location_, 1, GL_FALSE, normal_matrix.data());
+void ShaderProgram::set_float(RenderContext const& context, std::string const& float_name, float value) {
+    if (uniforms_.size() > context.id) {
+        unsigned loc(check_uniform(context, float_name, Uniform::FLOAT));
+        if(loc >= 0) glUniform1f(loc, value);
     }
+}
+
+unsigned ShaderProgram::check_uniform(RenderContext const& context, std::string const& name, Uniform::Type type) const {
+    auto uniform(uniforms_[context.id].find(name));
+
+    if (uniform == uniforms_[context.id].end()) {
+        WARNING("Uniform %s does not exist on the given context!", name.c_str());
+        return -1;
+    } else if (uniform->second.type_ != type) {
+        WARNING("Uniform %s's type does not match the given one!", name.c_str());
+        return -1;
+    }
+
+    return uniform->second.location_;
 }
 
 void ShaderProgram::upload_to(RenderContext const& context) const {
 
     if (program_ids_.size() <= context.id) {
         program_ids_.resize(context.id+1);
-        projection_matrix_.resize(context.id+1);
-        view_matrix_.resize(context.id+1);
-        model_matrix_.resize(context.id+1);
-        normal_matrix_.resize(context.id+1);
+        uniforms_.resize(context.id+1);
     }
 
     unsigned program_id = glCreateProgram();
@@ -124,19 +139,18 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
     glAttachShader(program_id, v_shader_.get_id(context));
     glAttachShader(program_id, f_shader_.get_id(context));
 
-	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0, "out_position");
-	glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0+1, "out_normal");
-    glBindFragDataLocation(program_id, GL_COLOR_ATTACHMENT0+2, "out_color");
-
     glLinkProgram(program_id);
     glValidateProgram(program_id);
 
-    projection_matrix_[context.id].location_ = glGetUniformLocation(program_id, "projection_matrix");
-    view_matrix_[context.id].location_ = glGetUniformLocation(program_id, "view_matrix");
-    model_matrix_[context.id].location_ = glGetUniformLocation(program_id, "model_matrix");
-    normal_matrix_[context.id].location_ = glGetUniformLocation(program_id, "normal_matrix");
-    unsigned diffuse_loc = glGetUniformLocation(program_id, "diffuse");
-    glUniform1i(diffuse_loc, 0);
+    for (auto& uniform : v_shader_.get_uniforms())
+        uniforms_[context.id].insert(std::make_pair(uniform.name_, uniform));
+    for (auto& uniform : v_shader_.get_uniforms())
+        uniforms_[context.id][uniform.name_].location_ = glGetUniformLocation(program_id, uniform.name_.c_str());
+
+    for (auto& uniform : f_shader_.get_uniforms())
+        uniforms_[context.id].insert(std::make_pair(uniform.name_, uniform));
+    for (auto& uniform : f_shader_.get_uniforms())
+        uniforms_[context.id][uniform.name_].location_ = glGetUniformLocation(program_id, uniform.name_.c_str());
 
     glBindAttribLocation(program_id, vertex_location, "in_position");
 	glBindAttribLocation(program_id, normal_location, "in_normal");

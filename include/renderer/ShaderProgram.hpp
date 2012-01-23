@@ -30,6 +30,7 @@
 #include "renderer/VertexShader.hpp"
 #include "renderer/Texture.hpp"
 #include "renderer/Uniform.hpp"
+#include "utils/Color3f.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief An actual shader which can be applied to the Graphics pipeline.
@@ -92,41 +93,17 @@ class ShaderProgram {
         void set_vec3(RenderContext const& context, std::string const& vec_name,
                       Eigen::Vector3f const& vec);
 
+        void set_vec3(RenderContext const& context, std::string const& vec_name,
+                      Color3f const& vec);
+
         void set_vec4(RenderContext const& context, std::string const& vec_name,
                       Eigen::Vector4f const& vec);
 
-        void set_sampler2d(RenderContext const& context, std::string const& sampler_name,
+        void set_sampler2D(RenderContext const& context, std::string const& sampler_name,
                            Texture const& sampler);
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Sets the projection matrix.
-        ///
-        /// Sets the projection uniform for this shader.
-        ///
-        /// \param context           The context to be affected.
-        /// \param projection_matrix The matrix which should be used for the
-        ///                          projection matrix.
-        ////////////////////////////////////////////////////////////////////////
-        void set_projection_matrix(RenderContext const& context, Eigen::Matrix4f const& projection_matrix) const;
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Sets the view matrix.
-        ///
-        ///
-        /// \param context     The context to be affected.
-        /// \param view_matrix The matrix which should be used for the
-        ///                    view matrix.
-        ////////////////////////////////////////////////////////////////////////
-        void set_view_matrix(RenderContext const& context, Eigen::Matrix4f const& view_matrix) const;
-
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Sets the model matrix.
-        ///
-        ///
-        /// \param context      The context to be affected.
-        /// \param model_matrix The matrix which should be used for the
-        ///                     model matrix.
-        ////////////////////////////////////////////////////////////////////////
-        void set_model_matrix(RenderContext const& context, Eigen::Matrix4f const& model_matrix) const;
+        void set_float(RenderContext const& context, std::string const& float_name,
+                       float value);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief The layout location of the vertex attribute.
@@ -144,15 +121,13 @@ class ShaderProgram {
         const static unsigned texture_location = 2;
 
     private:
+        unsigned check_uniform(RenderContext const& context, std::string const& name,
+                               Uniform::Type type) const;
+
         void upload_to(RenderContext const& context) const;
         mutable std::vector<unsigned> program_ids_;
 
-        mutable std::vector<Uniform> projection_matrix_;
-        mutable std::vector<Uniform> view_matrix_;
-        mutable std::vector<Uniform> model_matrix_;
-        mutable std::vector<Uniform> normal_matrix_;
-
-        std::map<std::string, std::vector<Uniform>> uniforms_;
+        mutable std::vector<std::map<std::string, Uniform>> uniforms_;
         unsigned texture_offset_;
 
         VertexShader v_shader_;

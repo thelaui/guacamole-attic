@@ -54,8 +54,8 @@ Material::~Material() {
 
 void Material::use(RenderContext const& context) const {
     shader_.use(context);
-    if (texture_)
-        texture_->bind(context, 0);
+//    if (texture_)
+//        texture_->bind(context, 0);
 }
 
 Texture* Material::get_texture() const {

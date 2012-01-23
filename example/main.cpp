@@ -35,7 +35,8 @@ int main() {
 
     auto point_light_core = new gua::LightCore(gua::Color3f(0.5f, 0.5f, 0.5f), 10.f);
     auto point_light1 = graph.add_node("/", "point_light1", point_light_core);
-    point_light1.translate(0.f, 5.f, 0.f);
+    auto point_light2 = graph.add_node("/", "point_light2", point_light_core);
+    point_light2.translate(2.f, 0.f, 0.f);
 
     gua::DotGenerator dot_generator;
     dot_generator.parse_graph(&graph, "guacamole_scenegraph");

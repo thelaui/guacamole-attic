@@ -27,6 +27,7 @@
 #include <vector>
 
 #include "utils/TextFile.hpp"
+#include "renderer/Uniform.hpp"
 
 namespace gua {
 
@@ -78,14 +79,18 @@ class Shader {
         ////////////////////////////////////////////////////////////////////////
         unsigned get_id(RenderContext const& context) const;
 
+        std::vector<Uniform> const& get_uniforms() const;
+
     private:
         void upload_to(RenderContext const& context) const;
         void validate_shader(unsigned shader) const;
+        void find_uniforms();
 
         mutable std::vector<unsigned> shader_ids_;
         unsigned shader_type_;
         mutable TextFile source_;
         mutable char const* data_;
+        std::vector<Uniform> uniforms_;
 };
 
 }
