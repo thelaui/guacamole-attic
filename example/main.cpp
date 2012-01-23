@@ -43,6 +43,7 @@ int main() {
 
     std::vector<std::pair<std::string, std::string>> windows;
     windows.push_back(std::make_pair("camera", ":0.0"));
+    windows.push_back(std::make_pair("camera", ":0.0"));
     gua::Renderer renderer(windows);
 
     int frame(0);
