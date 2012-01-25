@@ -31,7 +31,7 @@ Renderer::Renderer(std::vector<std::pair<std::string, std::string>> const& windo
     optimizer_( new Optimizer() ) {
 
     for (auto& window: windows)
-        render_clients_.push_back(new RenderClient(800 , 600, window.first, window.second));
+        render_clients_.push_back(new RenderClient(1920 , 1080, window.first, window.second));
 }
 
 Renderer::~Renderer(){

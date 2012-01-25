@@ -113,6 +113,14 @@ void ShaderProgram::set_float(RenderContext const& context, std::string const& f
     }
 }
 
+void ShaderProgram::set_int(RenderContext const& context, std::string const& int_name, int value) {
+    if (uniforms_.size() > context.id) {
+        unsigned loc(check_uniform(context, int_name, Uniform::INT));
+        if(loc >= 0) glUniform1i(loc, value);
+    }
+}
+
+
 unsigned ShaderProgram::check_uniform(RenderContext const& context, std::string const& name, Uniform::Type type) const {
     auto uniform(uniforms_[context.id].find(name));
 

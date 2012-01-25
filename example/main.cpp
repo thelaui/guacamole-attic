@@ -7,8 +7,13 @@ void setup_lights(gua::SceneGraph& graph) {
 
     auto point_light_core1 = new gua::LightCore(gua::Color3f(1.f, 1.f, 0.f));
     auto point_light_core2 = new gua::LightCore(gua::Color3f(1.f, 0.f, 1.f));
-    auto point_light_core3 = new gua::LightCore(gua::Color3f(0.f, 1.f, 1.f));
+    auto point_light_core3 = new gua::LightCore(gua::Color3f(1.f, 1.f, 0.f));
     auto point_light_core4 = new gua::LightCore(gua::Color3f(0.f, 1.f, 1.f));
+
+//    auto point_light_core1 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
+//    auto point_light_core2 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
+//    auto point_light_core3 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
+//    auto point_light_core4 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
 
     auto point_light1 = graph.add_node("/", "point_light1", point_light_core1);
     auto point_light2 = graph.add_node("/", "point_light2", point_light_core2);
@@ -42,9 +47,13 @@ int main() {
     box.scale(0.5, 0.5, 0.5);
     box.translate(-1, 1, 0);
 
+    box = graph.add_node("/", "box2", cube_core);
+    box.scale(0.5, 0.5, 0.5);
+    box.translate(-1, 1, 6);
+
     graph.add_node("/", "pivot");
 
-    auto camera_core = new gua::CameraCore(60.f, 4.f/3.f, 0.1f, 1000.f, 0.2f, gua::CameraCore::ANAGLYPH_RED_CYAN);
+    auto camera_core = new gua::CameraCore(60.f, 16.f/9.f, 0.1f, 1000.f, 0.2f, gua::CameraCore::MONO);
     auto camera = graph.add_node("/pivot", "camera", camera_core);
     camera.translate(0, 2, 4);
     camera.rotate(-0.4, 1, 0, 0);

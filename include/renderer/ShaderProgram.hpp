@@ -105,6 +105,9 @@ class ShaderProgram {
         void set_float(RenderContext const& context, std::string const& float_name,
                        float value);
 
+        void set_int(RenderContext const& context, std::string const& int_name,
+                     int value);
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief The layout location of the vertex attribute.
         ////////////////////////////////////////////////////////////////////////

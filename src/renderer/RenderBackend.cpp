@@ -114,6 +114,9 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
 
+    float texel_width((camera_type == CameraCore::SIDE_BY_SIDE ? 2.f : 1.f) / window_.get_context().width);
+    float x_fragment_offset(!is_left_eye && camera_type == CameraCore::SIDE_BY_SIDE ?  1.f : 0.f);
+
     deferred_light_shader_.use(window_.get_context());
 
     deferred_light_shader_.set_mat4(window_.get_context(), "projection_matrix", camera_projection);
@@ -121,8 +124,9 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
     deferred_light_shader_.set_sampler2D(window_.get_context(), "color_buffer", color_buffer_);
     deferred_light_shader_.set_sampler2D(window_.get_context(), "position_buffer", position_buffer_);
     deferred_light_shader_.set_sampler2D(window_.get_context(), "normal_buffer", normal_buffer_);
-    deferred_light_shader_.set_float(window_.get_context(), "texel_width", 1.f/window_.get_context().width);
+    deferred_light_shader_.set_float(window_.get_context(), "texel_width", texel_width);
     deferred_light_shader_.set_float(window_.get_context(), "texel_height", 1.f/window_.get_context().height);
+    deferred_light_shader_.set_float(window_.get_context(), "x_fragment_offset", x_fragment_offset);
 
     for (auto& light: light_list) {
         deferred_light_shader_.set_mat4(window_.get_context(), "model_matrix", light.transform_);
