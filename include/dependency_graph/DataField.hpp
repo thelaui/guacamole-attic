@@ -7,8 +7,7 @@ class DataField: public Field {
 	public:
 		DataField( T value, Field* parent = NULL ):
 			Field( parent ),
-			value_( value ),
-			last_changed_( TIME_FUNCTION )
+			value_( value )
 			{ };
 		virtual ~DataField() {};
 
