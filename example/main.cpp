@@ -24,10 +24,6 @@ void setup_lights(gua::SceneGraph& graph) {
     point_light2.scale(15.f, 15.f, 15.f);
     point_light3.scale(15.f, 15.f, 15.f);
     point_light4.scale(15.f, 15.f, 15.f);
-
-
-
-
 }
 
 int main() {
@@ -48,7 +44,7 @@ int main() {
 
     graph.add_node("/", "pivot");
 
-    auto camera_core = new gua::CameraCore(60.f, 16.f/9.f, 0.1f, 1000.f, 0.2f, gua::CameraCore::MONO);
+    auto camera_core = new gua::CameraCore(60.f, 4.f/3.f, 0.1f, 1000.f, 0.2f, gua::CameraCore::ANAGLYPH_RED_CYAN);
     auto camera = graph.add_node("/pivot", "camera", camera_core);
     camera.translate(0, 2, 4);
     camera.rotate(-0.4, 1, 0, 0);
@@ -71,19 +67,25 @@ int main() {
     windows.push_back(std::make_pair("camera", ":0.0"));
     gua::Renderer renderer(windows);
 
+    gua::Timer timer;
+    timer.start();
+
     int frame(0);
     while (true) {
-        ++frame;
+        if (++frame % 100 == 0) {
+            WARNING("Application FPS: %f", frame/timer.get_elapsed());
+            frame = 0;
+            timer.reset();
+        }
 
-        if (frame % 4 == 0)
-            renderer.queue_draw(&graph);
+        renderer.queue_draw(&graph);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-        graph["/box"].rotate(0.001, 0, 1, 0);
-        graph["/box/monkey"].rotate(0.001, 1, 0, 0);
-        graph["/box/monkey/monkey"].rotate(0.01, 0, 1, 0);
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        graph["/box"].rotate(0.01, 0, 1, 0);
+        graph["/box/monkey"].rotate(0.01, 1, 0, 0);
+        graph["/box/monkey/monkey"].rotate(0.1, 0, 1, 0);
 
-        graph["/pivot"].rotate(-0.0005, 0, 1, 0);
+        graph["/pivot"].rotate(-0.005, 0, 1, 0);
     }
 
     return 0;

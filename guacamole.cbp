@@ -84,6 +84,7 @@
 		<Unit filename="include/utils/PathParser.hpp" />
 		<Unit filename="include/utils/Singleton.hpp" />
 		<Unit filename="include/utils/TextFile.hpp" />
+		<Unit filename="include/utils/Timer.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
 		<Unit filename="include/utils/randomizer.hpp" />
 		<Unit filename="src/renderer/FragmentShader.cpp" />
@@ -115,6 +116,7 @@
 		<Unit filename="src/utils/DotParser.cpp" />
 		<Unit filename="src/utils/PathParser.cpp" />
 		<Unit filename="src/utils/TextFile.cpp" />
+		<Unit filename="src/utils/Timer.cpp" />
 		<Unit filename="src/utils/randomizer.cpp" />
 		<Extensions>
 			<code_completion />

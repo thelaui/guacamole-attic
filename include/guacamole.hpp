@@ -31,6 +31,7 @@
 #include "utils/PathParser.hpp"
 #include "utils/DotGenerator.hpp"
 #include "utils/Directory.hpp"
+#include "utils/Timer.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \mainpage

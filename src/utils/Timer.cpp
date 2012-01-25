@@ -17,38 +17,35 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Definition of the Render class.
+/// \brief Implementation of the Timer class.
 ////////////////////////////////////////////////////////////////////////////////
-#include "include/traverser/Renderer.hpp"
 
-#include "include/scenegraph/SceneGraph.hpp"
-#include "include/traverser/RenderClient.hpp"
-#include "include/traverser/Optimizer.hpp"
+#include "include/utils/Timer.hpp"
+
+#include <thread>
 
 namespace gua {
 
-Renderer::Renderer(std::vector<std::pair<std::string, std::string>> const& windows):
-    optimizer_( new Optimizer() ) {
-
-    for (auto& window: windows)
-        render_clients_.push_back(new RenderClient(800 , 600, window.first, window.second));
+void Timer::start() {
+    start_ = get_now();
 }
 
-Renderer::~Renderer(){
-    if (optimizer_)
-        delete optimizer_;
-
-    for ( auto client( render_clients_.begin() ); client != render_clients_.end(); ++client ){
-        delete (*client);
-    }
+void Timer::reset() {
+    start_ = get_now();
 }
 
-void Renderer::queue_draw( SceneGraph const* scene_graph ) {
-    optimizer_->check( scene_graph );
+double Timer::get_elapsed() const {
+    return get_now() - start_;
+}
 
-    for ( auto client(render_clients_.begin()); client != render_clients_.end(); ++ client ) {
-        (*client)->queue_draw( optimizer_->get_data() );
-    }
+double Timer::get_now() {
+    auto time = std::chrono::system_clock::now();
+    auto since_epoch = time.time_since_epoch();
+    return std::chrono::duration_cast<std::chrono::milliseconds>(since_epoch).count()*0.001;
 }
 
 }
+
+
+
+

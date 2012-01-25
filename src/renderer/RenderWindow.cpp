@@ -129,11 +129,11 @@ RenderWindow::RenderWindow( int width, int height, std::string const& display ) 
 
     std::string vendor_string(vendor_stream.str());
     if (vendor_string.find("NVIDIA") != std::string::npos) {
-        if (!glxewIsSupported("GLX_NV_swap_group"))
-            throw std::string("Swap groups are not supported!");
-
-        if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 0))
-            throw std::string("Failed to join swap group");
+//        if (!glxewIsSupported("GLX_NV_swap_group"))
+//            throw std::string("Swap groups are not supported!");
+//
+//        if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 0))
+//            throw std::string("Failed to join swap group");
     }
 
     glEnable(GL_DEPTH_TEST);

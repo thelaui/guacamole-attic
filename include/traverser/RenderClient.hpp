@@ -26,6 +26,7 @@
 #include <vector>
 #include <string>
 #include <thread>
+#include <condition_variable>
 
 #include "renderer/RenderWindow.hpp"
 #include "include/traverser/OptimizedScene.hpp"
@@ -71,10 +72,16 @@ class RenderClient {
         std::thread* draw_thread_;
         RenderBackend* render_backend_;
 
+        bool rendering_finished_;
+        std::mutex render_mutex_;
+        std::condition_variable render_condition_;
+
         int width_;
         int height_;
         std::string camera_;
         std::string display_;
+
+        unsigned frame_;
 
         OptimizedScene current_scene_;
 };

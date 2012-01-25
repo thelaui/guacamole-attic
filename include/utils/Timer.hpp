@@ -17,38 +17,40 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Definition of the Render class.
+/// \brief Declaration of the Timer class.
 ////////////////////////////////////////////////////////////////////////////////
-#include "include/traverser/Renderer.hpp"
 
-#include "include/scenegraph/SceneGraph.hpp"
-#include "include/traverser/RenderClient.hpp"
-#include "include/traverser/Optimizer.hpp"
+#ifndef TIMER_HPP
+#define TIMER_HPP
+
+#include <string>
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief
+////////////////////////////////////////////////////////////////////////////////
 
 namespace gua {
 
-Renderer::Renderer(std::vector<std::pair<std::string, std::string>> const& windows):
-    optimizer_( new Optimizer() ) {
+class Timer {
 
-    for (auto& window: windows)
-        render_clients_.push_back(new RenderClient(800 , 600, window.first, window.second));
-}
+    public:
+        void start();
+        void reset();
 
-Renderer::~Renderer(){
-    if (optimizer_)
-        delete optimizer_;
+        double get_elapsed() const;
 
-    for ( auto client( render_clients_.begin() ); client != render_clients_.end(); ++client ){
-        delete (*client);
-    }
-}
+        static double get_now();
 
-void Renderer::queue_draw( SceneGraph const* scene_graph ) {
-    optimizer_->check( scene_graph );
+    private:
+        double start_;
 
-    for ( auto client(render_clients_.begin()); client != render_clients_.end(); ++ client ) {
-        (*client)->queue_draw( optimizer_->get_data() );
-    }
-}
+};
 
 }
+
+#endif // TIMER_HPP
+
+
+
+
+
