@@ -28,6 +28,7 @@
 #include "scenegraph/GeometryCore.hpp"
 #include "scenegraph/CameraCore.hpp"
 #include "scenegraph/LightCore.hpp"
+#include "scenegraph/ScreenCore.hpp"
 #include "utils/PathParser.hpp"
 #include "utils/DotGenerator.hpp"
 #include "utils/Directory.hpp"

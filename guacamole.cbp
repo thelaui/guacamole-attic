@@ -68,6 +68,7 @@
 		<Unit filename="include/scenegraph/LightCore.hpp" />
 		<Unit filename="include/scenegraph/Node.hpp" />
 		<Unit filename="include/scenegraph/SceneGraph.hpp" />
+		<Unit filename="include/scenegraph/ScreenCore.hpp" />
 		<Unit filename="include/scenegraph/Texture.hpp" />
 		<Unit filename="include/traverser/CameraNode.hpp" />
 		<Unit filename="include/traverser/GeometryNode.hpp" />
@@ -76,6 +77,7 @@
 		<Unit filename="include/traverser/Optimizer.hpp" />
 		<Unit filename="include/traverser/RenderClient.hpp" />
 		<Unit filename="include/traverser/Renderer.hpp" />
+		<Unit filename="include/traverser/ScreenNode.hpp" />
 		<Unit filename="include/utils/Color3f.hpp" />
 		<Unit filename="include/utils/Directory.hpp" />
 		<Unit filename="include/utils/DotGenerator.hpp" />
@@ -85,6 +87,7 @@
 		<Unit filename="include/utils/TextFile.hpp" />
 		<Unit filename="include/utils/Timer.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
+		<Unit filename="include/utils/math.hpp" />
 		<Unit filename="include/utils/randomizer.hpp" />
 		<Unit filename="src/renderer/FragmentShader.cpp" />
 		<Unit filename="src/renderer/FrameBufferObject.cpp" />
@@ -106,6 +109,7 @@
 		<Unit filename="src/scenegraph/LightCore.cpp" />
 		<Unit filename="src/scenegraph/Node.cpp" />
 		<Unit filename="src/scenegraph/SceneGraph.cpp" />
+		<Unit filename="src/scenegraph/ScreenCore.cpp" />
 		<Unit filename="src/traverser/Optimizer.cpp" />
 		<Unit filename="src/traverser/RenderClient.cpp" />
 		<Unit filename="src/traverser/Renderer.cpp" />
@@ -115,6 +119,7 @@
 		<Unit filename="src/utils/PathParser.cpp" />
 		<Unit filename="src/utils/TextFile.cpp" />
 		<Unit filename="src/utils/Timer.cpp" />
+		<Unit filename="src/utils/math.cpp" />
 		<Unit filename="src/utils/randomizer.cpp" />
 		<Extensions>
 			<code_completion />

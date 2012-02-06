@@ -17,14 +17,16 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration a simple randomizer utility.
+/// \brief Declaration of a simple randomizer utility.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace randomizer {
+namespace gua {
+    namespace randomizer {
 
-    void set_seed(unsigned int seed);
-    unsigned int get_seed();
+        void set_seed(unsigned int seed);
+        unsigned int get_seed();
 
-    float random(float begin, float end);
-    int random(int begin, int end);
+        float random(float begin, float end);
+        int random(int begin, int end);
+    }
 }

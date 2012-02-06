@@ -60,7 +60,7 @@ class RenderBackend {
         /// \param height  The height of the window to be opened,
         /// \param display The display where the window should be placed.
         ////////////////////////////////////////////////////////////////////////
-        RenderBackend(int width, int height, std::string const& camera, std::string const& display = ":0.0");
+        RenderBackend(int width, int height, std::string const& camera, std::string const& screen, std::string const& display = ":0.0");
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Renders the given objects.
@@ -95,6 +95,7 @@ class RenderBackend {
 
         RenderWindow window_;
         std::string camera_name_;
+        std::string screen_name_;
 
         std::shared_ptr<Geometry> light_sphere_;
         Texture depth_buffer_, color_buffer_, position_buffer_, normal_buffer_;

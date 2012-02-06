@@ -49,7 +49,7 @@ class Renderer {
         /// This constructs a new Renderer.
         ///
         ////////////////////////////////////////////////////////////////////////
-        Renderer(std::vector<std::pair<std::string, std::string>> const& windows);
+        Renderer(std::vector<std::vector<std::string>> const& windows);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.

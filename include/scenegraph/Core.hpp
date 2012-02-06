@@ -39,7 +39,7 @@ class Core {
         /// This enum is used to distinguish Cores with different properties
         /// from each other.
         ////////////////////////////////////////////////////////////////////////
-        enum CoreType { CAMERA, GEOMETRY, LIGHT };
+        enum CoreType { CAMERA, GEOMETRY, LIGHT, SCREEN };
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.

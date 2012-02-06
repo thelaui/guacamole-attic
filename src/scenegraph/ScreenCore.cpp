@@ -17,42 +17,27 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the randomizer utility.
+/// \brief A Core representing a screen in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "utils/randomizer.hpp"
-
-#include <cstdlib>
-#include <ctime>
+#include "include/scenegraph/ScreenCore.hpp"
 
 namespace gua {
 
-namespace {
+ScreenCore::ScreenCore(float width, float height):
+    Core(Core::SCREEN),
+    width_(width),
+    height_(height) {}
 
-    unsigned int init_seed() {
-        unsigned int seed = static_cast<unsigned int>(std::time(NULL));
-        std::srand(seed);
-        return seed;
-    }
+ScreenCore::~ScreenCore() {}
 
-    unsigned int global_seed = init_seed();
+float ScreenCore::get_width() const {
+    return width_;
 }
 
-void randomizer::set_seed(unsigned int seed) {
-    std::srand(seed);
-    global_seed = seed;
-}
-
-unsigned int randomizer::get_seed() {
-    return global_seed;
-}
-
-float randomizer::random(float begin, float end) {
-    return static_cast<float>(std::rand()) / RAND_MAX * (end - begin) + begin;
-}
-
-int randomizer::random(int begin, int end) {
-    return std::rand() % (end - begin + 1) + begin;
+float ScreenCore::get_height() const {
+    return height_;
 }
 
 }
+

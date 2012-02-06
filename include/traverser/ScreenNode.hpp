@@ -17,42 +17,33 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the randomizer utility.
+/// \brief Declaration and definition of the ScreenNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "utils/randomizer.hpp"
+#ifndef SCREEN_NODE_HPP
+#define SCREEN_NODE_HPP
 
-#include <cstdlib>
-#include <ctime>
+#include <eigen2/Eigen/Geometry>
+
+#include "include/scenegraph/ScreenCore.hpp"
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief Stores information on a screen for rendering.
+///
+////////////////////////////////////////////////////////////////////////////////
 
 namespace gua {
 
-namespace {
+struct ScreenNode {
+    ScreenNode() {};
+    ScreenNode(Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
+        transform_(t){}
 
-    unsigned int init_seed() {
-        unsigned int seed = static_cast<unsigned int>(std::time(NULL));
-        std::srand(seed);
-        return seed;
-    }
-
-    unsigned int global_seed = init_seed();
-}
-
-void randomizer::set_seed(unsigned int seed) {
-    std::srand(seed);
-    global_seed = seed;
-}
-
-unsigned int randomizer::get_seed() {
-    return global_seed;
-}
-
-float randomizer::random(float begin, float end) {
-    return static_cast<float>(std::rand()) / RAND_MAX * (end - begin) + begin;
-}
-
-int randomizer::random(int begin, int end) {
-    return std::rand() % (end - begin + 1) + begin;
-}
+    Eigen::Matrix4f transform_;
+};
 
 }
+
+#endif //SCREEN_NODE_HPP
+
+

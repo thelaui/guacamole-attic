@@ -52,7 +52,7 @@ class RenderClient {
         /// This constructs a new RenderClient.
         ///
         ////////////////////////////////////////////////////////////////////////
-        RenderClient(int width, int height, std::string const& camera, std::string const& display);
+        RenderClient(int width, int height, std::string const& camera, std::string const& screen, std::string const& display);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -79,6 +79,7 @@ class RenderClient {
         int width_;
         int height_;
         std::string camera_;
+        std::string screen_;
         std::string display_;
 
         unsigned frame_;

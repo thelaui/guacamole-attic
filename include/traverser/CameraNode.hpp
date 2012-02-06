@@ -38,12 +38,10 @@ namespace gua {
 struct CameraNode {
     CameraNode() {};
     CameraNode(CameraCore const& core, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
-        projection_(core.get_frustum()),
         transform_(t),
         type_(core.get_type()),
         stereo_width_(core.get_stereo_width()) {}
 
-    Eigen::Matrix4f projection_;
     Eigen::Matrix4f transform_;
     CameraCore::Type type_;
     float stereo_width_;

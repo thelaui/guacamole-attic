@@ -52,6 +52,7 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
     data_.lights_.clear();
     data_.lights_.reserve( light_count );
 
+    data_.screens_.clear();
     data_.cameras_.clear();
 
     auto node = scene_graph->begin();
@@ -75,6 +76,13 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
             case Core::CoreType::LIGHT : {
                 auto light_core = reinterpret_cast<LightCore*>  ( current_core );
                 data_.lights_.push_back( LightNode( current_matrix, light_core->get_color()) );
+                break;
+            }
+            case Core::CoreType::SCREEN : {
+                auto screen_core = reinterpret_cast<ScreenCore*>  ( current_core );
+                Eigen::Transform3f scale((Eigen::Transform3f)Eigen::Matrix4f::Identity());
+                scale.scale(Eigen::Vector3f(screen_core->get_width(), screen_core->get_height(), 1));
+                data_.screens_.insert( std::make_pair(node.get_name(), ScreenNode(current_matrix * scale)) );
                 break;
             }
             case Core::CoreType::GEOMETRY : {

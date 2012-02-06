@@ -25,8 +25,6 @@
 
 #include "scenegraph/Core.hpp"
 
-#include <eigen2/Eigen/Geometry>
-
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class is used to represent a camera in the SceneGraph.
 ///
@@ -45,15 +43,10 @@ class CameraCore: public Core {
         /// This constructs a CameraCore with the given parameters and calls
         /// the constructor of base class Core with the type CAMERA.
         ///
-        ///\param fovy          The vertical opening angle of the frustum.
-        ///\param aspect_ratio  The frustum's aspect ratio.
-        ///\param near_plane    The frustum's near_plane.
-        ///\param far_plane     The frustum's far_plane.
         ///\param stereo_width  The gap between the eyes.
         ///\param type          The type of the camera.
         ////////////////////////////////////////////////////////////////////////
-        CameraCore(float fovy, float aspect_ratio, float near_plane, float far_plane,
-                   float stereo_width = 0.f, Type type = MONO);
+        CameraCore(float stereo_width = 0.f, Type type = MONO);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -62,12 +55,6 @@ class CameraCore: public Core {
         ////////////////////////////////////////////////////////////////////////
         virtual ~CameraCore();
 
-        ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the CameraCore's viewing frustum.
-        ///
-        ///\return frustum The camera's frustum
-        ////////////////////////////////////////////////////////////////////////
-        Eigen::Matrix4f const& get_frustum() const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the StereoCameraCore's gap between the eyes.
@@ -84,7 +71,6 @@ class CameraCore: public Core {
         Type get_type() const;
 
     private:
-        Eigen::Matrix4f frustum_;
         float stereo_width_;
         Type type_;
 };

@@ -74,12 +74,17 @@ void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name)
                 case Core::LIGHT:
                     fillcolor += " \"#FFDD55\"";
                     break;
-                default: {
+                case Core::SCREEN:
+                    fillcolor += " \"#55DDFF\"";
+                    break;
+                case Core::GEOMETRY: {
                     auto geometry_core(reinterpret_cast<GeometryCore*>(current_core));
                     fillcolor += " \"#EEEEEE\"";
                     parse_data_ +=  "| geometry: " + geometry_core->get_geometry()
                                 +   "| material: " + geometry_core->get_material();
                 } break;
+
+                default:;
             }
         }
 

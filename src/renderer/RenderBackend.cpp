@@ -30,6 +30,7 @@
 #include "renderer/BufferFillShaders.hpp"
 #include "traverser/OptimizedScene.hpp"
 #include "utils/debug.hpp"
+#include "utils/math.hpp"
 #include "traverser/LightNode.hpp"
 #include "traverser/GeometryNode.hpp"
 #include "traverser/CameraNode.hpp"
@@ -37,9 +38,10 @@
 
 namespace gua {
 
-RenderBackend::RenderBackend( int width, int height, std::string const& camera, std::string const& display ):
+RenderBackend::RenderBackend( int width, int height, std::string const& camera, std::string const& screen, std::string const& display ):
     window_(width, height, display),
     camera_name_(camera),
+    screen_name_(screen),
     light_sphere_(new Geometry(LIGHT_SPHERE_DATA.c_str(), LIGHT_SPHERE_DATA.length())),
     depth_buffer_(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT),
     color_buffer_(width, height),
@@ -67,22 +69,27 @@ void RenderBackend::render(OptimizedScene const& scene) {
     window_.start_frame();
 
     auto camera_it(scene.cameras_.find(camera_name_));
+    auto screen_it(scene.screens_.find(screen_name_));
 
-    if (camera_it != scene.cameras_.end()) {
+    if (camera_it != scene.cameras_.end() && screen_it != scene.screens_.end()) {
         auto camera(camera_it->second);
+        auto screen(screen_it->second);
 
         if (camera.type_ == CameraCore::MONO) {
-            render_eye(scene.nodes_, scene.lights_, camera.projection_, camera.transform_, camera.type_, true);
+            auto projection(math::compute_frustum(camera.transform_, screen.transform_, 0.1, 1000.f));
+            render_eye(scene.nodes_, scene.lights_, projection, camera.transform_, camera.type_, true);
         } else {
             Eigen::Transform3f eye_position(camera.transform_);
 
             eye_position.translate(Eigen::Vector3f(-camera.stereo_width_*0.5, 0, 0));
-            render_eye(scene.nodes_, scene.lights_, camera.projection_, eye_position.matrix(), camera.type_, true);
+            auto projection(math::compute_frustum(eye_position.matrix(), screen.transform_, 0.1, 1000.f));
+            render_eye(scene.nodes_, scene.lights_, projection, eye_position.matrix(), camera.type_, true);
 
             glClear(GL_DEPTH_BUFFER_BIT);
 
             eye_position.translate(Eigen::Vector3f(camera.stereo_width_, 0, 0));
-            render_eye(scene.nodes_, scene.lights_, camera.projection_, eye_position.matrix(), camera.type_, false);
+            projection = math::compute_frustum(eye_position.matrix(), screen.transform_, 0.1, 1000.f);
+            render_eye(scene.nodes_, scene.lights_, projection, eye_position.matrix(), camera.type_, false);
         }
 
     }

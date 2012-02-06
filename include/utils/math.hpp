@@ -17,42 +17,15 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the randomizer utility.
+/// \brief Declaration of a some math utilities.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "utils/randomizer.hpp"
-
-#include <cstdlib>
-#include <ctime>
+#include <eigen2/Eigen/Geometry>
 
 namespace gua {
-
-namespace {
-
-    unsigned int init_seed() {
-        unsigned int seed = static_cast<unsigned int>(std::time(NULL));
-        std::srand(seed);
-        return seed;
+    namespace math {
+        Eigen::Matrix4f const compute_frustum(Eigen::Matrix4f const& eye_transform, Eigen::Matrix4f const& screen_transform,
+                                              float near_plane, float far_plane);
     }
-
-    unsigned int global_seed = init_seed();
 }
 
-void randomizer::set_seed(unsigned int seed) {
-    std::srand(seed);
-    global_seed = seed;
-}
-
-unsigned int randomizer::get_seed() {
-    return global_seed;
-}
-
-float randomizer::random(float begin, float end) {
-    return static_cast<float>(std::rand()) / RAND_MAX * (end - begin) + begin;
-}
-
-int randomizer::random(int begin, int end) {
-    return std::rand() % (end - begin + 1) + begin;
-}
-
-}

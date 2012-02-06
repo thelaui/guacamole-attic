@@ -53,10 +53,15 @@ int main() {
 
     graph.add_node("/", "pivot");
 
-    auto camera_core = new gua::CameraCore(60.f, 16.f/9.f, 0.1f, 1000.f, 0.2f, gua::CameraCore::MONO);
-    auto camera = graph.add_node("/pivot", "camera", camera_core);
-    camera.translate(0, 2, 4);
-    camera.rotate(-0.4, 1, 0, 0);
+    auto screen_core(new gua::ScreenCore(0.8, 0.2));
+    auto screen = graph.add_node("/pivot", "screen", screen_core);
+    screen.translate(0, 1, 4);
+//    screen.scale(0.8, 0.6, 1);
+    screen.rotate(-0.4, 1, 0, 0);
+
+    auto camera_core = new gua::CameraCore(0.2f, gua::CameraCore::MONO);
+    auto camera = graph.add_node("/pivot/screen", "camera", camera_core);
+    camera.translate(0, 0, 0.1);
 
     auto monkey_core = new gua::GeometryCore("monkey", "matt");
     auto monkey = graph.add_node("/box", "monkey", monkey_core);
@@ -72,8 +77,8 @@ int main() {
     dot_generator.parse_graph(&graph, "guacamole_scenegraph");
     dot_generator.save();
 
-    std::vector<std::pair<std::string, std::string>> windows;
-    windows.push_back(std::make_pair("camera", ":0.0"));
+    std::vector<std::vector<std::string>> windows;
+    windows.push_back({"camera", "screen", ":0.0"});
     gua::Renderer renderer(windows);
 
     gua::Timer timer;
@@ -89,7 +94,7 @@ int main() {
 
         renderer.queue_draw(&graph);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
         graph["/box"].rotate(0.01, 0, 1, 0);
         graph["/box/monkey"].rotate(0.01, 1, 0, 0);
         graph["/box/monkey/monkey"].rotate(0.1, 0, 1, 0);

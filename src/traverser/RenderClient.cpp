@@ -28,7 +28,7 @@
 
 namespace gua {
 
-RenderClient::RenderClient(int width, int height, std::string const& camera, std::string const& display):
+RenderClient::RenderClient(int width, int height, std::string const& camera, std::string const& screen, std::string const& display):
     draw_thread_(NULL),
     render_backend_(NULL),
     rendering_finished_(false),
@@ -37,6 +37,7 @@ RenderClient::RenderClient(int width, int height, std::string const& camera, std
     width_(width),
     height_(height),
     camera_(camera),
+    screen_(screen),
     display_(display),
     frame_(0) {}
 
@@ -71,7 +72,7 @@ std::string const& RenderClient::get_camera_name() const {
 
 void RenderClient::draw_loop() {
     if (!render_backend_)
-        render_backend_ = new RenderBackend(width_, height_, camera_, display_);
+        render_backend_ = new RenderBackend(width_, height_, camera_, screen_, display_);
 
     Timer timer;
     timer.start();

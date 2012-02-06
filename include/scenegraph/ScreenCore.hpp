@@ -17,42 +17,42 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the randomizer utility.
+/// \brief Declaration of the ScreenCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "utils/randomizer.hpp"
+#ifndef SCREEN_CORE_HPP
+#define SCREEN_CORE_HPP
 
-#include <cstdlib>
-#include <ctime>
+#include "scenegraph/Core.hpp"
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief This class is used to represent a screen in the SceneGraph.
+///
+////////////////////////////////////////////////////////////////////////////////
 
 namespace gua {
 
-namespace {
+class ScreenCore: public Core {
+    public:
 
-    unsigned int init_seed() {
-        unsigned int seed = static_cast<unsigned int>(std::time(NULL));
-        std::srand(seed);
-        return seed;
-    }
+        ScreenCore(float width, float height);
 
-    unsigned int global_seed = init_seed();
-}
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Destructor.
+        ///
+        /// This destructs a ScreenCore.
+        ////////////////////////////////////////////////////////////////////////
+        virtual ~ScreenCore();
 
-void randomizer::set_seed(unsigned int seed) {
-    std::srand(seed);
-    global_seed = seed;
-}
+        float get_width() const;
+        float get_height() const;
 
-unsigned int randomizer::get_seed() {
-    return global_seed;
-}
 
-float randomizer::random(float begin, float end) {
-    return static_cast<float>(std::rand()) / RAND_MAX * (end - begin) + begin;
-}
-
-int randomizer::random(int begin, int end) {
-    return std::rand() % (end - begin + 1) + begin;
-}
+    private:
+        float width_, height_;
+};
 
 }
+
+#endif // SCREEN_CORE_HPP
+

@@ -30,6 +30,7 @@
 #include "include/traverser/LightNode.hpp"
 #include "include/traverser/GeometryNode.hpp"
 #include "include/traverser/CameraNode.hpp"
+#include "include/traverser/ScreenNode.hpp"
 
 namespace gua {
 
@@ -37,6 +38,7 @@ struct OptimizedScene {
     std::vector<GeometryNode> nodes_;
     std::vector<LightNode> lights_;
     std::map<std::string, CameraNode> cameras_;
+    std::map<std::string, ScreenNode> screens_;
 };
 
 }
