@@ -1,27 +1,21 @@
 #ifndef FIELD_HPP
 #define FIELD_HPP
 
-#ifndef FIELD_TIME_CONFIG
-#define FIELD_TIME_CONFIG
+#include <set>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-
-#define TIME_FUNCTION boost::posix_time::microsec_clock::universal_time()
-#define TIME_TYPE boost::posix_time::ptime
-
-#endif // FIELD_TIME_CONFIG
+class FieldContainer;
 
 class Field {
 	public:
-		Field( Field* parent = NULL ):
-			last_checked_( TIME_FUNCTION ),
-			parent_( parent )
-		 {};
-		virtual ~Field() {};
-		TIME_TYPE last_checked( ) const { return last_checked_; };
+		Field( FieldContainer* master );
+		virtual ~Field();
+		void touch();
+		bool is_dirty() const;
 	protected:
-		Field* parent_;	
-		TIME_TYPE last_checked_;
+		FieldContainer* master_;	
+		bool is_dirty_;
+
+		std::set< Field* > audience_;
 };
 
 #endif // FIELD_HPP
