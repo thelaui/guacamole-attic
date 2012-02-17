@@ -25,7 +25,7 @@
 
 #include <eigen2/Eigen/Geometry>
 
-#include "include/scenegraph/ScreenCore.hpp"
+#include "scenegraph/ScreenCore.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a screen for rendering.

@@ -20,7 +20,7 @@
 /// \brief A Core representing light in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/scenegraph/LightCore.hpp"
+#include "scenegraph/LightCore.hpp"
 
 namespace gua {
 

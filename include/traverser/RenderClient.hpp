@@ -29,7 +29,7 @@
 #include <condition_variable>
 
 #include "renderer/RenderWindow.hpp"
-#include "include/traverser/OptimizedScene.hpp"
+#include "traverser/OptimizedScene.hpp"
 
 namespace gua {
 

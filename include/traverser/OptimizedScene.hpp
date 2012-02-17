@@ -27,10 +27,10 @@
 #include <string>
 #include <map>
 
-#include "include/traverser/LightNode.hpp"
-#include "include/traverser/GeometryNode.hpp"
-#include "include/traverser/CameraNode.hpp"
-#include "include/traverser/ScreenNode.hpp"
+#include "traverser/LightNode.hpp"
+#include "traverser/GeometryNode.hpp"
+#include "traverser/CameraNode.hpp"
+#include "traverser/ScreenNode.hpp"
 
 namespace gua {
 

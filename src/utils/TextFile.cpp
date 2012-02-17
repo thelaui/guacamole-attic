@@ -20,12 +20,12 @@
 /// \brief A simple file reader to get data out of text files.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/utils/TextFile.hpp"
+#include "utils/TextFile.hpp"
 
 #include <sstream>
 #include <fstream>
 
-#include "include/utils/debug.hpp"
+#include "utils/debug.hpp"
 
 namespace gua {
 

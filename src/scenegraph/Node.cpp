@@ -20,8 +20,8 @@
 /// \brief A simple structure used to store and organize SceneGraph data.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/scenegraph/Node.hpp"
-#include "include/scenegraph/Core.hpp"
+#include "scenegraph/Node.hpp"
+#include "scenegraph/Core.hpp"
 
 namespace gua {
 

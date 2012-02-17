@@ -20,9 +20,9 @@
 /// \brief Definition of the FragmentShader class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/FragmentShader.hpp"
+#include "renderer/FragmentShader.hpp"
 
-#include "include/renderer/glInclude.hpp"
+#include "renderer/glInclude.hpp"
 
 namespace gua {
 

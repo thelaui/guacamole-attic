@@ -20,7 +20,7 @@
 /// \brief Definition of the Mesh class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/Mesh.hpp"
+#include "renderer/Mesh.hpp"
 
 #include <assimp/assimp.hpp>
 #include <assimp/aiPostProcess.h>

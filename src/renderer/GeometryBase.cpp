@@ -20,9 +20,9 @@
 /// \brief Definition of the GeometryBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/GeometryBase.hpp"
+#include "renderer/GeometryBase.hpp"
 
-#include "include/utils/Directory.hpp"
+#include "utils/Directory.hpp"
 
 #include <sstream>
 

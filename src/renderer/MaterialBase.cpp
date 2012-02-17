@@ -20,9 +20,9 @@
 /// \brief Definition of the MaterialBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/MaterialBase.hpp"
+#include "renderer/MaterialBase.hpp"
 
-#include "include/utils/Directory.hpp"
+#include "utils/Directory.hpp"
 
 #include <sstream>
 

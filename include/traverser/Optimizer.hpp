@@ -27,7 +27,7 @@
 #include <memory>
 #include <map>
 
-#include "include/traverser/OptimizedScene.hpp"
+#include "traverser/OptimizedScene.hpp"
 
 namespace gua {
 

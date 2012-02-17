@@ -19,15 +19,15 @@
 /// \file
 /// \brief Definition of the Optimizer class.
 ////////////////////////////////////////////////////////////////////////////////
-#include "include/traverser/Optimizer.hpp"
+#include "traverser/Optimizer.hpp"
 
-#include "include/scenegraph/Core.hpp"
-#include "include/scenegraph/CameraCore.hpp"
-#include "include/scenegraph/GeometryCore.hpp"
-#include "include/scenegraph/LightCore.hpp"
-#include "include/scenegraph/Node.hpp"
-#include "include/scenegraph/SceneGraph.hpp"
-#include "include/scenegraph/Iterator.hpp"
+#include "scenegraph/Core.hpp"
+#include "scenegraph/CameraCore.hpp"
+#include "scenegraph/GeometryCore.hpp"
+#include "scenegraph/LightCore.hpp"
+#include "scenegraph/Node.hpp"
+#include "scenegraph/SceneGraph.hpp"
+#include "scenegraph/Iterator.hpp"
 
 #include <stack>
 #include <eigen2/Eigen/Geometry>

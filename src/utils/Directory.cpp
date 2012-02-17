@@ -20,7 +20,7 @@
 /// \brief A simple directory reader to get the members of a directory.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/utils/Directory.hpp"
+#include "utils/Directory.hpp"
 
 #include <iostream>
 #include <dirent.h>

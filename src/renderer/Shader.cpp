@@ -20,14 +20,14 @@
 /// \brief Definition of the Shader class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/Shader.hpp"
+#include "renderer/Shader.hpp"
 
 # include <iostream>
 # include <sstream>
 
-#include "include/renderer/RenderContext.hpp"
-#include "include/renderer/glInclude.hpp"
-#include "include/utils/debug.hpp"
+#include "renderer/RenderContext.hpp"
+#include "renderer/glInclude.hpp"
+#include "utils/debug.hpp"
 
 namespace gua {
 

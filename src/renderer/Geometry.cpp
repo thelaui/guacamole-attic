@@ -20,14 +20,14 @@
 /// \brief Definition of the Geometry class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/Geometry.hpp"
+#include "renderer/Geometry.hpp"
 
 #include <assimp/assimp.hpp>
 #include <assimp/aiPostProcess.h>
 #include <assimp/aiScene.h>
 
-#include "include/utils/TextFile.hpp"
-#include "include/utils/debug.hpp"
+#include "utils/TextFile.hpp"
+#include "utils/debug.hpp"
 
 #include "renderer/LightSphere.hpp"
 

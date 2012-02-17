@@ -19,12 +19,12 @@
 /// \file
 /// \brief Definition of the Render class.
 ////////////////////////////////////////////////////////////////////////////////
-#include "include/traverser/RenderClient.hpp"
+#include "traverser/RenderClient.hpp"
 
-#include "include/scenegraph/SceneGraph.hpp"
-#include "include/renderer/RenderBackend.hpp"
-#include "include/utils/Timer.hpp"
-#include "include/utils/debug.hpp"
+#include "scenegraph/SceneGraph.hpp"
+#include "renderer/RenderBackend.hpp"
+#include "utils/Timer.hpp"
+#include "utils/debug.hpp"
 
 namespace gua {
 

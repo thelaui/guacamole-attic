@@ -21,7 +21,7 @@
 ///        in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/scenegraph/Core.hpp"
+#include "scenegraph/Core.hpp"
 
 namespace gua {
 

@@ -20,13 +20,13 @@
 /// \brief A non-cyclic graph used as a powerfull tool to set up scenes.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/scenegraph/SceneGraph.hpp"
+#include "scenegraph/SceneGraph.hpp"
 
-#include "include/scenegraph/Iterator.hpp"
-#include "include/scenegraph/Node.hpp"
-#include "include/scenegraph/Core.hpp"
-#include "include/utils/PathParser.hpp"
-#include "include/utils/debug.hpp"
+#include "scenegraph/Iterator.hpp"
+#include "scenegraph/Node.hpp"
+#include "scenegraph/Core.hpp"
+#include "utils/PathParser.hpp"
+#include "utils/debug.hpp"
 
 namespace gua {
 

@@ -20,9 +20,9 @@
 /// \brief A simple parser to get data out of paths.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/utils/PathParser.hpp"
+#include "utils/PathParser.hpp"
 
-#include "include/utils/debug.hpp"
+#include "utils/debug.hpp"
 
 #include <sstream>
 

@@ -20,14 +20,14 @@
 /// \brief Definition of the Material class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/Material.hpp"
+#include "renderer/Material.hpp"
 
-#include "include/renderer/ShaderProgram.hpp"
-#include "include/renderer/RenderContext.hpp"
+#include "renderer/ShaderProgram.hpp"
+#include "renderer/RenderContext.hpp"
 
-#include "include/utils/PathParser.hpp"
-#include "include/utils/TextFile.hpp"
-#include "include/utils/debug.hpp"
+#include "utils/PathParser.hpp"
+#include "utils/TextFile.hpp"
+#include "utils/debug.hpp"
 
 namespace gua {
 

@@ -20,7 +20,7 @@
 /// \brief Implementation of the Timer class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/utils/Timer.hpp"
+#include "utils/Timer.hpp"
 
 #include <thread>
 

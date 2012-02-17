@@ -20,7 +20,7 @@
 /// \brief A Core representing a screen in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/scenegraph/ScreenCore.hpp"
+#include "scenegraph/ScreenCore.hpp"
 
 namespace gua {
 

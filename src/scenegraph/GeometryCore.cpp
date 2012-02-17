@@ -20,7 +20,7 @@
 /// \brief A Core representing geometry in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/scenegraph/GeometryCore.hpp"
+#include "scenegraph/GeometryCore.hpp"
 
 namespace gua {
 

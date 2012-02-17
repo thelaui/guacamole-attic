@@ -5,15 +5,15 @@
 
 void setup_lights(gua::SceneGraph& graph) {
 
-    auto point_light_core1 = new gua::LightCore(gua::Color3f(1.f, 1.f, 0.f));
-    auto point_light_core2 = new gua::LightCore(gua::Color3f(1.f, 0.f, 1.f));
-    auto point_light_core3 = new gua::LightCore(gua::Color3f(1.f, 1.f, 0.f));
-    auto point_light_core4 = new gua::LightCore(gua::Color3f(0.f, 1.f, 1.f));
+//    auto point_light_core1 = new gua::LightCore(gua::Color3f(1.f, 1.f, 0.f));
+//    auto point_light_core2 = new gua::LightCore(gua::Color3f(1.f, 0.f, 1.f));
+//    auto point_light_core3 = new gua::LightCore(gua::Color3f(1.f, 1.f, 0.f));
+//    auto point_light_core4 = new gua::LightCore(gua::Color3f(0.f, 1.f, 1.f));
 
-//    auto point_light_core1 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
-//    auto point_light_core2 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
-//    auto point_light_core3 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
-//    auto point_light_core4 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
+    auto point_light_core1 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
+    auto point_light_core2 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
+    auto point_light_core3 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
+    auto point_light_core4 = new gua::LightCore(gua::Color3f(0.6f, 0.6f, 0.6f));
 
     auto point_light1 = graph.add_node("/", "point_light1", point_light_core1);
     auto point_light2 = graph.add_node("/", "point_light2", point_light_core2);
@@ -39,37 +39,39 @@ int main() {
 
     gua::SceneGraph graph;
 
-    auto cube_core = new gua::GeometryCore("cube", "shiny");
-    auto floor = graph.add_node("/", "floor", cube_core);
-    floor.scale(4, 0.1, 4);
+    auto cube_core = new gua::GeometryCore("plane", "shiny");
+//    auto floor = graph.add_node("/", "floor", cube_core);
+//    floor.scale(4, 0.1, 4);
 
     auto box = graph.add_node("/", "box", cube_core);
-    box.scale(0.5, 0.5, 0.5);
-    box.translate(-1, 1, 0);
+    box.scale(0.4222, 0.2375, 0.1);
+    box.rotate(M_PI*0.5, 1, 0, 0);
+//    box.translate(-1, 1, 0);
 
-    box = graph.add_node("/", "box2", cube_core);
-    box.scale(0.5, 0.5, 0.5);
-    box.translate(-1, 1, 6);
+//    box = graph.add_node("/", "box2", cube_core);
+//    box.scale(0.5, 0.5, 0.5);
+//    box.translate(-1, 1, 6);
 
-    graph.add_node("/", "pivot");
+    auto pivot = graph.add_node("/", "pivot");
+    pivot.translate(0, 0, 0);
 
-    auto screen_core(new gua::ScreenCore(0.8, 0.2));
+    auto screen_core(new gua::ScreenCore(0.4222, 0.2375));
     auto screen = graph.add_node("/pivot", "screen", screen_core);
-    screen.translate(0, 1, 4);
+//    screen.translate(0, 1, 4);
 //    screen.scale(0.8, 0.6, 1);
-    screen.rotate(-0.4, 1, 0, 0);
+//    screen.rotate(-0.4, 1, 0, 0);
 
-    auto camera_core = new gua::CameraCore(0.2f, gua::CameraCore::MONO);
+    auto camera_core = new gua::CameraCore(0.065f, gua::CameraCore::ANAGLYPH_RED_GREEN);
     auto camera = graph.add_node("/pivot/screen", "camera", camera_core);
     camera.translate(0, 0, 0.1);
 
-    auto monkey_core = new gua::GeometryCore("monkey", "matt");
-    auto monkey = graph.add_node("/box", "monkey", monkey_core);
-    monkey.translate(0, 2, 0);
-
-    monkey = graph.add_node("/box/monkey", "monkey", monkey_core);
-    monkey.scale(0.3, 0.3, 0.3);
-    monkey.translate(0, 5, 0);
+//    auto monkey_core = new gua::GeometryCore("monkey", "matt");
+//    auto monkey = graph.add_node("/box", "monkey", monkey_core);
+//    monkey.translate(0, 2, 0);
+//
+//    monkey = graph.add_node("/box/monkey", "monkey", monkey_core);
+//    monkey.scale(0.3, 0.3, 0.3);
+//    monkey.translate(0, 5, 0);
 
     setup_lights(graph);
 
@@ -94,12 +96,12 @@ int main() {
 
         renderer.queue_draw(&graph);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        graph["/box"].rotate(0.01, 0, 1, 0);
-        graph["/box/monkey"].rotate(0.01, 1, 0, 0);
-        graph["/box/monkey/monkey"].rotate(0.1, 0, 1, 0);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+//        graph["/box"].rotate(0.01, 0, 1, 0);
+//        graph["/box/monkey"].rotate(0.01, 1, 0, 0);
+//        graph["/box/monkey/monkey"].rotate(0.1, 0, 1, 0);
 
-        graph["/pivot"].rotate(-0.005, 0, 1, 0);
+//        graph["/pivot"].rotate(-0.005, 0, 1, 0);
     }
 
     return 0;

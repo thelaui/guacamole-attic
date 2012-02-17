@@ -20,9 +20,9 @@
 /// \brief Definition of the VertexShader class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "include/renderer/VertexShader.hpp"
+#include "renderer/VertexShader.hpp"
 
-#include "include/renderer/glInclude.hpp"
+#include "renderer/glInclude.hpp"
 
 namespace gua {
 
