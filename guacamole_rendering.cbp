@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="guacamole_rendering" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="lib/libgua_rendering-d" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="lib/libgua_rendering" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++0x" />
+			<Add option="-Wall" />
+			<Add option="-fPIC" />
+			<Add directory="." />
+			<Add directory="include" />
+		</Compiler>
+		<Linker>
+			<Add library="GL" />
+			<Add library="GLEW" />
+			<Add library="assimp" />
+			<Add library="IL" />
+		</Linker>
+		<Unit filename="include/guacamole.hpp" />
+		<Unit filename="include/renderer/BufferFillShaders.hpp" />
+		<Unit filename="include/renderer/DataBase.hpp" />
+		<Unit filename="include/renderer/FragmentShader.hpp" />
+		<Unit filename="include/renderer/FrameBufferObject.hpp" />
+		<Unit filename="include/renderer/Geometry.hpp" />
+		<Unit filename="include/renderer/GeometryBase.hpp" />
+		<Unit filename="include/renderer/LightSphere.hpp" />
+		<Unit filename="include/renderer/Material.hpp" />
+		<Unit filename="include/renderer/MaterialBase.hpp" />
+		<Unit filename="include/renderer/Mesh.hpp" />
+		<Unit filename="include/renderer/RenderBackend.hpp" />
+		<Unit filename="include/renderer/RenderContext.hpp" />
+		<Unit filename="include/renderer/RenderWindow.hpp" />
+		<Unit filename="include/renderer/Shader.hpp" />
+		<Unit filename="include/renderer/ShaderProgram.hpp" />
+		<Unit filename="include/renderer/Texture.hpp" />
+		<Unit filename="include/renderer/Uniform.hpp" />
+		<Unit filename="include/renderer/VertexShader.hpp" />
+		<Unit filename="include/renderer/glInclude.hpp" />
+		<Unit filename="include/traverser/CameraNode.hpp" />
+		<Unit filename="include/traverser/GeometryNode.hpp" />
+		<Unit filename="include/traverser/LightNode.hpp" />
+		<Unit filename="include/traverser/OptimizedScene.hpp" />
+		<Unit filename="include/traverser/Optimizer.hpp" />
+		<Unit filename="include/traverser/RenderClient.hpp" />
+		<Unit filename="include/traverser/Renderer.hpp" />
+		<Unit filename="include/traverser/ScreenNode.hpp" />
+		<Unit filename="include/utils/Color3f.hpp" />
+		<Unit filename="include/utils/Directory.hpp" />
+		<Unit filename="include/utils/DotGenerator.hpp" />
+		<Unit filename="include/utils/KnownObject.hpp" />
+		<Unit filename="include/utils/PathParser.hpp" />
+		<Unit filename="include/utils/Singleton.hpp" />
+		<Unit filename="include/utils/TextFile.hpp" />
+		<Unit filename="include/utils/Timer.hpp" />
+		<Unit filename="include/utils/debug.hpp" />
+		<Unit filename="include/utils/math.hpp" />
+		<Unit filename="include/utils/randomizer.hpp" />
+		<Unit filename="src/renderer/FragmentShader.cpp" />
+		<Unit filename="src/renderer/FrameBufferObject.cpp" />
+		<Unit filename="src/renderer/Geometry.cpp" />
+		<Unit filename="src/renderer/GeometryBase.cpp" />
+		<Unit filename="src/renderer/Material.cpp" />
+		<Unit filename="src/renderer/MaterialBase.cpp" />
+		<Unit filename="src/renderer/Mesh.cpp" />
+		<Unit filename="src/renderer/RenderBackend.cpp" />
+		<Unit filename="src/renderer/RenderWindow.cpp" />
+		<Unit filename="src/renderer/Shader.cpp" />
+		<Unit filename="src/renderer/ShaderProgram.cpp" />
+		<Unit filename="src/renderer/Texture.cpp" />
+		<Unit filename="src/renderer/VertexShader.cpp" />
+		<Unit filename="src/traverser/Optimizer.cpp" />
+		<Unit filename="src/traverser/RenderClient.cpp" />
+		<Unit filename="src/traverser/Renderer.cpp" />
+		<Unit filename="src/utils/Color3f.cpp" />
+		<Unit filename="src/utils/Directory.cpp" />
+		<Unit filename="src/utils/DotGenerator.cpp" />
+		<Unit filename="src/utils/PathParser.cpp" />
+		<Unit filename="src/utils/TextFile.cpp" />
+		<Unit filename="src/utils/Timer.cpp" />
+		<Unit filename="src/utils/math.cpp" />
+		<Unit filename="src/utils/randomizer.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

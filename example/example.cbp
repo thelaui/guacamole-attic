@@ -7,9 +7,9 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/example" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/example" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
-				<Option external_deps="../lib/libguacamole-d.so;" />
+				<Option external_deps="../lib/libgua_scenegraph-d.so;../lib/libgua_rendering-d.so;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -17,13 +17,14 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="guacamole-d" />
+					<Add library="gua_rendering-d" />
+					<Add library="gua_scenegraph-d" />
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/example" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/example" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
-				<Option external_deps="../lib/libguacamole.so;" />
+				<Option external_deps="../lib/libgua_scenegraph.so;../lib/libgua_rendering.so;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -31,7 +32,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="guacamole" />
+					<Add library="gua_rendering" />
+					<Add library="gua_scenegraph" />
 				</Linker>
 			</Target>
 		</Build>
