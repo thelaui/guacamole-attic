@@ -42,7 +42,6 @@
 		<Unit filename="include/scenegraph/Node.hpp" />
 		<Unit filename="include/scenegraph/SceneGraph.hpp" />
 		<Unit filename="include/scenegraph/ScreenCore.hpp" />
-		<Unit filename="include/scenegraph/Texture.hpp" />
 		<Unit filename="src/scenegraph/CameraCore.cpp" />
 		<Unit filename="src/scenegraph/Core.cpp" />
 		<Unit filename="src/scenegraph/GeometryCore.cpp" />
