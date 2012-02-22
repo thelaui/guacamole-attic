@@ -17,27 +17,21 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A Core representing a screen in a SceneGraph.
+/// \brief A Core representing light in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "scenegraph/ScreenCore.hpp"
+#include "cores/LightCore.hpp"
 
 namespace gua {
 
-ScreenCore::ScreenCore(float width, float height):
-    Core(Core::SCREEN),
-    width_(width),
-    height_(height) {}
+LightCore::LightCore(Color3f const& color):
+    Core(Core::LIGHT),
+    color_(color) {}
 
-ScreenCore::~ScreenCore() {}
+LightCore::~LightCore() {}
 
-float ScreenCore::get_width() const {
-    return width_;
-}
-
-float ScreenCore::get_height() const {
-    return height_;
+Color3f const& LightCore::get_color() const {
+    return color_;
 }
 
 }
-

@@ -40,6 +40,10 @@
 			<Add library="assimp" />
 			<Add library="IL" />
 		</Linker>
+		<Unit filename="include/cores/CameraCore.hpp" />
+		<Unit filename="include/cores/GeometryCore.hpp" />
+		<Unit filename="include/cores/LightCore.hpp" />
+		<Unit filename="include/cores/ScreenCore.hpp" />
 		<Unit filename="include/guacamole.hpp" />
 		<Unit filename="include/renderer/BufferFillShaders.hpp" />
 		<Unit filename="include/renderer/DataBase.hpp" />
@@ -79,6 +83,10 @@
 		<Unit filename="include/utils/debug.hpp" />
 		<Unit filename="include/utils/math.hpp" />
 		<Unit filename="include/utils/randomizer.hpp" />
+		<Unit filename="src/cores/CameraCore.cpp" />
+		<Unit filename="src/cores/GeometryCore.cpp" />
+		<Unit filename="src/cores/LightCore.cpp" />
+		<Unit filename="src/cores/ScreenCore.cpp" />
 		<Unit filename="src/renderer/FragmentShader.cpp" />
 		<Unit filename="src/renderer/FrameBufferObject.cpp" />
 		<Unit filename="src/renderer/Geometry.cpp" />

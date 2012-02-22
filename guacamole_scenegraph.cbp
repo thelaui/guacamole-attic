@@ -34,22 +34,14 @@
 			<Add option="-fPIC" />
 			<Add directory="include" />
 		</Compiler>
-		<Unit filename="include/scenegraph/CameraCore.hpp" />
 		<Unit filename="include/scenegraph/Core.hpp" />
-		<Unit filename="include/scenegraph/GeometryCore.hpp" />
 		<Unit filename="include/scenegraph/Iterator.hpp" />
-		<Unit filename="include/scenegraph/LightCore.hpp" />
 		<Unit filename="include/scenegraph/Node.hpp" />
 		<Unit filename="include/scenegraph/SceneGraph.hpp" />
-		<Unit filename="include/scenegraph/ScreenCore.hpp" />
-		<Unit filename="src/scenegraph/CameraCore.cpp" />
 		<Unit filename="src/scenegraph/Core.cpp" />
-		<Unit filename="src/scenegraph/GeometryCore.cpp" />
 		<Unit filename="src/scenegraph/Iterator.cpp" />
-		<Unit filename="src/scenegraph/LightCore.cpp" />
 		<Unit filename="src/scenegraph/Node.cpp" />
 		<Unit filename="src/scenegraph/SceneGraph.cpp" />
-		<Unit filename="src/scenegraph/ScreenCore.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

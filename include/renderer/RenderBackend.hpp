@@ -31,7 +31,7 @@
 #include "renderer/Texture.hpp"
 #include "renderer/FrameBufferObject.hpp"
 #include "renderer/ShaderProgram.hpp"
-#include "scenegraph/CameraCore.hpp"
+#include "cores/CameraCore.hpp"
 
 namespace gua {
 

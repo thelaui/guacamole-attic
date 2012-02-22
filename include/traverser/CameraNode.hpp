@@ -26,7 +26,7 @@
 #include <eigen2/Eigen/Geometry>
 #include <string>
 
-#include "scenegraph/CameraCore.hpp"
+#include "cores/CameraCore.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a camera for rendering.

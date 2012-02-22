@@ -22,9 +22,9 @@
 #include "traverser/Optimizer.hpp"
 
 #include "scenegraph/Core.hpp"
-#include "scenegraph/CameraCore.hpp"
-#include "scenegraph/GeometryCore.hpp"
-#include "scenegraph/LightCore.hpp"
+#include "cores/CameraCore.hpp"
+#include "cores/GeometryCore.hpp"
+#include "cores/LightCore.hpp"
 #include "scenegraph/Node.hpp"
 #include "scenegraph/SceneGraph.hpp"
 #include "scenegraph/Iterator.hpp"

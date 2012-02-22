@@ -20,7 +20,7 @@
 /// \brief A Core representing a camera in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "scenegraph/CameraCore.hpp"
+#include "cores/CameraCore.hpp"
 
 namespace gua {
 

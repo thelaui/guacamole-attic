@@ -24,7 +24,7 @@
 
 #include "scenegraph/SceneGraph.hpp"
 #include "scenegraph/Iterator.hpp"
-#include "scenegraph/GeometryCore.hpp"
+#include "cores/GeometryCore.hpp"
 
 #include <fstream>
 #include <map>
