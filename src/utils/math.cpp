@@ -28,15 +28,14 @@
 
 namespace gua {
 
-Eigen::Matrix4f const math::compute_frustum(Eigen::Matrix4f const& eye_transform, Eigen::Matrix4f const& screen_transform,
+Eigen::Matrix4f const math::compute_frustum(Eigen::Vector3f const& eye_position, Eigen::Matrix4f const& screen_transform,
                                             float near_plane, float far_plane) {
 
-    Eigen::Transform3f relative_eye(screen_transform.inverse() * eye_transform);
-    Eigen::Transform3f::TranslationPart eye_position(relative_eye.translation());
+    Eigen::Vector4f relative_eye_position(screen_transform.inverse() * Eigen::Vector4f(eye_position[0], eye_position[1], eye_position[2], 1.0));
 
-    float d(eye_position.coeff(2));
-    float ox(-eye_position.coeff(0));
-    float oy(-eye_position.coeff(1));
+    float d(relative_eye_position.coeff(2));
+    float ox(-relative_eye_position.coeff(0));
+    float oy(-relative_eye_position.coeff(1));
 
     Eigen::Vector4f bottom_left(screen_transform * Eigen::Vector4f(-0.5, -0.5, 0, 0));
     Eigen::Vector4f up_left(screen_transform * Eigen::Vector4f(-0.5, 0.5, 0, 0));

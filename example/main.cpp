@@ -68,16 +68,17 @@ int main() {
     auto screen_core(new gua::ScreenCore(2.025, 1.52));
     auto screen = graph.add_node("/", "screen", screen_core);
     screen.translate(0, 0.845+1.52/2, 0);
-//    screen.scale(0.8, 0.6, 1);
+    //screen.scale(2, 1, 1);
 //    screen.rotate(0.9, 0, 1, 0);
 
-    auto camera_core = new gua::CameraCore(0.07f, gua::CameraCore::ANAGLYPH_RED_GREEN);
-    auto camera = graph.add_node("/", "camera", camera_core);
-    camera.translate(3.5, 1.70, 2.5);
-//    camera.rotate(M_PI*0.25, 0.f, 1.f, 0.f);
+    auto camera_core = new gua::CameraCore(0.2f, gua::CameraCore::ANAGLYPH_RED_CYAN);
+    auto camera = graph.add_node("/pivot", "camera", camera_core);
+    camera.translate(0, 1.70, 2.5);
+    //camera.scale(0.5, 0.5, 0.5);
+   // camera.rotate(M_PI, 0.f, 1.f, 0.f);
 
     auto monkey_core = new gua::GeometryCore("cube", "matt");
-    auto monkey = graph.add_node("/pivot", "monkey", monkey_core);
+    auto monkey = graph.add_node("/", "monkey", monkey_core);
     monkey.translate(0.6, 1.6, 1.5);
     monkey.scale(0.05, 0.05, 0.05);
 //
@@ -106,6 +107,7 @@ int main() {
             timer.reset();
         }
 
+
         renderer.queue_draw(&graph);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -116,7 +118,6 @@ int main() {
         graph["/box2"].scale(1, 1, 2);
         graph["/box2"].rotate(-0.005, 0, 0, 1);
         graph["/box2"].scale(1, 1, 0.5);
-       graph["/pivot"].rotate(-0.005, 0, 1, 0);
     }
 
     return 0;

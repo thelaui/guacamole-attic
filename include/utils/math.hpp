@@ -24,7 +24,7 @@
 
 namespace gua {
     namespace math {
-        Eigen::Matrix4f const compute_frustum(Eigen::Matrix4f const& eye_transform, Eigen::Matrix4f const& screen_transform,
+        Eigen::Matrix4f const compute_frustum(Eigen::Vector3f const& eye_position, Eigen::Matrix4f const& screen_transform,
                                               float near_plane, float far_plane);
     }
 }

@@ -23,6 +23,7 @@
 #include "renderer/RenderBackend.hpp"
 
 #include <eigen2/Eigen/LU>
+#include <eigen2/Eigen/SVD>
 
 #include "renderer/MaterialBase.hpp"
 #include "renderer/GeometryBase.hpp"
@@ -76,20 +77,21 @@ void RenderBackend::render(OptimizedScene const& scene) {
         auto screen(screen_it->second);
 
         if (camera.type_ == CameraCore::MONO) {
-            auto projection(math::compute_frustum(camera.transform_, screen.transform_, 0.1, 1000.f));
-            render_eye(scene.nodes_, scene.lights_, projection, camera.transform_, camera.type_, true);
+            Eigen::Transform3f camera_transform(camera.transform_);
+            auto projection(math::compute_frustum(camera_transform.translation(), screen.transform_, 0.1, 1000.f));
+            render_eye(scene.nodes_, scene.lights_, projection, camera_transform.translation(), Eigen::Transform3f(screen.transform_), camera.type_, true);
         } else {
             Eigen::Transform3f eye_position(camera.transform_);
 
             eye_position.translate(Eigen::Vector3f(-camera.stereo_width_*0.5, 0, 0));
-            auto projection(math::compute_frustum(eye_position.matrix(), screen.transform_, 0.1, 1000.f));
-            render_eye(scene.nodes_, scene.lights_, projection, eye_position.matrix(), camera.type_, true);
+            auto projection(math::compute_frustum(eye_position.translation(), screen.transform_, 0.1, 1000.f));
+            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), camera.type_, true);
 
             glClear(GL_DEPTH_BUFFER_BIT);
 
             eye_position.translate(Eigen::Vector3f(camera.stereo_width_, 0, 0));
-            projection = math::compute_frustum(eye_position.matrix(), screen.transform_, 0.1, 1000.f);
-            render_eye(scene.nodes_, scene.lights_, projection, eye_position.matrix(), camera.type_, false);
+            projection = math::compute_frustum(eye_position.translation(), screen.transform_, 0.1, 1000.f);
+            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), camera.type_, false);
         }
 
     }
@@ -100,11 +102,17 @@ void RenderBackend::render(OptimizedScene const& scene) {
 void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
                    std::vector<LightNode> const& light_list,
                    Eigen::Matrix4f const& camera_projection,
-                   Eigen::Matrix4f const& camera_transform,
+                   Eigen::Vector3f const& camera_position,
+                   Eigen::Transform3f const& screen_transform,
                    CameraCore::Type camera_type,
                    bool is_left_eye) {
 
-    Eigen::Matrix4f view_matrix(camera_transform.inverse());
+    Eigen::Transform3f camera_transform(Eigen::Matrix4f::Identity());
+    camera_transform.translate(camera_position);
+    camera_transform = screen_transform.rotation() * camera_transform;
+
+
+    Eigen::Matrix4f view_matrix(camera_transform.matrix().inverse());
 
     fill_g_buffer(node_list, camera_projection, view_matrix);
 

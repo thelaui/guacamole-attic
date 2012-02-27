@@ -23,6 +23,7 @@
 #ifndef RENDER_BACKEND_HPP
 #define RENDER_BACKEND_HPP
 
+#include <eigen2/Eigen/Geometry>
 #include <vector>
 #include <string>
 
@@ -82,7 +83,8 @@ class RenderBackend {
         void render_eye(std::vector<GeometryNode> const& node_list,
                         std::vector<LightNode> const& light_list,
                         Eigen::Matrix4f const& camera_projection,
-                        Eigen::Matrix4f const& camera_transform,
+                        Eigen::Vector3f const& camera_position,
+                        Eigen::Transform3f const& screen_transform,
                         CameraCore::Type camera_type,
                         bool is_left_eye);
 
