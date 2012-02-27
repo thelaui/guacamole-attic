@@ -31,7 +31,7 @@ Renderer::Renderer(std::vector<std::vector<std::string>> const& windows):
     optimizer_( new Optimizer() ) {
 
     for (auto& window: windows)
-        render_clients_.push_back(new RenderClient(1600 , 900, window[0], window[1], window[2]));
+        render_clients_.push_back(new RenderClient(800 , 600, window[0], window[1], window[2]));
 }
 
 Renderer::~Renderer(){
