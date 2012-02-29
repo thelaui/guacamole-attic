@@ -89,15 +89,15 @@ void SceneGraph::Node::set_core(Core* core) {
 }
 
 void SceneGraph::Node::scale(double x, double y, double z) {
-    transform_.scale(Eigen::Vector3f(x, y, z));
+    transform_.prescale(Eigen::Vector3f(x, y, z));
 }
 
 void SceneGraph::Node::rotate(double angle, double x, double y, double z) {
-    transform_.rotate(Eigen::AngleAxisf(angle, Eigen::Vector3f(x, y, z)));
+    transform_.prerotate(Eigen::AngleAxisf(angle, Eigen::Vector3f(x, y, z)));
 }
 
 void SceneGraph::Node::translate(double x, double y, double z) {
-    transform_.translate(Eigen::Vector3f(x, y, z));
+    transform_.pretranslate(Eigen::Vector3f(x, y, z));
 }
 
 int SceneGraph::Node::get_depth() const {
