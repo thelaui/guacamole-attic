@@ -97,16 +97,18 @@ class SceneGraph::Iterator {
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the transformation of the Iterator's Node.
         ///
+        /// Returns the accumulation of the local and global transformation.
+        ///
         ///\return transform  The Node's transformation.
         ////////////////////////////////////////////////////////////////////////
-        Eigen::Transform3f const& get_transform() const;
+        Eigen::Transform3f const& get_transform(InheritanceMode mode = PUBLIC) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Sets the transformation of the Iterator's Node.
         ///
         ///\param transform   The new transformation of the Node.
         ////////////////////////////////////////////////////////////////////////
-        void set_transform(Eigen::Transform3f const& transform) const;
+        void set_transform(Eigen::Transform3f const& transform, InheritanceMode mode = PUBLIC) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the core of the Iterator's Node.
@@ -149,8 +151,14 @@ class SceneGraph::Iterator {
         ///\param x         The x value of the scaling.
         ///\param y         The y value of the scaling.
         ///\param z         The z value of the scaling.
+        ///\param transform_mode   Whether the transformation is applied in
+        ///                        object or world coordinates.
+        ///\param inheritance_mode Whether the transformation should affect
+        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void scale(double x, double y, double z);
+        void scale(double x, double y, double z,
+                   TransformMode transform_mode = GLOBAL,
+                   InheritanceMode inheritance_mode = PUBLIC);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Applies a rotation on the Iterator's Node's transformation.
@@ -159,8 +167,14 @@ class SceneGraph::Iterator {
         ///\param x         The x factor of the rotation.
         ///\param y         The y factor of the rotation.
         ///\param z         The z factor of the rotation.
+        ///\param transform_mode   Whether the transformation is applied in
+        ///                        object or world coordinates.
+        ///\param inheritance_mode Whether the transformation should affect
+        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void rotate(double angle, double x, double y, double z);
+        void rotate(double angle, double x, double y, double z,
+                    TransformMode transform_mode = GLOBAL,
+                    InheritanceMode inheritance_mode = PUBLIC);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Applies a translation on the Iterator's Node's transformation.
@@ -168,8 +182,14 @@ class SceneGraph::Iterator {
         ///\param x         The x value of the translation.
         ///\param y         The y value of the translation.
         ///\param z         The z value of the translation.
+        ///\param transform_mode   Whether the transformation is applied in
+        ///                        object or world coordinates.
+        ///\param inheritance_mode Whether the transformation should affect
+        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void translate(double x, double y, double z);
+        void translate(double x, double y, double z,
+                       TransformMode transform_mode = GLOBAL,
+                       InheritanceMode inheritance_mode = PUBLIC);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Sets the Iterator's type.

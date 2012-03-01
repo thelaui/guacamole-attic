@@ -48,6 +48,8 @@ class SceneGraph {
     public:
 
         enum IterationType {DEPTH_FIRST, BREADTH_FIRST};
+        enum TransformMode {LOCAL, GLOBAL};
+        enum InheritanceMode {PRIVATE, PUBLIC};
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.

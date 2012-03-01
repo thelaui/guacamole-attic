@@ -64,30 +64,31 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
     do {
 
         Core* current_core( node.get_core() );
-        Eigen::Matrix4f  current_matrix( matrix_stack.top() * node.get_transform() );
+        Eigen::Matrix4f  current_matrix_private( matrix_stack.top() * node.get_transform(SceneGraph::PRIVATE) );
+        Eigen::Matrix4f  current_matrix_public( matrix_stack.top() * node.get_transform(SceneGraph::PUBLIC) );
 
         if (current_core) {
             switch ( current_core->get_type() ) {
             case Core::CoreType::CAMERA : {
                 auto camera_core = reinterpret_cast<CameraCore*>  ( current_core );
-                data_.cameras_.insert( std::make_pair( node.get_name(), CameraNode( *camera_core, current_matrix ) ));
+                data_.cameras_.insert( std::make_pair( node.get_name(), CameraNode( *camera_core, current_matrix_private ) ));
                 break;
             }
             case Core::CoreType::LIGHT : {
                 auto light_core = reinterpret_cast<LightCore*>  ( current_core );
-                data_.lights_.push_back( LightNode( current_matrix, light_core->get_color()) );
+                data_.lights_.push_back( LightNode( current_matrix_private, light_core->get_color()) );
                 break;
             }
             case Core::CoreType::SCREEN : {
                 auto screen_core = reinterpret_cast<ScreenCore*>  ( current_core );
                 Eigen::Transform3f scale((Eigen::Transform3f)Eigen::Matrix4f::Identity());
                 scale.scale(Eigen::Vector3f(screen_core->get_width(), screen_core->get_height(), 1));
-                data_.screens_.insert( std::make_pair(node.get_name(), ScreenNode(current_matrix * scale)) );
+                data_.screens_.insert( std::make_pair(node.get_name(), ScreenNode(current_matrix_private * scale)) );
                 break;
             }
             case Core::CoreType::GEOMETRY : {
                 auto geometry_core = reinterpret_cast<GeometryCore*> ( current_core );
-                data_.nodes_.push_back( GeometryNode( geometry_core->get_geometry(), geometry_core->get_material(), current_matrix ) );
+                data_.nodes_.push_back( GeometryNode( geometry_core->get_geometry(), geometry_core->get_material(), current_matrix_private ) );
                 break;
             }
             default: break;
@@ -97,7 +98,7 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
         ++node;
         int new_depth = node.get_depth();
         if (new_depth > depth){
-            matrix_stack.push( current_matrix );
+            matrix_stack.push( current_matrix_public );
             depth = new_depth;
         } else {
             for (; depth > new_depth; --depth)
