@@ -27,6 +27,7 @@
 #include "cores/GeometryCore.hpp"
 
 #include <fstream>
+#include <sstream>
 #include <map>
 
 namespace gua {

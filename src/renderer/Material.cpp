@@ -29,6 +29,8 @@
 #include "utils/TextFile.hpp"
 #include "utils/debug.hpp"
 
+#include <sstream>
+
 namespace gua {
 
 Material::Material():

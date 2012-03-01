@@ -28,7 +28,7 @@
 namespace gua {
 
 const std::string SceneGraph::Iterator::end_name_("end");
-const Eigen::Transform3f SceneGraph::Iterator::end_transform_((Eigen::Transform3f)Eigen::Matrix3f::Identity());
+const math::mat4 SceneGraph::Iterator::end_transform_(math::mat4::identity());
 
 SceneGraph::Iterator::Iterator(Node* node, IterationType type):
     current_node_(node),
@@ -37,7 +37,7 @@ SceneGraph::Iterator::Iterator(Node* node, IterationType type):
     breadth_nodes_(),
     current_depth_(0) {}
 
-SceneGraph::Iterator SceneGraph::Iterator::add_node(std::string const& node_name, Core* core, Eigen::Transform3f const& transform) {
+SceneGraph::Iterator SceneGraph::Iterator::add_node(std::string const& node_name, Core* core, math::mat4 const& transform) {
     Node* new_node(new Node(node_name, transform, core));
     current_node_->add_child(new_node);
     return Iterator(new_node);
@@ -61,12 +61,12 @@ void SceneGraph::Iterator::set_name(std::string const& name) const {
     }
 }
 
-Eigen::Transform3f const& SceneGraph::Iterator::get_transform(InheritanceMode mode) const {
+math::mat4 const& SceneGraph::Iterator::get_transform(InheritanceMode mode) const {
     if (current_node_) return current_node_->get_transform(mode);
     return end_transform_;
 }
 
-void SceneGraph::Iterator::set_transform(Eigen::Transform3f const& transform, InheritanceMode mode) const {
+void SceneGraph::Iterator::set_transform(math::mat4 const& transform, InheritanceMode mode) const {
     if (current_node_) current_node_->set_transform(transform, mode);
 }
 
@@ -80,21 +80,21 @@ void SceneGraph::Iterator::set_core(Core* core) const {
     if (current_node_) current_node_->set_core(core);
 }
 
-void SceneGraph::Iterator::scale(double x, double y, double z,
+void SceneGraph::Iterator::scale(float x, float y, float z,
                                  TransformMode transform_mode,
                                  InheritanceMode inheritance_mode) {
 
     if (current_node_) current_node_->scale(x, y, z, transform_mode, inheritance_mode);
 }
 
-void SceneGraph::Iterator::rotate(double angle, double x, double y, double z,
+void SceneGraph::Iterator::rotate(float angle, float x, float y, float z,
                                   TransformMode transform_mode,
                                   InheritanceMode inheritance_mode) {
 
     if (current_node_) current_node_->rotate(angle, x, y, z, transform_mode, inheritance_mode);
 }
 
-void SceneGraph::Iterator::translate(double x, double y, double z,
+void SceneGraph::Iterator::translate(float x, float y, float z,
                                      TransformMode transform_mode,
                                      InheritanceMode inheritance_mode) {
 
@@ -130,7 +130,7 @@ SceneGraph::Iterator& SceneGraph::Iterator::operator << (std::string const& name
     return *this;
 }
 
-SceneGraph::Iterator& SceneGraph::Iterator::operator << (Eigen::Transform3f const& transform) {
+SceneGraph::Iterator& SceneGraph::Iterator::operator << (math::mat4 const& transform) {
     set_transform(transform);
     return *this;
 }

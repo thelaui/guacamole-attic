@@ -24,8 +24,8 @@
 #define LIGHT_NODE_HPP
 
 #include "utils/Color3f.hpp"
+#include "utils/math.hpp"
 
-#include <eigen2/Eigen/Geometry>
 #include <string>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -36,12 +36,12 @@
 namespace gua {
 
 struct LightNode {
-    LightNode(Eigen::Matrix4f const& transform = Eigen::Matrix4f::Identity(),
+    LightNode(math::mat4 const& transform = math::mat4::identity(),
               Color3f const& color = Color3f()):
         transform_(transform),
         color_(color) {}
 
-    Eigen::Matrix4f transform_;
+    math::mat4 transform_;
     Color3f color_;
 };
 

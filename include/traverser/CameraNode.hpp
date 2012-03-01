@@ -23,7 +23,7 @@
 #ifndef CAMERA_NODE_HPP
 #define CAMERA_NODE_HPP
 
-#include <eigen2/Eigen/Geometry>
+
 #include <string>
 
 #include "cores/CameraCore.hpp"
@@ -37,12 +37,12 @@ namespace gua {
 
 struct CameraNode {
     CameraNode() {};
-    CameraNode(CameraCore const& core, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
+    CameraNode(CameraCore const& core, math::mat4 const& t = math::mat4::identity()):
         transform_(t),
         type_(core.get_type()),
         stereo_width_(core.get_stereo_width()) {}
 
-    Eigen::Matrix4f transform_;
+    math::mat4 transform_;
     CameraCore::Type type_;
     float stereo_width_;
 };

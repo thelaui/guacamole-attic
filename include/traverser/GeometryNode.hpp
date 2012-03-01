@@ -23,7 +23,7 @@
 #ifndef GEOMETRY_NODE_HPP
 #define GEOMETRY_NODE_HPP
 
-#include <eigen2/Eigen/Geometry>
+
 #include <string>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -34,13 +34,13 @@
 namespace gua {
 
 struct GeometryNode {
-    GeometryNode(std::string const& g, std::string const& m, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
+    GeometryNode(std::string const& g, std::string const& m, math::mat4 const& t = math::mat4::identity()):
         geometry_(g), material_(m), transform_(t) {}
 
     std::string geometry_;
     std::string material_;
 
-    Eigen::Matrix4f transform_;
+    math::mat4 transform_;
 };
 
 }

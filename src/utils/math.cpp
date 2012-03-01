@@ -22,29 +22,27 @@
 
 #include "utils/math.hpp"
 
-#include <eigen2/Eigen/LU>
-
 #include <iostream>
 
 namespace gua {
 
-Eigen::Matrix4f const math::compute_frustum(Eigen::Vector3f const& eye_position, Eigen::Matrix4f const& screen_transform,
-                                            float near_plane, float far_plane) {
+math::mat4 const math::compute_frustum(math::vec4 const& eye_position, math::mat4 const& screen_transform,
+                                       float near_plane, float far_plane) {
 
-    Eigen::Vector4f relative_eye_position(screen_transform.inverse() * Eigen::Vector4f(eye_position[0], eye_position[1], eye_position[2], 1.0));
+    math::vec4 relative_eye_position(scm::math::inverse(screen_transform) * eye_position);
 
-    float d(relative_eye_position.coeff(2));
-    float ox(-relative_eye_position.coeff(0));
-    float oy(-relative_eye_position.coeff(1));
+    float d(relative_eye_position[2]);
+    float ox(-relative_eye_position[0]);
+    float oy(-relative_eye_position[1]);
 
-    Eigen::Vector4f bottom_left(screen_transform * Eigen::Vector4f(-0.5, -0.5, 0, 0));
-    Eigen::Vector4f up_left(screen_transform * Eigen::Vector4f(-0.5, 0.5, 0, 0));
-    Eigen::Vector4f up_right(screen_transform * Eigen::Vector4f(0.5, 0.5, 0, 0));
+    math::vec4 bottom_left(screen_transform * math::vec4(-0.5, -0.5, 0, 1));
+    math::vec4 up_left(screen_transform * math::vec4(-0.5, 0.5, 0, 1));
+    math::vec4 up_right(screen_transform * math::vec4(0.5, 0.5, 0, 1));
 
-    float width((up_left - up_right).norm());
-    float height((up_left - bottom_left).norm() );
+    float width(scm::math::length(up_left - up_right));
+    float height(scm::math::length(up_left - bottom_left));
 
-    Eigen::Matrix4f frustum(Eigen::Matrix4f::Identity());
+    math::mat4 frustum(math::mat4::identity());
 
     frustum[0] = 2*d / width;
     frustum[5] = 2*d / height;

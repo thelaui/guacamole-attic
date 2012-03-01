@@ -23,7 +23,6 @@
 #ifndef RENDER_BACKEND_HPP
 #define RENDER_BACKEND_HPP
 
-#include <eigen2/Eigen/Geometry>
 #include <vector>
 #include <string>
 
@@ -82,15 +81,15 @@ class RenderBackend {
     private:
         void render_eye(std::vector<GeometryNode> const& node_list,
                         std::vector<LightNode> const& light_list,
-                        Eigen::Matrix4f const& camera_projection,
-                        Eigen::Vector3f const& camera_position,
-                        Eigen::Transform3f const& screen_transform,
+                        math::mat4 const& camera_projection,
+                        math::vec3 const& camera_position,
+                        math::mat4 const& screen_transform,
                         CameraCore::Type camera_type,
                         bool is_left_eye);
 
         void fill_g_buffer(std::vector<GeometryNode> const& node_list,
-                           Eigen::Matrix4f const& camera_projection,
-                           Eigen::Matrix4f const& view_matrix);
+                           math::mat4 const& camera_projection,
+                           math::mat4 const& view_matrix);
 
         void enable_stereo(CameraCore::Type camera_type, bool is_left_eye);
         void disable_stereo();

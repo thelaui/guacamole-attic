@@ -33,6 +33,12 @@
 			<Add option="-Wall" />
 			<Add option="-fPIC" />
 			<Add directory="include" />
+			<Add directory="../../scm_cl_core/src" />
+			<Add directory="../../scm_core/src" />
+			<Add directory="../../scm_data/src" />
+			<Add directory="../../scm_gl_core/src" />
+			<Add directory="../../scm_gl_util/src" />
+			<Add directory="../../scm_input/src" />
 		</Compiler>
 		<Linker>
 			<Add library="GL" />

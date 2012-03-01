@@ -20,15 +20,15 @@ void setup_lights(gua::SceneGraph& graph) {
     auto point_light3 = graph.add_node("/", "point_light3", point_light_core3);
     auto point_light4 = graph.add_node("/", "point_light4", point_light_core4);
 
-    point_light1.scale(15.f, 15.f, 15.f);
-    point_light2.scale(15.f, 15.f, 15.f);
-    point_light3.scale(15.f, 15.f, 15.f);
-    point_light4.scale(15.f, 15.f, 15.f);
+    point_light1.scale(3.5f, 3.5f, 3.5f);
+    point_light2.scale(3.5f, 3.5f, 3.5f);
+    point_light3.scale(3.5f, 3.5f, 3.5f);
+    point_light4.scale(3.5f, 3.5f, 3.5f);
 
-    point_light1.translate(2.f, 2.5f, -2.f);
-    point_light2.translate(2.f, 2.5f, 2.f);
-    point_light3.translate(-2.f,2.5f, 2.f);
-    point_light4.translate(-2.f, 2.5f, -2.f);
+    point_light1.translate(1.f, 1.5f, -1.f);
+    point_light2.translate(1.f, 1.5f, 1.f);
+    point_light3.translate(-1.f,1.5f, 1.f);
+    point_light4.translate(-1.f, 1.5f, -1.f);
 }
 
 int main() {
@@ -54,13 +54,13 @@ int main() {
 
     box = graph.add_node("/box", "box", cube_core);
     box.scale(0.5, 0.5, 0.5);
-    box.rotate(M_PI*0.5, 0, 0, 1, gua::SceneGraph::GLOBAL, gua::SceneGraph::PRIVATE);
+    box.rotate(90, 0, 0, 1, gua::SceneGraph::GLOBAL, gua::SceneGraph::PRIVATE);
     box.translate(0, 0.75, 0);
 
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
    // screen.scale(1.6, 0.9, 1);
-    screen.rotate(0.4, 0, 1, 0);
+//    screen.rotate(0.4, 0, 1, 0);
     screen.translate(0, 0.45, 0);
 
     auto camera_core = new gua::CameraCore(0.1f, gua::CameraCore::ANAGLYPH_RED_CYAN);
@@ -94,8 +94,8 @@ int main() {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-      //  graph["/box"].rotate(0.01, 0, 0, 1, gua::SceneGraph::GLOBAL, gua::SceneGraph::PRIVATE);
-        graph["/box"].rotate(0.02, 0, 1, 0, gua::SceneGraph::LOCAL, gua::SceneGraph::PUBLIC);
+        graph["/box"].rotate(1, 0, 0, 1, gua::SceneGraph::GLOBAL, gua::SceneGraph::PRIVATE);
+        graph["/box"].rotate(0.7, 0, 1, 0, gua::SceneGraph::LOCAL, gua::SceneGraph::PUBLIC);
     }
 
     return 0;

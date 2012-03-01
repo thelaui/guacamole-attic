@@ -20,7 +20,7 @@
 /// \brief Declaration of a math utilities.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <eigen2/Eigen/Geometry>
+
 #include <scm/core/math.h>
 #include <scm/gl_core/math.h>
 
@@ -32,9 +32,10 @@ namespace gua {
 
         typedef scm::math::vec<float, 4> vec4;
         typedef scm::math::vec<float, 3> vec3;
+        typedef scm::math::vec<float, 2> vec2;
 
-        Eigen::Matrix4f const compute_frustum(Eigen::Vector3f const& eye_position, Eigen::Matrix4f const& screen_transform,
-                                              float near_plane, float far_plane);
+        math::mat4 const compute_frustum(math::vec4 const& eye_position, math::mat4 const& screen_transform,
+                                         float near_plane, float far_plane);
     }
 }
 

@@ -23,7 +23,7 @@
 #ifndef SCREEN_NODE_HPP
 #define SCREEN_NODE_HPP
 
-#include <eigen2/Eigen/Geometry>
+
 
 #include "cores/ScreenCore.hpp"
 
@@ -36,10 +36,10 @@ namespace gua {
 
 struct ScreenNode {
     ScreenNode() {};
-    ScreenNode(Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
+    ScreenNode(math::mat4 const& t = math::mat4::identity()):
         transform_(t){}
 
-    Eigen::Matrix4f transform_;
+    math::mat4 transform_;
 };
 
 }

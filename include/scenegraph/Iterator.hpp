@@ -67,8 +67,8 @@ class SceneGraph::Iterator {
         ///\return Iterator      An Iterator on the recently added Node.
         ////////////////////////////////////////////////////////////////////////
         Iterator add_node(std::string const& node_name, Core* core = NULL,
-                          Eigen::Transform3f const& transform =
-                          (Eigen::Transform3f) Eigen::Transform3f::Identity());
+                          math::mat4 const& transform =
+                          math::mat4::identity());
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the depth of the Iterator.
@@ -101,14 +101,14 @@ class SceneGraph::Iterator {
         ///
         ///\return transform  The Node's transformation.
         ////////////////////////////////////////////////////////////////////////
-        Eigen::Transform3f const& get_transform(InheritanceMode mode = PUBLIC) const;
+        math::mat4 const& get_transform(InheritanceMode mode = PUBLIC) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Sets the transformation of the Iterator's Node.
         ///
         ///\param transform   The new transformation of the Node.
         ////////////////////////////////////////////////////////////////////////
-        void set_transform(Eigen::Transform3f const& transform, InheritanceMode mode = PUBLIC) const;
+        void set_transform(math::mat4 const& transform, InheritanceMode mode = PUBLIC) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the core of the Iterator's Node.
@@ -156,7 +156,7 @@ class SceneGraph::Iterator {
         ///\param inheritance_mode Whether the transformation should affect
         ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void scale(double x, double y, double z,
+        void scale(float x, float y, float z,
                    TransformMode transform_mode = GLOBAL,
                    InheritanceMode inheritance_mode = PUBLIC);
 
@@ -172,7 +172,7 @@ class SceneGraph::Iterator {
         ///\param inheritance_mode Whether the transformation should affect
         ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void rotate(double angle, double x, double y, double z,
+        void rotate(float angle, float x, float y, float z,
                     TransformMode transform_mode = GLOBAL,
                     InheritanceMode inheritance_mode = PUBLIC);
 
@@ -187,7 +187,7 @@ class SceneGraph::Iterator {
         ///\param inheritance_mode Whether the transformation should affect
         ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void translate(double x, double y, double z,
+        void translate(float x, float y, float z,
                        TransformMode transform_mode = GLOBAL,
                        InheritanceMode inheritance_mode = PUBLIC);
 
@@ -242,7 +242,7 @@ class SceneGraph::Iterator {
         ///
         ///\param transform   The new transformation of the Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator& operator << (Eigen::Transform3f const& transform);
+        Iterator& operator << (math::mat4 const& transform);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Sets the core of the Iterator's Node.
@@ -266,7 +266,7 @@ class SceneGraph::Iterator {
         Node* get_neighbour(Node* to_be_checked);
 
         static const std::string end_name_;
-        static const Eigen::Transform3f end_transform_;
+        static const math::mat4 end_transform_;
 };
 
 }

@@ -40,7 +40,7 @@ SceneGraph::~SceneGraph() {
 }
 
 SceneGraph::Iterator SceneGraph::add_node(std::string const& path_to_parent, std::string const& node_name, Core* core,
-                          Eigen::Transform3f const& transform) {
+                          math::mat4 const& transform) {
 
     Node* searched_parent(find_node(path_to_parent));
     if (!searched_parent) {
@@ -59,7 +59,7 @@ SceneGraph::Iterator SceneGraph::add_node(std::string const& path_to_parent, std
 }
 
 SceneGraph::Iterator SceneGraph::add_node_recursively(std::string const& path_to_parent, std::string const& node_name, Core* core,
-              Eigen::Transform3f const& transform) {
+              math::mat4 const& transform) {
 
     Node* searched_parent(find_node(path_to_parent, working_node_->get_path(), true));
     if (searched_parent && !has_child(searched_parent, node_name)) {

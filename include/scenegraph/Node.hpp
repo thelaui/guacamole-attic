@@ -25,7 +25,6 @@
 
 #include <list>
 #include <memory>
-#include <eigen2/Eigen/Geometry>
 
 #include "scenegraph/SceneGraph.hpp"
 
@@ -55,7 +54,7 @@ class SceneGraph::Node {
         ///\param core      The Core of the node, representing its containing
         ///                 object.
         ////////////////////////////////////////////////////////////////////////
-        Node(std::string const& name, Eigen::Transform3f transform = (Eigen::Transform3f)Eigen::Matrix3f::Identity(),
+        Node(std::string const& name, math::mat4 transform = math::mat4::identity(),
              Core* core = NULL, InheritanceMode mode = PUBLIC);
 
         ////////////////////////////////////////////////////////////////////////
@@ -124,14 +123,14 @@ class SceneGraph::Node {
         ///
         ///\return transform The Object's transformation.
         ////////////////////////////////////////////////////////////////////////
-        Eigen::Transform3f const& get_transform(InheritanceMode mode) const;
+        math::mat4 const& get_transform(InheritanceMode mode) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Sets the transformation of the object the Node contains.
         ///
         ///\param transform The new transformation of the Node's object.
         ////////////////////////////////////////////////////////////////////////
-        void set_transform(Eigen::Transform3f const& transform, InheritanceMode mode);
+        void set_transform(math::mat4 const& transform, InheritanceMode mode);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the Node's Core.
@@ -175,7 +174,7 @@ class SceneGraph::Node {
         ///\param inheritance_mode Whether the transformation should affect
         ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void scale(double x, double y, double z,
+        void scale(float x, float y, float z,
                    TransformMode transform_mode,
                    InheritanceMode inheritance_mode);
 
@@ -191,7 +190,7 @@ class SceneGraph::Node {
         ///\param inheritance_mode Whether the transformation should affect
         ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void rotate(double angle, double x, double y, double z,
+        void rotate(float angle, float x, float y, float z,
                     TransformMode transform_mode,
                     InheritanceMode inheritance_mode);
 
@@ -206,7 +205,7 @@ class SceneGraph::Node {
         ///\param inheritance_mode Whether the transformation should affect
         ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void translate(double x, double y, double z,
+        void translate(float x, float y, float z,
                        TransformMode transform_mode,
                        InheritanceMode inheritance_mode);
 
@@ -235,8 +234,8 @@ class SceneGraph::Node {
         Node* parent_;
         std::list<Node*> children_;
 
-        Eigen::Transform3f private_transform_;
-        Eigen::Transform3f public_transform_;
+        math::mat4 private_transform_;
+        math::mat4 public_transform_;
         Core* core_;
 };
 

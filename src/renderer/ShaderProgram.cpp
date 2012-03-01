@@ -22,7 +22,7 @@
 
 #include "renderer/ShaderProgram.hpp"
 
-#include <eigen2/Eigen/LU>
+
 
 #include "renderer/VertexShader.hpp"
 #include "renderer/FragmentShader.hpp"
@@ -61,24 +61,24 @@ void ShaderProgram::unuse() const {
     glUseProgram(0);
 }
 
-void ShaderProgram::set_mat4(RenderContext const& context, std::string const& mat_name, Eigen::Matrix4f const& mat) {
+void ShaderProgram::set_mat4(RenderContext const& context, std::string const& mat_name, math::mat4 const& mat) {
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, mat_name, Uniform::MAT4));
-        if(loc >= 0) glUniformMatrix4fv(loc, 1, GL_FALSE, mat.data());
+        if(loc >= 0) glUniformMatrix4fv(loc, 1, GL_FALSE, mat.data_array);
     }
 }
 
-void ShaderProgram::set_vec2(RenderContext const& context, std::string const& vec_name, Eigen::Vector2f const& vec) {
+void ShaderProgram::set_vec2(RenderContext const& context, std::string const& vec_name, math::vec2 const& vec) {
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, vec_name, Uniform::VEC2));
-        if (loc >= 0) glUniform2f(loc, vec.x(), vec.y());
+        if (loc >= 0) glUniform2f(loc, vec[0], vec[1]);
     }
 }
 
-void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, Eigen::Vector3f const& vec) {
+void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, math::vec3 const& vec) {
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, vec_name, Uniform::VEC3));
-        if(loc >= 0) glUniform3f(loc, vec.x(), vec.y(), vec.z());
+        if(loc >= 0) glUniform3f(loc, vec[0], vec[1], vec[2]);
     }
 }
 
@@ -89,7 +89,7 @@ void ShaderProgram::set_vec3(RenderContext const& context, std::string const& ve
     }
 }
 
-void ShaderProgram::set_vec4(RenderContext const& context, std::string const& vec_name, Eigen::Vector4f const& vec) {
+void ShaderProgram::set_vec4(RenderContext const& context, std::string const& vec_name, math::vec4 const& vec) {
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, vec_name, Uniform::VEC4));
         if(loc >= 0) glUniform4f(loc, vec[0], vec[1], vec[2], vec[3]);

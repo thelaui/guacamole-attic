@@ -22,9 +22,6 @@
 
 #include "renderer/RenderBackend.hpp"
 
-#include <eigen2/Eigen/LU>
-#include <eigen2/Eigen/SVD>
-
 #include "renderer/MaterialBase.hpp"
 #include "renderer/GeometryBase.hpp"
 #include "renderer/LightSphere.hpp"
@@ -77,21 +74,21 @@ void RenderBackend::render(OptimizedScene const& scene) {
         auto screen(screen_it->second);
 
         if (camera.type_ == CameraCore::MONO) {
-            Eigen::Transform3f camera_transform(camera.transform_);
-            auto projection(math::compute_frustum(camera_transform.translation(), screen.transform_, 0.1, 1000.f));
-            render_eye(scene.nodes_, scene.lights_, projection, camera_transform.translation(), Eigen::Transform3f(screen.transform_), camera.type_, true);
+            math::mat4 camera_transform(camera.transform_);
+            auto projection(math::compute_frustum(camera_transform.column(3), screen.transform_, 0.1, 1000.f));
+            render_eye(scene.nodes_, scene.lights_, projection, camera_transform.column(3), math::mat4(screen.transform_), camera.type_, true);
         } else {
-            Eigen::Transform3f eye_position(camera.transform_);
+            math::mat4 eye_position(camera.transform_);
 
-            eye_position.translate(Eigen::Vector3f(-camera.stereo_width_*0.5, 0, 0));
-            auto projection(math::compute_frustum(eye_position.translation(), screen.transform_, 0.1, 1000.f));
-            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), camera.type_, true);
+            scm::math::translate(eye_position, -camera.stereo_width_*0.5f, 0.f, 0.f);
+            auto projection(math::compute_frustum(eye_position.column(3), screen.transform_, 0.1, 1000.f));
+            render_eye(scene.nodes_, scene.lights_, projection, eye_position.column(3), math::mat4(screen.transform_), camera.type_, true);
 
             glClear(GL_DEPTH_BUFFER_BIT);
 
-            eye_position.translate(Eigen::Vector3f(camera.stereo_width_, 0, 0));
-            projection = math::compute_frustum(eye_position.translation(), screen.transform_, 0.1, 1000.f);
-            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), camera.type_, false);
+            scm::math::translate(eye_position, camera.stereo_width_, 0.f, 0.f);
+            projection = math::compute_frustum(eye_position.column(3), screen.transform_, 0.1, 1000.f);
+            render_eye(scene.nodes_, scene.lights_, projection, eye_position.column(3), math::mat4(screen.transform_), camera.type_, false);
         }
 
     }
@@ -101,18 +98,37 @@ void RenderBackend::render(OptimizedScene const& scene) {
 
 void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
                    std::vector<LightNode> const& light_list,
-                   Eigen::Matrix4f const& camera_projection,
-                   Eigen::Vector3f const& camera_position,
-                   Eigen::Transform3f const& screen_transform,
+                   math::mat4 const& camera_projection,
+                   math::vec3 const& camera_position,
+                   math::mat4 const& screen_transform,
                    CameraCore::Type camera_type,
                    bool is_left_eye) {
 
-    Eigen::Transform3f camera_transform(Eigen::Matrix4f::Identity());
-    camera_transform.translate(camera_position);
-    camera_transform = camera_transform * screen_transform.rotation();
+    math::mat4 camera_transform(math::mat4::identity());
+    scm::math::translate(camera_transform, camera_position);
 
+//    math::mat4 camera_transform(screen_transform);
+//    camera_transform[12] = 0.f;
+//    camera_transform[13] = 0.f;
+//    camera_transform[14] = 0.f;
+//    camera_transform[15] = 1.f;
+//
+//    scm::math::translate(camera_transform, camera_position);
+//
+//    math::vec4 bottom_left(screen_transform * math::vec4(-0.5, -0.5, 0, 1));
+//    math::vec4 up_left(screen_transform * math::vec4(-0.5, 0.5, 0, 1));
+//    math::vec4 up_right(screen_transform * math::vec4(0.5, 0.5, 0, 1));
+//
+//    std::cout<<up_left<<std::endl;
+//
+//    float width(scm::math::length(up_left - up_right));
+//    float height(scm::math::length(up_left - bottom_left));
+//
+//    math::mat4 inverse_scale(scm::math::make_scale(1.f/width, 1.f/height, 1.f));
+//    camera_transform = inverse_scale * camera_transform;
+//    scm::math::translate(camera_transform, camera_position);
 
-    Eigen::Matrix4f view_matrix(camera_transform.matrix().inverse());
+    math::mat4 view_matrix(scm::math::inverse(camera_transform));
 
     fill_g_buffer(node_list, camera_projection, view_matrix);
 
@@ -145,7 +161,7 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
 
     for (auto& light: light_list) {
         deferred_light_shader_.set_mat4(window_.get_context(), "model_matrix", light.transform_);
-        deferred_light_shader_.set_mat4(window_.get_context(), "normal_matrix", light.transform_.inverse().transpose());
+        deferred_light_shader_.set_mat4(window_.get_context(), "normal_matrix", scm::math::transpose(scm::math::inverse(light.transform_)));
         deferred_light_shader_.set_vec3(window_.get_context(), "light_color", light.color_);
 
         window_.draw(light_sphere_);
@@ -159,8 +175,8 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
 }
 
 void RenderBackend::fill_g_buffer(std::vector<GeometryNode> const& node_list,
-                   Eigen::Matrix4f const& camera_projection,
-                   Eigen::Matrix4f const& view_matrix) {
+                   math::mat4 const& camera_projection,
+                   math::mat4 const& view_matrix) {
 
     g_buffer_.bind(window_.get_context(), {GL_COLOR_ATTACHMENT0,
                                            GL_COLOR_ATTACHMENT0 +1,
@@ -179,7 +195,7 @@ void RenderBackend::fill_g_buffer(std::vector<GeometryNode> const& node_list,
         auto geometry = GeometryBase::instance()->get(geometry_core.geometry_);
 
         buffer_fill_shader_.set_mat4(window_.get_context(), "model_matrix", geometry_core.transform_);
-        buffer_fill_shader_.set_mat4(window_.get_context(), "normal_matrix", geometry_core.transform_.inverse().transpose());
+        buffer_fill_shader_.set_mat4(window_.get_context(), "normal_matrix",  scm::math::transpose(scm::math::inverse(geometry_core.transform_)));
 
         if (geometry) {
             window_.draw(geometry);

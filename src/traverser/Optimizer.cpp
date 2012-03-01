@@ -30,7 +30,6 @@
 #include "scenegraph/Iterator.hpp"
 
 #include <stack>
-#include <eigen2/Eigen/Geometry>
 
 namespace gua {
 
@@ -57,15 +56,15 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
 
     auto node = scene_graph->begin();
 
-    std::stack<Eigen::Matrix4f> matrix_stack;
-    matrix_stack.push(Eigen::Matrix4f::Identity());
+    std::stack<math::mat4> matrix_stack;
+    matrix_stack.push(math::mat4::identity());
 
     int depth = 0;
     do {
 
         Core* current_core( node.get_core() );
-        Eigen::Matrix4f  current_matrix_private( matrix_stack.top() * node.get_transform(SceneGraph::PRIVATE) );
-        Eigen::Matrix4f  current_matrix_public( matrix_stack.top() * node.get_transform(SceneGraph::PUBLIC) );
+        math::mat4  current_matrix_private( matrix_stack.top() * node.get_transform(SceneGraph::PRIVATE) );
+        math::mat4  current_matrix_public( matrix_stack.top() * node.get_transform(SceneGraph::PUBLIC) );
 
         if (current_core) {
             switch ( current_core->get_type() ) {
@@ -81,8 +80,7 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
             }
             case Core::CoreType::SCREEN : {
                 auto screen_core = reinterpret_cast<ScreenCore*>  ( current_core );
-                Eigen::Transform3f scale((Eigen::Transform3f)Eigen::Matrix4f::Identity());
-                scale.scale(Eigen::Vector3f(screen_core->get_width(), screen_core->get_height(), 1));
+                math::mat4 scale(scm::math::make_scale(screen_core->get_width(), screen_core->get_height(), 1.f));
                 data_.screens_.insert( std::make_pair(node.get_name(), ScreenNode(current_matrix_private * scale)) );
                 break;
             }

@@ -23,7 +23,6 @@
 #ifndef SHADERPROGRAM_HPP
 #define SHADERPROGRAM_HPP
 
-#include <eigen2/Eigen/Core>
 #include <map>
 
 #include "renderer/FragmentShader.hpp"
@@ -31,6 +30,7 @@
 #include "renderer/Texture.hpp"
 #include "renderer/Uniform.hpp"
 #include "utils/Color3f.hpp"
+#include "utils/math.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief An actual shader which can be applied to the Graphics pipeline.
@@ -85,19 +85,19 @@ class ShaderProgram {
         void unuse() const;
 
         void set_mat4(RenderContext const& context, std::string const& mat_name,
-                      Eigen::Matrix4f const& mat);
+                      math::mat4 const& mat);
 
         void set_vec2(RenderContext const& context, std::string const& vec_name,
-                      Eigen::Vector2f const& vec);
+                      math::vec2 const& vec);
 
         void set_vec3(RenderContext const& context, std::string const& vec_name,
-                      Eigen::Vector3f const& vec);
+                      math::vec3 const& vec);
 
         void set_vec3(RenderContext const& context, std::string const& vec_name,
                       Color3f const& vec);
 
         void set_vec4(RenderContext const& context, std::string const& vec_name,
-                      Eigen::Vector4f const& vec);
+                      math::vec4 const& vec);
 
         void set_sampler2D(RenderContext const& context, std::string const& sampler_name,
                            Texture const& sampler);

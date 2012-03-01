@@ -24,9 +24,10 @@
 #define SCENE_GRAPH_HPP
 
 #include "scenegraph/Core.hpp"
+#include "utils/math.hpp"
 
+#include <string>
 #include <list>
-#include <eigen2/Eigen/Geometry>
 
 namespace gua {
 
@@ -85,7 +86,7 @@ class SceneGraph {
         ///                      Iterator points to the SceneGraph's "end".
         ////////////////////////////////////////////////////////////////////////
         Iterator add_node(std::string const& path_to_parent, std::string const& node_name, Core* core = NULL,
-                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity());
+                          math::mat4 const& transform = math::mat4::identity());
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Adds a new Node.
@@ -105,7 +106,7 @@ class SceneGraph {
         ///\return Iterator      An Iterator on the recently added Node.
         ////////////////////////////////////////////////////////////////////////
         Iterator add_node_recursively(std::string const& path_to_parent, std::string const& node_name, Core* core = NULL,
-                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity());
+                      math::mat4 const& transform = math::mat4::identity());
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Removes a Node.

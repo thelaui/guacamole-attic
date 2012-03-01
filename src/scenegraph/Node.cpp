@@ -25,13 +25,13 @@
 
 namespace gua {
 
-SceneGraph::Node::Node(std::string const& name, Eigen::Transform3f transform,
+SceneGraph::Node::Node(std::string const& name, math::mat4 transform,
                        Core* core, InheritanceMode mode):
     name_(name),
     parent_(NULL),
     children_(),
-    private_transform_(mode == PUBLIC ? (Eigen::Transform3f)Eigen::Matrix3f::Identity() : transform),
-    public_transform_(mode == PRIVATE ? (Eigen::Transform3f)Eigen::Matrix3f::Identity() : transform),
+    private_transform_(mode == PUBLIC ? math::mat4::identity() : transform),
+    public_transform_(mode == PRIVATE ? math::mat4::identity() : transform),
     core_(core) {}
 
 SceneGraph::Node::~Node() {
@@ -74,14 +74,14 @@ void SceneGraph::Node::set_name(std::string const& name) {
     name_ = name;
 }
 
-Eigen::Transform3f const& SceneGraph::Node::get_transform(InheritanceMode mode) const {
+math::mat4 const& SceneGraph::Node::get_transform(InheritanceMode mode) const {
     if (mode == PUBLIC)
         return public_transform_;
 
     return private_transform_;
 }
 
-void SceneGraph::Node::set_transform(Eigen::Transform3f const& transform, InheritanceMode mode) {
+void SceneGraph::Node::set_transform(math::mat4 const& transform, InheritanceMode mode) {
     if (mode == PUBLIC) public_transform_ = transform;
     else private_transform_ = transform;
 }
@@ -94,65 +94,71 @@ void SceneGraph::Node::set_core(Core* core) {
     core_ = core;
 }
 
-void SceneGraph::Node::scale(double x, double y, double z,
+void SceneGraph::Node::scale(float x, float y, float z,
                              TransformMode transform_mode,
                              InheritanceMode inheritance_mode) {
 
+    math::mat4 scale(scm::math::make_scale(x, y, z));
+
     if (inheritance_mode == PUBLIC) {
         if (transform_mode == GLOBAL) {
-            public_transform_.prescale(Eigen::Vector3f(x, y, z));
-            private_transform_.prescale(Eigen::Vector3f(x, y, z));
+            public_transform_ = scale * public_transform_;
+            private_transform_ = scale * private_transform_;
         } else {
-            public_transform_.scale(Eigen::Vector3f(x, y, z));
-            private_transform_.scale(Eigen::Vector3f(x, y, z));
+            public_transform_ =  public_transform_ * scale;
+            private_transform_ = private_transform_ * scale;
         }
     } else {
         if (transform_mode == GLOBAL) {
-            private_transform_.prescale(Eigen::Vector3f(x, y, z));
+            private_transform_ = scale * private_transform_;
         } else {
-            private_transform_.scale(Eigen::Vector3f(x, y, z));
+            private_transform_ = private_transform_ * scale;
         }
     }
 }
 
-void SceneGraph::Node::rotate(double angle, double x, double y, double z,
+void SceneGraph::Node::rotate(float angle, float x, float y, float z,
                               TransformMode transform_mode,
                               InheritanceMode inheritance_mode) {
 
+    math::mat4 rotation(scm::math::make_rotation(angle, x, y, z));
+
     if (inheritance_mode == PUBLIC) {
         if (transform_mode == GLOBAL) {
-            public_transform_.prerotate(Eigen::AngleAxisf(angle, Eigen::Vector3f(x, y, z)));
-            private_transform_.prerotate(Eigen::AngleAxisf(angle, Eigen::Vector3f(x, y, z)));
+            public_transform_ = rotation * public_transform_;
+            private_transform_ = rotation * private_transform_;
         } else {
-            public_transform_.rotate(Eigen::AngleAxisf(angle, Eigen::Vector3f(x, y, z)));
-            private_transform_.rotate(Eigen::AngleAxisf(angle, Eigen::Vector3f(x, y, z)));
+            public_transform_ =  public_transform_ * rotation;
+            private_transform_ = private_transform_ * rotation;
         }
     } else {
         if (transform_mode == GLOBAL) {
-            private_transform_.prerotate(Eigen::AngleAxisf(angle, Eigen::Vector3f(x, y, z)));
+            private_transform_ = rotation * private_transform_;
         } else {
-            private_transform_.rotate(Eigen::AngleAxisf(angle, Eigen::Vector3f(x, y, z)));
+            private_transform_ = private_transform_ * rotation;
         }
     }
 }
 
-void SceneGraph::Node::translate(double x, double y, double z,
+void SceneGraph::Node::translate(float x, float y, float z,
                                  TransformMode transform_mode,
                                  InheritanceMode inheritance_mode) {
 
+    math::mat4 translation(scm::math::make_translation(x, y, z));
+
     if (inheritance_mode == PUBLIC) {
         if (transform_mode == GLOBAL) {
-            public_transform_.pretranslate(Eigen::Vector3f(x, y, z));
-            private_transform_.pretranslate(Eigen::Vector3f(x, y, z));
+            public_transform_ = translation * public_transform_;
+            private_transform_ = translation * private_transform_;
         } else {
-            public_transform_.translate(Eigen::Vector3f(x, y, z));
-            private_transform_.translate(Eigen::Vector3f(x, y, z));
+            public_transform_ =  public_transform_ * translation;
+            private_transform_ = private_transform_ * translation;
         }
     } else {
         if (transform_mode == GLOBAL) {
-            private_transform_.pretranslate(Eigen::Vector3f(x, y, z));
+            private_transform_ = translation * private_transform_;
         } else {
-            private_transform_.translate(Eigen::Vector3f(x, y, z));
+            private_transform_ = private_transform_ * translation;
         }
     }
 }
