@@ -6,6 +6,7 @@ include(schism_boost)
 include(schism_macros)
 
 set(SRC_DIR                         "${guacamole_SOURCE_DIR}/../../src")
+set(INC_DIR                         "${guacamole_SOURCE_DIR}/../../include")
 set(SCM_PROJECT_SOURCE_DIR          ${SRC_DIR})
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${SCHISM_LIBRARY_DIR})
@@ -14,19 +15,19 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY  ${SCHISM_LIBRARY_DIR})
 
 # source files
 scm_project_files(SOURCE_FILES      ${SRC_DIR} *.cpp)
-scm_project_files(HEADER_FILES      ${SRC_DIR} *.hpp *.inl)
+scm_project_files(HEADER_FILES      ${INC_DIR} *.hpp *.inl)
 
 scm_project_files(SOURCE_FILES      ${SRC_DIR}/renderer *.cpp)
-scm_project_files(HEADER_FILES      ${SRC_DIR}/renderer *.hpp *.inl)
+scm_project_files(HEADER_FILES      ${INC_DIR}/renderer *.hpp *.inl)
 
 scm_project_files(SOURCE_FILES      ${SRC_DIR}/scenegraph *.cpp)
-scm_project_files(HEADER_FILES      ${SRC_DIR}/scenegraph *.hpp *.inl)
+scm_project_files(HEADER_FILES      ${INC_DIR}/scenegraph *.hpp *.inl)
 
 scm_project_files(SOURCE_FILES      ${SRC_DIR}/traverser *.cpp)
-scm_project_files(HEADER_FILES      ${SRC_DIR}/traverser *.hpp *.inl)
+scm_project_files(HEADER_FILES      ${INC_DIR}/traverser *.hpp *.inl)
 
 scm_project_files(SOURCE_FILES      ${SRC_DIR}/utils *.cpp)
-scm_project_files(HEADER_FILES      ${SRC_DIR}/utils *.hpp *.inl)
+scm_project_files(HEADER_FILES      ${INC_DIR}/utils *.hpp *.inl)
 
 # include header and inline files in source files for visual studio projects
 if (WIN32)
@@ -37,6 +38,7 @@ endif (WIN32)
 
 # set include and lib directories
 scm_project_include_directories(ALL   ${SRC_DIR}
+                                      ${INC_DIR}
                                       ${SCM_ROOT_DIR}/scm_core/src
                                       ${SCM_ROOT_DIR}/scm_data/src
                                       ${SCM_ROOT_DIR}/scm_gl_core/src
