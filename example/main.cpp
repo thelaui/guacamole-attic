@@ -20,15 +20,15 @@ void setup_lights(gua::SceneGraph& graph) {
     auto point_light3 = graph.add_node("/", "point_light3", point_light_core3);
     auto point_light4 = graph.add_node("/", "point_light4", point_light_core4);
 
-    point_light1.translate(2.f, 2.5f, -2.f);
-    point_light2.translate(2.f, 2.5f, 2.f);
-    point_light3.translate(-2.f,2.5f, 2.f);
-    point_light4.translate(-2.f, 2.5f, -2.f);
-
     point_light1.scale(15.f, 15.f, 15.f);
     point_light2.scale(15.f, 15.f, 15.f);
     point_light3.scale(15.f, 15.f, 15.f);
     point_light4.scale(15.f, 15.f, 15.f);
+
+    point_light1.translate(2.f, 2.5f, -2.f);
+    point_light2.translate(2.f, 2.5f, 2.f);
+    point_light3.translate(-2.f,2.5f, 2.f);
+    point_light4.translate(-2.f, 2.5f, -2.f);
 }
 
 int main() {
@@ -43,48 +43,31 @@ int main() {
     auto floor = graph.add_node("/", "floor", plane_core);
 //    floor.translate(0.04, 0, -2);
 //    floor.scale(3.03, 1, 4);
-    floor.translate(0, 0.845, -1);
-    floor.scale(2.025, 1, 2);
+    floor.scale(1.6, 1, 2);
+    floor.translate(0, 0, -1);
 
     auto cube_core = new gua::GeometryCore("cube", "shiny");
     auto box = graph.add_node("/", "box", cube_core);
    // box.rotate(-0.5, 0, 1, 0);
-    box.translate(0, 0.5+0.845, -1);
-    //box.scale(0.5, 0.5, 0.5);
-   // box.rotate(M_PI*0.5, 1, 0, 0);
+    box.scale(0.2, 0.2, 0.2);
+    box.translate(0, 0.1, -0.1);
 
-    box = graph.add_node("/", "box2", plane_core);
-    box.translate(-0.3, 1.5, 0);
-    box.rotate(M_PI*0.5, 1, 0, 0);
-    box.scale(1.f, 1.0, 0.5);
+    box = graph.add_node("/box", "box", cube_core);
+    box.scale(0.5, 0.5, 0.5);
+    box.rotate(M_PI*0.5, 0, 0, 1, gua::SceneGraph::GLOBAL, gua::SceneGraph::PRIVATE);
+    box.translate(0, 0.75, 0);
 
-//    box = graph.add_node("/", "box2", cube_core);
-//    box.scale(0.5, 0.5, 0.5);
-//    box.translate(-1, 1, 6);
-
-    auto pivot = graph.add_node("/", "pivot");
-    //pivot.translate(0, 0, 0);
-
-    auto screen_core(new gua::ScreenCore(2.025, 1.52));
+    auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
-    screen.translate(0, 0.845+1.52/2, 0);
-    //screen.scale(2, 1, 1);
-//    screen.rotate(0.9, 0, 1, 0);
+   // screen.scale(1.6, 0.9, 1);
+    screen.rotate(0.4, 0, 1, 0);
+    screen.translate(0, 0.45, 0);
 
-    auto camera_core = new gua::CameraCore(0.2f, gua::CameraCore::ANAGLYPH_RED_CYAN);
-    auto camera = graph.add_node("/pivot", "camera", camera_core);
-    camera.translate(0, 1.70, 2.5);
+    auto camera_core = new gua::CameraCore(0.1f, gua::CameraCore::ANAGLYPH_RED_CYAN);
+    auto camera = graph.add_node("/screen", "camera", camera_core);
+    camera.translate(0, 0.45, 3.5);
     //camera.scale(0.5, 0.5, 0.5);
    // camera.rotate(M_PI, 0.f, 1.f, 0.f);
-
-    auto monkey_core = new gua::GeometryCore("cube", "matt");
-    auto monkey = graph.add_node("/", "monkey", monkey_core);
-    monkey.translate(0.6, 1.6, 1.5);
-    monkey.scale(0.05, 0.05, 0.05);
-//
-//    monkey = graph.add_node("/box/monkey", "monkey", monkey_core);
-//    monkey.scale(0.3, 0.3, 0.3);
-//    monkey.translate(0, 5, 0);
 
     setup_lights(graph);
 
@@ -107,17 +90,12 @@ int main() {
             timer.reset();
         }
 
-
         renderer.queue_draw(&graph);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-//        graph["/box"].rotate(0.01, 0, 1, 0);
-       // graph["/monkey"].rotate(0.01, 1, 0, 0);
-//        graph["/box/monkey/monkey"].rotate(0.1, 0, 1, 0);
 
-        graph["/box2"].scale(1, 1, 2);
-        graph["/box2"].rotate(-0.005, 0, 0, 1);
-        graph["/box2"].scale(1, 1, 0.5);
+      //  graph["/box"].rotate(0.01, 0, 0, 1, gua::SceneGraph::GLOBAL, gua::SceneGraph::PRIVATE);
+        graph["/box"].rotate(0.02, 0, 1, 0, gua::SceneGraph::LOCAL, gua::SceneGraph::PUBLIC);
     }
 
     return 0;

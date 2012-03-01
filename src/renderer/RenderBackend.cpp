@@ -109,7 +109,7 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
 
     Eigen::Transform3f camera_transform(Eigen::Matrix4f::Identity());
     camera_transform.translate(camera_position);
-    camera_transform = screen_transform.rotation() * camera_transform;
+    camera_transform = camera_transform * screen_transform.rotation();
 
 
     Eigen::Matrix4f view_matrix(camera_transform.matrix().inverse());

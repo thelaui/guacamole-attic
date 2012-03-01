@@ -61,13 +61,13 @@ void SceneGraph::Iterator::set_name(std::string const& name) const {
     }
 }
 
-Eigen::Transform3f const& SceneGraph::Iterator::get_transform() const {
-    if (current_node_) return current_node_->get_transform();
+Eigen::Transform3f const& SceneGraph::Iterator::get_transform(InheritanceMode mode) const {
+    if (current_node_) return current_node_->get_transform(mode);
     return end_transform_;
 }
 
-void SceneGraph::Iterator::set_transform(Eigen::Transform3f const& transform) const {
-    if (current_node_) current_node_->set_transform(transform);
+void SceneGraph::Iterator::set_transform(Eigen::Transform3f const& transform, InheritanceMode mode) const {
+    if (current_node_) current_node_->set_transform(transform, mode);
 }
 
 Core* SceneGraph::Iterator::get_core() const {
@@ -80,16 +80,25 @@ void SceneGraph::Iterator::set_core(Core* core) const {
     if (current_node_) current_node_->set_core(core);
 }
 
-void SceneGraph::Iterator::scale(double x, double y, double z) {
-    if (current_node_) current_node_->scale(x, y, z);
+void SceneGraph::Iterator::scale(double x, double y, double z,
+                                 TransformMode transform_mode,
+                                 InheritanceMode inheritance_mode) {
+
+    if (current_node_) current_node_->scale(x, y, z, transform_mode, inheritance_mode);
 }
 
-void SceneGraph::Iterator::rotate(double angle, double x, double y, double z) {
-    if (current_node_) current_node_->rotate(angle, x, y, z);
+void SceneGraph::Iterator::rotate(double angle, double x, double y, double z,
+                                  TransformMode transform_mode,
+                                  InheritanceMode inheritance_mode) {
+
+    if (current_node_) current_node_->rotate(angle, x, y, z, transform_mode, inheritance_mode);
 }
 
-void SceneGraph::Iterator::translate(double x, double y, double z) {
-    if (current_node_) current_node_->translate(x, y, z);
+void SceneGraph::Iterator::translate(double x, double y, double z,
+                                     TransformMode transform_mode,
+                                     InheritanceMode inheritance_mode) {
+
+    if (current_node_) current_node_->translate(x, y, z, transform_mode, inheritance_mode);
 }
 
 void SceneGraph::Iterator::set_iteration_type(IterationType type) {
