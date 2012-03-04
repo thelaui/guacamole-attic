@@ -22,56 +22,42 @@
 
 #include "renderer/Geometry.hpp"
 
-#include <assimp/assimp.hpp>
-#include <assimp/aiPostProcess.h>
-#include <assimp/aiScene.h>
-
-#include "utils/TextFile.hpp"
+#include "renderer/RenderContext.hpp"
+#include "renderer/ShaderProgram.hpp"
 #include "utils/debug.hpp"
-
-#include "renderer/LightSphere.hpp"
-
+#include "utils/TextFile.hpp"
 
 namespace gua {
 
 Geometry::Geometry():
-    meshes_() {}
+    meshes_(),
+    file_name_("") {}
 
-Geometry::Geometry(std::string const& file_name):
-    meshes_() {
+Geometry::Geometry( std::string const& file_name ):
+    meshes_(),
+    file_name_(file_name) {}
 
-    TextFile file(file_name);
-
-    if (file.is_valid()) {
-        Assimp::Importer* importer = new Assimp::Importer();
-        aiScene const* scene = importer->ReadFile(file_name, aiProcessPreset_TargetRealtime_Quality);
-
-        meshes_ = std::vector<Mesh>(scene->mNumMeshes);
-
-        for (unsigned int n = 0; n < scene->mNumMeshes; ++n) {
-            meshes_[n] = Mesh(scene->mMeshes[n]);
+void Geometry::upload_to(RenderContext const& context) const {
+    TextFile tmp(file_name_);
+    if (tmp.is_valid()) {
+        if (meshes_.size() <= context.id) {
+            meshes_.resize(context.id+1);
         }
-    } else {
-        WARNING("Failed to load object \"%s\": File does not exist!", file_name.c_str());
-    }
 
-}
-
-Geometry::Geometry(char const* buffer_name, unsigned buffer_size):
-    meshes_() {
-    Assimp::Importer* importer = new Assimp::Importer();
-    aiScene const* scene = importer->ReadFileFromMemory(buffer_name, buffer_size, aiProcessPreset_TargetRealtime_Quality);
-
-    meshes_ = std::vector<Mesh>(scene->mNumMeshes);
-
-    for (unsigned int n = 0; n < scene->mNumMeshes; ++n) {
-        meshes_[n] = Mesh(scene->mMeshes[n]);
+        meshes_[context.id] = scm::gl::wavefront_obj_geometry_ptr(
+            new scm::gl::wavefront_obj_geometry(context.render_device, file_name_));
     }
 }
 
 void Geometry::draw(RenderContext const& context) const {
-    for (auto& mesh: meshes_)
-        mesh.draw(context);
+    // upload to GPU if neccessary
+    if (meshes_.size() <= context.id || meshes_[context.id] == 0) {
+        upload_to(context);
+    }
+
+    if (meshes_[context.id])
+        meshes_[context.id]->draw(context.render_context);
 }
 
 }
+

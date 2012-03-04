@@ -107,14 +107,14 @@ void Material::construct_from_file(TextFile const& file) {
     path_parser.parse(vertex_string);
     path_parser.make_absolute(location_parser.get_path(true));
 
-    VertexShader vertex_shader(path_parser.get_path());
+    std::string vertex_shader(path_parser.get_path());
 
     path_parser.parse(fragment_string);
     path_parser.make_absolute(location_parser.get_path(true));
 
-    FragmentShader fragment_shader(path_parser.get_path());
+    std::string fragment_shader(path_parser.get_path());
 
-    shader_ = ShaderProgram(vertex_shader, fragment_shader);
+    shader_.create_from_files(vertex_shader, fragment_shader);
 }
 
 }

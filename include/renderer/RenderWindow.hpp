@@ -48,10 +48,11 @@ class RenderWindow {
         ///
         /// \param width   The width of the window.
         /// \param height  The height of the window.
+        /// \param window_title The window's title.
         /// \param display The display where this window should be opened.
         /// \throw An error message.
         ////////////////////////////////////////////////////////////////////////
-        RenderWindow( int width, int height, std::string const& display ) throw (std::string);
+        RenderWindow( int width, int height, std::string const& window_title, std::string const& display );
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
@@ -66,7 +67,7 @@ class RenderWindow {
         /// Makes the RenderContext of this window current. All preceeding
         /// OpenGL calls will be invoked on this window.
         ////////////////////////////////////////////////////////////////////////
-        void set_active() const;
+        void set_active(bool active) const;
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Starts the drawing of a new frame.
@@ -106,16 +107,12 @@ class RenderWindow {
         ///
         /// This should be called once in every application using guacamole.
         ////////////////////////////////////////////////////////////////////////
-        static void init();
+        static void init(int argc, char** argv);
 
     private:
         static unsigned last_context_id_;
 
         RenderContext ctx_;
-
-        int frames_;
-        int frame_count_;
-        long frames_start_;
 };
 
 }

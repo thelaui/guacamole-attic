@@ -31,10 +31,11 @@ void setup_lights(gua::SceneGraph& graph) {
     point_light4.translate(-1.f, 1.5f, -1.f);
 }
 
-int main() {
-    gua::RenderWindow::init();
+int main(int argc, char** argv) {
+    gua::RenderWindow::init(argc, argv);
 
     gua::GeometryBase::load_objects_from("data/objects/");
+    DEBUG("huhu");
     gua::MaterialBase::load_materials_from("data/materials/");
 
     gua::SceneGraph graph;
@@ -63,7 +64,7 @@ int main() {
 //    screen.rotate(0.4, 0, 1, 0);
     screen.translate(0, 0.45, 0);
 
-    auto camera_core = new gua::CameraCore(0.1f, gua::CameraCore::ANAGLYPH_RED_CYAN);
+    auto camera_core = new gua::CameraCore(0.1f, gua::CameraCore::MONO);
     auto camera = graph.add_node("/screen", "camera", camera_core);
     camera.translate(0, 0.45, 3.5);
     //camera.scale(0.5, 0.5, 0.5);

@@ -25,8 +25,6 @@
 
 #include <map>
 
-#include "renderer/FragmentShader.hpp"
-#include "renderer/VertexShader.hpp"
 #include "renderer/Texture.hpp"
 #include "renderer/Uniform.hpp"
 #include "utils/Color3f.hpp"
@@ -59,7 +57,9 @@ class ShaderProgram {
         /// \param v_shader The VertexShader.
         /// \param f_shader The FragmentShader.
         ////////////////////////////////////////////////////////////////////////
-        ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader );
+        void create_from_files(std::string const& v_shader_file, std::string const& f_shader_file);
+
+        void create_from_sources(std::string const& v_shader_source, std::string const& f_shader_source);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
@@ -78,12 +78,6 @@ class ShaderProgram {
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Unapplies this shader.
-        ///
-        ////////////////////////////////////////////////////////////////////////
-        void unuse() const;
-
         void set_mat4(RenderContext const& context, std::string const& mat_name,
                       math::mat4 const& mat);
 
@@ -93,8 +87,8 @@ class ShaderProgram {
         void set_vec3(RenderContext const& context, std::string const& vec_name,
                       math::vec3 const& vec);
 
-        void set_vec3(RenderContext const& context, std::string const& vec_name,
-                      Color3f const& vec);
+        void set_color3f(RenderContext const& context, std::string const& color_name,
+                      Color3f const& color);
 
         void set_vec4(RenderContext const& context, std::string const& vec_name,
                       math::vec4 const& vec);
@@ -124,17 +118,16 @@ class ShaderProgram {
         const static unsigned texture_location = 2;
 
     private:
-        unsigned check_uniform(RenderContext const& context, std::string const& name,
-                               Uniform::Type type) const;
 
         void upload_to(RenderContext const& context) const;
-        mutable std::vector<unsigned> program_ids_;
 
-        mutable std::vector<std::map<std::string, Uniform>> uniforms_;
+        mutable std::vector<scm::gl::program_ptr> programs_;
         mutable unsigned texture_offset_;
 
-        VertexShader v_shader_;
-        FragmentShader f_shader_;
+        bool shaders_are_files_;
+
+        std::string f_shader_;
+        std::string v_shader_;
 };
 
 }

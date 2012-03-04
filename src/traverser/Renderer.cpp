@@ -24,6 +24,7 @@
 #include "scenegraph/SceneGraph.hpp"
 #include "traverser/RenderClient.hpp"
 #include "traverser/Optimizer.hpp"
+#include "utils/debug.hpp"
 
 namespace gua {
 
@@ -45,7 +46,6 @@ Renderer::~Renderer(){
 
 void Renderer::queue_draw( SceneGraph const* scene_graph ) {
     optimizer_->check( scene_graph );
-
     for ( auto client(render_clients_.begin()); client != render_clients_.end(); ++ client ) {
         (*client)->queue_draw( optimizer_->get_data() );
     }

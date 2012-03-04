@@ -33,6 +33,7 @@
 #include "utils/DotGenerator.hpp"
 #include "utils/Directory.hpp"
 #include "utils/Timer.hpp"
+#include "utils/debug.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \mainpage

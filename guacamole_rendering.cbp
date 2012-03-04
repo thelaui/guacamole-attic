@@ -12,6 +12,7 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Wall" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -30,7 +31,6 @@
 		</Build>
 		<Compiler>
 			<Add option="-std=c++0x" />
-			<Add option="-Wall" />
 			<Add option="-fPIC" />
 			<Add directory="include" />
 			<Add directory="../../scm_cl_core/src" />
@@ -43,8 +43,14 @@
 		<Linker>
 			<Add library="GL" />
 			<Add library="GLEW" />
-			<Add library="assimp" />
 			<Add library="IL" />
+			<Add library="libscm_cl_core" />
+			<Add library="libscm_core" />
+			<Add library="libscm_data" />
+			<Add library="libscm_gl_core" />
+			<Add library="libscm_gl_util" />
+			<Add library="libscm_input" />
+			<Add directory="../../lib/linux_x86" />
 		</Linker>
 		<Unit filename="include/cores/CameraCore.hpp" />
 		<Unit filename="include/cores/GeometryCore.hpp" />
@@ -53,22 +59,17 @@
 		<Unit filename="include/guacamole.hpp" />
 		<Unit filename="include/renderer/BufferFillShaders.hpp" />
 		<Unit filename="include/renderer/DataBase.hpp" />
-		<Unit filename="include/renderer/FragmentShader.hpp" />
 		<Unit filename="include/renderer/FrameBufferObject.hpp" />
 		<Unit filename="include/renderer/Geometry.hpp" />
 		<Unit filename="include/renderer/GeometryBase.hpp" />
-		<Unit filename="include/renderer/LightSphere.hpp" />
 		<Unit filename="include/renderer/Material.hpp" />
 		<Unit filename="include/renderer/MaterialBase.hpp" />
-		<Unit filename="include/renderer/Mesh.hpp" />
 		<Unit filename="include/renderer/RenderBackend.hpp" />
 		<Unit filename="include/renderer/RenderContext.hpp" />
 		<Unit filename="include/renderer/RenderWindow.hpp" />
-		<Unit filename="include/renderer/Shader.hpp" />
 		<Unit filename="include/renderer/ShaderProgram.hpp" />
 		<Unit filename="include/renderer/Texture.hpp" />
 		<Unit filename="include/renderer/Uniform.hpp" />
-		<Unit filename="include/renderer/VertexShader.hpp" />
 		<Unit filename="include/renderer/glInclude.hpp" />
 		<Unit filename="include/traverser/CameraNode.hpp" />
 		<Unit filename="include/traverser/GeometryNode.hpp" />
@@ -93,19 +94,15 @@
 		<Unit filename="src/cores/GeometryCore.cpp" />
 		<Unit filename="src/cores/LightCore.cpp" />
 		<Unit filename="src/cores/ScreenCore.cpp" />
-		<Unit filename="src/renderer/FragmentShader.cpp" />
 		<Unit filename="src/renderer/FrameBufferObject.cpp" />
 		<Unit filename="src/renderer/Geometry.cpp" />
 		<Unit filename="src/renderer/GeometryBase.cpp" />
 		<Unit filename="src/renderer/Material.cpp" />
 		<Unit filename="src/renderer/MaterialBase.cpp" />
-		<Unit filename="src/renderer/Mesh.cpp" />
 		<Unit filename="src/renderer/RenderBackend.cpp" />
 		<Unit filename="src/renderer/RenderWindow.cpp" />
-		<Unit filename="src/renderer/Shader.cpp" />
 		<Unit filename="src/renderer/ShaderProgram.cpp" />
 		<Unit filename="src/renderer/Texture.cpp" />
-		<Unit filename="src/renderer/VertexShader.cpp" />
 		<Unit filename="src/traverser/Optimizer.cpp" />
 		<Unit filename="src/traverser/RenderClient.cpp" />
 		<Unit filename="src/traverser/Renderer.cpp" />

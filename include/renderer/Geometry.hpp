@@ -23,63 +23,57 @@
 #ifndef GEOMETRY_HPP
 #define GEOMETRY_HPP
 
-#include <string>
 #include <vector>
-
-#include "renderer/Mesh.hpp"
-
-////////////////////////////////////////////////////////////////////////////////
-/// \brief Loads and draws meshes.
-///
-/// This class can load mesh data from files and display them in multiple
-/// contexts. A Geometry object is made of several Mesh objects.
-////////////////////////////////////////////////////////////////////////////////
+#include <scm/gl_util/primitives/wavefront_obj.h>
 
 namespace gua {
+
+class RenderContext;
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief Stores geometry data.
+///
+/// A mesh can be loaded from a Assimp mesh and the draw onto multiple contexts.
+/// Do not use this class directly, it is just used by the Geometry class to
+/// store the individual meshes of a file.
+////////////////////////////////////////////////////////////////////////////////
 
 class Geometry {
     public:
         ////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor.
         ///
-        /// Constructs a new and empty Geometry.
+        /// Creates a new and empty Geometry.
         ////////////////////////////////////////////////////////////////////////
         Geometry();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Constructor from a file.
+        /// \brief Constructor from an Assimp mesh.
         ///
-        /// Creates a new Geometry from a given file.
+        /// Initializes the mesh from a given Assimp mesh.
         ///
-        /// \param file_name The file to load the meh's data from.
+        /// \param mesh The Assimp mesh to load the data from.
         ////////////////////////////////////////////////////////////////////////
         Geometry(std::string const& file_name);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Constructor from memory buffer.
-        ///
-        /// Creates a new Geometry from a existing memory buffer.
-        ///
-        /// \param buffer_name The buffer to load the meh's data from.
-        /// \param buffer_size The buffer's size.
-        ////////////////////////////////////////////////////////////////////////
-        Geometry(char const* buffer_name, unsigned buffer_size);
-
-        ////////////////////////////////////////////////////////////////////////
         /// \brief Draws the Geometry.
         ///
-        /// Draws this Geometry object to the given context.
+        /// Draws the Geometry to the given context.
         ///
-        /// \param context The RenderContext to which this object should be
-        ///                drawn.
+        /// \param context The RenderContext to draw onto.
         ////////////////////////////////////////////////////////////////////////
         void draw(RenderContext const& context) const;
 
     private:
-        std::vector<Mesh> meshes_;
+        void upload_to(RenderContext const& context) const;
+
+        mutable std::vector<scm::gl::wavefront_obj_geometry_ptr> meshes_;
+        std::string file_name_;
 };
 
 }
 
 #endif // GEOMETRY_HPP
+
 

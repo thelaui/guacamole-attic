@@ -24,7 +24,6 @@
 
 #include "renderer/MaterialBase.hpp"
 #include "renderer/GeometryBase.hpp"
-#include "renderer/LightSphere.hpp"
 #include "renderer/BufferFillShaders.hpp"
 #include "traverser/OptimizedScene.hpp"
 #include "utils/debug.hpp"
@@ -37,33 +36,33 @@
 namespace gua {
 
 RenderBackend::RenderBackend( int width, int height, std::string const& camera, std::string const& screen, std::string const& display ):
-    window_(width, height, display),
+    window_(width, height, "Displaying "+ camera + " at display" + display + ".", display),
     camera_name_(camera),
     screen_name_(screen),
-    light_sphere_(new Geometry(LIGHT_SPHERE_DATA.c_str(), LIGHT_SPHERE_DATA.length())),
+    light_sphere_(new Geometry("data/objects/light_sphere.obj")),
     depth_buffer_(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT),
     color_buffer_(width, height),
     position_buffer_(width, height),
     normal_buffer_(width, height),
     g_buffer_(),
-    buffer_fill_shader_(VertexShader(BUFFER_FILL_VERTEX_SHADER.c_str()),
-                        FragmentShader(BUFFER_FILL_FRAGMENT_SHADER.c_str())),
-    deferred_light_shader_(VertexShader(std::string("data/shaders/deferred_light.vert")),
-                           FragmentShader(std::string("data/shaders/deferred_light.frag"))) {
-
-        depth_buffer_.set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
-        depth_buffer_.set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
-
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, color_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, position_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +1);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, normal_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +2);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, depth_buffer_.get_id(window_.get_context()), GL_DEPTH_ATTACHMENT);
+    buffer_fill_shader_(),
+    deferred_light_shader_() {
+        buffer_fill_shader_.create_from_sources(BUFFER_FILL_VERTEX_SHADER, BUFFER_FILL_FRAGMENT_SHADER);
+//        deferred_light_shader_.create_from_files("data/shaders/deferred_light.vert", "data/shaders/deferred_light.frag");
+//
+//        depth_buffer_.set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
+//        depth_buffer_.set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
+//
+//        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, color_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
+//        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, position_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +1);
+//        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, normal_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +2);
+//        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, depth_buffer_.get_id(window_.get_context()), GL_DEPTH_ATTACHMENT);
 
 }
 
 void RenderBackend::render(OptimizedScene const& scene) {
 
-    window_.set_active();
+    window_.set_active(true);
     window_.start_frame();
 
     auto camera_it(scene.cameras_.find(camera_name_));
@@ -132,55 +131,53 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
 
     fill_g_buffer(node_list, camera_projection, view_matrix);
 
-    enable_stereo(camera_type, is_left_eye);
-
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-
-    glDisable(GL_DEPTH_TEST);
-    glDepthMask(GL_FALSE);
-
-    float texel_width((camera_type == CameraCore::SIDE_BY_SIDE ? 2.f : 1.f) / window_.get_context().width);
-    float x_fragment_offset(!is_left_eye && camera_type == CameraCore::SIDE_BY_SIDE ?  1.f : 0.f);
-
-    deferred_light_shader_.use(window_.get_context());
-
-    deferred_light_shader_.set_mat4(window_.get_context(), "projection_matrix", camera_projection);
-    deferred_light_shader_.set_mat4(window_.get_context(), "view_matrix", view_matrix);
-    deferred_light_shader_.set_sampler2D(window_.get_context(), "color_buffer", color_buffer_);
-    deferred_light_shader_.set_sampler2D(window_.get_context(), "position_buffer", position_buffer_);
-    deferred_light_shader_.set_sampler2D(window_.get_context(), "normal_buffer", normal_buffer_);
-    deferred_light_shader_.set_float(window_.get_context(), "texel_width", texel_width);
-    deferred_light_shader_.set_float(window_.get_context(), "texel_height", 1.f/window_.get_context().height);
-    deferred_light_shader_.set_float(window_.get_context(), "x_fragment_offset", x_fragment_offset);
-
-    for (auto& light: light_list) {
-        deferred_light_shader_.set_mat4(window_.get_context(), "model_matrix", light.transform_);
-        deferred_light_shader_.set_mat4(window_.get_context(), "normal_matrix", scm::math::transpose(scm::math::inverse(light.transform_)));
-        deferred_light_shader_.set_vec3(window_.get_context(), "light_color", light.color_);
-
-        window_.draw(light_sphere_);
-    }
-
-    deferred_light_shader_.unuse();
-
-    glPopAttrib();
-
-    disable_stereo();
+//    enable_stereo(camera_type, is_left_eye);
+//
+//    glPushAttrib(GL_ALL_ATTRIB_BITS);
+//
+//    glEnable(GL_BLEND);
+//    glBlendFunc(GL_ONE, GL_ONE);
+//
+//    glEnable(GL_CULL_FACE);
+//    glCullFace(GL_FRONT);
+//
+//    glDisable(GL_DEPTH_TEST);
+//    glDepthMask(GL_FALSE);
+//
+//    float texel_width((camera_type == CameraCore::SIDE_BY_SIDE ? 2.f : 1.f) / window_.get_context().width);
+//    float x_fragment_offset(!is_left_eye && camera_type == CameraCore::SIDE_BY_SIDE ?  1.f : 0.f);
+//
+//    deferred_light_shader_.use(window_.get_context());
+//
+//    deferred_light_shader_.set_mat4(window_.get_context(), "projection_matrix", camera_projection);
+//    deferred_light_shader_.set_mat4(window_.get_context(), "view_matrix", view_matrix);
+//    deferred_light_shader_.set_sampler2D(window_.get_context(), "color_buffer", color_buffer_);
+//    deferred_light_shader_.set_sampler2D(window_.get_context(), "position_buffer", position_buffer_);
+//    deferred_light_shader_.set_sampler2D(window_.get_context(), "normal_buffer", normal_buffer_);
+//    deferred_light_shader_.set_float(window_.get_context(), "texel_width", texel_width);
+//    deferred_light_shader_.set_float(window_.get_context(), "texel_height", 1.f/window_.get_context().height);
+//    deferred_light_shader_.set_float(window_.get_context(), "x_fragment_offset", x_fragment_offset);
+//
+//    for (auto& light: light_list) {
+//        deferred_light_shader_.set_mat4(window_.get_context(), "model_matrix", light.transform_);
+//        deferred_light_shader_.set_mat4(window_.get_context(), "normal_matrix", scm::math::transpose(scm::math::inverse(light.transform_)));
+//        deferred_light_shader_.set_color3f(window_.get_context(), "light_color", light.color_);
+//
+//        window_.draw(light_sphere_);
+//    }
+//
+//    glPopAttrib();
+//
+//    disable_stereo();
 }
 
 void RenderBackend::fill_g_buffer(std::vector<GeometryNode> const& node_list,
                    math::mat4 const& camera_projection,
                    math::mat4 const& view_matrix) {
 
-    g_buffer_.bind(window_.get_context(), {GL_COLOR_ATTACHMENT0,
-                                           GL_COLOR_ATTACHMENT0 +1,
-                                           GL_COLOR_ATTACHMENT0 +2});
+//    g_buffer_.bind(window_.get_context(), {GL_COLOR_ATTACHMENT0,
+//                                           GL_COLOR_ATTACHMENT0 +1,
+//                                           GL_COLOR_ATTACHMENT0 +2});
 
     glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -203,8 +200,6 @@ void RenderBackend::fill_g_buffer(std::vector<GeometryNode> const& node_list,
             WARNING("Cannot render geometry to g-buffer\"%s\": Undefined geometry name!", geometry_core.geometry_.c_str());
         }
     }
-
-    buffer_fill_shader_.unuse();
 
     g_buffer_.unbind();
 }

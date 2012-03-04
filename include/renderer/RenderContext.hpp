@@ -25,6 +25,15 @@
 
 #include "renderer/glInclude.hpp"
 
+#include <scm/gl_core/config.h>
+#include <scm/gl_core/data_formats.h>
+#include <scm/core.h>
+#include <scm/gl_core.h>
+#include <scm/gl_core/window_management/context.h>
+#include <scm/gl_core/window_management/display.h>
+#include <scm/gl_core/window_management/surface.h>
+#include <scm/gl_core/window_management/window.h>
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Information on a specific context.
 ///
@@ -37,17 +46,21 @@ struct RenderContext {
     ////////////////////////////////////////////////////////////////////////////
     /// \brief The glx context of this RenderContext.
     ////////////////////////////////////////////////////////////////////////////
-    GLXContext context;
+    scm::gl::wm::context_ptr context;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief The X display where this context was opened.
     ////////////////////////////////////////////////////////////////////////////
-    Display *display;
+    scm::gl::wm::display_ptr display;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief The X window associated with this context.
     ////////////////////////////////////////////////////////////////////////////
-    Window window;
+    scm::gl::wm::window_ptr window;
+
+    scm::gl::render_context_ptr render_context;
+
+    scm::gl::render_device_ptr render_device;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief The width of the window.
