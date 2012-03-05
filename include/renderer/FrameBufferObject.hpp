@@ -23,8 +23,9 @@
 # ifndef FRAMEBUFFEROBJECT_HPP
 # define FRAMEBUFFEROBJECT_HPP
 
-#include <GL/glew.h>
 #include <vector>
+
+#include "renderer/Texture.hpp"
 
 namespace gua {
 
@@ -66,10 +67,11 @@ class FrameBufferObject {
         /// \param mip_level     The buffer's mip_level.
         /// \param z_slice       The buffer's z_slice.
         ////////////////////////////////////////////////////////////
-        void attach_buffer(RenderContext const& context,
-                           unsigned buffer_type, unsigned buffer_id,
-                           unsigned attachment_id, int mip_level = 0,
-                           int z_slice = 0);
+        void attach_color_buffer(RenderContext const& context, unsigned in_color_attachment, Texture const& buffer,
+                                 int mip_level = 0, int z_slice = 0);
+
+        void attach_depth_stencil_buffer(RenderContext const& context, Texture const& buffer,
+                                         int mip_level = 0, int z_slice = 0);
 
         ////////////////////////////////////////////////////////////
         /// \brief Bind the FrameBufferObject.
@@ -80,30 +82,17 @@ class FrameBufferObject {
         /// \param context The RenderContext to bind to.
         /// \param attachment_id The id of the attachment to be bound.
         ////////////////////////////////////////////////////////////
-        void bind(RenderContext const& context,
-                  std::vector<unsigned> const& attachments);
+        void bind(RenderContext const& context);
 
         ////////////////////////////////////////////////////////////
         /// \brief Unbind the FrameBufferObject.
         ///
         /// This will unbind the FrameBufferObject.
         ////////////////////////////////////////////////////////////
-        void unbind();
-
-        ////////////////////////////////////////////////////////////
-        /// \brief Checks whether the FrameBufferObject is set up
-        ///        correctly.
-        ///
-        /// \param context The RenderContext of the FBO to be checked.
-        ///
-        /// \param The FBO's validity.
-        ////////////////////////////////////////////////////////////
-        bool is_valid(RenderContext const& context);
+        void unbind(RenderContext const& context);
 
     private:
-        void upload_to(RenderContext const& context) const;
-
-        mutable std::vector<unsigned> fbos_;
+        mutable std::vector<scm::gl::frame_buffer_ptr> fbos_;
 };
 
 }

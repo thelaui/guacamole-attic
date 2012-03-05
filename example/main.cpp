@@ -35,7 +35,6 @@ int main(int argc, char** argv) {
     gua::RenderWindow::init(argc, argv);
 
     gua::GeometryBase::load_objects_from("data/objects/");
-    DEBUG("huhu");
     gua::MaterialBase::load_materials_from("data/materials/");
 
     gua::SceneGraph graph;
@@ -71,10 +70,10 @@ int main(int argc, char** argv) {
    // camera.rotate(M_PI, 0.f, 1.f, 0.f);
 
     setup_lights(graph);
-
-    gua::DotGenerator dot_generator;
-    dot_generator.parse_graph(&graph, "guacamole_scenegraph");
-    dot_generator.save();
+//
+//    gua::DotGenerator dot_generator;
+//    dot_generator.parse_graph(&graph, "guacamole_scenegraph");
+//    dot_generator.save();
 
     std::vector<std::vector<std::string>> windows;
     windows.push_back({"camera", "screen", ":0.0"});
@@ -86,7 +85,7 @@ int main(int argc, char** argv) {
     int frame(0);
     while (true) {
         if (++frame % 100 == 0) {
-            WARNING("Application FPS: %f", frame/timer.get_elapsed());
+            //WARNING("Application FPS: %f", frame/timer.get_elapsed());
             frame = 0;
             timer.reset();
         }

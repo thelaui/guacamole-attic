@@ -32,7 +32,7 @@ const std::string BUFFER_FILL_VERTEX_SHADER = {
 
 "layout(location=0) in vec3 in_position;\n"\
 "layout(location=1) in vec3 in_normal;\n"\
-"layout(location=2) in vec2 in_tex_coord;\n"\
+"layout(location=2) in vec2 in_texture_coord;\n"\
 
 "uniform mat4 projection_matrix;\n"\
 "uniform mat4 view_matrix;\n"\
@@ -46,7 +46,7 @@ const std::string BUFFER_FILL_VERTEX_SHADER = {
 "void main() {\n"\
 "	position = ((view_matrix * model_matrix) * vec4(in_position, 1.0)).xyz;\n"\
 "	normal = normalize(vec3(normal_matrix * vec4(in_normal, 0.0)));\n"\
-"	tex_coord = in_tex_coord;\n"\
+"	tex_coord = in_texture_coord;\n"\
 
 "	gl_Position =  projection_matrix * vec4(position, 1.f);\n"\
 "} \n"\

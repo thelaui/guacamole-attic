@@ -34,6 +34,7 @@
 #include "utils/Directory.hpp"
 #include "utils/Timer.hpp"
 #include "utils/debug.hpp"
+#include "utils/math.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \mainpage

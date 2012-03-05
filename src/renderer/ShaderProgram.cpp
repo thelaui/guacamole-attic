@@ -104,22 +104,19 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
         programs_.resize(context.id+1);
     }
 
-    scm::gl::program_ptr program;
     if (shaders_are_files_) {
-        program = context.render_device->create_program({
+        programs_[context.id] = context.render_device->create_program({
             context.render_device->create_shader_from_file(scm::gl::STAGE_VERTEX_SHADER, v_shader_),
             context.render_device->create_shader_from_file(scm::gl::STAGE_FRAGMENT_SHADER, f_shader_)
         });
     } else {
-        program = context.render_device->create_program({
+        programs_[context.id] = context.render_device->create_program({
             context.render_device->create_shader(scm::gl::STAGE_VERTEX_SHADER, v_shader_),
             context.render_device->create_shader(scm::gl::STAGE_FRAGMENT_SHADER, f_shader_)
         });
     }
 
-    std::cout << program->info_log().c_str() << std::endl;
-
-	programs_[context.id] = program;
+    std::cout << programs_[context.id]->info_log().c_str() << std::endl;
 }
 
 }

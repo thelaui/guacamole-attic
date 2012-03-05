@@ -24,7 +24,7 @@ in vec3 normal;
 in vec3 light_position_camera_space;
 in float light_radius;
 
-out vec4 out_color;
+layout (location = 0) out vec4 out_color;
 
 uniform vec3      light_color;
 uniform sampler2D color_buffer;
@@ -32,7 +32,7 @@ uniform sampler2D position_buffer;
 uniform sampler2D normal_buffer;
 uniform float     texel_width;
 uniform float     texel_height;
-uniform float       x_fragment_offset;
+uniform float     x_fragment_offset;
 
 void main(void) {
     vec2 screen_tex_coords = vec2(gl_FragCoord.s*texel_width - x_fragment_offset, gl_FragCoord.t*texel_height);

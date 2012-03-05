@@ -103,6 +103,10 @@ class RenderBackend {
         FrameBufferObject g_buffer_;
 
         ShaderProgram buffer_fill_shader_, deferred_light_shader_;
+
+        scm::gl::blend_state_ptr         blend_state_;
+        scm::gl::rasterizer_state_ptr    rasterizer_state_;
+        scm::gl::depth_stencil_state_ptr depth_stencil_state_;
 };
 
 }

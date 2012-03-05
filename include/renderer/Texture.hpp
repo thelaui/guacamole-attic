@@ -38,15 +38,6 @@ namespace gua {
 ////////////////////////////////////////////////////////////////////
 class Texture {
     public:
-
-        ////////////////////////////////////////////////////////////
-        /// \brief Constructor.
-        ///
-        /// This constructs a new texture.
-        ///
-        ////////////////////////////////////////////////////////////
-        Texture();
-
         ////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
@@ -61,8 +52,8 @@ class Texture {
         /// \param type         The data type texture data is stored
         ///                     in.
         ////////////////////////////////////////////////////////////
-        Texture(unsigned width, unsigned height, unsigned color_depth = GL_RGB32F,
-                unsigned color_format = GL_RGB, unsigned type = GL_FLOAT);
+        Texture(unsigned width, unsigned height, scm::gl::data_format color_format = scm::gl::FORMAT_RGB_32F,
+                scm::gl::sampler_state_desc const& state_descripton = scm::gl::sampler_state_desc());
 
         ////////////////////////////////////////////////////////////
         /// \brief Constructor.
@@ -71,7 +62,8 @@ class Texture {
         ///
         /// \param file The file which contains the texture data
         ////////////////////////////////////////////////////////////
-        Texture(std::string const& file);
+        Texture(std::string const& file,
+                scm::gl::sampler_state_desc const& state_descripton = scm::gl::sampler_state_desc());
 
         ////////////////////////////////////////////////////////////
         /// \brief Destructor.
@@ -97,30 +89,23 @@ class Texture {
         /// This will unbind the texture with the given position.
         /// \param texture_type The type of the texture.
         ////////////////////////////////////////////////////////////
-        static void unbind(unsigned texture_type);
-
-        ////////////////////////////////////////////////////////////
-        /// \brief Set a texture parameter.
-        ///
-        /// This will set a texture parameter with the given value.
-        ///
-        /// \param parameter_name The name of the parameter.
-        /// \param value          The new value of the parameter.
-        ////////////////////////////////////////////////////////////
-        void set_parameter(unsigned parameter_name, unsigned value) const;
+        void unbind(RenderContext const& context, unsigned texture_type);
 
         ////////////////////////////////////////////////////////////
         /// \brief Get the Texture-ID.
         ///
         /// \return The texture's ID
         ////////////////////////////////////////////////////////////
-        unsigned get_id(RenderContext const& context) const;
+        scm::gl::texture_2d_ptr const& get_buffer (RenderContext const& context) const;
 
     private:
-        unsigned width_, height_, color_depth_, color_format_, type_;
-        std::vector<unsigned char> data_;
+        unsigned width_, height_;
+        scm::gl::data_format color_format_;
+        std::string file_name_;
+        scm::gl::sampler_state_desc state_descripton_;
 
-        mutable std::vector<unsigned> texture_ids_;
+        mutable std::vector<scm::gl::texture_2d_ptr> textures_;
+        mutable std::vector<scm::gl::sampler_state_ptr> sampler_states_;
 
         void upload_to(RenderContext const& context) const;
 };

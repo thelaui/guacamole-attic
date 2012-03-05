@@ -24,122 +24,66 @@
 
 #include "utils/debug.hpp"
 
-#include <IL/il.h>
+#include <scm/gl_util/imaging/texture_loader.h>
 #include <iostream>
 
 namespace gua {
 
-Texture::Texture():
-    width_(0),
-    height_(0),
-    color_depth_(0),
-    color_format_(0),
-    type_(0),
-    data_(),
-    texture_ids_() {}
-
-Texture::Texture(unsigned width, unsigned height, unsigned color_depth,
-                 unsigned color_format, unsigned type):
+Texture::Texture(unsigned width, unsigned height, scm::gl::data_format color_format,
+                 scm::gl::sampler_state_desc const& state_descripton):
                  width_(width),
                  height_(height),
-                 color_depth_(color_depth),
                  color_format_(color_format),
-                 type_(type),
-                 data_(),
-                 texture_ids_() {}
+                 file_name_(""),
+                 state_descripton_(state_descripton),
+                 textures_(),
+                 sampler_states_() {}
 
-Texture::Texture(std::string const& file):
+Texture::Texture(std::string const& file, scm::gl::sampler_state_desc const& state_descripton):
     width_(0),
     height_(0),
-    color_depth_(0),
-    color_format_(0),
-    type_(0),
-    data_(),
-    texture_ids_() {
+    color_format_(scm::gl::FORMAT_NULL),
+    file_name_(file),
+    state_descripton_(state_descripton),
+    textures_(),
+    sampler_states_() {}
 
-    ILuint image_id (0);
-    ilGenImages(1, &image_id);
-    ilBindImage(image_id);
-
-    if (!ilLoadImage(file.c_str()))
-        ERROR("Failed to load texture %s!", file.c_str());
-
-    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-
-    width_ = ilGetInteger(IL_IMAGE_WIDTH);
-    height_ = ilGetInteger(IL_IMAGE_HEIGHT);
-    color_depth_ = GL_RGBA;
-    color_format_ = GL_RGBA;
-    type_ = GL_UNSIGNED_BYTE;
-
-    data_ = std::vector<unsigned char>(ilGetData(), ilGetData()+height_*width_*4);
-
-    ilBindImage(0);
-    ilDeleteImage(image_id);
-}
-
-Texture::~Texture() {
-    for (auto texture_id : texture_ids_)
-        if (texture_id) {
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glDeleteTextures(1, &texture_id);
-        }
-}
+Texture::~Texture() {}
 
 void Texture::bind(RenderContext const& context, unsigned texture_type) const {
-    if (texture_ids_.size() <= context.id || texture_ids_[context.id] == 0)
+    if (textures_.size() <= context.id || textures_[context.id] == 0)
         upload_to(context);
 
-    glActiveTexture(GL_TEXTURE0 + texture_type);
-    glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
+    context.render_context->bind_texture( textures_[context.id], sampler_states_[context.id], texture_type);
 }
 
-void Texture::unbind(unsigned texture_type) {
-    glActiveTexture(GL_TEXTURE0 + texture_type);
-    glBindTexture(GL_TEXTURE_2D, 0);
+void Texture::unbind(RenderContext const& context, unsigned texture_type) {
+    if (textures_.size() > context.id && textures_[context.id] != 0)
+        context.render_context->reset_texture_units();
 }
 
-void Texture::set_parameter(unsigned parameter_name, unsigned value) const {
-    glTexParameteri(GL_TEXTURE_2D, parameter_name, value);
-}
-
-unsigned Texture::get_id(RenderContext const& context) const {
-    if (texture_ids_.size() <= context.id || texture_ids_[context.id] == 0)
+scm::gl::texture_2d_ptr const& Texture::get_buffer(RenderContext const& context) const {
+    if (textures_.size() <= context.id || textures_[context.id] == 0)
         upload_to(context);
 
-    return texture_ids_[context.id];
+    return textures_[context.id];
 }
 
 void Texture::upload_to(RenderContext const& context) const{
-    // generate texture id
-    unsigned texture_id(0);
-    glGenTextures(1, &texture_id);
-    if (texture_id == 0) {
-        // OpenGL was not able to generate additional texture
-        return;
+
+    if (textures_.size() <= context.id) {
+        textures_.resize(context.id + 1);
+        sampler_states_.resize(context.id + 1);
     }
 
-    if (texture_ids_.size() <= context.id)
-        texture_ids_.resize(context.id + 1);
+    if (file_name_ == "") {
+        textures_[context.id] = context.render_device->create_texture_2d(scm::math::vec2ui(width_, height_), color_format_);
+    } else {
+        scm::gl::texture_loader loader;
+        textures_[context.id] = loader.load_texture_2d(*context.render_device, file_name_, false);
+    }
 
-    texture_ids_[context.id] = texture_id;
-
-    glEnable(GL_TEXTURE_2D);
-    // bind texture object
-    glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
-
-    //setting Texture Parameters
-    set_parameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    set_parameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    set_parameter(GL_TEXTURE_WRAP_S, GL_CLAMP);
-    set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-    // load data as texture
-    glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
-                 0, color_format_, type_, &(*data_.begin()));
-
-    glBindTexture(GL_TEXTURE_2D, 0);
+    sampler_states_[context.id] = context.render_device->create_sampler_state(state_descripton_);
 }
 
 }

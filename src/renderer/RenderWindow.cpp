@@ -89,7 +89,6 @@ void RenderWindow::draw(std::shared_ptr<Geometry> const& geometry) const {
 }
 
 void RenderWindow::init(int argc, char** argv) {
-    ilInit();
     static scm::shared_ptr<scm::core> scm_core(new scm::core(argc, argv));
 }
 

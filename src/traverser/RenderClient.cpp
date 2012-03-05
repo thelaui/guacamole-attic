@@ -79,7 +79,7 @@ void RenderClient::draw_loop() {
 
     while (true) {
         if (++frame_ % 100 == 0) {
-            DEBUG("Renderer FPS: %f", frame_/timer.get_elapsed());
+           // DEBUG("Renderer FPS: %f", frame_/timer.get_elapsed());
             frame_ = 0;
             timer.reset();
         }
