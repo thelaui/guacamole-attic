@@ -54,7 +54,7 @@ void Texture::bind(RenderContext const& context, unsigned texture_type) const {
     if (textures_.size() <= context.id || textures_[context.id] == 0)
         upload_to(context);
 
-    context.render_context->bind_texture( textures_[context.id], sampler_states_[context.id], texture_type);
+    context.render_context->bind_texture(textures_[context.id], sampler_states_[context.id], texture_type);
 }
 
 void Texture::unbind(RenderContext const& context, unsigned texture_type) {

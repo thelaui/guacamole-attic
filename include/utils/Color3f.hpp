@@ -31,7 +31,7 @@ namespace gua {
 
 struct Color3f {
     public:
-        /// Default ctor, white.
+        /// Default ctor, black.
         Color3f ();
         /// Copy ctor.
         Color3f (Color3f const& color);

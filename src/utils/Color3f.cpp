@@ -30,9 +30,9 @@
 namespace gua {
 
 Color3f::Color3f ():
-    r_(1),
-    g_(1),
-    b_(1) {}
+    r_(0),
+    g_(0),
+    b_(0) {}
 
 Color3f::Color3f (Color3f const& color):
     r_(color.r_),

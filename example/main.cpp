@@ -20,15 +20,15 @@ void setup_lights(gua::SceneGraph& graph) {
     auto point_light3 = graph.add_node("/", "point_light3", point_light_core3);
     auto point_light4 = graph.add_node("/", "point_light4", point_light_core4);
 
-    point_light1.scale(3.5f, 3.5f, 3.5f);
-    point_light2.scale(3.5f, 3.5f, 3.5f);
-    point_light3.scale(3.5f, 3.5f, 3.5f);
-    point_light4.scale(3.5f, 3.5f, 3.5f);
+    point_light1.scale(4.f, 4.f, 4.f);
+    point_light2.scale(4.f, 4.f, 4.f);
+    point_light3.scale(4.f, 4.f, 4.f);
+    point_light4.scale(4.f, 4.f, 4.f);
 
-    point_light1.translate(1.f, 1.5f, -1.f);
-    point_light2.translate(1.f, 1.5f, 1.f);
-    point_light3.translate(-1.f,1.5f, 1.f);
-    point_light4.translate(-1.f, 1.5f, -1.f);
+    point_light1.translate(0.5f, 0.2f, -1.f);
+    point_light2.translate(0.5f, 0.2f, 1.f);
+    point_light3.translate(-0.5f,0.2f, 1.f);
+    point_light4.translate(-0.5f, 0.2f, -1.f);
 }
 
 int main(int argc, char** argv) {

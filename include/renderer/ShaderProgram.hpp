@@ -78,6 +78,8 @@ class ShaderProgram {
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
 
+        void unuse(RenderContext const& context) const;
+
         void set_mat4(RenderContext const& context, std::string const& mat_name,
                       math::mat4 const& mat);
 
@@ -122,7 +124,7 @@ class ShaderProgram {
         void upload_to(RenderContext const& context) const;
 
         mutable std::vector<scm::gl::program_ptr> programs_;
-        mutable unsigned texture_offset_;
+        mutable int texture_offset_;
 
         bool shaders_are_files_;
 

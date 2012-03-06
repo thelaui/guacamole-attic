@@ -40,7 +40,7 @@ RenderBackend::RenderBackend( int width, int height, std::string const& camera, 
     camera_name_(camera),
     screen_name_(screen),
     light_sphere_(new Geometry("data/objects/light_sphere.obj")),
-    depth_buffer_(width, height, scm::gl::FORMAT_D32F),
+    depth_buffer_(width, height, scm::gl::FORMAT_D24_S8),
     color_buffer_(width, height),
     position_buffer_(width, height),
     normal_buffer_(width, height),
@@ -61,10 +61,10 @@ RenderBackend::RenderBackend( int width, int height, std::string const& camera, 
         g_buffer_.attach_color_buffer(window_.get_context(), 2, normal_buffer_);
         g_buffer_.attach_depth_stencil_buffer(window_.get_context(), depth_buffer_);
 
-        blend_state_ = window_.get_context().render_device->create_blend_state(true, scm::gl::FUNC_ONE,
-                                                                               scm::gl::FUNC_ONE, scm::gl::FUNC_ONE, scm::gl::FUNC_ONE);
+        blend_state_ = window_.get_context().render_device->create_blend_state(true, scm::gl::FUNC_ONE, scm::gl::FUNC_ONE,
+                                                                                     scm::gl::FUNC_ONE, scm::gl::FUNC_ONE);
         rasterizer_state_ = window_.get_context().render_device->create_rasterizer_state(scm::gl::FILL_SOLID, scm::gl::CULL_FRONT);
-        depth_stencil_state_ = window_.get_context().render_device->create_depth_stencil_state(false, false);
+        depth_stencil_state_ = window_.get_context().render_device->create_depth_stencil_state(false, false, scm::gl::COMPARISON_NEVER);
 }
 
 void RenderBackend::render(OptimizedScene const& scene) {
@@ -90,7 +90,7 @@ void RenderBackend::render(OptimizedScene const& scene) {
             auto projection(math::compute_frustum(eye_position.column(3), screen.transform_, 0.1, 1000.f));
             render_eye(scene.nodes_, scene.lights_, projection, eye_position.column(3), math::mat4(screen.transform_), camera.type_, true);
 
-            glClear(GL_DEPTH_BUFFER_BIT);
+            window_.get_context().render_context->clear_default_depth_stencil_buffer();
 
             scm::math::translate(eye_position, camera.stereo_width_, 0.f, 0.f);
             projection = math::compute_frustum(eye_position.column(3), screen.transform_, 0.1, 1000.f);
@@ -136,9 +136,9 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
 
     math::mat4 view_matrix(scm::math::inverse(camera_transform));
 
-    fill_g_buffer(node_list, camera_projection, view_matrix);
-
     enable_stereo(camera_type, is_left_eye);
+
+    fill_g_buffer(node_list, camera_projection, view_matrix);
 
     window_.get_context().render_context->set_blend_state(blend_state_);
     window_.get_context().render_context->set_rasterizer_state(rasterizer_state_);
@@ -166,6 +166,8 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
         window_.draw(light_sphere_);
     }
 
+    deferred_light_shader_.unuse(window_.get_context());
+
     window_.get_context().render_context->reset_state_objects();
 
     disable_stereo();
@@ -177,8 +179,8 @@ void RenderBackend::fill_g_buffer(std::vector<GeometryNode> const& node_list,
 
     g_buffer_.bind(window_.get_context());
 
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    g_buffer_.clear_color_buffers(window_.get_context());
+    g_buffer_.clear_depth_stencil_buffer(window_.get_context());
 
     buffer_fill_shader_.use(window_.get_context());
 
@@ -198,6 +200,8 @@ void RenderBackend::fill_g_buffer(std::vector<GeometryNode> const& node_list,
             WARNING("Cannot render geometry to g-buffer\"%s\": Undefined geometry name!", geometry_core.geometry_.c_str());
         }
     }
+
+    buffer_fill_shader_.unuse(window_.get_context());
 
     g_buffer_.unbind(window_.get_context());
 }

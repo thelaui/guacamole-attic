@@ -39,7 +39,11 @@
 			<Add directory="../../scm_gl_core/src" />
 			<Add directory="../../scm_gl_util/src" />
 			<Add directory="../../scm_input/src" />
+			<Add directory="/opt/boost/current/include" />
 		</Compiler>
+		<Linker>
+			<Add directory="/opt/boost/current/lib" />
+		</Linker>
 		<Unit filename="include/scenegraph/Core.hpp" />
 		<Unit filename="include/scenegraph/Iterator.hpp" />
 		<Unit filename="include/scenegraph/Node.hpp" />

@@ -24,6 +24,7 @@
 
 #include "renderer/RenderContext.hpp"
 #include "utils/debug.hpp"
+#include "utils/math.hpp"
 
 #include <GL/glew.h>
 #include <string>
@@ -54,6 +55,16 @@ void FrameBufferObject::attach_depth_stencil_buffer(RenderContext const& context
     }
 
     fbos_[context.id]->attach_depth_stencil_buffer(buffer.get_buffer(context), mip_level, z_slice);
+}
+
+void FrameBufferObject::clear_color_buffers(RenderContext const& context, Color3f const& clear_color) {
+    if (context.id < fbos_.size())
+        context.render_context->clear_color_buffers(fbos_[context.id], math::vec4(clear_color.r(), clear_color.g(), clear_color.b(), 0.f));
+}
+
+void FrameBufferObject::clear_depth_stencil_buffer(RenderContext const& context) {
+    if (context.id < fbos_.size())
+        context.render_context->clear_depth_stencil_buffer(fbos_[context.id]);
 }
 
 void FrameBufferObject::bind(RenderContext const& context) {

@@ -43,6 +43,7 @@
 			<Add directory="../../../scm_core/src" />
 			<Add directory="../../../scm_gl_core/src" />
 			<Add directory="../../../scm_gl_util/src" />
+			<Add directory="/opt/boost/current/include" />
 		</Compiler>
 		<Linker>
 			<Add library="libscm_cl_core" />
@@ -57,6 +58,8 @@
 			<Add directory="../../../lib/linux_x86" />
 			<Add directory="/usr/lib/nvidia-current/" />
 			<Add directory="/opt/cuda/current/lib64" />
+			<Add directory="/opt/boost/current/lib" />
+			<Add directory="/opt/cuda/current/cuda/lib64" />
 		</Linker>
 		<Unit filename="data/shaders/deferred_light.frag" />
 		<Unit filename="data/shaders/deferred_light.vert" />

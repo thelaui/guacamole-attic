@@ -56,7 +56,7 @@ void Geometry::draw(RenderContext const& context) const {
     }
 
     if (meshes_[context.id])
-        meshes_[context.id]->draw(context.render_context);
+        meshes_[context.id]->draw_raw(context.render_context);
 }
 
 }

@@ -26,6 +26,7 @@
 #include <vector>
 
 #include "renderer/Texture.hpp"
+#include "utils/Color3f.hpp"
 
 namespace gua {
 
@@ -72,6 +73,9 @@ class FrameBufferObject {
 
         void attach_depth_stencil_buffer(RenderContext const& context, Texture const& buffer,
                                          int mip_level = 0, int z_slice = 0);
+
+        void clear_color_buffers(RenderContext const& context, Color3f const& clear_color = Color3f());
+        void clear_depth_stencil_buffer(RenderContext const& context);
 
         ////////////////////////////////////////////////////////////
         /// \brief Bind the FrameBufferObject.

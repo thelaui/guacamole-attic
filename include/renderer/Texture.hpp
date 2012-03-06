@@ -53,7 +53,7 @@ class Texture {
         ///                     in.
         ////////////////////////////////////////////////////////////
         Texture(unsigned width, unsigned height, scm::gl::data_format color_format = scm::gl::FORMAT_RGB_32F,
-                scm::gl::sampler_state_desc const& state_descripton = scm::gl::sampler_state_desc());
+                scm::gl::sampler_state_desc const& state_descripton = scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR));
 
         ////////////////////////////////////////////////////////////
         /// \brief Constructor.

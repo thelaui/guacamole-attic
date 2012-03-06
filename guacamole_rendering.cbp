@@ -39,11 +39,11 @@
 			<Add directory="../../scm_gl_core/src" />
 			<Add directory="../../scm_gl_util/src" />
 			<Add directory="../../scm_input/src" />
+			<Add directory="/opt/boost/current/include" />
 		</Compiler>
 		<Linker>
 			<Add library="GL" />
 			<Add library="GLEW" />
-			<Add library="IL" />
 			<Add library="libscm_cl_core" />
 			<Add library="libscm_core" />
 			<Add library="libscm_data" />
@@ -51,6 +51,7 @@
 			<Add library="libscm_gl_util" />
 			<Add library="libscm_input" />
 			<Add directory="../../lib/linux_x86" />
+			<Add directory="/opt/boost/current/lib" />
 		</Linker>
 		<Unit filename="include/cores/CameraCore.hpp" />
 		<Unit filename="include/cores/GeometryCore.hpp" />

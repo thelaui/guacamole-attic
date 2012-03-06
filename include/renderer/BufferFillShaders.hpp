@@ -61,14 +61,14 @@ const std::string BUFFER_FILL_FRAGMENT_SHADER = {
 "in vec3 normal;\n"\
 "in vec2 tex_coord;\n"\
 
-"layout (location = 0) out vec4 out_color;\n"\
+"layout (location = 0) out vec3 out_color;\n"\
 "layout (location = 1) out vec3 out_position;\n"\
 "layout (location = 2) out vec3 out_normal;\n"\
 
 "void main() {\n"\
 "    out_position = position;\n"\
 "    out_normal = normalize(normal);\n"\
-"    out_color = vec4(tex_coord, 0, 1);\n"\
+"    out_color = vec3(tex_coord, 0);\n"\
 "} \n"\
 
 };

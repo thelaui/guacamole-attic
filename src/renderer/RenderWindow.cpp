@@ -25,8 +25,6 @@
 #include "utils/debug.hpp"
 #include "renderer/Geometry.hpp"
 
-#include <IL/il.h>
-
 namespace gua {
 
 unsigned RenderWindow::last_context_id_ = 0;

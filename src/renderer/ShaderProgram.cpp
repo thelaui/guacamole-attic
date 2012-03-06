@@ -56,6 +56,11 @@ void ShaderProgram::use(RenderContext const& context) const {
     context.render_context->bind_program(programs_[context.id]);
 }
 
+void ShaderProgram::unuse(RenderContext const& context) const {
+    texture_offset_ = 0;
+    context.render_context->reset_program();
+}
+
 void ShaderProgram::set_mat4(RenderContext const& context, std::string const& mat_name, math::mat4 const& mat) {
     if (programs_.size() > context.id)
         programs_[context.id]->uniform(mat_name, mat);
