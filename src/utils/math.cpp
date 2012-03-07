@@ -37,17 +37,10 @@ Eigen::Matrix4f const math::compute_frustum(Eigen::Vector3f const& eye_position,
     float ox(-relative_eye_position.coeff(0));
     float oy(-relative_eye_position.coeff(1));
 
-    Eigen::Vector4f bottom_left(screen_transform * Eigen::Vector4f(-0.5, -0.5, 0, 0));
-    Eigen::Vector4f up_left(screen_transform * Eigen::Vector4f(-0.5, 0.5, 0, 0));
-    Eigen::Vector4f up_right(screen_transform * Eigen::Vector4f(0.5, 0.5, 0, 0));
-
-    float width((up_left - up_right).norm());
-    float height((up_left - bottom_left).norm() );
-
     Eigen::Matrix4f frustum(Eigen::Matrix4f::Identity());
 
-    frustum[0] = 2*d / width;
-    frustum[5] = 2*d / height;
+    frustum[0] = 2*d;
+    frustum[5] = 2*d;
     frustum[8] = 2*ox ;
     frustum[9] = 2*oy ;
     frustum[10] = (-near_plane - far_plane) / (far_plane - near_plane);

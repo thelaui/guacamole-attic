@@ -107,10 +107,13 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
                    CameraCore::Type camera_type,
                    bool is_left_eye) {
 
-    Eigen::Transform3f camera_transform(Eigen::Matrix4f::Identity());
-    camera_transform.translate(camera_position);
-    camera_transform = camera_transform * screen_transform.rotation();
+    Eigen::Transform3f camera_transform(screen_transform);
+    camera_transform.data()[12] = 0.f;
+    camera_transform.data()[13] = 0.f;
+    camera_transform.data()[14] = 0.f;
+    camera_transform.data()[15] = 1.f;
 
+    camera_transform = camera_transform.pretranslate(camera_position);
 
     Eigen::Matrix4f view_matrix(camera_transform.matrix().inverse());
 

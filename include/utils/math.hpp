@@ -21,18 +21,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <eigen2/Eigen/Geometry>
-#include <scm/core/math.h>
-#include <scm/gl_core/math.h>
 
 namespace gua {
     namespace math {
-
-        typedef scm::math::mat<float, 4, 4> mat4;
-        typedef scm::math::mat<float, 3, 3> mat3;
-
-        typedef scm::math::vec<float, 4> vec4;
-        typedef scm::math::vec<float, 3> vec3;
-
         Eigen::Matrix4f const compute_frustum(Eigen::Vector3f const& eye_position, Eigen::Matrix4f const& screen_transform,
                                               float near_plane, float far_plane);
     }
