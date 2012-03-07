@@ -20,7 +20,6 @@
 /// \brief Declaration of a math utilities.
 ////////////////////////////////////////////////////////////////////////////////
 
-
 #include <scm/core/math.h>
 #include <scm/gl_core/math.h>
 

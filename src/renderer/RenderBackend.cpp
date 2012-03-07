@@ -110,29 +110,13 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
                    CameraCore::Type camera_type,
                    bool is_left_eye) {
 
-    math::mat4 camera_transform(math::mat4::identity());
-    scm::math::translate(camera_transform, camera_position);
+    math::mat4 camera_transform(screen_transform);
+    camera_transform[12] = 0.f;
+    camera_transform[13] = 0.f;
+    camera_transform[14] = 0.f;
+    camera_transform[15] = 1.f;
 
-//    math::mat4 camera_transform(screen_transform);
-//    camera_transform[12] = 0.f;
-//    camera_transform[13] = 0.f;
-//    camera_transform[14] = 0.f;
-//    camera_transform[15] = 1.f;
-//
-//    scm::math::translate(camera_transform, camera_position);
-//
-//    math::vec4 bottom_left(screen_transform * math::vec4(-0.5, -0.5, 0, 1));
-//    math::vec4 up_left(screen_transform * math::vec4(-0.5, 0.5, 0, 1));
-//    math::vec4 up_right(screen_transform * math::vec4(0.5, 0.5, 0, 1));
-//
-//    std::cout<<up_left<<std::endl;
-//
-//    float width(scm::math::length(up_left - up_right));
-//    float height(scm::math::length(up_left - bottom_left));
-//
-//    math::mat4 inverse_scale(scm::math::make_scale(1.f/width, 1.f/height, 1.f));
-//    camera_transform = inverse_scale * camera_transform;
-//    scm::math::translate(camera_transform, camera_position);
+    camera_transform = scm::math::make_translation(camera_position) * camera_transform;
 
     math::mat4 view_matrix(scm::math::inverse(camera_transform));
 

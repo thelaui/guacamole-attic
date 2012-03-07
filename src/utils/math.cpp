@@ -35,17 +35,10 @@ math::mat4 const math::compute_frustum(math::vec4 const& eye_position, math::mat
     float ox(-relative_eye_position[0]);
     float oy(-relative_eye_position[1]);
 
-    math::vec4 bottom_left(screen_transform * math::vec4(-0.5, -0.5, 0, 1));
-    math::vec4 up_left(screen_transform * math::vec4(-0.5, 0.5, 0, 1));
-    math::vec4 up_right(screen_transform * math::vec4(0.5, 0.5, 0, 1));
-
-    float width(scm::math::length(up_left - up_right));
-    float height(scm::math::length(up_left - bottom_left));
-
     math::mat4 frustum(math::mat4::identity());
 
-    frustum[0] = 2*d / width;
-    frustum[5] = 2*d / height;
+    frustum[0] = 2*d;
+    frustum[5] = 2*d;
     frustum[8] = 2*ox ;
     frustum[9] = 2*oy ;
     frustum[10] = (-near_plane - far_plane) / (far_plane - near_plane);
