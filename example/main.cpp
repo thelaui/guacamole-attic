@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
    // screen.scale(1.6, 0.9, 1);
-//    screen.rotate(0.4, 0, 1, 0);
+    screen.rotate(45, 0, 1, 0);
     screen.translate(0, 0.45, 0);
 
     auto camera_core = new gua::CameraCore(0.1f, gua::CameraCore::MONO);
@@ -92,7 +92,7 @@ int main(int argc, char** argv) {
 
         renderer.queue_draw(&graph);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
         graph["/box"].rotate(1, 0, 0, 1, gua::SceneGraph::GLOBAL, gua::SceneGraph::PRIVATE);
         graph["/box"].rotate(0.7, 0, 1, 0, gua::SceneGraph::LOCAL, gua::SceneGraph::PUBLIC);
