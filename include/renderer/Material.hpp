@@ -26,6 +26,8 @@
 #include "renderer/ShaderProgram.hpp"
 #include "renderer/Texture.hpp"
 
+#include <memory>
+
 namespace gua {
 
 class RenderContext;
@@ -72,14 +74,9 @@ class Material {
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Get the internal texture.
-        ///
-        /// Returns the internally used Texture.
-        ///
-        /// \return The texture of this Material.
-        ////////////////////////////////////////////////////////////////////////
-        Texture* get_texture() const;
+        void set_uniform_float(std::string const& uniform_name, float value);
+        void set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value);
+        void set_uniform_texture(std::string const& uniform_name, std::string const& texture_name);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the internal shader.
@@ -91,7 +88,8 @@ class Material {
         ShaderProgram const& get_shader() const;
 
     private:
-        Texture* texture_;
+        std::map<std::string, std::shared_ptr<Texture>> texture_uniforms_;
+        std::map<std::string, float> float_uniforms_;
         ShaderProgram shader_;
 
         void construct_from_file(TextFile const& file);

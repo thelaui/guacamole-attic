@@ -57,10 +57,13 @@
 		<Unit filename="include/renderer/Mesh.hpp" />
 		<Unit filename="include/renderer/RenderBackend.hpp" />
 		<Unit filename="include/renderer/RenderContext.hpp" />
+		<Unit filename="include/renderer/RenderPass.hpp" />
+		<Unit filename="include/renderer/RenderPipeline.hpp" />
 		<Unit filename="include/renderer/RenderWindow.hpp" />
 		<Unit filename="include/renderer/Shader.hpp" />
 		<Unit filename="include/renderer/ShaderProgram.hpp" />
 		<Unit filename="include/renderer/Texture.hpp" />
+		<Unit filename="include/renderer/TextureBase.hpp" />
 		<Unit filename="include/renderer/Uniform.hpp" />
 		<Unit filename="include/renderer/VertexShader.hpp" />
 		<Unit filename="include/renderer/glInclude.hpp" />
@@ -99,6 +102,7 @@
 		<Unit filename="src/renderer/Shader.cpp" />
 		<Unit filename="src/renderer/ShaderProgram.cpp" />
 		<Unit filename="src/renderer/Texture.cpp" />
+		<Unit filename="src/renderer/TextureBase.cpp" />
 		<Unit filename="src/renderer/VertexShader.cpp" />
 		<Unit filename="src/traverser/Optimizer.cpp" />
 		<Unit filename="src/traverser/RenderClient.cpp" />

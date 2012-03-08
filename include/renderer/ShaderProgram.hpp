@@ -85,28 +85,28 @@ class ShaderProgram {
         void unuse() const;
 
         void set_mat4(RenderContext const& context, std::string const& mat_name,
-                      Eigen::Matrix4f const& mat);
+                      Eigen::Matrix4f const& mat) const;
 
         void set_vec2(RenderContext const& context, std::string const& vec_name,
-                      Eigen::Vector2f const& vec);
+                      Eigen::Vector2f const& vec) const;
 
         void set_vec3(RenderContext const& context, std::string const& vec_name,
-                      Eigen::Vector3f const& vec);
+                      Eigen::Vector3f const& vec) const;
 
         void set_vec3(RenderContext const& context, std::string const& vec_name,
-                      Color3f const& vec);
+                      Color3f const& vec) const;
 
         void set_vec4(RenderContext const& context, std::string const& vec_name,
-                      Eigen::Vector4f const& vec);
+                      Eigen::Vector4f const& vec) const;
 
         void set_sampler2D(RenderContext const& context, std::string const& sampler_name,
-                           Texture const& sampler);
+                           Texture const& sampler) const;
 
         void set_float(RenderContext const& context, std::string const& float_name,
-                       float value);
+                       float value) const;
 
         void set_int(RenderContext const& context, std::string const& int_name,
-                     int value);
+                     int value) const;
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief The layout location of the vertex attribute.

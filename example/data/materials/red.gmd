@@ -1,3 +1,0 @@
-texture: ../textures/red.jpg
-vertex_shader: ../shaders/red.vert
-fragment_shader: ../shaders/red.frag

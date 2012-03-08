@@ -61,42 +61,42 @@ void ShaderProgram::unuse() const {
     glUseProgram(0);
 }
 
-void ShaderProgram::set_mat4(RenderContext const& context, std::string const& mat_name, Eigen::Matrix4f const& mat) {
+void ShaderProgram::set_mat4(RenderContext const& context, std::string const& mat_name, Eigen::Matrix4f const& mat) const{
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, mat_name, Uniform::MAT4));
         if(loc >= 0) glUniformMatrix4fv(loc, 1, GL_FALSE, mat.data());
     }
 }
 
-void ShaderProgram::set_vec2(RenderContext const& context, std::string const& vec_name, Eigen::Vector2f const& vec) {
+void ShaderProgram::set_vec2(RenderContext const& context, std::string const& vec_name, Eigen::Vector2f const& vec) const{
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, vec_name, Uniform::VEC2));
         if (loc >= 0) glUniform2f(loc, vec.x(), vec.y());
     }
 }
 
-void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, Eigen::Vector3f const& vec) {
+void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, Eigen::Vector3f const& vec) const{
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, vec_name, Uniform::VEC3));
         if(loc >= 0) glUniform3f(loc, vec.x(), vec.y(), vec.z());
     }
 }
 
-void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, Color3f const& vec) {
+void ShaderProgram::set_vec3(RenderContext const& context, std::string const& vec_name, Color3f const& vec) const{
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, vec_name, Uniform::VEC3));
         if(loc >= 0) glUniform3f(loc, vec.r(), vec.g(), vec.b());
     }
 }
 
-void ShaderProgram::set_vec4(RenderContext const& context, std::string const& vec_name, Eigen::Vector4f const& vec) {
+void ShaderProgram::set_vec4(RenderContext const& context, std::string const& vec_name, Eigen::Vector4f const& vec) const{
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, vec_name, Uniform::VEC4));
         if(loc >= 0) glUniform4f(loc, vec[0], vec[1], vec[2], vec[3]);
     }
 }
 
-void ShaderProgram::set_sampler2D(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) {
+void ShaderProgram::set_sampler2D(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) const{
     if (uniforms_.size() > context.id) {
         sampler.bind(context, texture_offset_);
         unsigned loc(check_uniform(context, sampler_name, Uniform::SAMPLER2D));
@@ -106,14 +106,14 @@ void ShaderProgram::set_sampler2D(RenderContext const& context, std::string cons
     }
 }
 
-void ShaderProgram::set_float(RenderContext const& context, std::string const& float_name, float value) {
+void ShaderProgram::set_float(RenderContext const& context, std::string const& float_name, float value) const{
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, float_name, Uniform::FLOAT));
         if(loc >= 0) glUniform1f(loc, value);
     }
 }
 
-void ShaderProgram::set_int(RenderContext const& context, std::string const& int_name, int value) {
+void ShaderProgram::set_int(RenderContext const& context, std::string const& int_name, int value) const{
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, int_name, Uniform::INT));
         if(loc >= 0) glUniform1i(loc, value);

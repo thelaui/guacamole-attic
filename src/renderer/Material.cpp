@@ -24,6 +24,7 @@
 
 #include "renderer/ShaderProgram.hpp"
 #include "renderer/RenderContext.hpp"
+#include "renderer/TextureBase.hpp"
 
 #include "utils/PathParser.hpp"
 #include "utils/TextFile.hpp"
@@ -32,11 +33,13 @@
 namespace gua {
 
 Material::Material():
-    texture_(NULL),
+    texture_uniforms_(),
+    float_uniforms_(),
     shader_() {}
 
 Material::Material(std::string const& file_name):
-    texture_(NULL) {
+    texture_uniforms_(),
+    float_uniforms_() {
 
     TextFile file(file_name);
 
@@ -47,19 +50,31 @@ Material::Material(std::string const& file_name):
     }
 }
 
-Material::~Material() {
-    if (texture_)
-        delete texture_;
-}
+Material::~Material() {}
 
 void Material::use(RenderContext const& context) const {
     shader_.use(context);
-//    if (texture_)
-//        texture_->bind(context, 0);
+
+    for (auto val : float_uniforms_)
+        shader_.set_float(context, val.first, val.second);
+
+    for (auto val : texture_uniforms_)
+        shader_.set_sampler2D(context, val.first, *val.second);
 }
 
-Texture* Material::get_texture() const {
-    return texture_;
+void Material::set_uniform_float(std::string const& uniform_name, float value) {
+    float_uniforms_[uniform_name] = value;
+}
+
+void Material::set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value) {
+    texture_uniforms_[uniform_name] = value;
+}
+
+void Material::set_uniform_texture(std::string const& uniform_name, std::string const& texture_name) {
+    auto searched_tex(TextureBase::instance()->get(texture_name));
+    if (searched_tex)
+        texture_uniforms_[uniform_name] = searched_tex;
+    else WARNING ("A texture with the name %s does not exist within the database!", texture_name.c_str());
 }
 
 ShaderProgram const& Material::get_shader() const {
@@ -71,20 +86,23 @@ void Material::construct_from_file(TextFile const& file) {
     std::stringstream parse_stream(content);
 
     std::string current_string;
-    std::string texture_string;
     std::string vertex_string;
     std::string fragment_string;
 
     while (parse_stream >> current_string) {
-        if (current_string == "color:") {
+        if (current_string == "texture") {
             parse_stream >> current_string;
+            std::string texture_name;
+            parse_stream >> texture_name;
+            set_uniform_texture(current_string, texture_name);
+        } else if (current_string == "float") {
             parse_stream >> current_string;
-            parse_stream >> current_string;
-        } else if (current_string == "texture:") {
-            parse_stream >> texture_string;
-        } else if (current_string == "vertex_shader:") {
+            float value;
+            parse_stream >> value;
+            set_uniform_float(current_string, value);
+        } else if (current_string == "vertex_shader") {
             parse_stream >> vertex_string;
-        } else if (current_string == "fragment_shader:") {
+        } else if (current_string == "fragment_shader") {
             parse_stream >> fragment_string;
         }
         else WARNING("In \"%s\": \"%s\" is not a valid attribute!",
@@ -95,12 +113,6 @@ void Material::construct_from_file(TextFile const& file) {
     location_parser.parse(file.get_file_name());
 
     PathParser path_parser;
-
-    if (texture_string.length() > 0) {
-        path_parser.parse(texture_string);
-        path_parser.make_absolute(location_parser.get_path(true));
-        texture_ = new Texture(path_parser.get_path());
-    }
 
     path_parser.parse(vertex_string);
     path_parser.make_absolute(location_parser.get_path(true));

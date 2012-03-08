@@ -20,15 +20,15 @@ void setup_lights(gua::SceneGraph& graph) {
     auto point_light3 = graph.add_node("/", "point_light3", point_light_core3);
     auto point_light4 = graph.add_node("/", "point_light4", point_light_core4);
 
-    point_light1.scale(15.f, 15.f, 15.f);
-    point_light2.scale(15.f, 15.f, 15.f);
-    point_light3.scale(15.f, 15.f, 15.f);
-    point_light4.scale(15.f, 15.f, 15.f);
+    point_light1.scale(3.f, 3.f, 3.f);
+    point_light2.scale(3.f, 3.f, 3.f);
+    point_light3.scale(3.f, 3.f, 3.f);
+    point_light4.scale(3.f, 3.f, 3.f);
 
-    point_light1.translate(2.f, 2.5f, -2.f);
-    point_light2.translate(2.f, 2.5f, 2.f);
-    point_light3.translate(-2.f,2.5f, 2.f);
-    point_light4.translate(-2.f, 2.5f, -2.f);
+    point_light1.translate(0.5f, 0.9f, -0.5f);
+    point_light2.translate(0.5f, 0.9f, 0.5f);
+    point_light3.translate(-0.5f, 0.9f, 0.5f);
+    point_light4.translate(-0.5f, 0.9f, -0.5f);
 }
 
 int main() {
@@ -36,6 +36,7 @@ int main() {
 
     gua::GeometryBase::load_objects_from("data/objects/");
     gua::MaterialBase::load_materials_from("data/materials/");
+    gua::TextureBase::load_textures_from("data/textures/");
 
     gua::SceneGraph graph;
 
@@ -60,10 +61,10 @@ int main() {
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
    // screen.scale(1.6, 0.9, 1);
-    screen.rotate(0.4, 0, 1, 0);
+//    screen.rotate(0.4, 0, 1, 0);
     screen.translate(0, 0.45, 0);
 
-    auto camera_core = new gua::CameraCore(0.1f, gua::CameraCore::ANAGLYPH_RED_CYAN);
+    auto camera_core = new gua::CameraCore(0.1f, gua::CameraCore::MONO);
     auto camera = graph.add_node("/screen", "camera", camera_core);
     camera.translate(0, 0.45, 3.5);
     //camera.scale(0.5, 0.5, 0.5);

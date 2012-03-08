@@ -22,6 +22,8 @@
 
 #include "renderer/GeometryBase.hpp"
 #include "renderer/MaterialBase.hpp"
+#include "renderer/TextureBase.hpp"
+#include "renderer/RenderPass.hpp"
 #include "traverser/Renderer.hpp"
 #include "scenegraph/Iterator.hpp"
 #include "scenegraph/SceneGraph.hpp"
