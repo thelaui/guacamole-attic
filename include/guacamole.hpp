@@ -23,8 +23,9 @@
 #include "renderer/GeometryBase.hpp"
 #include "renderer/MaterialBase.hpp"
 #include "renderer/TextureBase.hpp"
+#include "renderer/RenderPipeline.hpp"
 #include "renderer/RenderPass.hpp"
-#include "traverser/Renderer.hpp"
+#include "traverser/RenderServer.hpp"
 #include "scenegraph/Iterator.hpp"
 #include "scenegraph/SceneGraph.hpp"
 #include "cores/GeometryCore.hpp"
@@ -35,6 +36,17 @@
 #include "utils/DotGenerator.hpp"
 #include "utils/Directory.hpp"
 #include "utils/Timer.hpp"
+
+namespace gua {
+
+    ////////////////////////////////////////////////////////////////////////
+    /// \brief Initialize guacamole.
+    ///
+    /// This should be called once in every application using guacamole.
+    ////////////////////////////////////////////////////////////////////////
+
+    void init();
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \mainpage

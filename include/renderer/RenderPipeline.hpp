@@ -24,24 +24,38 @@
 #define RENDER_PIPELINE_HPP
 
 
+#include <map>
+
+#include "renderer/RenderWindow.hpp"
+
 namespace gua {
+
+class RenderPass;
+class SceneGraph;
 
 class RenderPipeline {
     public:
-        RenderPipeline(RenderWindow const& window, CameraCore::Type stereo_mode = CameraCore::MONO);
+        enum StereoMode { MONO, SIDE_BY_SIDE, ANAGLYPH_RED_GREEN, ANAGLYPH_RED_CYAN };
+
+        RenderPipeline(RenderWindow::Description const& window, StereoMode stereo_mode = MONO);
 
         void add_render_pass(RenderPass* pass);
-        RenderPass* get_render_pass(std::string const& pass_name) const;
+        RenderPass* get_render_pass(std::string const& pass_name);
 
-        void set_final_pass(std::string const& pass_name, std::string const& buffer_name);
+        RenderContext const& get_context() const;
 
-        friend class Renderer;
+        void set_final_buffer(std::string const& pass_name, std::string const& buffer_name);
+
+        friend class RenderClient;
 
     private:
-        void process();
+        void process(SceneGraph const& graph);
+        void flush();
 
+        RenderWindow window_;
+        std::string final_pass_, final_buffer_;
+        StereoMode stereo_mode_;
         std::map<std::string, RenderPass*> passes_;
-
 };
 
 }

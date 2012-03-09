@@ -39,11 +39,9 @@ struct CameraNode {
     CameraNode() {};
     CameraNode(CameraCore const& core, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
         transform_(t),
-        type_(core.get_type()),
         stereo_width_(core.get_stereo_width()) {}
 
     Eigen::Matrix4f transform_;
-    CameraCore::Type type_;
     float stereo_width_;
 };
 

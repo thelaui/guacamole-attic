@@ -20,61 +20,56 @@
 /// \brief Declaration of the CameraCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDERCLIENT_HPP
-#define RENDERCLIENT_HPP
+#ifndef RENDERER_SERVER_HPP
+#define RENDERER_HPP
 
 #include <vector>
 #include <string>
 #include <thread>
-#include <condition_variable>
-
-#include "scenegraph/SceneGraph.hpp"
 
 namespace gua {
 
+class SceneGraph;
+class RenderClient;
 class RenderPipeline;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief This class represents one render thread.
+/// \brief This class is used to provide a renderer frontend interface to the user.
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
-class RenderClient {
+class RenderServer {
     public:
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.
         ///
-        /// This constructs a new RenderClient.
+        /// This constructs a new RenderServer.
         ///
         ////////////////////////////////////////////////////////////////////////
-        RenderClient(RenderPipeline* pipeline);
+        RenderServer(std::vector<RenderPipeline*> const& pipelines);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
         ///
-        /// This destroys a RenderClient.
+        /// This destroys a RenderServer.
         ///
         ////////////////////////////////////////////////////////////////////////
-        virtual ~RenderClient();
+        virtual ~RenderServer();
 
-        void queue_draw(SceneGraph const* graph);
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Start the Render Loop
+        ///
+        /// Takes a Scenegraph and starts to render.
+        ///
+        ///\param scene_graph          The SceneGraph to be processed.
+        ////////////////////////////////////////////////////////////////////////
+        void queue_draw( SceneGraph const* scene_graph );
 
     private:
-        void draw_loop();
-
-        std::thread* draw_thread_;
-        RenderPipeline* render_pipeline_;
-        SceneGraph graph_copy_;
-
-        bool rendering_finished_;
-        std::mutex render_mutex_;
-        std::condition_variable render_condition_;
-
-        unsigned frame_;
+        std::vector<RenderClient*> render_clients_;
 };
 
 }
 
-#endif // RENDERCLIENT_HPP
-
+#endif // RENDERER_SERVER_HPP

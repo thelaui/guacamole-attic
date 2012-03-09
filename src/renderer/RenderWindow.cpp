@@ -32,7 +32,7 @@ namespace gua {
 
 unsigned RenderWindow::last_context_id_ = 0;
 
-RenderWindow::RenderWindow( int width, int height, std::string const& display ) throw (std::string):
+RenderWindow::RenderWindow( Description const& description ) throw (std::string):
     frames_(0),
     frame_count_(0),
     frames_start_(0) {
@@ -41,9 +41,9 @@ RenderWindow::RenderWindow( int width, int height, std::string const& display ) 
     // Open X display
     ///////////////////////////////////////////////
 
-    ctx_.display = XOpenDisplay(display.c_str());
-    ctx_.width = width;
-    ctx_.height = height;
+    ctx_.display = XOpenDisplay(description.display.c_str());
+    ctx_.width = description.width;
+    ctx_.height = description.height;
     ctx_.id = last_context_id_++;
 
     int major_glx(0);
@@ -166,12 +166,8 @@ void RenderWindow::draw(std::shared_ptr<Geometry> const& geometry) const {
     geometry->draw(ctx_);
 }
 
-void RenderWindow::init() {
-    ilInit();
-    XInitThreads();
-    glXCreateContextAttribsARB = (GLXContext(*)(Display* dpy, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list))glXGetProcAddressARB((GLubyte*)"glXCreateContextAttribsARB");
-    glXChooseFBConfig = (GLXFBConfig*(*)(Display *dpy, int screen, const int *attrib_list, int *nelements))glXGetProcAddressARB((GLubyte*)"glXChooseFBConfig");
-    glXGetVisualFromFBConfig = (XVisualInfo*(*)(Display *dpy, GLXFBConfig config))glXGetProcAddressARB((GLubyte*)"glXGetVisualFromFBConfig");
+void RenderWindow::display_texture(std::shared_ptr<Texture> const& texture) const {
+
 }
 
 RenderContext const& RenderWindow::get_context() const {

@@ -31,6 +31,7 @@
 namespace gua {
 
 class Geometry;
+class Texture;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A window for displaying stuff.
@@ -40,6 +41,17 @@ class Geometry;
 
 class RenderWindow {
     public:
+
+        struct Description {
+            Description(int w, int h, std::string const& disp):
+                width(w),
+                height(h),
+                display(disp) {}
+
+            int width, height;
+            std::string display;
+        };
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
@@ -51,7 +63,7 @@ class RenderWindow {
         /// \param display The display where this window should be opened.
         /// \throw An error message.
         ////////////////////////////////////////////////////////////////////////
-        RenderWindow( int width, int height, std::string const& display ) throw (std::string);
+        RenderWindow( Description const& description ) throw (std::string);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
@@ -92,6 +104,15 @@ class RenderWindow {
         void draw(std::shared_ptr<Geometry> const& geometry) const;
 
         ////////////////////////////////////////////////////////////////////////
+        /// \brief Draws the given Texture to the window.
+        ///
+        /// The given Texture is drawn to the window.
+        ///
+        /// \param texture The Texture to be drawn.
+        ////////////////////////////////////////////////////////////////////////
+        void display_texture(std::shared_ptr<Texture> const& texture) const;
+
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Get the RenderContext of this window.
         ///
         /// Can be called in order to retrieve the RenderContext of this
@@ -100,13 +121,6 @@ class RenderWindow {
         /// \return The context owned by this window.
         ////////////////////////////////////////////////////////////////////////
         RenderContext const& get_context() const;
-
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Initialize RenderWindows.
-        ///
-        /// This should be called once in every application using guacamole.
-        ////////////////////////////////////////////////////////////////////////
-        static void init();
 
     private:
         static unsigned last_context_id_;

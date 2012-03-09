@@ -23,10 +23,16 @@
 #ifndef RENDER_PASS_HPP
 #define RENDER_PASS_HPP
 
-#include "scenegraph/Iterator.hpp"
+#include <memory>
+#include <string>
+#include <map>
+
 #include "renderer/FrameBufferObject.hpp"
+#include "renderer/Texture.hpp"
 
 namespace gua {
+
+class RenderPipeline;
 
 class RenderPass {
     public:
@@ -45,7 +51,7 @@ class RenderPass {
             unsigned color_depth, color_format, type;
         };
 
-        RenderPass(std::string const& name, std::string const& camera, std::string const& screen, SceneGraph::Iterator const& entry_point);
+        RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& entry_point);
 
         void add_color_buffer(std::string const& buffer_name, unsigned layout_location, BufferDescription const& buffer_desc = BufferDescription());
         void add_depth_stencil_buffer(std::string const& buffer_name, BufferDescription const& buffer_desc = BufferDescription());
@@ -57,19 +63,25 @@ class RenderPass {
         void overwrite_uniform_texture(std::string const& material, std::string const& uniform_name, std::shared_ptr<Texture> const& value);
         void overwrite_uniform_texture(std::string const& material, std::string const& uniform_name, std::string const& texture_name);
 
+        std::string const& get_name() const;
+
         friend class RenderPipeline;
 
     private:
-        std::shared_ptr<Texture> const& get_buffer(std::string const& name) const;
+        std::shared_ptr<Texture> const& get_buffer(std::string const& name);
+
+        void flush();
+
+        void set_pipeline(RenderPipeline* pipeline);
 
         struct PassConnection {
             std::string in_render_pass, in_buffer, target_material, target_uniform;
         };
 
-        std::string name_, camera_, screen_;
-        SceneGraph::Iterator entry_point_;
+        std::string name_, camera_, screen_, entry_point_;
         std::map<std::string, std::shared_ptr<Texture>> buffers_;
         FrameBufferObject fbo_;
+        RenderPipeline* pipeline_;
 
         std::vector<PassConnection> connections_;
 

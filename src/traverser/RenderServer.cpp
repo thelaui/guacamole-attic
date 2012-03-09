@@ -17,21 +17,31 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A Core representing a camera in a SceneGraph.
+/// \brief Definition of the Render class.
 ////////////////////////////////////////////////////////////////////////////////
+#include "traverser/RenderServer.hpp"
 
-#include "cores/CameraCore.hpp"
+#include "scenegraph/SceneGraph.hpp"
+#include "traverser/RenderClient.hpp"
+#include "traverser/Optimizer.hpp"
 
 namespace gua {
 
-CameraCore::CameraCore(float stereo_width):
-    Core(Core::CAMERA),
-    stereo_width_(stereo_width) {}
+RenderServer::RenderServer(std::vector<RenderPipeline*> const& pipelines) {
+    for (auto& pipeline: pipelines)
+        render_clients_.push_back(new RenderClient(pipeline));
+}
 
-CameraCore::~CameraCore() {}
+RenderServer::~RenderServer(){
+    for ( auto client( render_clients_.begin() ); client != render_clients_.end(); ++client ){
+        delete (*client);
+    }
+}
 
-float CameraCore::get_stereo_width() const {
-    return stereo_width_;
+void RenderServer::queue_draw( SceneGraph const* scene_graph ) {
+    for ( auto client(render_clients_.begin()); client != render_clients_.end(); ++ client ) {
+        (*client)->queue_draw(scene_graph);
+    }
 }
 
 }

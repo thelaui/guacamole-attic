@@ -32,7 +32,7 @@
 #include "renderer/Texture.hpp"
 #include "renderer/FrameBufferObject.hpp"
 #include "renderer/ShaderProgram.hpp"
-#include "cores/CameraCore.hpp"
+#include "renderer/RenderPipeline.hpp"
 
 namespace gua {
 
@@ -85,14 +85,14 @@ class RenderBackend {
                         Eigen::Matrix4f const& camera_projection,
                         Eigen::Vector3f const& camera_position,
                         Eigen::Transform3f const& screen_transform,
-                        CameraCore::Type camera_type,
+                        RenderPipeline::StereoMode camera_type,
                         bool is_left_eye);
 
         void fill_g_buffer(std::vector<GeometryNode> const& node_list,
                            Eigen::Matrix4f const& camera_projection,
                            Eigen::Matrix4f const& view_matrix);
 
-        void enable_stereo(CameraCore::Type camera_type, bool is_left_eye);
+        void enable_stereo(RenderPipeline::StereoMode camera_type, bool is_left_eye);
         void disable_stereo();
 
         RenderWindow window_;

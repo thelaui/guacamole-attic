@@ -17,21 +17,20 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A Core representing a camera in a SceneGraph.
+/// \brief The init file of guacamole.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "cores/CameraCore.hpp"
+#include "guacamole.hpp"
+
+#include <IL/il.h>
 
 namespace gua {
-
-CameraCore::CameraCore(float stereo_width):
-    Core(Core::CAMERA),
-    stereo_width_(stereo_width) {}
-
-CameraCore::~CameraCore() {}
-
-float CameraCore::get_stereo_width() const {
-    return stereo_width_;
+    void init() {
+        ilInit();
+        XInitThreads();
+        glXCreateContextAttribsARB = (GLXContext(*)(Display* dpy, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list))glXGetProcAddressARB((GLubyte*)"glXCreateContextAttribsARB");
+        glXChooseFBConfig = (GLXFBConfig*(*)(Display *dpy, int screen, const int *attrib_list, int *nelements))glXGetProcAddressARB((GLubyte*)"glXChooseFBConfig");
+        glXGetVisualFromFBConfig = (XVisualInfo*(*)(Display *dpy, GLXFBConfig config))glXGetProcAddressARB((GLubyte*)"glXGetVisualFromFBConfig");
+    }
 }
 
-}

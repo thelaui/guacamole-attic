@@ -109,9 +109,3 @@ class FrameBufferObject {
 }
 
 # endif //FRAMEBUFFEROBJECT_HPP
-
-
-
-
-
-

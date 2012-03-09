@@ -35,8 +35,6 @@ namespace gua {
 class CameraCore: public Core {
     public:
 
-        enum Type { MONO, SIDE_BY_SIDE, ANAGLYPH_RED_GREEN, ANAGLYPH_RED_CYAN };
-
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.
         ///
@@ -44,9 +42,8 @@ class CameraCore: public Core {
         /// the constructor of base class Core with the type CAMERA.
         ///
         ///\param stereo_width  The gap between the eyes.
-        ///\param type          The type of the camera.
         ////////////////////////////////////////////////////////////////////////
-        CameraCore(float stereo_width = 0.f, Type type = MONO);
+        CameraCore(float stereo_width = 0.f);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -63,16 +60,8 @@ class CameraCore: public Core {
         ////////////////////////////////////////////////////////////////////////
         float get_stereo_width() const;
 
-        ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the StereoCameraCore's type.
-        ///
-        ///\return The camera's type.
-        ////////////////////////////////////////////////////////////////////////
-        Type get_type() const;
-
     private:
         float stereo_width_;
-        Type type_;
 };
 
 }

@@ -73,7 +73,7 @@
 		<Unit filename="include/traverser/OptimizedScene.hpp" />
 		<Unit filename="include/traverser/Optimizer.hpp" />
 		<Unit filename="include/traverser/RenderClient.hpp" />
-		<Unit filename="include/traverser/Renderer.hpp" />
+		<Unit filename="include/traverser/RenderServer.hpp" />
 		<Unit filename="include/traverser/ScreenNode.hpp" />
 		<Unit filename="include/utils/Color3f.hpp" />
 		<Unit filename="include/utils/Directory.hpp" />
@@ -90,6 +90,7 @@
 		<Unit filename="src/cores/GeometryCore.cpp" />
 		<Unit filename="src/cores/LightCore.cpp" />
 		<Unit filename="src/cores/ScreenCore.cpp" />
+		<Unit filename="src/guacamole.cpp" />
 		<Unit filename="src/renderer/FragmentShader.cpp" />
 		<Unit filename="src/renderer/FrameBufferObject.cpp" />
 		<Unit filename="src/renderer/Geometry.cpp" />
@@ -98,6 +99,8 @@
 		<Unit filename="src/renderer/MaterialBase.cpp" />
 		<Unit filename="src/renderer/Mesh.cpp" />
 		<Unit filename="src/renderer/RenderBackend.cpp" />
+		<Unit filename="src/renderer/RenderPass.cpp" />
+		<Unit filename="src/renderer/RenderPipeline.cpp" />
 		<Unit filename="src/renderer/RenderWindow.cpp" />
 		<Unit filename="src/renderer/Shader.cpp" />
 		<Unit filename="src/renderer/ShaderProgram.cpp" />
@@ -106,7 +109,7 @@
 		<Unit filename="src/renderer/VertexShader.cpp" />
 		<Unit filename="src/traverser/Optimizer.cpp" />
 		<Unit filename="src/traverser/RenderClient.cpp" />
-		<Unit filename="src/traverser/Renderer.cpp" />
+		<Unit filename="src/traverser/RenderServer.cpp" />
 		<Unit filename="src/utils/Color3f.cpp" />
 		<Unit filename="src/utils/Directory.cpp" />
 		<Unit filename="src/utils/DotGenerator.cpp" />

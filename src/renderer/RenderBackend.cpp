@@ -40,7 +40,7 @@
 namespace gua {
 
 RenderBackend::RenderBackend( int width, int height, std::string const& camera, std::string const& screen, std::string const& display ):
-    window_(width, height, display),
+    window_(RenderWindow::Description(width, height, display)),
     camera_name_(camera),
     screen_name_(screen),
     light_sphere_(new Geometry(LIGHT_SPHERE_DATA.c_str(), LIGHT_SPHERE_DATA.length())),
@@ -76,22 +76,22 @@ void RenderBackend::render(OptimizedScene const& scene) {
         auto camera(camera_it->second);
         auto screen(screen_it->second);
 
-        if (camera.type_ == CameraCore::MONO) {
+        if (RenderPipeline::MONO == RenderPipeline::MONO) {
             Eigen::Transform3f camera_transform(camera.transform_);
             auto projection(math::compute_frustum(camera_transform.translation(), screen.transform_, 0.1, 1000.f));
-            render_eye(scene.nodes_, scene.lights_, projection, camera_transform.translation(), Eigen::Transform3f(screen.transform_), camera.type_, true);
+            render_eye(scene.nodes_, scene.lights_, projection, camera_transform.translation(), Eigen::Transform3f(screen.transform_), RenderPipeline::MONO, true);
         } else {
             Eigen::Transform3f eye_position(camera.transform_);
 
             eye_position.translate(Eigen::Vector3f(-camera.stereo_width_*0.5, 0, 0));
             auto projection(math::compute_frustum(eye_position.translation(), screen.transform_, 0.1, 1000.f));
-            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), camera.type_, true);
+            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), RenderPipeline::MONO, true);
 
             glClear(GL_DEPTH_BUFFER_BIT);
 
             eye_position.translate(Eigen::Vector3f(camera.stereo_width_, 0, 0));
             projection = math::compute_frustum(eye_position.translation(), screen.transform_, 0.1, 1000.f);
-            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), camera.type_, false);
+            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), RenderPipeline::MONO, false);
         }
 
     }
@@ -104,7 +104,7 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
                    Eigen::Matrix4f const& camera_projection,
                    Eigen::Vector3f const& camera_position,
                    Eigen::Transform3f const& screen_transform,
-                   CameraCore::Type camera_type,
+                   RenderPipeline::StereoMode camera_type,
                    bool is_left_eye) {
 
     Eigen::Transform3f camera_transform(screen_transform);
@@ -132,8 +132,8 @@ void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
 
-    float texel_width((camera_type == CameraCore::SIDE_BY_SIDE ? 2.f : 1.f) / window_.get_context().width);
-    float x_fragment_offset(!is_left_eye && camera_type == CameraCore::SIDE_BY_SIDE ?  1.f : 0.f);
+    float texel_width((camera_type == RenderPipeline::SIDE_BY_SIDE ? 2.f : 1.f) / window_.get_context().width);
+    float x_fragment_offset(!is_left_eye && camera_type == RenderPipeline::SIDE_BY_SIDE ?  1.f : 0.f);
 
     deferred_light_shader_.use(window_.get_context());
 
@@ -196,17 +196,17 @@ void RenderBackend::fill_g_buffer(std::vector<GeometryNode> const& node_list,
     g_buffer_.unbind();
 }
 
-void RenderBackend::enable_stereo(CameraCore::Type camera_type, bool is_left_eye) {
+void RenderBackend::enable_stereo(RenderPipeline::StereoMode camera_type, bool is_left_eye) {
     switch(camera_type) {
-        case CameraCore::ANAGLYPH_RED_CYAN: {
+        case RenderPipeline::ANAGLYPH_RED_CYAN: {
             glColorMask(is_left_eye, !is_left_eye, !is_left_eye, !is_left_eye);
         } break;
 
-        case CameraCore::ANAGLYPH_RED_GREEN: {
+        case RenderPipeline::ANAGLYPH_RED_GREEN: {
             glColorMask(is_left_eye, !is_left_eye, false, !is_left_eye);
         } break;
 
-        case CameraCore::SIDE_BY_SIDE: {
+        case RenderPipeline::SIDE_BY_SIDE: {
             if (is_left_eye)
                 glViewport(0, 0, window_.get_context().width*0.5, window_.get_context().height);
             else
