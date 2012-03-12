@@ -38,10 +38,12 @@ class RenderPipeline {
         enum StereoMode { MONO, SIDE_BY_SIDE, ANAGLYPH_RED_GREEN, ANAGLYPH_RED_CYAN };
 
         RenderPipeline(RenderWindow::Description const& window, StereoMode stereo_mode = MONO);
+        ~RenderPipeline();
 
         void add_render_pass(RenderPass* pass);
         RenderPass* get_render_pass(std::string const& pass_name);
 
+        SceneGraph const* get_current_graph() const;
         RenderContext const& get_context() const;
 
         void set_final_buffer(std::string const& pass_name, std::string const& buffer_name);
@@ -49,13 +51,16 @@ class RenderPipeline {
         friend class RenderClient;
 
     private:
-        void process(SceneGraph const& graph);
-        void flush();
+        void process(SceneGraph* graph);
+        void create_buffers();
 
-        RenderWindow window_;
+        RenderWindow* window_;
+        RenderWindow::Description window_description_;
         std::string final_pass_, final_buffer_;
         StereoMode stereo_mode_;
         std::map<std::string, RenderPass*> passes_;
+
+        SceneGraph* current_graph_;
 };
 
 }

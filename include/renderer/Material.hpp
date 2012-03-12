@@ -73,6 +73,7 @@ class Material {
         /// \param context The context which should use this Material.
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
+        void unuse(RenderContext const& context) const;
 
         void set_uniform_float(std::string const& uniform_name, float value);
         void set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value);

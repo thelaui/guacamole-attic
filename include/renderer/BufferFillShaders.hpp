@@ -31,24 +31,12 @@ const std::string BUFFER_FILL_VERTEX_SHADER = {
 "#version 330\n"\
 
 "layout(location=0) in vec3 in_position;\n"\
-"layout(location=1) in vec3 in_normal;\n"\
-"layout(location=2) in vec2 in_tex_coord;\n"\
 
-"uniform mat4 projection_matrix;\n"\
-"uniform mat4 view_matrix;\n"\
-"uniform mat4 model_matrix;\n"\
-"uniform mat4 normal_matrix;\n"\
-
-"out vec3 position;\n"\
-"out vec3 normal;\n"\
 "out vec2 tex_coord;\n"\
 
 "void main() {\n"\
-"	position = ((view_matrix * model_matrix) * vec4(in_position, 1.0)).xyz;\n"\
-"	normal = normalize(vec3(normal_matrix * vec4(in_normal, 0.0)));\n"\
-"	tex_coord = in_tex_coord;\n"\
-
-"	gl_Position =  projection_matrix * vec4(position, 1.f);\n"\
+"	tex_coord = in_position.xy*0.5 + 0.5;\n"\
+"	gl_Position = vec4(in_position, 1.0);\n"\
 "} \n"\
 
 };
@@ -57,18 +45,13 @@ const std::string BUFFER_FILL_VERTEX_SHADER = {
 const std::string BUFFER_FILL_FRAGMENT_SHADER = {
 "#version 330\n"\
 
-"in vec3 position;\n"\
-"in vec3 normal;\n"\
 "in vec2 tex_coord;\n"\
+"uniform sampler2D tex;\n"\
 
 "layout (location = 0) out vec4 out_color;\n"\
-"layout (location = 1) out vec3 out_position;\n"\
-"layout (location = 2) out vec3 out_normal;\n"\
 
 "void main() {\n"\
-"    out_position = position;\n"\
-"    out_normal = normalize(normal);\n"\
-"    out_color = vec4(tex_coord, 0, 1);\n"\
+"    out_color = vec4(texture2D( tex, tex_coord).rgb, 1.0);\n"\
 "} \n"\
 
 };

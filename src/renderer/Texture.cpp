@@ -115,7 +115,7 @@ void Texture::upload_to(RenderContext const& context) const{
     unsigned texture_id(0);
     glGenTextures(1, &texture_id);
     if (texture_id == 0) {
-        // OpenGL was not able to generate additional texture
+        WARNING("Failed to generate texture storage!");
         return;
     }
 
@@ -136,8 +136,9 @@ void Texture::upload_to(RenderContext const& context) const{
     set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);
 
     // load data as texture
-    glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
-                 0, color_format_, type_, &(*data_.begin()));
+    if (data_.size() > 0)
+        glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
+                    0, color_format_, type_, &(*data_.begin()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }

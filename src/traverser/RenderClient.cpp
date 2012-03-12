@@ -23,6 +23,7 @@
 
 #include "scenegraph/SceneGraph.hpp"
 #include "renderer/RenderBackend.hpp"
+#include "renderer/RenderPipeline.hpp"
 #include "utils/Timer.hpp"
 #include "utils/debug.hpp"
 
@@ -44,8 +45,10 @@ RenderClient::~RenderClient() {
 }
 
 void RenderClient::queue_draw(SceneGraph const* graph) {
-    if(!draw_thread_)
+    if(!draw_thread_) {
+        graph_copy_ = *graph;
         draw_thread_ = new std::thread(&RenderClient::draw_loop, this);
+    }
 
     // lock rendering
     std::unique_lock<std::mutex> lock(render_mutex_);
@@ -69,8 +72,8 @@ void RenderClient::draw_loop() {
             timer.reset();
         }
 
-        render_pipeline_->process(graph_copy_);
-        render_pipeline_->flush();
+        // render
+        render_pipeline_->process(&graph_copy_);
 
         // lock rendering
         std::unique_lock<std::mutex> lock(render_mutex_);

@@ -23,8 +23,10 @@
 #include "renderer/TextureBase.hpp"
 
 #include "utils/Directory.hpp"
+#include "utils/debug.hpp"
 
 #include <sstream>
+#include <iostream>
 
 namespace gua {
 

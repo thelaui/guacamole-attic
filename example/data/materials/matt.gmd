@@ -1,5 +1,0 @@
-vertex_shader ../shaders/matt.vert
-fragment_shader ../shaders/matt.frag
-
-texture normal_map matt_normal
-float shinyness 0.2

@@ -34,6 +34,9 @@ SceneGraph::SceneGraph():
     root_(new Node("/")),
     working_node_(root_) {}
 
+SceneGraph::SceneGraph(SceneGraph const& graph):
+    root_(graph.root_ ? graph.root_->deep_copy() : NULL),
+    working_node_(root_) {}
 
 SceneGraph::~SceneGraph() {
     delete root_;

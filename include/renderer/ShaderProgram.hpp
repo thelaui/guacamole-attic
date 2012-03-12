@@ -131,7 +131,7 @@ class ShaderProgram {
         mutable std::vector<unsigned> program_ids_;
 
         mutable std::vector<std::map<std::string, Uniform>> uniforms_;
-        mutable unsigned texture_offset_;
+        mutable int texture_offset_;
 
         VertexShader v_shader_;
         FragmentShader f_shader_;

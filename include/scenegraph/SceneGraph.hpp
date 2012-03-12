@@ -48,8 +48,6 @@ class SceneGraph {
     public:
 
         enum IterationType {DEPTH_FIRST, BREADTH_FIRST};
-        enum TransformMode {LOCAL, GLOBAL};
-        enum InheritanceMode {PRIVATE, PUBLIC};
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.
@@ -57,6 +55,13 @@ class SceneGraph {
         /// This constructs an empty SceneGraph.
         ////////////////////////////////////////////////////////////////////////
         SceneGraph();
+
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Copy Constructor.
+        ///
+        /// This constructs an copied SceneGraph.
+        ////////////////////////////////////////////////////////////////////////
+        SceneGraph(SceneGraph const& graph);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.

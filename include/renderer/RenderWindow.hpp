@@ -27,6 +27,7 @@
 #include <string>
 
 #include "renderer/RenderContext.hpp"
+#include "renderer/ShaderProgram.hpp"
 
 namespace gua {
 
@@ -95,15 +96,6 @@ class RenderWindow {
         void finish_frame() const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Draws the given Geometry.
-        ///
-        /// The given Geometry is drawn to the window.
-        ///
-        /// \param geometry The Geometry to be drawn.
-        ////////////////////////////////////////////////////////////////////////
-        void draw(std::shared_ptr<Geometry> const& geometry) const;
-
-        ////////////////////////////////////////////////////////////////////////
         /// \brief Draws the given Texture to the window.
         ///
         /// The given Texture is drawn to the window.
@@ -126,6 +118,7 @@ class RenderWindow {
         static unsigned last_context_id_;
 
         RenderContext ctx_;
+        ShaderProgram fullscreen_shader_;
 
         int frames_;
         int frame_count_;

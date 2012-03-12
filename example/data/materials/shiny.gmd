@@ -1,0 +1,4 @@
+vertex_shader ../shaders/shiny.vert
+fragment_shader ../shaders/shiny.frag
+
+float shinyness 50

@@ -24,15 +24,20 @@
 
 #include "utils/debug.hpp"
 #include "renderer/Geometry.hpp"
+#include "renderer/Texture.hpp"
+#include "renderer/BufferFillShaders.hpp"
 
 #include <IL/il.h>
 #include <sstream>
+#include <iostream>
 
 namespace gua {
 
 unsigned RenderWindow::last_context_id_ = 0;
 
 RenderWindow::RenderWindow( Description const& description ) throw (std::string):
+    fullscreen_shader_(VertexShader(BUFFER_FILL_VERTEX_SHADER.c_str()),
+                       FragmentShader(BUFFER_FILL_FRAGMENT_SHADER.c_str())),
     frames_(0),
     frame_count_(0),
     frames_start_(0) {
@@ -103,7 +108,7 @@ RenderWindow::RenderWindow( Description const& description ) throw (std::string)
 
     GLint attribs[] = {
         GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-        GLX_CONTEXT_MINOR_VERSION_ARB, 3,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 1,
         //GLX_CONTEXT_PROFILE_MASK_ARB,GLX_CONTEXT_CORE_PROFILE_BIT_ARB, 0          // for 3.1
         GLX_CONTEXT_PROFILE_MASK_ARB,GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB, 0   // for 4.1
     };
@@ -154,7 +159,7 @@ void RenderWindow::set_active() const {
 }
 
 void RenderWindow::start_frame() const {
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(1.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -162,12 +167,18 @@ void RenderWindow::finish_frame() const {
     glXSwapBuffers(ctx_.display, ctx_.window);
 }
 
-void RenderWindow::draw(std::shared_ptr<Geometry> const& geometry) const {
-    geometry->draw(ctx_);
-}
-
 void RenderWindow::display_texture(std::shared_ptr<Texture> const& texture) const {
+    fullscreen_shader_.use(ctx_);
+    fullscreen_shader_.set_sampler2D(ctx_, "tex", *texture);
 
+    glBegin(GL_QUADS);
+        glVertex2f(-1, -1);
+        glVertex2f(1, -1);
+        glVertex2f(1, 1);
+        glVertex2f(-1, 1);
+    glEnd();
+
+    fullscreen_shader_.unuse();
 }
 
 RenderContext const& RenderWindow::get_context() const {

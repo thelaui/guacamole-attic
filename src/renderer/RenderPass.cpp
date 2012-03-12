@@ -23,11 +23,15 @@
 #include "renderer/RenderPass.hpp"
 
 #include "renderer/RenderPipeline.hpp"
+#include "renderer/RenderBackend.hpp"
 #include "renderer/TextureBase.hpp"
+#include "traverser/Optimizer.hpp"
 
 namespace gua {
 
 RenderPass::RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& entry_point):
+    color_buffer_descriptions_(),
+    depth_stencil_buffer_description_(""),
     name_(name),
     camera_(camera),
     screen_(screen),
@@ -35,24 +39,17 @@ RenderPass::RenderPass(std::string const& name, std::string const& camera, std::
     buffers_(),
     fbo_(),
     pipeline_(NULL),
+    rendered_frame_(false),
     connections_(),
     texture_uniforms_(),
     float_uniforms_() {}
 
-void RenderPass::add_color_buffer(std::string const& buffer_name, unsigned layout_location, BufferDescription const& buffer_desc) {
-    std::shared_ptr<Texture> new_buffer(new Texture(buffer_desc.width, buffer_desc.height,
-                                                    buffer_desc.color_depth, buffer_desc.color_format,
-                                                    buffer_desc.type));
-    fbo_.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D, new_buffer->get_id(pipeline_->get_context()), GL_COLOR_ATTACHMENT0 + layout_location);
-    buffers_[buffer_name] = new_buffer;
+void RenderPass::add_buffer(ColorBufferDescription const& buffer_desc) {
+    color_buffer_descriptions_.push_back(buffer_desc);
 }
 
-void RenderPass::add_depth_stencil_buffer(std::string const& buffer_name, BufferDescription const& buffer_desc) {
-    std::shared_ptr<Texture> new_buffer(new Texture(buffer_desc.width, buffer_desc.height,
-                                                    buffer_desc.color_depth, buffer_desc.color_format,
-                                                    buffer_desc.type));
-    fbo_.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D, new_buffer->get_id(pipeline_->get_context()), GL_DEPTH_ATTACHMENT);
-    buffers_[buffer_name] = new_buffer;
+void RenderPass::add_buffer(DepthStencilBufferDescription const& buffer_desc) {
+    depth_stencil_buffer_description_ = buffer_desc;
 }
 
 void RenderPass::set_input_buffer(std::string const& in_render_pass, std::string const& in_buffer,
@@ -77,11 +74,57 @@ std::string const& RenderPass::get_name() const {
 }
 
 std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name) {
+    if (rendered_frame_)
+        return buffers_[name];
+
+    Optimizer optimizer;
+    optimizer.check(pipeline_->get_current_graph());
+
+    RenderBackend renderer;
+    renderer.render(camera_, screen_, optimizer.get_data(), fbo_, pipeline_->get_context());
+
+    rendered_frame_ = true;
+
     return buffers_[name];
 }
 
 void RenderPass::flush() {
+    rendered_frame_ = false;
+}
 
+void RenderPass::create_buffers() {
+    buffers_.clear();
+    fbo_ = FrameBufferObject();
+
+    if (depth_stencil_buffer_description_.name != "") {
+        int width = depth_stencil_buffer_description_.size_is_relative_to_window ? depth_stencil_buffer_description_.width*pipeline_->get_context().width :
+                                                         depth_stencil_buffer_description_.width;
+        int height = depth_stencil_buffer_description_.size_is_relative_to_window ? depth_stencil_buffer_description_.height*pipeline_->get_context().height :
+                                                             depth_stencil_buffer_description_.height;
+
+        std::shared_ptr<Texture> new_buffer(new Texture(width, height,
+                                                        depth_stencil_buffer_description_.color_depth, depth_stencil_buffer_description_.color_format,
+                                                        depth_stencil_buffer_description_.type));
+
+        new_buffer->set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
+        new_buffer->set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
+
+        fbo_.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D, new_buffer->get_id(pipeline_->get_context()), GL_DEPTH_ATTACHMENT);
+        buffers_[depth_stencil_buffer_description_.name] = new_buffer;
+    }
+
+    for (auto& description: color_buffer_descriptions_) {
+        int width = description.size_is_relative_to_window ? description.width*pipeline_->get_context().width :
+                                                             description.width;
+        int height = description.size_is_relative_to_window ? description.height*pipeline_->get_context().height :
+                                                             description.height;
+
+        std::shared_ptr<Texture> new_buffer(new Texture(width, height,
+                                                        description.color_depth, description.color_format,
+                                                        description.type));
+        fbo_.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D, new_buffer->get_id(pipeline_->get_context()), GL_COLOR_ATTACHMENT0 + description.location);
+        buffers_[description.name] = new_buffer;
+    }
 }
 
 void RenderPass::set_pipeline(RenderPipeline* pipeline) {

@@ -39,187 +39,61 @@
 
 namespace gua {
 
-RenderBackend::RenderBackend( int width, int height, std::string const& camera, std::string const& screen, std::string const& display ):
-    window_(RenderWindow::Description(width, height, display)),
-    camera_name_(camera),
-    screen_name_(screen),
-    light_sphere_(new Geometry(LIGHT_SPHERE_DATA.c_str(), LIGHT_SPHERE_DATA.length())),
-    depth_buffer_(width, height, GL_DEPTH_COMPONENT32, GL_DEPTH_COMPONENT, GL_FLOAT),
-    color_buffer_(width, height),
-    position_buffer_(width, height),
-    normal_buffer_(width, height),
-    g_buffer_(),
-    buffer_fill_shader_(VertexShader(BUFFER_FILL_VERTEX_SHADER.c_str()),
-                        FragmentShader(BUFFER_FILL_FRAGMENT_SHADER.c_str())),
-    deferred_light_shader_(VertexShader(std::string("data/shaders/deferred_light.vert")),
-                           FragmentShader(std::string("data/shaders/deferred_light.frag"))) {
+void RenderBackend::render(std::string const& camera_name, std::string const& screen_name,
+                           OptimizedScene const& scene, FrameBufferObject& fbo,
+                           RenderContext const& context) {
 
-        depth_buffer_.set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
-        depth_buffer_.set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
+    fbo.bind(context, {GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT});
 
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, color_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, position_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +1);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, normal_buffer_.get_id(window_.get_context()), GL_COLOR_ATTACHMENT0 +2);
-        g_buffer_.attach_buffer(window_.get_context(), GL_TEXTURE_2D, depth_buffer_.get_id(window_.get_context()), GL_DEPTH_ATTACHMENT);
+    glClearColor(0.0, 1.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-}
-
-void RenderBackend::render(OptimizedScene const& scene) {
-
-    window_.set_active();
-    window_.start_frame();
-
-    auto camera_it(scene.cameras_.find(camera_name_));
-    auto screen_it(scene.screens_.find(screen_name_));
+    auto camera_it(scene.cameras_.find(camera_name));
+    auto screen_it(scene.screens_.find(screen_name));
 
     if (camera_it != scene.cameras_.end() && screen_it != scene.screens_.end()) {
         auto camera(camera_it->second);
         auto screen(screen_it->second);
+        auto projection(math::compute_frustum(Eigen::Transform3f(camera.transform_).translation(), screen.transform_, 0.1, 1000.f));
 
-        if (RenderPipeline::MONO == RenderPipeline::MONO) {
-            Eigen::Transform3f camera_transform(camera.transform_);
-            auto projection(math::compute_frustum(camera_transform.translation(), screen.transform_, 0.1, 1000.f));
-            render_eye(scene.nodes_, scene.lights_, projection, camera_transform.translation(), Eigen::Transform3f(screen.transform_), RenderPipeline::MONO, true);
-        } else {
-            Eigen::Transform3f eye_position(camera.transform_);
+        Eigen::Transform3f camera_transform(screen.transform_);
+        camera_transform.data()[12] = 0.f;
+        camera_transform.data()[13] = 0.f;
+        camera_transform.data()[14] = 0.f;
+        camera_transform.data()[15] = 1.f;
 
-            eye_position.translate(Eigen::Vector3f(-camera.stereo_width_*0.5, 0, 0));
-            auto projection(math::compute_frustum(eye_position.translation(), screen.transform_, 0.1, 1000.f));
-            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), RenderPipeline::MONO, true);
+        camera_transform = camera_transform.pretranslate(Eigen::Transform3f(camera.transform_).translation());
 
-            glClear(GL_DEPTH_BUFFER_BIT);
+        Eigen::Matrix4f view_matrix(camera_transform.matrix().inverse());
 
-            eye_position.translate(Eigen::Vector3f(camera.stereo_width_, 0, 0));
-            projection = math::compute_frustum(eye_position.translation(), screen.transform_, 0.1, 1000.f);
-            render_eye(scene.nodes_, scene.lights_, projection, eye_position.translation(), Eigen::Transform3f(screen.transform_), RenderPipeline::MONO, false);
-        }
+        for (auto& geometry_core: scene.nodes_) {
 
-    }
+            auto geometry = GeometryBase::instance()->get(geometry_core.geometry_);
+            auto material = MaterialBase::instance()->get(geometry_core.material_);
 
-    window_.finish_frame();
-}
+            if (material && geometry) {
+                material->use(context);
 
-void RenderBackend::render_eye(std::vector<GeometryNode> const& node_list,
-                   std::vector<LightNode> const& light_list,
-                   Eigen::Matrix4f const& camera_projection,
-                   Eigen::Vector3f const& camera_position,
-                   Eigen::Transform3f const& screen_transform,
-                   RenderPipeline::StereoMode camera_type,
-                   bool is_left_eye) {
+                material->get_shader().set_mat4(context, "projection_matrix", projection);
+                material->get_shader().set_mat4(context, "view_matrix", view_matrix);
+                material->get_shader().set_mat4(context, "model_matrix", geometry_core.transform_);
+                material->get_shader().set_mat4(context, "normal_matrix", geometry_core.transform_.inverse().transpose());
 
-    Eigen::Transform3f camera_transform(screen_transform);
-    camera_transform.data()[12] = 0.f;
-    camera_transform.data()[13] = 0.f;
-    camera_transform.data()[14] = 0.f;
-    camera_transform.data()[15] = 1.f;
+                geometry->draw(context);
 
-    camera_transform = camera_transform.pretranslate(camera_position);
+                material->unuse(context);
 
-    Eigen::Matrix4f view_matrix(camera_transform.matrix().inverse());
-
-    fill_g_buffer(node_list, camera_projection, view_matrix);
-
-    enable_stereo(camera_type, is_left_eye);
-
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_ONE, GL_ONE);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
-
-    glDisable(GL_DEPTH_TEST);
-    glDepthMask(GL_FALSE);
-
-    float texel_width((camera_type == RenderPipeline::SIDE_BY_SIDE ? 2.f : 1.f) / window_.get_context().width);
-    float x_fragment_offset(!is_left_eye && camera_type == RenderPipeline::SIDE_BY_SIDE ?  1.f : 0.f);
-
-    deferred_light_shader_.use(window_.get_context());
-
-    deferred_light_shader_.set_mat4(window_.get_context(), "projection_matrix", camera_projection);
-    deferred_light_shader_.set_mat4(window_.get_context(), "view_matrix", view_matrix);
-    deferred_light_shader_.set_sampler2D(window_.get_context(), "color_buffer", color_buffer_);
-    deferred_light_shader_.set_sampler2D(window_.get_context(), "position_buffer", position_buffer_);
-    deferred_light_shader_.set_sampler2D(window_.get_context(), "normal_buffer", normal_buffer_);
-    deferred_light_shader_.set_float(window_.get_context(), "texel_width", texel_width);
-    deferred_light_shader_.set_float(window_.get_context(), "texel_height", 1.f/window_.get_context().height);
-    deferred_light_shader_.set_float(window_.get_context(), "x_fragment_offset", x_fragment_offset);
-
-    for (auto& light: light_list) {
-        deferred_light_shader_.set_mat4(window_.get_context(), "model_matrix", light.transform_);
-        deferred_light_shader_.set_mat4(window_.get_context(), "normal_matrix", light.transform_.inverse().transpose());
-        deferred_light_shader_.set_vec3(window_.get_context(), "light_color", light.color_);
-
-        window_.draw(light_sphere_);
-    }
-
-    deferred_light_shader_.unuse();
-
-    glPopAttrib();
-
-    disable_stereo();
-}
-
-void RenderBackend::fill_g_buffer(std::vector<GeometryNode> const& node_list,
-                   Eigen::Matrix4f const& camera_projection,
-                   Eigen::Matrix4f const& view_matrix) {
-
-    g_buffer_.bind(window_.get_context(), {GL_COLOR_ATTACHMENT0,
-                                           GL_COLOR_ATTACHMENT0 +1,
-                                           GL_COLOR_ATTACHMENT0 +2});
-
-    glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    buffer_fill_shader_.use(window_.get_context());
-
-    buffer_fill_shader_.set_mat4(window_.get_context(), "projection_matrix", camera_projection);
-    buffer_fill_shader_.set_mat4(window_.get_context(), "view_matrix", view_matrix);
-
-    for (auto& geometry_core: node_list) {
-
-        auto geometry = GeometryBase::instance()->get(geometry_core.geometry_);
-
-        buffer_fill_shader_.set_mat4(window_.get_context(), "model_matrix", geometry_core.transform_);
-        buffer_fill_shader_.set_mat4(window_.get_context(), "normal_matrix", geometry_core.transform_.inverse().transpose());
-
-        if (geometry) {
-            window_.draw(geometry);
-        } else {
-            WARNING("Cannot render geometry to g-buffer\"%s\": Undefined geometry name!", geometry_core.geometry_.c_str());
+            } else if (material) {
+                WARNING("Cannot render geometry \"%s\": Undefined geometry name!", geometry_core.geometry_.c_str());
+            } else if (geometry) {
+                WARNING("Cannot render geometry \"%s\": Undefined material name: \"%s\"!", geometry_core.geometry_.c_str(), geometry_core.material_.c_str());
+            } else {
+                WARNING("Cannot render geometry \"%s\": Undefined geometry and material name: \"%s\"!", geometry_core.geometry_.c_str(), geometry_core.material_.c_str());
+            }
         }
     }
 
-    buffer_fill_shader_.unuse();
-
-    g_buffer_.unbind();
-}
-
-void RenderBackend::enable_stereo(RenderPipeline::StereoMode camera_type, bool is_left_eye) {
-    switch(camera_type) {
-        case RenderPipeline::ANAGLYPH_RED_CYAN: {
-            glColorMask(is_left_eye, !is_left_eye, !is_left_eye, !is_left_eye);
-        } break;
-
-        case RenderPipeline::ANAGLYPH_RED_GREEN: {
-            glColorMask(is_left_eye, !is_left_eye, false, !is_left_eye);
-        } break;
-
-        case RenderPipeline::SIDE_BY_SIDE: {
-            if (is_left_eye)
-                glViewport(0, 0, window_.get_context().width*0.5, window_.get_context().height);
-            else
-                glViewport(window_.get_context().width*0.5, 0, window_.get_context().width*0.5, window_.get_context().height);
-        } break;
-
-        default:;
-    }
-}
-
-void RenderBackend::disable_stereo() {
-    glViewport(0.f, 0.f, window_.get_context().width, window_.get_context().height);
-    glColorMask(true, true, true, true);
+    fbo.unbind();
 }
 
 }

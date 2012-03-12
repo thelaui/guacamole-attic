@@ -29,8 +29,8 @@ int main() {
     gua::init();
 
     gua::GeometryBase::load_objects_from("data/objects/");
-    gua::MaterialBase::load_materials_from("data/materials/");
     gua::TextureBase::load_textures_from("data/textures/");
+    gua::MaterialBase::load_materials_from("data/materials/");
 
     gua::SceneGraph graph;
 
@@ -46,7 +46,7 @@ int main() {
 
     box = graph.add_node("/box", "box", cube_core);
     box.scale(0.5, 0.5, 0.5);
-    box.rotate(M_PI*0.5, 0, 0, 1, gua::SceneGraph::GLOBAL, gua::SceneGraph::PRIVATE);
+    box.rotate(M_PI*0.5, 0, 0, 1);
     box.translate(0, 0.75, 0);
 
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
@@ -62,10 +62,10 @@ int main() {
     auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, ":0.0"), gua::RenderPipeline::MONO);
     auto pass = new gua::RenderPass("simple", "camera", "screen", "/");
 
-    pass->add_color_buffer("color", 0);
-    pass->add_depth_stencil_buffer("depth_stencil");
-
     pipe->add_render_pass(pass);
+
+    pass->add_buffer(gua::RenderPass::ColorBufferDescription("color", 0));
+    pass->add_buffer(gua::RenderPass::DepthStencilBufferDescription("depth_stencil"));
     pipe->set_final_buffer("simple", "color");
 
     std::vector<gua::RenderPipeline*> pipelines;
@@ -78,7 +78,7 @@ int main() {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-        graph["/box"].rotate(0.02, 0, 1, 0, gua::SceneGraph::LOCAL, gua::SceneGraph::PUBLIC);
+        graph["/box"].rotate(0.02, 0, 1, 0);
     }
 
     return 0;

@@ -36,16 +36,37 @@ class RenderPipeline;
 
 class RenderPass {
     public:
-        struct BufferDescription {
-            BufferDescription(float w = 1.f, float h = 1.f, bool size_is_relative = true,
+        struct ColorBufferDescription {
+            ColorBufferDescription(std::string n, unsigned loc,
+                              float w = 1.f, float h = 1.f, bool size_is_relative = true,
                               unsigned clr_depth = GL_RGB32F, unsigned clr_format = GL_RGB, unsigned t = GL_FLOAT):
+                              name(n),
+                              location(loc),
                               width(w),
                               height(h),
                               size_is_relative_to_window(size_is_relative),
                               color_depth(clr_depth ),
                               color_format(clr_format),
                               type(t) {}
+            std::string name;
+            unsigned location;
+            float width, height;
+            bool size_is_relative_to_window;
+            unsigned color_depth, color_format, type;
+        };
 
+        struct DepthStencilBufferDescription {
+            DepthStencilBufferDescription(std::string n,
+                              float w = 1.f, float h = 1.f, bool size_is_relative = true,
+                              unsigned clr_depth = GL_DEPTH_COMPONENT32, unsigned clr_format = GL_DEPTH_COMPONENT, unsigned t = GL_FLOAT):
+                              name(n),
+                              width(w),
+                              height(h),
+                              size_is_relative_to_window(size_is_relative),
+                              color_depth(clr_depth ),
+                              color_format(clr_format),
+                              type(t) {}
+            std::string name;
             float width, height;
             bool size_is_relative_to_window;
             unsigned color_depth, color_format, type;
@@ -53,8 +74,8 @@ class RenderPass {
 
         RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& entry_point);
 
-        void add_color_buffer(std::string const& buffer_name, unsigned layout_location, BufferDescription const& buffer_desc = BufferDescription());
-        void add_depth_stencil_buffer(std::string const& buffer_name, BufferDescription const& buffer_desc = BufferDescription());
+        void add_buffer(ColorBufferDescription const& buffer_desc);
+        void add_buffer(DepthStencilBufferDescription const& buffer_desc);
 
         void set_input_buffer(std::string const& in_render_pass, std::string const& in_buffer,
                               std::string const& target_material, std::string const& target_uniform);
@@ -71,17 +92,21 @@ class RenderPass {
         std::shared_ptr<Texture> const& get_buffer(std::string const& name);
 
         void flush();
-
+        void create_buffers();
         void set_pipeline(RenderPipeline* pipeline);
 
         struct PassConnection {
             std::string in_render_pass, in_buffer, target_material, target_uniform;
         };
 
+        std::vector<ColorBufferDescription> color_buffer_descriptions_;
+        DepthStencilBufferDescription depth_stencil_buffer_description_;
+
         std::string name_, camera_, screen_, entry_point_;
         std::map<std::string, std::shared_ptr<Texture>> buffers_;
         FrameBufferObject fbo_;
         RenderPipeline* pipeline_;
+        bool rendered_frame_;
 
         std::vector<PassConnection> connections_;
 

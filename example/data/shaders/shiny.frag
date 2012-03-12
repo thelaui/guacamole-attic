@@ -20,8 +20,12 @@
 #version 330
 
 in vec3 normal;
+in vec2 texcoord;
 
-out vec4 out_color;
+uniform float shinyness;
+uniform sampler2D tex;
+
+layout(location=0) out vec4 out_color;
 
 void main() {
 	vec3 lightDirTop  = normalize(vec3(1.0,2.0,5.0));
@@ -36,7 +40,7 @@ void main() {
 	float intensityBack = max(dot(lightDirBack,normal),0.0);
 	float intensityFill = max(dot(lightDirFill,normal),0.0);
 
-	float fakeSpec = pow(max(dot(lightDirTop,normal),0.0), 50.0);
+	float fakeSpec = pow(max(dot(lightDirTop,normal),0.0), shinyness);
 
 	vec3 amb = vec3(0.1, 0.1, 0.1);
 

@@ -62,6 +62,10 @@ void Material::use(RenderContext const& context) const {
         shader_.set_sampler2D(context, val.first, *val.second);
 }
 
+void Material::unuse(RenderContext const& context) const {
+    shader_.unuse();
+}
+
 void Material::set_uniform_float(std::string const& uniform_name, float value) {
     float_uniforms_[uniform_name] = value;
 }

@@ -98,11 +98,12 @@ void ShaderProgram::set_vec4(RenderContext const& context, std::string const& ve
 
 void ShaderProgram::set_sampler2D(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) const{
     if (uniforms_.size() > context.id) {
-        sampler.bind(context, texture_offset_);
         unsigned loc(check_uniform(context, sampler_name, Uniform::SAMPLER2D));
-        if(loc >= 0) glUniform1i(loc, texture_offset_);
-
-        ++texture_offset_;
+        if(loc >= 0) {
+            sampler.bind(context, texture_offset_);
+            glUniform1i(loc, texture_offset_);
+            ++texture_offset_;
+        }
     }
 }
 

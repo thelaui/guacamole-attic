@@ -56,7 +56,7 @@ class SceneGraph::Node {
         ///                 object.
         ////////////////////////////////////////////////////////////////////////
         Node(std::string const& name, Eigen::Transform3f transform = (Eigen::Transform3f)Eigen::Matrix3f::Identity(),
-             Core* core = NULL, InheritanceMode mode = PUBLIC);
+             Core* core = NULL);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -124,14 +124,14 @@ class SceneGraph::Node {
         ///
         ///\return transform The Object's transformation.
         ////////////////////////////////////////////////////////////////////////
-        Eigen::Transform3f const& get_transform(InheritanceMode mode) const;
+        Eigen::Transform3f const& get_transform() const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Sets the transformation of the object the Node contains.
         ///
         ///\param transform The new transformation of the Node's object.
         ////////////////////////////////////////////////////////////////////////
-        void set_transform(Eigen::Transform3f const& transform, InheritanceMode mode);
+        void set_transform(Eigen::Transform3f const& transform);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the Node's Core.
@@ -170,14 +170,8 @@ class SceneGraph::Node {
         ///\param x         The x value of the scaling.
         ///\param y         The y value of the scaling.
         ///\param z         The z value of the scaling.
-        ///\param transform_mode   Whether the transformation is applied in
-        ///                        object or world coordinates.
-        ///\param inheritance_mode Whether the transformation should affect
-        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void scale(double x, double y, double z,
-                   TransformMode transform_mode,
-                   InheritanceMode inheritance_mode);
+        void scale(double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Applies a rotation on the Node's transformation.
@@ -186,14 +180,8 @@ class SceneGraph::Node {
         ///\param x         The x factor of the rotation.
         ///\param y         The y factor of the rotation.
         ///\param z         The z factor of the rotation.
-        ///\param transform_mode   Whether the transformation is applied in
-        ///                        object or world coordinates.
-        ///\param inheritance_mode Whether the transformation should affect
-        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void rotate(double angle, double x, double y, double z,
-                    TransformMode transform_mode,
-                    InheritanceMode inheritance_mode);
+        void rotate(double angle, double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Applies a translation on the Node's transformation.
@@ -201,14 +189,8 @@ class SceneGraph::Node {
         ///\param x         The x value of the translation.
         ///\param y         The y value of the translation.
         ///\param z         The z value of the translation.
-        ///\param transform_mode   Whether the transformation is applied in
-        ///                        object or world coordinates.
-        ///\param inheritance_mode Whether the transformation should affect
-        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void translate(double x, double y, double z,
-                       TransformMode transform_mode,
-                       InheritanceMode inheritance_mode);
+        void translate(double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the Node's depth.
@@ -229,14 +211,15 @@ class SceneGraph::Node {
         ////////////////////////////////////////////////////////////////////////
         std::string const get_path() const;
 
+        SceneGraph::Node* deep_copy() const;
+
     private:
         std::string name_;
 
         Node* parent_;
         std::list<Node*> children_;
 
-        Eigen::Transform3f private_transform_;
-        Eigen::Transform3f public_transform_;
+        Eigen::Transform3f transform_;
         Core* core_;
 };
 
