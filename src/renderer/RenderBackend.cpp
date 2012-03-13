@@ -29,6 +29,7 @@
 #include "renderer/GeometryBase.hpp"
 #include "renderer/LightSphere.hpp"
 #include "renderer/BufferFillShaders.hpp"
+#include "renderer/RenderPass.hpp"
 #include "traverser/OptimizedScene.hpp"
 #include "utils/debug.hpp"
 #include "utils/math.hpp"
@@ -39,17 +40,21 @@
 
 namespace gua {
 
-void RenderBackend::render(std::string const& camera_name, std::string const& screen_name,
-                           OptimizedScene const& scene, FrameBufferObject& fbo,
-                           RenderContext const& context) {
+RenderBackend::RenderBackend(RenderPass* pass):
+    pass_(pass) {}
 
-    fbo.bind(context, {GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT});
+void RenderBackend::render(OptimizedScene const& scene, RenderContext const& context) {
 
-    glClearColor(0.0, 1.0, 0.0, 1.0);
+    pass_->fbo_.bind(context, {GL_COLOR_ATTACHMENT0,
+                              GL_COLOR_ATTACHMENT0+1,
+                              GL_COLOR_ATTACHMENT0+2});
+
+    glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, pass_->fbo_.width(), pass_->fbo_.height());
 
-    auto camera_it(scene.cameras_.find(camera_name));
-    auto screen_it(scene.screens_.find(screen_name));
+    auto camera_it(scene.cameras_.find(pass_->camera_));
+    auto screen_it(scene.screens_.find(pass_->screen_));
 
     if (camera_it != scene.cameras_.end() && screen_it != scene.screens_.end()) {
         auto camera(camera_it->second);
@@ -74,6 +79,14 @@ void RenderBackend::render(std::string const& camera_name, std::string const& sc
             if (material && geometry) {
                 material->use(context);
 
+                if (pass_->float_uniforms_.find(geometry_core.material_) != pass_->float_uniforms_.end())
+                    for (auto val : pass_->float_uniforms_[geometry_core.material_])
+                        material->get_shader().set_float(context, val.first, val.second);
+
+                if (pass_->texture_uniforms_.find(geometry_core.material_) != pass_->texture_uniforms_.end())
+                    for (auto val : pass_->texture_uniforms_[geometry_core.material_])
+                        material->get_shader().set_sampler2D(context, val.first, *val.second);
+
                 material->get_shader().set_mat4(context, "projection_matrix", projection);
                 material->get_shader().set_mat4(context, "view_matrix", view_matrix);
                 material->get_shader().set_mat4(context, "model_matrix", geometry_core.transform_);
@@ -93,7 +106,7 @@ void RenderBackend::render(std::string const& camera_name, std::string const& sc
         }
     }
 
-    fbo.unbind();
+    pass_->fbo_.unbind();
 }
 
 }

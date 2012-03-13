@@ -108,7 +108,7 @@ RenderWindow::RenderWindow( Description const& description ) throw (std::string)
 
     GLint attribs[] = {
         GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-        GLX_CONTEXT_MINOR_VERSION_ARB, 1,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 3,
         //GLX_CONTEXT_PROFILE_MASK_ARB,GLX_CONTEXT_CORE_PROFILE_BIT_ARB, 0          // for 3.1
         GLX_CONTEXT_PROFILE_MASK_ARB,GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB, 0   // for 4.1
     };
@@ -159,8 +159,8 @@ void RenderWindow::set_active() const {
 }
 
 void RenderWindow::start_frame() const {
-    glClearColor(1.0, 0.0, 0.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void RenderWindow::finish_frame() const {
@@ -168,6 +168,8 @@ void RenderWindow::finish_frame() const {
 }
 
 void RenderWindow::display_texture(std::shared_ptr<Texture> const& texture) const {
+    glViewport(0, 0, ctx_.width, ctx_.height);
+
     fullscreen_shader_.use(ctx_);
     fullscreen_shader_.set_sampler2D(ctx_, "tex", *texture);
 

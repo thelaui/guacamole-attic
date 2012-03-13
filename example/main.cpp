@@ -34,38 +34,53 @@ int main() {
 
     gua::SceneGraph graph;
 
-    auto plane_core = new gua::GeometryCore("plane", "shiny");
+    auto plane_core = new gua::GeometryCore("plane", "tiles");
     auto floor = graph.add_node("/", "floor", plane_core);
     floor.scale(1.6, 1, 2);
-    floor.translate(0, 0, -1);
 
-    auto cube_core = new gua::GeometryCore("cube", "shiny");
+    auto cube_core = new gua::GeometryCore("cube", "tiles_small");
     auto box = graph.add_node("/", "box", cube_core);
     box.scale(0.2, 0.2, 0.2);
-    box.translate(0, 0.1, -0.1);
+    box.translate(0, 0.1, 0);
 
-    box = graph.add_node("/box", "box", cube_core);
+    auto monkey_core = new gua::GeometryCore("monkey", "wood");
+    box = graph.add_node("/box", "box", monkey_core);
     box.scale(0.5, 0.5, 0.5);
-    box.rotate(M_PI*0.5, 0, 0, 1);
-    box.translate(0, 0.75, 0);
+    box.translate(0, 1, 0);
 
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
-    screen.translate(0, 0.45, 0);
+    screen.translate(0, 0.45, 0.5);
+
+    screen = graph.add_node("/", "mirror_screen", screen_core);
+    screen.translate(0, -0.45, 0.5);
 
     auto camera_core = new gua::CameraCore(0.1f);
     auto camera = graph.add_node("/screen", "camera", camera_core);
-    camera.translate(0, 0.45, 3.5);
+    camera.translate(0, 0, 1.5);
+
+    camera = graph.add_node("/mirror_screen", "mirror_camera", camera_core);
+    camera.translate(0, 0, 1.5);
 
     setup_lights(graph);
 
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, ":0.0"), gua::RenderPipeline::MONO);
+
+    auto mirror_pass = new gua::RenderPass("mirror", "camera", "screen", "/", 0.2, 0.2);
+    mirror_pass->add_buffer(gua::RenderPass::ColorBufferDescription("color", 0));
+    mirror_pass->add_buffer(gua::RenderPass::ColorBufferDescription("normal", 1));
+    mirror_pass->add_buffer(gua::RenderPass::ColorBufferDescription("texcoord", 2));
+    mirror_pass->add_buffer(gua::RenderPass::DepthStencilBufferDescription("depth_stencil"));
+
     auto pass = new gua::RenderPass("simple", "camera", "screen", "/");
-
-    pipe->add_render_pass(pass);
-
     pass->add_buffer(gua::RenderPass::ColorBufferDescription("color", 0));
+    pass->add_buffer(gua::RenderPass::ColorBufferDescription("normal", 1));
+    pass->add_buffer(gua::RenderPass::ColorBufferDescription("texcoord", 2));
     pass->add_buffer(gua::RenderPass::DepthStencilBufferDescription("depth_stencil"));
+    pass->set_input_buffer("mirror", "normal", "tiles_small", "tex");
+
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, ":0.0"), gua::RenderPipeline::MONO);
+    pipe->add_render_pass(mirror_pass);
+    pipe->add_render_pass(pass);
     pipe->set_final_buffer("simple", "color");
 
     std::vector<gua::RenderPipeline*> pipelines;
@@ -73,12 +88,17 @@ int main() {
 
     gua::RenderServer renderer(pipelines);
 
+    int frame(0);
     while (true) {
         renderer.queue_draw(&graph);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-        graph["/box"].rotate(0.02, 0, 1, 0);
+        ++frame;
+        graph["/box"].translate((std::sin(frame*0.01))*0.001, 0, 0);
+        graph["/box/box"].rotate(0.02, 0, 1, 0);
+        graph["/screen"].rotate(0.001, 0, 1, 0);
+        graph["/mirror_screen"].rotate(0.001, 0, 1, 0);
     }
 
     return 0;

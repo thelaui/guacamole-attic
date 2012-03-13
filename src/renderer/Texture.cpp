@@ -136,9 +136,8 @@ void Texture::upload_to(RenderContext const& context) const{
     set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);
 
     // load data as texture
-    if (data_.size() > 0)
-        glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
-                    0, color_format_, type_, &(*data_.begin()));
+    glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
+                0, color_format_, type_, &(*data_.begin()));
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }

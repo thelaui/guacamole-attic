@@ -68,8 +68,8 @@ class FrameBufferObject {
         ////////////////////////////////////////////////////////////
         void attach_buffer(RenderContext const& context,
                            unsigned buffer_type, unsigned buffer_id,
-                           unsigned attachment_id, int mip_level = 0,
-                           int z_slice = 0);
+                           unsigned attachment_id, int width, int height,
+                           int mip_level = 0, int z_slice = 0);
 
         ////////////////////////////////////////////////////////////
         /// \brief Bind the FrameBufferObject.
@@ -100,8 +100,13 @@ class FrameBufferObject {
         ////////////////////////////////////////////////////////////
         bool is_valid(RenderContext const& context);
 
+        int width() const;
+        int height() const;
+
     private:
         void upload_to(RenderContext const& context) const;
+
+        int width_, height_;
 
         mutable std::vector<unsigned> fbos_;
 };

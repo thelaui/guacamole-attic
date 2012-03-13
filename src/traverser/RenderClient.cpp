@@ -55,6 +55,7 @@ void RenderClient::queue_draw(SceneGraph const* graph) {
 
     if (rendering_finished_) {
         graph_copy_ = *graph;
+
         rendering_finished_ = false;
         // signal
         render_condition_.notify_one();

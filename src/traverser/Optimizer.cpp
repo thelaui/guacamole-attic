@@ -104,7 +104,6 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
                 matrix_stack.pop();
         }
     } while ( node != scene_graph->end() );
-
 }
 
 

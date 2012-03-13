@@ -26,11 +26,14 @@
 #include "utils/debug.hpp"
 
 #include <GL/glew.h>
+#include <iostream>
 #include <string>
 
 namespace gua {
 
 FrameBufferObject::FrameBufferObject():
+    width_(0),
+    height_(0),
     fbos_() {}
 
 FrameBufferObject::~FrameBufferObject() {
@@ -41,8 +44,12 @@ FrameBufferObject::~FrameBufferObject() {
 
 void FrameBufferObject::attach_buffer(RenderContext const& context,
                                       unsigned buffer_type, unsigned buffer_id, unsigned attachment_id,
+                                      int width, int height,
                                       int mip_level, int z_slice) {
     bind(context, {});
+
+    width_ = width;
+    height_ = height;
 
     switch (buffer_type) {
         case GL_TEXTURE_1D:
@@ -128,6 +135,14 @@ bool FrameBufferObject::is_valid(RenderContext const& context) {
   return is_valid;
 }
 
+int FrameBufferObject::width() const {
+    return width_;
+}
+
+int FrameBufferObject::height() const {
+    return height_;
+}
+
 void FrameBufferObject::upload_to(RenderContext const& context) const {
     if (fbos_.size() <= context.id) {
         fbos_.resize(context.id+1);
@@ -135,6 +150,8 @@ void FrameBufferObject::upload_to(RenderContext const& context) const {
 
     unsigned fbo_id(0);
     glGenFramebuffers(1, &fbo_id);
+    if (fbo_id == 0)
+        WARNING("Failed to create a Framebuffer object!");
     fbos_[context.id] = fbo_id;
 }
 
