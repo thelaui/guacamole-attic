@@ -40,7 +40,7 @@ Optimizer::Optimizer() {
 Optimizer::~Optimizer() {
 }
 
-void Optimizer::check( SceneGraph const* scene_graph ) {
+void Optimizer::check( SceneGraph const* scene_graph, std::string const& entry_point) {
 
     // clearing all old data
     int geometry_count = data_.nodes_.size();
@@ -55,7 +55,7 @@ void Optimizer::check( SceneGraph const* scene_graph ) {
     data_.screens_.clear();
     data_.cameras_.clear();
 
-    auto node = scene_graph->begin();
+    auto node = scene_graph->get_iterator(entry_point);
 
     std::stack<Eigen::Matrix4f> matrix_stack;
     matrix_stack.push(Eigen::Matrix4f::Identity());

@@ -80,14 +80,15 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name) 
         return buffers_[name];
 
     Optimizer optimizer;
-    optimizer.check(pipeline_->get_current_graph());
+    optimizer.check(pipeline_->get_current_graph(), entry_point_);
 
     for (auto& node: optimizer.get_data().nodes_) {
         auto material(inputs_.find(node.material_));
 
         if (material != inputs_.end()) {
             for (auto& uniform: material->second) {
-                overwrite_uniform_texture(material->first, uniform.first, pipeline_->get_render_pass(uniform.second.first)->get_buffer(uniform.second.second));
+                overwrite_uniform_texture(material->first, uniform.first,
+                                          pipeline_->get_render_pass(uniform.second.first)->get_buffer(uniform.second.second));
             }
         }
     }
@@ -117,12 +118,14 @@ void RenderPass::create_buffers() {
         buffers_[description.name] = std::shared_ptr<Texture>(new_buffer);
 
         fbo_.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D,
-                           new_buffer->get_id(pipeline_->get_context()), GL_COLOR_ATTACHMENT0 + description.location, width, height);
+                           new_buffer->get_id(pipeline_->get_context()),
+                           GL_COLOR_ATTACHMENT0 + description.location, width, height);
 
     }
 
     if (depth_stencil_buffer_description_.name != "") {
-        Texture* new_buffer(new Texture(width, height, depth_stencil_buffer_description_.color_depth,
+        Texture* new_buffer(new Texture(width, height,
+                                        depth_stencil_buffer_description_.color_depth,
                                         depth_stencil_buffer_description_.color_format,
                                         depth_stencil_buffer_description_.type));
 
@@ -132,7 +135,8 @@ void RenderPass::create_buffers() {
         buffers_[depth_stencil_buffer_description_.name] = std::shared_ptr<Texture>(new_buffer);
 
         fbo_.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D,
-                           new_buffer->get_id(pipeline_->get_context()), GL_DEPTH_ATTACHMENT, width, height);
+                           new_buffer->get_id(pipeline_->get_context()),
+                           GL_DEPTH_ATTACHMENT, width, height);
     }
 
     if(!fbo_.is_valid(pipeline_->get_context()))

@@ -80,7 +80,6 @@ void RenderPipeline::process(SceneGraph* graph) {
     window_->start_frame();
 
     window_->display_texture(passes_[final_pass_]->get_buffer(final_buffer_));
-    //window_->display_texture(TextureBase::instance()->get("wood"));
 
     window_->finish_frame();
 

@@ -35,11 +35,12 @@ namespace gua {
 Material::Material():
     texture_uniforms_(),
     float_uniforms_(),
-    shader_() {}
+    shader_(NULL) {}
 
 Material::Material(std::string const& file_name):
     texture_uniforms_(),
-    float_uniforms_() {
+    float_uniforms_(),
+    shader_(NULL) {
 
     TextFile file(file_name);
 
@@ -50,20 +51,24 @@ Material::Material(std::string const& file_name):
     }
 }
 
-Material::~Material() {}
+Material::~Material() {
+    if (shader_)
+        delete shader_;
+}
 
 void Material::use(RenderContext const& context) const {
-    shader_.use(context);
+    shader_->use(context);
 
     for (auto val : float_uniforms_)
-        shader_.set_float(context, val.first, val.second);
+        shader_->set_float(context, val.first, val.second);
 
     for (auto val : texture_uniforms_)
-        shader_.set_sampler2D(context, val.first, *val.second);
+        if (val.second == NULL) DEBUG("aarg"); else
+        shader_->set_sampler2D(context, val.first, *val.second);
 }
 
 void Material::unuse(RenderContext const& context) const {
-    shader_.unuse();
+    shader_->unuse(context);
 }
 
 void Material::set_uniform_float(std::string const& uniform_name, float value) {
@@ -82,7 +87,7 @@ void Material::set_uniform_texture(std::string const& uniform_name, std::string 
 }
 
 ShaderProgram const& Material::get_shader() const {
-    return shader_;
+    return *shader_;
 }
 
 void Material::construct_from_file(TextFile const& file) {
@@ -128,7 +133,7 @@ void Material::construct_from_file(TextFile const& file) {
 
     FragmentShader fragment_shader(path_parser.get_path());
 
-    shader_ = ShaderProgram(vertex_shader, fragment_shader);
+    shader_ = new ShaderProgram(vertex_shader, fragment_shader);
 }
 
 }

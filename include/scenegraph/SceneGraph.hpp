@@ -185,7 +185,7 @@ class SceneGraph {
         ///
         ///\return Iterator      An Iterator on the given Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator get_iterator(std::string const& path_to_node, IterationType type = DEPTH_FIRST);
+        Iterator get_iterator(std::string const& path_to_node, IterationType type = DEPTH_FIRST) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns an iterator to the beginning of the SceneGraph.

@@ -66,7 +66,7 @@ class Optimizer {
         ///
         ///\param scene_graph          The SceneGraph to be processed.
         ////////////////////////////////////////////////////////////////////////
-        void check( SceneGraph const* scene_graph );
+        void check( SceneGraph const* scene_graph, std::string const& entry_point );
 
         OptimizedScene const& get_data() const;
 

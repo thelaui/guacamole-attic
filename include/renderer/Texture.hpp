@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
 #include <GL/glew.h>
 
 namespace gua {
@@ -121,6 +122,7 @@ class Texture {
         std::vector<unsigned char> data_;
 
         mutable std::vector<unsigned> texture_ids_;
+        mutable std::mutex upload_mutex_;
 
         void upload_to(RenderContext const& context) const;
 };

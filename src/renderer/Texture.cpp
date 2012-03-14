@@ -36,7 +36,8 @@ Texture::Texture():
     color_format_(0),
     type_(0),
     data_(),
-    texture_ids_() {}
+    texture_ids_(),
+    upload_mutex_() {}
 
 Texture::Texture(unsigned width, unsigned height, unsigned color_depth,
                  unsigned color_format, unsigned type):
@@ -46,7 +47,8 @@ Texture::Texture(unsigned width, unsigned height, unsigned color_depth,
                  color_format_(color_format),
                  type_(type),
                  data_(),
-                 texture_ids_() {}
+                 texture_ids_(),
+                 upload_mutex_() {}
 
 Texture::Texture(std::string const& file):
     width_(0),
@@ -55,7 +57,8 @@ Texture::Texture(std::string const& file):
     color_format_(0),
     type_(0),
     data_(),
-    texture_ids_() {
+    texture_ids_(),
+    upload_mutex_() {
 
     ILuint image_id (0);
     ilGenImages(1, &image_id);
@@ -84,11 +87,11 @@ Texture::~Texture() {
             glBindTexture(GL_TEXTURE_2D, 0);
             glDeleteTextures(1, &texture_id);
         }
+
 }
 
 void Texture::bind(RenderContext const& context, unsigned texture_type) const {
-    if (texture_ids_.size() <= context.id || texture_ids_[context.id] == 0)
-        upload_to(context);
+    upload_to(context);
 
     glActiveTexture(GL_TEXTURE0 + texture_type);
     glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
@@ -104,42 +107,46 @@ void Texture::set_parameter(unsigned parameter_name, unsigned value) const {
 }
 
 unsigned Texture::get_id(RenderContext const& context) const {
-    if (texture_ids_.size() <= context.id || texture_ids_[context.id] == 0)
-        upload_to(context);
+    upload_to(context);
 
     return texture_ids_[context.id];
 }
 
 void Texture::upload_to(RenderContext const& context) const{
-    // generate texture id
-    unsigned texture_id(0);
-    glGenTextures(1, &texture_id);
-    if (texture_id == 0) {
-        WARNING("Failed to generate texture storage!");
-        return;
+
+    std::unique_lock<std::mutex> lock(upload_mutex_);
+
+    if (texture_ids_.size() <= context.id || texture_ids_[context.id] == 0) {
+        // generate texture id
+        unsigned texture_id(0);
+        glGenTextures(1, &texture_id);
+        if (texture_id == 0) {
+            WARNING("Failed to generate texture storage!");
+            return;
+        }
+
+        if (texture_ids_.size() <= context.id)
+            texture_ids_.resize(context.id + 1);
+
+        texture_ids_[context.id] = texture_id;
+
+        glEnable(GL_TEXTURE_2D);
+        // bind texture object
+        glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
+
+        //setting Texture Parameters
+        set_parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        set_parameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        set_parameter(GL_TEXTURE_WRAP_S, GL_CLAMP);
+        set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+        // load data as texture
+        glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
+                    0, color_format_, type_, &(*data_.begin()));
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
-
-    if (texture_ids_.size() <= context.id)
-        texture_ids_.resize(context.id + 1);
-
-    texture_ids_[context.id] = texture_id;
-
-    glEnable(GL_TEXTURE_2D);
-    // bind texture object
-    glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
-
-    //setting Texture Parameters
-    set_parameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    set_parameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    set_parameter(GL_TEXTURE_WRAP_S, GL_CLAMP);
-    set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-    // load data as texture
-    glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
-                0, color_format_, type_, &(*data_.begin()));
-
-    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 }

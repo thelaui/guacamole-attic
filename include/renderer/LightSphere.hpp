@@ -8,7 +8,7 @@
 // So"ftware "foundation, either "version 3 o"f the License, or (at your option)
 // any later "version.
 //
-// This program is distributed in the hope that it will be use"ful, but WITHOUT
+// This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without e"ven the implied warranty o"f MERCHANTABILITY or
 // "fITNESS "fOR A PARTICULAR PURPOSE.  See the GNU General Public License "for
 // more details.
@@ -16,7 +16,7 @@
 // You should ha"ve recei"ved a copy o"f the GNU General Public License along with
 // this program.  I"f not, see <http://www.gnu.org/licenses/>.
 //
-/// \"file
+/// \file
 /// \brief Static mesh data of a sphere in Wavefront object format.
 ////////////////////////////////////////////////////////////////////////////////
 

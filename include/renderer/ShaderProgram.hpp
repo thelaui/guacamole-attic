@@ -82,7 +82,7 @@ class ShaderProgram {
         /// \brief Unapplies this shader.
         ///
         ////////////////////////////////////////////////////////////////////////
-        void unuse() const;
+        void unuse(RenderContext const& context) const;
 
         void set_mat4(RenderContext const& context, std::string const& mat_name,
                       Eigen::Matrix4f const& mat) const;
@@ -131,7 +131,8 @@ class ShaderProgram {
         mutable std::vector<unsigned> program_ids_;
 
         mutable std::vector<std::map<std::string, Uniform>> uniforms_;
-        mutable int texture_offset_;
+        mutable std::vector<unsigned> texture_offsets_;
+        mutable std::mutex upload_mutex_;
 
         VertexShader v_shader_;
         FragmentShader f_shader_;

@@ -159,8 +159,7 @@ void RenderWindow::set_active() const {
 }
 
 void RenderWindow::start_frame() const {
-    //glClearColor(0.0, 0.0, 0.0, 1.0);
-    glClear(GL_DEPTH_BUFFER_BIT);
+
 }
 
 void RenderWindow::finish_frame() const {
@@ -173,6 +172,8 @@ void RenderWindow::display_texture(std::shared_ptr<Texture> const& texture) cons
     fullscreen_shader_.use(ctx_);
     fullscreen_shader_.set_sampler2D(ctx_, "tex", *texture);
 
+    glDisable(GL_DEPTH_TEST);
+
     glBegin(GL_QUADS);
         glVertex2f(-1, -1);
         glVertex2f(1, -1);
@@ -180,7 +181,9 @@ void RenderWindow::display_texture(std::shared_ptr<Texture> const& texture) cons
         glVertex2f(-1, 1);
     glEnd();
 
-    fullscreen_shader_.unuse();
+    glEnable(GL_DEPTH_TEST);
+
+    fullscreen_shader_.unuse(ctx_);
 }
 
 RenderContext const& RenderWindow::get_context() const {

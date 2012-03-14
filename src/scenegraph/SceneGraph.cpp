@@ -119,7 +119,7 @@ void SceneGraph::set_working_node(std::string const& path_to_node) {
     working_node_ = find_node(path_to_node);
 }
 
-SceneGraph::Iterator SceneGraph::get_iterator(std::string const& path_to_node, IterationType type) {
+SceneGraph::Iterator SceneGraph::get_iterator(std::string const& path_to_node, IterationType type) const {
     return Iterator(find_node(path_to_node), type);
 }
 

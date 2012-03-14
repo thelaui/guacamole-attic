@@ -91,7 +91,7 @@ class Material {
     private:
         std::map<std::string, std::shared_ptr<Texture>> texture_uniforms_;
         std::map<std::string, float> float_uniforms_;
-        ShaderProgram shader_;
+        ShaderProgram* shader_;
 
         void construct_from_file(TextFile const& file);
 };

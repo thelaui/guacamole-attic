@@ -36,12 +36,14 @@ namespace gua {
 ShaderProgram::ShaderProgram():
     program_ids_(),
     uniforms_(),
-    texture_offset_(0) {}
+    texture_offsets_(),
+    upload_mutex_() {}
 
 ShaderProgram::ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader ):
     program_ids_(),
     uniforms_(),
-    texture_offset_(0),
+    texture_offsets_(),
+    upload_mutex_(),
     v_shader_(v_shader),
     f_shader_(f_shader) {}
 
@@ -49,15 +51,13 @@ ShaderProgram::~ShaderProgram() {}
 
 void ShaderProgram::use(RenderContext const& context) const {
     // upload to GPU if neccessary
-    if (program_ids_.size() <= context.id || program_ids_[context.id] == 0) {
-        upload_to(context);
-    }
+    upload_to(context);
 
     glUseProgram(program_ids_[context.id]);
 }
 
-void ShaderProgram::unuse() const {
-    texture_offset_ = 0;
+void ShaderProgram::unuse(RenderContext const& context) const {
+    texture_offsets_[context.id] = 0;
     glUseProgram(0);
 }
 
@@ -100,9 +100,9 @@ void ShaderProgram::set_sampler2D(RenderContext const& context, std::string cons
     if (uniforms_.size() > context.id) {
         unsigned loc(check_uniform(context, sampler_name, Uniform::SAMPLER2D));
         if(loc >= 0) {
-            sampler.bind(context, texture_offset_);
-            glUniform1i(loc, texture_offset_);
-            ++texture_offset_;
+            sampler.bind(context, texture_offsets_[context.id]);
+            glUniform1i(loc, texture_offsets_[context.id]);
+            ++texture_offsets_[context.id];
         }
     }
 }
@@ -138,35 +138,39 @@ unsigned ShaderProgram::check_uniform(RenderContext const& context, std::string 
 
 void ShaderProgram::upload_to(RenderContext const& context) const {
 
-    if (program_ids_.size() <= context.id) {
-        program_ids_.resize(context.id+1);
-        uniforms_.resize(context.id+1);
+    std::unique_lock<std::mutex> lock(upload_mutex_);
+
+    if (program_ids_.size() <= context.id || program_ids_[context.id] == 0) {
+        if (program_ids_.size() <= context.id) {
+            program_ids_.resize(context.id+1);
+            uniforms_.resize(context.id+1);
+            texture_offsets_.resize(context.id+1);
+        }
+
+        unsigned program_id = glCreateProgram();
+
+        glAttachShader(program_id, v_shader_.get_id(context));
+        glAttachShader(program_id, f_shader_.get_id(context));
+
+        glLinkProgram(program_id);
+        glValidateProgram(program_id);
+
+        for (auto& uniform : v_shader_.get_uniforms())
+            uniforms_[context.id].insert(std::make_pair(uniform.name_, uniform));
+        for (auto& uniform : v_shader_.get_uniforms())
+            uniforms_[context.id][uniform.name_].location_ = glGetUniformLocation(program_id, uniform.name_.c_str());
+
+        for (auto& uniform : f_shader_.get_uniforms())
+            uniforms_[context.id].insert(std::make_pair(uniform.name_, uniform));
+        for (auto& uniform : f_shader_.get_uniforms())
+            uniforms_[context.id][uniform.name_].location_ = glGetUniformLocation(program_id, uniform.name_.c_str());
+
+        glBindAttribLocation(program_id, vertex_location, "in_position");
+        glBindAttribLocation(program_id, normal_location, "in_normal");
+        glBindAttribLocation(program_id, texture_location, "in_tex_coord");
+
+        program_ids_[context.id] = program_id;
     }
-
-    unsigned program_id = glCreateProgram();
-
-    glAttachShader(program_id, v_shader_.get_id(context));
-    glAttachShader(program_id, f_shader_.get_id(context));
-
-    glLinkProgram(program_id);
-    glValidateProgram(program_id);
-
-    for (auto& uniform : v_shader_.get_uniforms())
-        uniforms_[context.id].insert(std::make_pair(uniform.name_, uniform));
-    for (auto& uniform : v_shader_.get_uniforms())
-        uniforms_[context.id][uniform.name_].location_ = glGetUniformLocation(program_id, uniform.name_.c_str());
-
-    for (auto& uniform : f_shader_.get_uniforms())
-        uniforms_[context.id].insert(std::make_pair(uniform.name_, uniform));
-    for (auto& uniform : f_shader_.get_uniforms())
-        uniforms_[context.id][uniform.name_].location_ = glGetUniformLocation(program_id, uniform.name_.c_str());
-
-    glBindAttribLocation(program_id, vertex_location, "in_position");
-	glBindAttribLocation(program_id, normal_location, "in_normal");
-	glBindAttribLocation(program_id, texture_location, "in_tex_coord");
-
-	program_ids_[context.id] = program_id;
-
 }
 
 }
