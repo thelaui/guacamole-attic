@@ -3,7 +3,7 @@
 	<Workspace title="Workspace">
 		<Project filename="guacamole_rendering.cbp" />
 		<Project filename="guacamole_scenegraph.cbp" />
-		<Project filename="example/example.cbp" active="1">
+		<Project filename="simple_example/simple_example.cbp" active="1">
 			<Depends filename="guacamole_scenegraph.cbp" />
 			<Depends filename="guacamole_rendering.cbp" />
 		</Project>
