@@ -29,6 +29,7 @@
 
 #include "renderer/FrameBufferObject.hpp"
 #include "renderer/Texture.hpp"
+#include "traverser/RenderMask.hpp"
 
 namespace gua {
 
@@ -60,7 +61,7 @@ class RenderPass {
             unsigned color_depth, color_format, type;
         };
 
-        RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& entry_point,
+        RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& render_mask = "",
                    float width = 1.f, float height = 1.f, bool size_is_relative = true);
 
         void add_buffer(ColorBufferDescription const& buffer_desc);
@@ -92,7 +93,8 @@ class RenderPass {
         std::vector<ColorBufferDescription> color_buffer_descriptions_;
         DepthStencilBufferDescription depth_stencil_buffer_description_;
 
-        std::string name_, camera_, screen_, entry_point_;
+        std::string name_, camera_, screen_;
+        RenderMask render_mask_;
         float width_, height_;
         bool size_is_relative_to_window_;
 

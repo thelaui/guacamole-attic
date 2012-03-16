@@ -63,15 +63,15 @@ void RenderClient::queue_draw(SceneGraph const* graph) {
 }
 
 void RenderClient::draw_loop() {
-    Timer timer;
-    timer.start();
+//    Timer timer;
+//    timer.start();
 
     while (true) {
-        if (++frame_ % 100 == 0) {
-            DEBUG("Renderer FPS: %f", frame_/timer.get_elapsed());
-            frame_ = 0;
-            timer.reset();
-        }
+//        if (++frame_ % 100 == 0) {
+//            DEBUG("Renderer FPS: %f", frame_/timer.get_elapsed());
+//            frame_ = 0;
+//            timer.reset();
+//        }
 
         // render
         render_pipeline_->process(&graph_copy_);

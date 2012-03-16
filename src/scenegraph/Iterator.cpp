@@ -61,6 +61,33 @@ void SceneGraph::Iterator::set_name(std::string const& name) const {
     }
 }
 
+void SceneGraph::Iterator::add_to_group(std::string const& group) {
+    if (current_node_)
+        current_node_->add_to_group(group);
+}
+
+void SceneGraph::Iterator::add_to_groups(std::vector<std::string> const& groups) {
+    if (current_node_)
+        current_node_->add_to_groups(groups);
+}
+
+void SceneGraph::Iterator::remove_from_group(std::string const& group) {
+    if (current_node_)
+        current_node_->remove_from_group(group);
+}
+
+bool SceneGraph::Iterator::is_in_group(std::string const& group) const {
+    if (current_node_)
+        return current_node_->is_in_group(group);
+    return false;
+}
+
+std::set<std::string> const& SceneGraph::Iterator::get_groups() const {
+    if (!current_node_)
+        ERROR("Failed to get groups of node: Invalid iterator!");
+    return current_node_->get_groups();
+}
+
 Eigen::Transform3f const& SceneGraph::Iterator::get_transform() const {
     if (current_node_) return current_node_->get_transform();
     return end_transform_;

@@ -73,6 +73,7 @@
 		<Unit filename="include/traverser/OptimizedScene.hpp" />
 		<Unit filename="include/traverser/Optimizer.hpp" />
 		<Unit filename="include/traverser/RenderClient.hpp" />
+		<Unit filename="include/traverser/RenderMask.hpp" />
 		<Unit filename="include/traverser/RenderServer.hpp" />
 		<Unit filename="include/traverser/ScreenNode.hpp" />
 		<Unit filename="include/utils/Color3f.hpp" />
@@ -109,6 +110,7 @@
 		<Unit filename="src/renderer/VertexShader.cpp" />
 		<Unit filename="src/traverser/Optimizer.cpp" />
 		<Unit filename="src/traverser/RenderClient.cpp" />
+		<Unit filename="src/traverser/RenderMask.cpp" />
 		<Unit filename="src/traverser/RenderServer.cpp" />
 		<Unit filename="src/utils/Color3f.cpp" />
 		<Unit filename="src/utils/Directory.cpp" />

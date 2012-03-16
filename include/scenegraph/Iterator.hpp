@@ -94,6 +94,15 @@ class SceneGraph::Iterator {
         ////////////////////////////////////////////////////////////////////////
         void set_name(std::string const& name) const;
 
+        void add_to_group(std::string const& group);
+        void add_to_groups(std::vector<std::string> const& groups);
+
+        void remove_from_group(std::string const& group);
+
+        bool is_in_group(std::string const& group) const;
+
+        std::set<std::string> const& get_groups() const;
+
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the transformation of the Iterator's Node.
         ///

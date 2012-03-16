@@ -1,59 +1,36 @@
+////////////////////////////////////////////////////////////////////////////////
+// guacamole - an interesting scenegraph implementation
+//
+// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+//
+// This program is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option)
+// any later version.
+//
+// This program is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+/// \file
+/// \brief A simple example scene.
+////////////////////////////////////////////////////////////////////////////////
+
 #include "guacamole.hpp"
 
-#include <thread>
-
-
-void setup_lights(gua::SceneGraph& graph) {
-    auto point_light_core1 = new gua::LightCore(gua::Color3f(0.99f, 0.99f, 0.99f));
-    auto point_light_core2 = new gua::LightCore(gua::Color3f(0.99f, 0.99f, 0.99f));
-    auto point_light_core3 = new gua::LightCore(gua::Color3f(0.99f, 0.99f, 0.99f));
-    auto point_light_core4 = new gua::LightCore(gua::Color3f(0.99f, 0.99f, 0.99f));
-
-    auto point_light1 = graph.add_node("/", "point_light1", point_light_core1);
-    auto point_light2 = graph.add_node("/", "point_light2", point_light_core2);
-    auto point_light3 = graph.add_node("/", "point_light3", point_light_core3);
-    auto point_light4 = graph.add_node("/", "point_light4", point_light_core4);
-
-    point_light1.scale(3.f, 3.f, 3.f);
-    point_light2.scale(3.f, 3.f, 3.f);
-    point_light3.scale(3.f, 3.f, 3.f);
-    point_light4.scale(3.f, 3.f, 3.f);
-
-    point_light1.translate(0.5f, 0.5f, -0.5f);
-    point_light2.translate(0.5f, 0.5f, 0.5f);
-    point_light3.translate(-0.5f, 0.5f, 0.5f);
-    point_light4.translate(-0.5f, 0.5f, -0.5f);
-}
-
-gua::RenderPipeline* setup_pipe() {
-    auto ape_pass = new gua::RenderPass("ape", "ape_camera", "ape_screen", "/", 0.2, 0.2);
-    ape_pass->add_buffer(gua::RenderPass::ColorBufferDescription("color", 0));
-//  ape_pass->add_buffer(gua::RenderPass::ColorBufferDescription("normal", 1));
-//  ape_pass->add_buffer(gua::RenderPass::ColorBufferDescription("texcoord", 2));
-    ape_pass->add_buffer(gua::RenderPass::DepthStencilBufferDescription("depth_stencil"));
-
-    auto pass = new gua::RenderPass("main", "camera", "screen", "/");
-    pass->add_buffer(gua::RenderPass::ColorBufferDescription("color", 0));
-//  pass->add_buffer(gua::RenderPass::ColorBufferDescription("normal", 1));
-//  pass->add_buffer(gua::RenderPass::ColorBufferDescription("texcoord", 2));
-    pass->add_buffer(gua::RenderPass::DepthStencilBufferDescription("depth_stencil"));
-    pass->set_input_buffer("ape", "color", "tiles_small", "tex");
-
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, ":0.0"), gua::RenderPipeline::MONO);
-    pipe->add_render_pass(ape_pass);
-    pipe->add_render_pass(pass);
-    pipe->set_final_buffer("main", "color");
-
-    return pipe;
-}
-
 int main() {
+    // initialize guacamole
     gua::init();
 
     gua::GeometryBase::load_objects_from("data/objects/");
     gua::TextureBase::load_textures_from("data/textures/");
     gua::MaterialBase::load_materials_from("data/materials/");
 
+    // setup scene
     gua::SceneGraph graph;
 
     auto plane_core = new gua::GeometryCore("plane", "tiles");
@@ -66,29 +43,30 @@ int main() {
     box.translate(0, 0.1, 0);
 
     auto monkey_core = new gua::GeometryCore("monkey", "wood");
-    box = graph.add_node("/box", "monkey", monkey_core);
-    box.scale(0.5, 0.5, 0.5);
-    box.translate(0, 1, 0);
+    auto ape = graph.add_node("/box", "monkey", monkey_core);
+    ape.scale(0.5, 0.5, 0.5);
+    ape.translate(0, 1, 0);
 
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
     screen.translate(0, 0.45, 0.5);
 
-    auto ape_screen_core(new gua::ScreenCore(1, 1));
-    screen = graph.add_node("/box/monkey", "ape_screen", ape_screen_core);
-    screen.translate(0, 0, 1.5);
-
     auto camera_core = new gua::CameraCore(0.1f);
     auto camera = graph.add_node("/screen", "camera", camera_core);
     camera.translate(0, 0, 1.5);
 
-    camera = graph.add_node("/box/monkey/ape_screen", "ape_camera", camera_core);
-    camera.translate(0, 0, 0.5);
+    // setup rendering pipeline
+    auto pass = new gua::RenderPass("main", "camera", "screen");
+    pass->add_buffer(gua::RenderPass::ColorBufferDescription("color", 0));
+    pass->add_buffer(gua::RenderPass::DepthStencilBufferDescription("depth_stencil"));
 
-    setup_lights(graph);
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, ":0.0"), gua::RenderPipeline::MONO);
+    pipe->add_render_pass(pass);
+    pipe->set_final_buffer("main", "color");
 
-    gua::RenderServer renderer({setup_pipe()});
+    gua::RenderServer renderer({pipe});
 
+    // application loop
     while (true) {
         renderer.queue_draw(&graph);
 

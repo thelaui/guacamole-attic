@@ -73,6 +73,26 @@ void SceneGraph::Node::set_name(std::string const& name) {
     name_ = name;
 }
 
+void SceneGraph::Node::add_to_group(std::string const& group) {
+    group_list_.insert(group);
+}
+
+void SceneGraph::Node::add_to_groups(std::vector<std::string> const& groups) {
+    group_list_.insert(groups.begin(), groups.end());
+}
+
+void SceneGraph::Node::remove_from_group(std::string const& group) {
+    group_list_.erase(group);
+}
+
+bool SceneGraph::Node::is_in_group(std::string const& group) const {
+    return group_list_.find(group) != group_list_.end();
+}
+
+std::set<std::string> const& SceneGraph::Node::get_groups() const {
+    return group_list_;
+}
+
 Eigen::Transform3f const& SceneGraph::Node::get_transform() const {
     return transform_;
 }

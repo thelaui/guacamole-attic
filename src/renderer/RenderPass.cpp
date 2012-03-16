@@ -30,14 +30,14 @@
 
 namespace gua {
 
-RenderPass::RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& entry_point,
+RenderPass::RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& render_mask,
                        float width, float height, bool size_is_relative):
     color_buffer_descriptions_(),
     depth_stencil_buffer_description_(""),
     name_(name),
     camera_(camera),
     screen_(screen),
-    entry_point_(entry_point),
+    render_mask_(render_mask),
     width_(width),
     height_(height),
     size_is_relative_to_window_(size_is_relative),
@@ -80,7 +80,7 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name) 
         return buffers_[name];
 
     Optimizer optimizer;
-    optimizer.check(pipeline_->get_current_graph(), entry_point_);
+    optimizer.check(pipeline_->get_current_graph(), render_mask_);
 
     for (auto& node: optimizer.get_data().nodes_) {
         auto material(inputs_.find(node.material_));

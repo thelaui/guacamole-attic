@@ -23,17 +23,10 @@
 #ifndef OPTIMIZER_HPP
 #define OPTIMIZER_HPP
 
-#include <vector>
-#include <memory>
-#include <map>
-
 #include "traverser/OptimizedScene.hpp"
+#include "traverser/RenderMask.hpp"
 
 namespace gua {
-
-class GeometryNode;
-class LightNode;
-class CameraNode;
 
 class SceneGraph;
 
@@ -66,7 +59,7 @@ class Optimizer {
         ///
         ///\param scene_graph          The SceneGraph to be processed.
         ////////////////////////////////////////////////////////////////////////
-        void check( SceneGraph const* scene_graph, std::string const& entry_point );
+        void check( SceneGraph const* scene_graph, RenderMask const& render_mask );
 
         OptimizedScene const& get_data() const;
 
