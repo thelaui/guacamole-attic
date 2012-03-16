@@ -25,7 +25,7 @@
 #include "utils/debug.hpp"
 #include "renderer/Geometry.hpp"
 #include "renderer/Texture.hpp"
-#include "renderer/BufferFillShaders.hpp"
+#include "renderer/StereoShaders.hpp"
 
 #include <IL/il.h>
 #include <sstream>
@@ -36,8 +36,8 @@ namespace gua {
 unsigned RenderWindow::last_context_id_ = 0;
 
 RenderWindow::RenderWindow( Description const& description ) throw (std::string):
-    fullscreen_shader_(VertexShader(BUFFER_FILL_VERTEX_SHADER.c_str()),
-                       FragmentShader(BUFFER_FILL_FRAGMENT_SHADER.c_str())),
+    fullscreen_shader_(VertexShader(STEREO_VERTEX_SHADER.c_str()),
+                       FragmentShader(STEREO_FRAGMENT_SHADER.c_str())),
     frames_(0),
     frame_count_(0),
     frames_start_(0) {
@@ -166,11 +166,20 @@ void RenderWindow::finish_frame() const {
     glXSwapBuffers(ctx_.display, ctx_.window);
 }
 
-void RenderWindow::display_texture(std::shared_ptr<Texture> const& texture) const {
-    glViewport(0, 0, ctx_.width, ctx_.height);
+void RenderWindow::display_mono(std::shared_ptr<Texture> const& texture) const {
+    display_stereo(texture, texture, MONO);
+}
 
+void RenderWindow::display_stereo(std::shared_ptr<Texture> const& left_texture,
+                                  std::shared_ptr<Texture> const& right_texture,
+                                  StereoMode stereo_mode) const {
+
+    glViewport(0, 0, ctx_.width, ctx_.height);
     fullscreen_shader_.use(ctx_);
-    fullscreen_shader_.set_sampler2D(ctx_, "tex", *texture);
+
+    fullscreen_shader_.set_sampler2D(ctx_, "left_tex", *left_texture);
+    fullscreen_shader_.set_sampler2D(ctx_, "right_tex", *right_texture);
+    fullscreen_shader_.set_int(ctx_, "mode", stereo_mode);
 
     glDisable(GL_DEPTH_TEST);
 

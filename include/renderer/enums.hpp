@@ -17,33 +17,15 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the RenderBackend class.
+/// \brief Some basic type definitions for guacamole.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDER_BACKEND_HPP
-#define RENDER_BACKEND_HPP
-
-#include <string>
-
-#include "renderer/enums.hpp"
+#ifndef GUA_ENUMS_HPP
+#define GUA_ENUMS_HPP
 
 namespace gua {
-
-struct OptimizedScene;
-class RenderPass;
-class RenderContext;
-
-class RenderBackend {
-    public:
-        RenderBackend(RenderPass* pass);
-
-        void render(OptimizedScene const& scene, RenderContext const& context,
-                    CameraMode mode);
-
-    private:
-        RenderPass* pass_;
-};
-
+    enum CameraMode { CENTER, LEFT, RIGHT };
+    enum StereoMode { MONO, SIDE_BY_SIDE, ANAGLYPH_RED_GREEN, ANAGLYPH_RED_CYAN };
 }
 
-#endif // RENDER_BACKEND_HPP
+#endif // GUA_ENUMS_HPP

@@ -45,7 +45,7 @@
 		<Unit filename="include/cores/LightCore.hpp" />
 		<Unit filename="include/cores/ScreenCore.hpp" />
 		<Unit filename="include/guacamole.hpp" />
-		<Unit filename="include/renderer/BufferFillShaders.hpp" />
+		<Unit filename="include/renderer/BufferDescriptions.hpp" />
 		<Unit filename="include/renderer/DataBase.hpp" />
 		<Unit filename="include/renderer/FragmentShader.hpp" />
 		<Unit filename="include/renderer/FrameBufferObject.hpp" />
@@ -62,10 +62,12 @@
 		<Unit filename="include/renderer/RenderWindow.hpp" />
 		<Unit filename="include/renderer/Shader.hpp" />
 		<Unit filename="include/renderer/ShaderProgram.hpp" />
+		<Unit filename="include/renderer/StereoShaders.hpp" />
 		<Unit filename="include/renderer/Texture.hpp" />
 		<Unit filename="include/renderer/TextureBase.hpp" />
 		<Unit filename="include/renderer/Uniform.hpp" />
 		<Unit filename="include/renderer/VertexShader.hpp" />
+		<Unit filename="include/renderer/enums.hpp" />
 		<Unit filename="include/renderer/glInclude.hpp" />
 		<Unit filename="include/traverser/CameraNode.hpp" />
 		<Unit filename="include/traverser/GeometryNode.hpp" />

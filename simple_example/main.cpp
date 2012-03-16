@@ -57,10 +57,10 @@ int main() {
 
     // setup rendering pipeline
     auto pass = new gua::RenderPass("main", "camera", "screen");
-    pass->add_buffer(gua::RenderPass::ColorBufferDescription("color", 0));
-    pass->add_buffer(gua::RenderPass::DepthStencilBufferDescription("depth_stencil"));
+    pass->add_buffer(gua::ColorBufferDescription("color", 0));
+    pass->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
 
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, ":0.0"), gua::RenderPipeline::MONO);
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, ":0.0"), gua::ANAGLYPH_RED_CYAN);
     pipe->add_render_pass(pass);
     pipe->set_final_buffer("main", "color");
 

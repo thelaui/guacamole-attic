@@ -68,6 +68,10 @@ void RenderPipeline::set_final_buffer(std::string const& pass_name, std::string 
     final_buffer_ = buffer_name;
 }
 
+StereoMode RenderPipeline::get_stereo_mode() const {
+    return stereo_mode_;
+}
+
 void RenderPipeline::process(SceneGraph* graph) {
     current_graph_ = graph;
 
@@ -79,7 +83,16 @@ void RenderPipeline::process(SceneGraph* graph) {
     window_->set_active();
     window_->start_frame();
 
-    window_->display_texture(passes_[final_pass_]->get_buffer(final_buffer_));
+    switch (stereo_mode_) {
+        case MONO:
+            window_->display_mono(passes_[final_pass_]->get_buffer(final_buffer_, CENTER));
+            break;
+        default:
+            window_->display_stereo(passes_[final_pass_]->get_buffer(final_buffer_, LEFT),
+                                    passes_[final_pass_]->get_buffer(final_buffer_, RIGHT),
+                                    stereo_mode_);
+            break;
+    }
 
     window_->finish_frame();
 
@@ -89,7 +102,7 @@ void RenderPipeline::process(SceneGraph* graph) {
 
 void RenderPipeline::create_buffers() {
     for (auto& pass: passes_)
-        pass.second->create_buffers();
+        pass.second->create_buffers(stereo_mode_);
 }
 
 }

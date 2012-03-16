@@ -28,7 +28,9 @@
 #include <map>
 
 #include "renderer/FrameBufferObject.hpp"
+#include "renderer/BufferDescriptions.hpp"
 #include "renderer/Texture.hpp"
+#include "renderer/enums.hpp"
 #include "traverser/RenderMask.hpp"
 
 namespace gua {
@@ -37,30 +39,6 @@ class RenderPipeline;
 
 class RenderPass {
     public:
-        struct ColorBufferDescription {
-            ColorBufferDescription(std::string n, unsigned loc,
-                              unsigned clr_depth = GL_RGB32F, unsigned clr_format = GL_RGB, unsigned t = GL_FLOAT):
-                              name(n),
-                              location(loc),
-                              color_depth(clr_depth ),
-                              color_format(clr_format),
-                              type(t) {}
-            std::string name;
-            unsigned location;
-            unsigned color_depth, color_format, type;
-        };
-
-        struct DepthStencilBufferDescription {
-            DepthStencilBufferDescription(std::string n,
-                              unsigned clr_depth = GL_DEPTH24_STENCIL8, unsigned clr_format = GL_DEPTH_COMPONENT, unsigned t = GL_FLOAT):
-                              name(n),
-                              color_depth(clr_depth ),
-                              color_format(clr_format),
-                              type(t) {}
-            std::string name;
-            unsigned color_depth, color_format, type;
-        };
-
         RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& render_mask = "",
                    float width = 1.f, float height = 1.f, bool size_is_relative = true);
 
@@ -80,10 +58,11 @@ class RenderPass {
         friend class RenderBackend;
 
     private:
-        std::shared_ptr<Texture> const& get_buffer(std::string const& name);
+        std::shared_ptr<Texture> const& get_buffer(std::string const& name, CameraMode mode);
 
         void flush();
-        void create_buffers();
+        void create_buffers(StereoMode mode);
+        void create_buffer(std::map<std::string, std::shared_ptr<Texture>>& buffer_store, FrameBufferObject& fbo);
         void set_pipeline(RenderPipeline* pipeline);
 
         struct PassConnection {
@@ -98,10 +77,11 @@ class RenderPass {
         float width_, height_;
         bool size_is_relative_to_window_;
 
-        std::map<std::string, std::shared_ptr<Texture>> buffers_;
-        FrameBufferObject fbo_;
+        std::map<std::string, std::shared_ptr<Texture>> left_eye_buffers_, right_eye_buffers_, center_eye_buffers_;
+        FrameBufferObject left_eye_fbo_, right_eye_fbo_, center_eye_fbo_;
+
         RenderPipeline* pipeline_;
-        bool rendered_frame_;
+        bool rendererd_left_eye_, rendererd_right_eye_, rendererd_center_eye_;
 
         std::vector<PassConnection> connections_;
 

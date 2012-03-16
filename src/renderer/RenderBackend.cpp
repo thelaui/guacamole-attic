@@ -28,7 +28,6 @@
 #include "renderer/MaterialBase.hpp"
 #include "renderer/GeometryBase.hpp"
 #include "renderer/LightSphere.hpp"
-#include "renderer/BufferFillShaders.hpp"
 #include "renderer/RenderPass.hpp"
 #include "traverser/OptimizedScene.hpp"
 #include "utils/debug.hpp"
@@ -43,15 +42,30 @@ namespace gua {
 RenderBackend::RenderBackend(RenderPass* pass):
     pass_(pass) {}
 
-void RenderBackend::render(OptimizedScene const& scene, RenderContext const& context) {
+void RenderBackend::render(OptimizedScene const& scene, RenderContext const& context,
+                           CameraMode mode) {
 
-    pass_->fbo_.bind(context, {GL_COLOR_ATTACHMENT0,
-                              GL_COLOR_ATTACHMENT0+1,
-                              GL_COLOR_ATTACHMENT0+2});
+    FrameBufferObject* fbo(NULL);
+
+    switch (mode) {
+        case CENTER:
+            fbo = &pass_->center_eye_fbo_;
+            break;
+        case LEFT:
+            fbo = &pass_->left_eye_fbo_;
+            break;
+        case RIGHT:
+            fbo = &pass_->right_eye_fbo_;
+            break;
+    }
+
+    fbo->bind(context, {GL_COLOR_ATTACHMENT0,
+                        GL_COLOR_ATTACHMENT0+1,
+                        GL_COLOR_ATTACHMENT0+2});
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, pass_->fbo_.width(), pass_->fbo_.height());
+    glViewport(0, 0, fbo->width(), fbo->height());
 
     auto camera_it(scene.cameras_.find(pass_->camera_));
     auto screen_it(scene.screens_.find(pass_->screen_));
@@ -59,17 +73,25 @@ void RenderBackend::render(OptimizedScene const& scene, RenderContext const& con
     if (camera_it != scene.cameras_.end() && screen_it != scene.screens_.end()) {
         auto camera(camera_it->second);
         auto screen(screen_it->second);
-        auto projection(math::compute_frustum(Eigen::Transform3f(camera.transform_).translation(), screen.transform_, 0.1, 1000.f));
 
-        Eigen::Transform3f camera_transform(screen.transform_);
-        camera_transform.data()[12] = 0.f;
-        camera_transform.data()[13] = 0.f;
-        camera_transform.data()[14] = 0.f;
-        camera_transform.data()[15] = 1.f;
+        Eigen::Transform3f camera_transform(camera.transform_);
+        if (mode == LEFT) {
+            camera_transform.translate(Eigen::Vector3f(-camera.stereo_width_*0.5f, 0.f, 0.f));
+        } else if (mode == RIGHT) {
+            camera_transform.translate(Eigen::Vector3f(camera.stereo_width_*0.5f, 0.f, 0.f));
+        }
 
-        camera_transform = camera_transform.pretranslate(Eigen::Transform3f(camera.transform_).translation());
+        auto projection(math::compute_frustum(camera_transform.translation(), screen.transform_, 0.1, 1000.f));
 
-        Eigen::Matrix4f view_matrix(camera_transform.matrix().inverse());
+        Eigen::Transform3f view_transform(screen.transform_);
+        view_transform.data()[12] = 0.f;
+        view_transform.data()[13] = 0.f;
+        view_transform.data()[14] = 0.f;
+        view_transform.data()[15] = 1.f;
+
+        view_transform = view_transform.pretranslate(camera_transform.translation());
+
+        Eigen::Matrix4f view_matrix(view_transform.matrix().inverse());
 
         for (auto& geometry_core: scene.nodes_) {
 
@@ -106,7 +128,7 @@ void RenderBackend::render(OptimizedScene const& scene, RenderContext const& con
         }
     }
 
-    pass_->fbo_.unbind();
+    fbo->unbind();
 }
 
 }

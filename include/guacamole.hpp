@@ -20,11 +20,15 @@
 /// \brief The main include file of guacamole.
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef GUA_GUACAMOLE_HPP
+#define GUA_GUACAMOLE_HPP
+
 #include "renderer/GeometryBase.hpp"
 #include "renderer/MaterialBase.hpp"
 #include "renderer/TextureBase.hpp"
 #include "renderer/RenderPipeline.hpp"
 #include "renderer/RenderPass.hpp"
+#include "renderer/enums.hpp"
 #include "traverser/RenderServer.hpp"
 #include "scenegraph/Iterator.hpp"
 #include "scenegraph/SceneGraph.hpp"
@@ -47,6 +51,8 @@ namespace gua {
 
     void init();
 }
+
+#endif // GUA_GUACAMOLE_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \mainpage

@@ -28,6 +28,7 @@
 
 #include "renderer/RenderContext.hpp"
 #include "renderer/ShaderProgram.hpp"
+#include "renderer/enums.hpp"
 
 namespace gua {
 
@@ -102,7 +103,10 @@ class RenderWindow {
         ///
         /// \param texture The Texture to be drawn.
         ////////////////////////////////////////////////////////////////////////
-        void display_texture(std::shared_ptr<Texture> const& texture) const;
+        void display_mono(std::shared_ptr<Texture> const& texture) const;
+        void display_stereo(std::shared_ptr<Texture> const& left_texture,
+                            std::shared_ptr<Texture> const& right_texture,
+                            StereoMode stereo_mode) const;
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the RenderContext of this window.

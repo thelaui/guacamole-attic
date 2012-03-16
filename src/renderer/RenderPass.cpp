@@ -41,10 +41,10 @@ RenderPass::RenderPass(std::string const& name, std::string const& camera, std::
     width_(width),
     height_(height),
     size_is_relative_to_window_(size_is_relative),
-    buffers_(),
-    fbo_(),
+    left_eye_buffers_(), right_eye_buffers_(), center_eye_buffers_(),
+    left_eye_fbo_(), right_eye_fbo_(), center_eye_fbo_(),
     pipeline_(NULL),
-    rendered_frame_(false) {}
+    rendererd_left_eye_(false), rendererd_right_eye_(false), rendererd_center_eye_(false) {}
 
 void RenderPass::add_buffer(ColorBufferDescription const& buffer_desc) {
     color_buffer_descriptions_.push_back(buffer_desc);
@@ -75,9 +75,15 @@ std::string const& RenderPass::get_name() const {
     return name_;
 }
 
-std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name) {
-    if (rendered_frame_)
-        return buffers_[name];
+std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, CameraMode mode) {
+    if (mode == CENTER && rendererd_center_eye_)
+        return center_eye_buffers_[name];
+
+    if (mode == LEFT && rendererd_left_eye_)
+        return left_eye_buffers_[name];
+
+    if (mode == RIGHT && rendererd_right_eye_)
+        return right_eye_buffers_[name];
 
     Optimizer optimizer;
     optimizer.check(pipeline_->get_current_graph(), render_mask_);
@@ -88,36 +94,60 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name) 
         if (material != inputs_.end()) {
             for (auto& uniform: material->second) {
                 overwrite_uniform_texture(material->first, uniform.first,
-                                          pipeline_->get_render_pass(uniform.second.first)->get_buffer(uniform.second.second));
+                                          pipeline_->get_render_pass(uniform.second.first)->get_buffer(uniform.second.second, mode));
             }
         }
     }
 
     RenderBackend renderer(this);
-    renderer.render(optimizer.get_data(), pipeline_->get_context());
+    renderer.render(optimizer.get_data(), pipeline_->get_context(), mode);
 
-    rendered_frame_ = true;
-
-    return buffers_[name];
+    if (mode == CENTER) {
+        rendererd_center_eye_ = true;
+        return center_eye_buffers_[name];
+    } else if (mode == LEFT) {
+        rendererd_left_eye_ = true;
+        return left_eye_buffers_[name];
+    } else {
+        rendererd_right_eye_ = true;
+        return right_eye_buffers_[name];
+    }
 }
 
 void RenderPass::flush() {
-    rendered_frame_ = false;
+    rendererd_left_eye_ = false;
+    rendererd_right_eye_ = false;
+    rendererd_center_eye_ = false;
 }
 
-void RenderPass::create_buffers() {
-    buffers_.clear();
+void RenderPass::create_buffers(StereoMode mode) {
+    switch(mode) {
+        case MONO:
+            create_buffer(center_eye_buffers_, center_eye_fbo_);
+            break;
+        default:
+            create_buffer(left_eye_buffers_, left_eye_fbo_);
+            create_buffer(right_eye_buffers_, right_eye_fbo_);
+            break;
+    }
+}
+
+void RenderPass::create_buffer(std::map<std::string, std::shared_ptr<Texture>>& buffer_store, FrameBufferObject& fbo) {
+    buffer_store.clear();
 
     int width = size_is_relative_to_window_ ? width_*pipeline_->get_context().width : width_;
     int height = size_is_relative_to_window_ ? height_*pipeline_->get_context().height : height_;
+
+    if (size_is_relative_to_window_ && pipeline_->get_stereo_mode() == SIDE_BY_SIDE)
+        width_ *= 0.5;
 
     for (auto& description: color_buffer_descriptions_) {
         Texture* new_buffer(new Texture(width, height, description.color_depth,
                                         description.color_format, description.type));
 
-        buffers_[description.name] = std::shared_ptr<Texture>(new_buffer);
+        buffer_store[description.name] = std::shared_ptr<Texture>(new_buffer);
 
-        fbo_.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D,
+        fbo.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D,
                            new_buffer->get_id(pipeline_->get_context()),
                            GL_COLOR_ATTACHMENT0 + description.location, width, height);
 
@@ -132,14 +162,14 @@ void RenderPass::create_buffers() {
         new_buffer->set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
         new_buffer->set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
 
-        buffers_[depth_stencil_buffer_description_.name] = std::shared_ptr<Texture>(new_buffer);
+        buffer_store[depth_stencil_buffer_description_.name] = std::shared_ptr<Texture>(new_buffer);
 
-        fbo_.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D,
+        fbo.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D,
                            new_buffer->get_id(pipeline_->get_context()),
                            GL_DEPTH_ATTACHMENT, width, height);
     }
 
-    if(!fbo_.is_valid(pipeline_->get_context()))
+    if(!fbo.is_valid(pipeline_->get_context()))
         WARNING("Pass %s has an invalid buffer configuration!", name_.c_str());
 }
 

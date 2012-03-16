@@ -35,8 +35,6 @@ class SceneGraph;
 
 class RenderPipeline {
     public:
-        enum StereoMode { MONO, SIDE_BY_SIDE, ANAGLYPH_RED_GREEN, ANAGLYPH_RED_CYAN };
-
         RenderPipeline(RenderWindow::Description const& window, StereoMode stereo_mode = MONO);
         ~RenderPipeline();
 
@@ -47,6 +45,8 @@ class RenderPipeline {
         RenderContext const& get_context() const;
 
         void set_final_buffer(std::string const& pass_name, std::string const& buffer_name);
+
+        StereoMode get_stereo_mode() const;
 
         friend class RenderClient;
 
