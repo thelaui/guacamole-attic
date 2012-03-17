@@ -79,6 +79,10 @@ class Material {
         void set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value);
         void set_uniform_texture(std::string const& uniform_name, std::string const& texture_name);
 
+        void set_blend_state(bool enabled, unsigned src = GL_ONE, unsigned dest = GL_ONE);
+        void set_rasterizer_state(bool cull_face, unsigned culling_mode);
+        void set_depth_stencil_state(bool depth_test, bool write_depth);
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the internal shader.
         ///
@@ -89,11 +93,17 @@ class Material {
         ShaderProgram const& get_shader() const;
 
     private:
+        void construct_from_file(TextFile const& file);
+
         std::map<std::string, std::shared_ptr<Texture>> texture_uniforms_;
         std::map<std::string, float> float_uniforms_;
         ShaderProgram* shader_;
 
-        void construct_from_file(TextFile const& file);
+        bool blend_enabled_;
+        unsigned blend_src_, blend_dest_;
+        bool cull_face_;
+        unsigned culling_mode_;
+        bool depth_test_, write_depth_;
 };
 
 }

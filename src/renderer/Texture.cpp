@@ -138,8 +138,8 @@ void Texture::upload_to(RenderContext const& context) const{
         set_parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         set_parameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        set_parameter(GL_TEXTURE_WRAP_S, GL_CLAMP);
-        set_parameter(GL_TEXTURE_WRAP_T, GL_CLAMP);
+        set_parameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+        set_parameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         // load data as texture
         glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,

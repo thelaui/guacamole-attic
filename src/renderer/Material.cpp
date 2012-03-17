@@ -35,12 +35,20 @@ namespace gua {
 Material::Material():
     texture_uniforms_(),
     float_uniforms_(),
-    shader_(NULL) {}
+    shader_(NULL),
+    blend_enabled_(false),
+    blend_src_(GL_ONE), blend_dest_(GL_ONE),
+    cull_face_(false), culling_mode_(GL_BACK),
+    depth_test_(true), write_depth_(true) {}
 
 Material::Material(std::string const& file_name):
     texture_uniforms_(),
     float_uniforms_(),
-    shader_(NULL) {
+    shader_(NULL),
+    blend_enabled_(false),
+    blend_src_(GL_ONE), blend_dest_(GL_ONE),
+    cull_face_(false), culling_mode_(GL_BACK),
+    depth_test_(true), write_depth_(true) {
 
     TextFile file(file_name);
 
@@ -57,6 +65,22 @@ Material::~Material() {
 }
 
 void Material::use(RenderContext const& context) const {
+    if (blend_enabled_) glEnable(GL_BLEND);
+    else                glDisable(GL_BLEND);
+
+    glBlendFunc(blend_src_, blend_dest_);
+
+    if (cull_face_) glEnable(GL_CULL_FACE);
+    else            glDisable(GL_CULL_FACE);
+
+    glCullFace(culling_mode_);
+
+    if (write_depth_) glDepthMask(GL_TRUE);
+    else              glDepthMask(GL_FALSE);
+
+    if (depth_test_) glEnable(GL_DEPTH_TEST);
+    else             glDisable(GL_DEPTH_TEST);
+
     shader_->use(context);
 
     for (auto val : float_uniforms_)
@@ -84,6 +108,22 @@ void Material::set_uniform_texture(std::string const& uniform_name, std::string 
     if (searched_tex)
         texture_uniforms_[uniform_name] = searched_tex;
     else WARNING ("A texture with the name %s does not exist within the database!", texture_name.c_str());
+}
+
+void Material::set_blend_state(bool enabled, unsigned src, unsigned dest) {
+    blend_enabled_ = enabled;
+    blend_src_ = src;
+    blend_dest_ = dest;
+}
+
+void Material::set_rasterizer_state(bool cull_face, unsigned culling_mode) {
+    cull_face_ = cull_face;
+    culling_mode_ = culling_mode;
+}
+
+void Material::set_depth_stencil_state(bool depth_test, bool write_depth) {
+    depth_test_ = depth_test;
+    write_depth_ = write_depth_;
 }
 
 ShaderProgram const& Material::get_shader() const {

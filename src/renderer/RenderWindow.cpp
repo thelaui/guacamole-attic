@@ -182,6 +182,8 @@ void RenderWindow::display_stereo(std::shared_ptr<Texture> const& left_texture,
     fullscreen_shader_.set_int(ctx_, "mode", stereo_mode);
 
     glDisable(GL_DEPTH_TEST);
+    glDisable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
 
     glBegin(GL_QUADS);
         glVertex2f(-1, -1);

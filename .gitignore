@@ -11,3 +11,5 @@ guacamole-d
 *.so
 simple_example/obj/*
 simple_example/bin/*
+deferred_example/obj/*
+deferred_example/bin/*

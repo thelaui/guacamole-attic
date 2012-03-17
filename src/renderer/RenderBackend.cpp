@@ -61,7 +61,8 @@ void RenderBackend::render(OptimizedScene const& scene, RenderContext const& con
 
     fbo->bind(context, {GL_COLOR_ATTACHMENT0,
                         GL_COLOR_ATTACHMENT0+1,
-                        GL_COLOR_ATTACHMENT0+2});
+                        GL_COLOR_ATTACHMENT0+2,
+                        GL_COLOR_ATTACHMENT0+3});
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
