@@ -24,7 +24,6 @@ in vec2 texcoord;
 in vec3 position;
 
 uniform sampler2D tex_color;
-uniform sampler2D tex_normal;
 uniform sampler2D tex_specular;
 uniform sampler2D tex_mirror;
 
@@ -40,6 +39,6 @@ void main() {
 
     out_specular = vec3(spec, spec, spec);
 	out_color    = (1-spec)*texture2D(tex_color, coord).rgb + spec*texture2D(tex_mirror, texcoord).rgb;
-	out_normal   = normal;// + 0.5*texture2D(tex_normal, coord).rgb - 0.5;
+	out_normal   = normal;
 	out_position = position;
 }
