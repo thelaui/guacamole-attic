@@ -25,13 +25,12 @@
 
 namespace gua {
 
-SceneGraph::Node::Node(std::string const& name, math::mat4 transform,
-                       Core* core, InheritanceMode mode):
+
+SceneGraph::Node::Node(std::string const& name, math::mat4 transform, Core* core):
     name_(name),
     parent_(NULL),
     children_(),
-    private_transform_(mode == PUBLIC ? math::mat4::identity() : transform),
-    public_transform_(mode == PRIVATE ? math::mat4::identity() : transform),
+    transform_(transform),
     core_(core) {}
 
 SceneGraph::Node::~Node() {
@@ -74,16 +73,32 @@ void SceneGraph::Node::set_name(std::string const& name) {
     name_ = name;
 }
 
-math::mat4 const& SceneGraph::Node::get_transform(InheritanceMode mode) const {
-    if (mode == PUBLIC)
-        return public_transform_;
-
-    return private_transform_;
+void SceneGraph::Node::add_to_group(std::string const& group) {
+    group_list_.insert(group);
 }
 
-void SceneGraph::Node::set_transform(math::mat4 const& transform, InheritanceMode mode) {
-    if (mode == PUBLIC) public_transform_ = transform;
-    else private_transform_ = transform;
+void SceneGraph::Node::add_to_groups(std::vector<std::string> const& groups) {
+    group_list_.insert(groups.begin(), groups.end());
+}
+
+void SceneGraph::Node::remove_from_group(std::string const& group) {
+    group_list_.erase(group);
+}
+
+bool SceneGraph::Node::is_in_group(std::string const& group) const {
+    return group_list_.find(group) != group_list_.end();
+}
+
+std::set<std::string> const& SceneGraph::Node::get_groups() const {
+    return group_list_;
+}
+
+math::mat4 const& SceneGraph::Node::get_transform() const {
+    return transform_;
+}
+
+void SceneGraph::Node::set_transform(math::mat4 const& transform) {
+    transform_ = transform;
 }
 
 Core* SceneGraph::Node::get_core() const {
@@ -94,73 +109,16 @@ void SceneGraph::Node::set_core(Core* core) {
     core_ = core;
 }
 
-void SceneGraph::Node::scale(float x, float y, float z,
-                             TransformMode transform_mode,
-                             InheritanceMode inheritance_mode) {
-
-    math::mat4 scale(scm::math::make_scale(x, y, z));
-
-    if (inheritance_mode == PUBLIC) {
-        if (transform_mode == GLOBAL) {
-            public_transform_ = scale * public_transform_;
-            private_transform_ = scale * private_transform_;
-        } else {
-            public_transform_ =  public_transform_ * scale;
-            private_transform_ = private_transform_ * scale;
-        }
-    } else {
-        if (transform_mode == GLOBAL) {
-            private_transform_ = scale * private_transform_;
-        } else {
-            private_transform_ = private_transform_ * scale;
-        }
-    }
+void SceneGraph::Node::scale(float x, float y, float z) {
+    transform_ = scm::math::make_scale(x, y, z) * transform_;
 }
 
-void SceneGraph::Node::rotate(float angle, float x, float y, float z,
-                              TransformMode transform_mode,
-                              InheritanceMode inheritance_mode) {
-
-    math::mat4 rotation(scm::math::make_rotation(angle, x, y, z));
-
-    if (inheritance_mode == PUBLIC) {
-        if (transform_mode == GLOBAL) {
-            public_transform_ = rotation * public_transform_;
-            private_transform_ = rotation * private_transform_;
-        } else {
-            public_transform_ =  public_transform_ * rotation;
-            private_transform_ = private_transform_ * rotation;
-        }
-    } else {
-        if (transform_mode == GLOBAL) {
-            private_transform_ = rotation * private_transform_;
-        } else {
-            private_transform_ = private_transform_ * rotation;
-        }
-    }
+void SceneGraph::Node::rotate(float angle, float x, float y, float z) {
+    transform_ = scm::math::make_rotation(angle, x, y, z) * transform_;
 }
 
-void SceneGraph::Node::translate(float x, float y, float z,
-                                 TransformMode transform_mode,
-                                 InheritanceMode inheritance_mode) {
-
-    math::mat4 translation(scm::math::make_translation(x, y, z));
-
-    if (inheritance_mode == PUBLIC) {
-        if (transform_mode == GLOBAL) {
-            public_transform_ = translation * public_transform_;
-            private_transform_ = translation * private_transform_;
-        } else {
-            public_transform_ =  public_transform_ * translation;
-            private_transform_ = private_transform_ * translation;
-        }
-    } else {
-        if (transform_mode == GLOBAL) {
-            private_transform_ = translation * private_transform_;
-        } else {
-            private_transform_ = private_transform_ * translation;
-        }
-    }
+void SceneGraph::Node::translate(float x, float y, float z) {
+    transform_ = scm::math::make_translation(x, y, z) * transform_;
 }
 
 int SceneGraph::Node::get_depth() const {
@@ -171,6 +129,15 @@ int SceneGraph::Node::get_depth() const {
 std::string const SceneGraph::Node::get_path() const {
     if (!parent_) return "/";
     return parent_->get_path() + "/" + name_;
+}
+
+SceneGraph::Node* SceneGraph::Node::deep_copy() const {
+    Node* copy = new Node(name_, transform_, core_);
+
+    for (auto child: children_)
+        copy->add_child(child->deep_copy());
+
+    return copy;
 }
 
 }

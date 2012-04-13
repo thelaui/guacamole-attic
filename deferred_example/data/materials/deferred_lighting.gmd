@@ -1,0 +1,6 @@
+vertex_shader ../shaders/deferred.vert
+fragment_shader ../shaders/deferred.frag
+
+texture tex_color    checkerboard
+texture tex_specular checkerboard
+texture tex_position checkerboard

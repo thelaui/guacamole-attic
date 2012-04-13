@@ -33,7 +33,7 @@ Geometry::Geometry():
     meshes_(),
     file_name_("") {}
 
-Geometry::Geometry( std::string const& file_name ):
+Geometry::Geometry(std::string const& file_name):
     meshes_(),
     file_name_(file_name) {}
 

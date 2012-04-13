@@ -39,11 +39,9 @@ struct CameraNode {
     CameraNode() {};
     CameraNode(CameraCore const& core, math::mat4 const& t = math::mat4::identity()):
         transform_(t),
-        type_(core.get_type()),
         stereo_width_(core.get_stereo_width()) {}
 
     math::mat4 transform_;
-    CameraCore::Type type_;
     float stereo_width_;
 };
 

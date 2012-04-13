@@ -24,19 +24,14 @@
 
 namespace gua {
 
-CameraCore::CameraCore(float stereo_width, Type type):
+CameraCore::CameraCore(float stereo_width):
     Core(Core::CAMERA),
-    stereo_width_(stereo_width),
-    type_(type) {}
+    stereo_width_(stereo_width) {}
 
 CameraCore::~CameraCore() {}
 
 float CameraCore::get_stereo_width() const {
     return stereo_width_;
-}
-
-CameraCore::Type CameraCore::get_type() const {
-    return type_;
 }
 
 }

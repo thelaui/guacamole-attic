@@ -24,6 +24,7 @@
 
 #include "renderer/ShaderProgram.hpp"
 #include "renderer/RenderContext.hpp"
+#include "renderer/TextureBase.hpp"
 
 #include "utils/PathParser.hpp"
 #include "utils/TextFile.hpp"
@@ -34,11 +35,26 @@
 namespace gua {
 
 Material::Material():
-    texture_(NULL),
-    shader_() {}
+    texture_uniforms_(),
+    float_uniforms_(),
+    shader_(NULL),
+    blend_state_desc_(),
+    rasterizer_state_desc_(),
+    depth_stencil_state_desc_(),
+    blend_state_(),
+    rasterizer_state_(),
+    depth_stencil_state_() {}
 
 Material::Material(std::string const& file_name):
-    texture_(NULL) {
+    texture_uniforms_(),
+    float_uniforms_(),
+    shader_(NULL),
+    blend_state_desc_(),
+    rasterizer_state_desc_(),
+    depth_stencil_state_desc_(),
+    blend_state_(),
+    rasterizer_state_(),
+    depth_stencil_state_() {
 
     TextFile file(file_name);
 
@@ -50,21 +66,70 @@ Material::Material(std::string const& file_name):
 }
 
 Material::~Material() {
-    if (texture_)
-        delete texture_;
+    if (shader_)
+        delete shader_;
 }
 
 void Material::use(RenderContext const& context) const {
-    shader_.use(context);
-//    if (texture_)
-//        texture_->bind(context, 0);
+
+    if (!blend_state_)
+        blend_state_ = context.render_device->create_blend_state(blend_state_desc_);
+    context.render_context->set_blend_state(blend_state_);
+
+    if (!rasterizer_state_)
+        rasterizer_state_ = context.render_device->create_rasterizer_state(rasterizer_state_desc_);
+    context.render_context->set_rasterizer_state(rasterizer_state_);
+
+    if (!depth_stencil_state_)
+        depth_stencil_state_ = context.render_device->create_depth_stencil_state(depth_stencil_state_desc_);
+    context.render_context->set_depth_stencil_state(depth_stencil_state_);
+
+    shader_->use(context);
+
+    for (auto val : float_uniforms_)
+        shader_->set_float(context, val.first, val.second);
+
+    for (auto val : texture_uniforms_)
+        if (val.second != NULL)
+            shader_->set_sampler2D(context, val.first, *val.second);
 }
 
-Texture* Material::get_texture() const {
-    return texture_;
+void Material::unuse(RenderContext const& context) const {
+    shader_->unuse(context);
+    context.render_context->reset_state_objects();
 }
 
-ShaderProgram const& Material::get_shader() const {
+void Material::set_uniform_float(std::string const& uniform_name, float value) {
+    float_uniforms_[uniform_name] = value;
+}
+
+void Material::set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value) {
+    texture_uniforms_[uniform_name] = value;
+}
+
+void Material::set_uniform_texture(std::string const& uniform_name, std::string const& texture_name) {
+    auto searched_tex(TextureBase::instance()->get(texture_name));
+    if (searched_tex)
+        texture_uniforms_[uniform_name] = searched_tex;
+    else WARNING ("A texture with the name %s does not exist within the database!", texture_name.c_str());
+}
+
+void Material::set_blend_state(scm::gl::blend_state_desc const& blend_state_desc) {
+    blend_state_desc_ = blend_state_desc;
+    blend_state_.reset();
+}
+
+void Material::set_rasterizer_state(scm::gl::rasterizer_state_desc const& rasterizer_state_desc) {
+    rasterizer_state_desc_ = rasterizer_state_desc;
+    rasterizer_state_.reset();
+}
+
+void Material::set_depth_stencil_state(scm::gl::depth_stencil_state_desc const& depth_stencil_state_desc) {
+    depth_stencil_state_desc_ = depth_stencil_state_desc;
+    depth_stencil_state_.reset();
+}
+
+ShaderProgram* Material::get_shader() const {
     return shader_;
 }
 
@@ -73,20 +138,23 @@ void Material::construct_from_file(TextFile const& file) {
     std::stringstream parse_stream(content);
 
     std::string current_string;
-    std::string texture_string;
     std::string vertex_string;
     std::string fragment_string;
 
     while (parse_stream >> current_string) {
-        if (current_string == "color:") {
+        if (current_string == "texture") {
             parse_stream >> current_string;
+            std::string texture_name;
+            parse_stream >> texture_name;
+            set_uniform_texture(current_string, texture_name);
+        } else if (current_string == "float") {
             parse_stream >> current_string;
-            parse_stream >> current_string;
-        } else if (current_string == "texture:") {
-            parse_stream >> texture_string;
-        } else if (current_string == "vertex_shader:") {
+            float value;
+            parse_stream >> value;
+            set_uniform_float(current_string, value);
+        } else if (current_string == "vertex_shader") {
             parse_stream >> vertex_string;
-        } else if (current_string == "fragment_shader:") {
+        } else if (current_string == "fragment_shader") {
             parse_stream >> fragment_string;
         }
         else WARNING("In \"%s\": \"%s\" is not a valid attribute!",
@@ -98,12 +166,6 @@ void Material::construct_from_file(TextFile const& file) {
 
     PathParser path_parser;
 
-    if (texture_string.length() > 0) {
-        path_parser.parse(texture_string);
-        path_parser.make_absolute(location_parser.get_path(true));
-        texture_ = new Texture(path_parser.get_path());
-    }
-
     path_parser.parse(vertex_string);
     path_parser.make_absolute(location_parser.get_path(true));
 
@@ -113,8 +175,8 @@ void Material::construct_from_file(TextFile const& file) {
     path_parser.make_absolute(location_parser.get_path(true));
 
     std::string fragment_shader(path_parser.get_path());
-
-    shader_.create_from_files(vertex_shader, fragment_shader);
+    shader_ = new gua::ShaderProgram();
+    shader_->create_from_files(vertex_shader, fragment_shader);
 }
 
 }

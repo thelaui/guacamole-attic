@@ -23,90 +23,25 @@
 #ifndef RENDER_BACKEND_HPP
 #define RENDER_BACKEND_HPP
 
-#include <vector>
 #include <string>
 
-#include "renderer/RenderWindow.hpp"
-#include "renderer/Geometry.hpp"
-#include "renderer/Texture.hpp"
-#include "renderer/FrameBufferObject.hpp"
-#include "renderer/ShaderProgram.hpp"
-#include "cores/CameraCore.hpp"
+#include "renderer/enums.hpp"
 
 namespace gua {
 
-class CameraNode;
-class GeometryNode;
-class LightNode;
 struct OptimizedScene;
-
-
-////////////////////////////////////////////////////////////////////////////////
-/// \brief The internal renderer of guacamole.
-///
-/// It takes a list of meshes, lights and a camera and renders the output to a
-/// RenderWindow. Each call of render() will draw an entire new frame.
-////////////////////////////////////////////////////////////////////////////////
+class RenderPass;
+class RenderContext;
 
 class RenderBackend {
     public:
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Constructor.
-        ///
-        /// Creates a new RenderBackend. The internal RenderWindow is
-        /// initialized by this constructor.
-        ///
-        /// \param width   The width of the window to be opened.
-        /// \param height  The height of the window to be opened,
-        /// \param display The display where the window should be placed.
-        ////////////////////////////////////////////////////////////////////////
-        RenderBackend(int width, int height, std::string const& camera, std::string const& screen, std::string const& display = ":0.0");
+        RenderBackend(RenderPass* pass);
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Renders the given objects.
-        ///
-        /// When this method is called, all given objects will be rendered to
-        /// the associated RenderWindow.
-        ///
-        /// \param node_list  A list of Meshes to be drawn, with materials and
-        ///                   transformations.
-        /// \param light_list A list of lights to be drawn.
-        /// \param camera     The Camera and it's transformation used for
-        ///                   drawing.
-        ////////////////////////////////////////////////////////////////////////
-        void render(OptimizedScene const& scene);
-
-        std::string const& get_camera_name() const;
+        void render(OptimizedScene const& scene, RenderContext const& context,
+                    CameraMode mode);
 
     private:
-        void render_eye(std::vector<GeometryNode> const& node_list,
-                        std::vector<LightNode> const& light_list,
-                        math::mat4 const& camera_projection,
-                        math::vec3 const& camera_position,
-                        math::mat4 const& screen_transform,
-                        CameraCore::Type camera_type,
-                        bool is_left_eye);
-
-        void fill_g_buffer(std::vector<GeometryNode> const& node_list,
-                           math::mat4 const& camera_projection,
-                           math::mat4 const& view_matrix);
-
-        void enable_stereo(CameraCore::Type camera_type, bool is_left_eye);
-        void disable_stereo();
-
-        RenderWindow window_;
-        std::string camera_name_;
-        std::string screen_name_;
-
-        std::shared_ptr<Geometry> light_sphere_;
-        Texture depth_buffer_, color_buffer_, position_buffer_, normal_buffer_;
-        FrameBufferObject g_buffer_;
-
-        ShaderProgram buffer_fill_shader_, deferred_light_shader_;
-
-        scm::gl::blend_state_ptr         blend_state_;
-        scm::gl::rasterizer_state_ptr    rasterizer_state_;
-        scm::gl::depth_stencil_state_ptr depth_stencil_state_;
+        RenderPass* pass_;
 };
 
 }

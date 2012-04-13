@@ -10,11 +10,11 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
 /// \brief Definition of the ShaderProgram class.
@@ -31,7 +31,9 @@ namespace gua {
 
 ShaderProgram::ShaderProgram():
     programs_(),
-    texture_offset_(0) {}
+    texture_offset_(0),
+    v_shader_(""),
+    f_shader_("") {}
 
 void ShaderProgram::create_from_files(std::string const& v_shader_file, std::string const& f_shader_file) {
     v_shader_ = v_shader_file;

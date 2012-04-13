@@ -61,13 +61,40 @@ void SceneGraph::Iterator::set_name(std::string const& name) const {
     }
 }
 
-math::mat4 const& SceneGraph::Iterator::get_transform(InheritanceMode mode) const {
-    if (current_node_) return current_node_->get_transform(mode);
+void SceneGraph::Iterator::add_to_group(std::string const& group) {
+    if (current_node_)
+        current_node_->add_to_group(group);
+}
+
+void SceneGraph::Iterator::add_to_groups(std::vector<std::string> const& groups) {
+    if (current_node_)
+        current_node_->add_to_groups(groups);
+}
+
+void SceneGraph::Iterator::remove_from_group(std::string const& group) {
+    if (current_node_)
+        current_node_->remove_from_group(group);
+}
+
+bool SceneGraph::Iterator::is_in_group(std::string const& group) const {
+    if (current_node_)
+        return current_node_->is_in_group(group);
+    return false;
+}
+
+std::set<std::string> const& SceneGraph::Iterator::get_groups() const {
+    if (!current_node_)
+        ERROR("Failed to get groups of node: Invalid iterator!");
+    return current_node_->get_groups();
+}
+
+math::mat4 const& SceneGraph::Iterator::get_transform() const {
+    if (current_node_) return current_node_->get_transform();
     return end_transform_;
 }
 
-void SceneGraph::Iterator::set_transform(math::mat4 const& transform, InheritanceMode mode) const {
-    if (current_node_) current_node_->set_transform(transform, mode);
+void SceneGraph::Iterator::set_transform(math::mat4 const& transform) const {
+    if (current_node_) current_node_->set_transform(transform);
 }
 
 Core* SceneGraph::Iterator::get_core() const {
@@ -80,25 +107,16 @@ void SceneGraph::Iterator::set_core(Core* core) const {
     if (current_node_) current_node_->set_core(core);
 }
 
-void SceneGraph::Iterator::scale(float x, float y, float z,
-                                 TransformMode transform_mode,
-                                 InheritanceMode inheritance_mode) {
-
-    if (current_node_) current_node_->scale(x, y, z, transform_mode, inheritance_mode);
+void SceneGraph::Iterator::scale(double x, double y, double z) {
+    if (current_node_) current_node_->scale(x, y, z);
 }
 
-void SceneGraph::Iterator::rotate(float angle, float x, float y, float z,
-                                  TransformMode transform_mode,
-                                  InheritanceMode inheritance_mode) {
-
-    if (current_node_) current_node_->rotate(angle, x, y, z, transform_mode, inheritance_mode);
+void SceneGraph::Iterator::rotate(double angle, double x, double y, double z) {
+    if (current_node_) current_node_->rotate(angle, x, y, z);
 }
 
-void SceneGraph::Iterator::translate(float x, float y, float z,
-                                     TransformMode transform_mode,
-                                     InheritanceMode inheritance_mode) {
-
-    if (current_node_) current_node_->translate(x, y, z, transform_mode, inheritance_mode);
+void SceneGraph::Iterator::translate(double x, double y, double z) {
+    if (current_node_) current_node_->translate(x, y, z);
 }
 
 void SceneGraph::Iterator::set_iteration_type(IterationType type) {

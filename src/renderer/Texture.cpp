@@ -10,11 +10,11 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
 /// \brief A class to easily load, bind and undbind textures.
@@ -50,14 +50,14 @@ Texture::Texture(std::string const& file, scm::gl::sampler_state_desc const& sta
 
 Texture::~Texture() {}
 
-void Texture::bind(RenderContext const& context, unsigned texture_type) const {
+void Texture::bind(RenderContext const& context, int texture_type) const {
     if (textures_.size() <= context.id || textures_[context.id] == 0)
         upload_to(context);
 
     context.render_context->bind_texture(textures_[context.id], sampler_states_[context.id], texture_type);
 }
 
-void Texture::unbind(RenderContext const& context, unsigned texture_type) {
+void Texture::unbind(RenderContext const& context, int texture_type) {
     if (textures_.size() > context.id && textures_[context.id] != 0)
         context.render_context->reset_texture_units();
 }
@@ -67,6 +67,14 @@ scm::gl::texture_2d_ptr const& Texture::get_buffer(RenderContext const& context)
         upload_to(context);
 
     return textures_[context.id];
+}
+
+unsigned Texture::width() const {
+    return width_;
+}
+
+unsigned Texture::height() const {
+    return height_;
 }
 
 void Texture::upload_to(RenderContext const& context) const{
@@ -80,7 +88,12 @@ void Texture::upload_to(RenderContext const& context) const{
         textures_[context.id] = context.render_device->create_texture_2d(scm::math::vec2ui(width_, height_), color_format_);
     } else {
         scm::gl::texture_loader loader;
-        textures_[context.id] = loader.load_texture_2d(*context.render_device, file_name_, false);
+        textures_[context.id] = loader.load_texture_2d(*context.render_device, file_name_, true);
+
+        if(textures_[context.id]) {
+            width_  = textures_[context.id]->dimensions()[0];
+            height_ = textures_[context.id]->dimensions()[1];
+        }
     }
 
     sampler_states_[context.id] = context.render_device->create_sampler_state(state_descripton_);

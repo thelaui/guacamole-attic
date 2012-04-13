@@ -20,9 +20,16 @@
 /// \brief The main include file of guacamole.
 ////////////////////////////////////////////////////////////////////////////////
 
+#ifndef GUA_GUACAMOLE_HPP
+#define GUA_GUACAMOLE_HPP
+
 #include "renderer/GeometryBase.hpp"
 #include "renderer/MaterialBase.hpp"
-#include "traverser/Renderer.hpp"
+#include "renderer/TextureBase.hpp"
+#include "renderer/RenderPipeline.hpp"
+#include "renderer/RenderPass.hpp"
+#include "renderer/enums.hpp"
+#include "traverser/RenderServer.hpp"
 #include "scenegraph/Iterator.hpp"
 #include "scenegraph/SceneGraph.hpp"
 #include "cores/GeometryCore.hpp"
@@ -35,6 +42,19 @@
 #include "utils/Timer.hpp"
 #include "utils/debug.hpp"
 #include "utils/math.hpp"
+
+namespace gua {
+
+    ////////////////////////////////////////////////////////////////////////
+    /// \brief Initialize guacamole.
+    ///
+    /// This should be called once in every application using guacamole.
+    ////////////////////////////////////////////////////////////////////////
+
+    void init(int argc, char** argv);
+}
+
+#endif // GUA_GUACAMOLE_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \mainpage

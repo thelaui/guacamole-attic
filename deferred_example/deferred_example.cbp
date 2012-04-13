@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="deferred_example" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/deferred_example" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option external_deps="../lib/libgua_scenegraph-d.so;../lib/libgua_rendering-d.so;" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="gua_rendering-d" />
+					<Add library="gua_scenegraph-d" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/deferred_example" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option external_deps="../lib/libgua_scenegraph.so;../lib/libgua_rendering.so;" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="gua_rendering" />
+					<Add library="gua_scenegraph" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++0x" />
+			<Add directory="../include" />
+			<Add directory="../../../scm_core/src" />
+			<Add directory="../../../scm_gl_core/src" />
+			<Add directory="../../../scm_gl_util/src" />
+			<Add directory="/opt/boost/current/include" />
+		</Compiler>
+		<Linker>
+			<Add library="libscm_cl_core" />
+			<Add library="libscm_core" />
+			<Add library="libscm_data" />
+			<Add library="libscm_gl_core" />
+			<Add library="libscm_gl_util" />
+			<Add library="libscm_input" />
+			<Add library="cuda" />
+			<Add library="cudart" />
+			<Add directory="../lib" />
+			<Add directory="../../../lib/linux_x86" />
+			<Add directory="/usr/lib/nvidia-current/" />
+			<Add directory="/opt/cuda/current/lib64" />
+			<Add directory="/opt/boost/current/lib" />
+			<Add directory="/opt/cuda/current/cuda/lib64" />
+		</Linker>
+		<Unit filename="data/shaders/base.frag" />
+		<Unit filename="data/shaders/base.vert" />
+		<Unit filename="data/shaders/deferred.frag" />
+		<Unit filename="data/shaders/deferred.vert" />
+		<Unit filename="data/shaders/mirror.frag" />
+		<Unit filename="data/shaders/mirror.vert" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<lib_finder disable_auto="1" />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

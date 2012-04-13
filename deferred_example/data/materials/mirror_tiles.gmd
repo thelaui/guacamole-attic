@@ -1,0 +1,6 @@
+vertex_shader ../shaders/mirror.vert
+fragment_shader ../shaders/mirror.frag
+
+texture tex_color    tiles_color
+texture tex_specular tiles_specular
+texture tex_mirror   checkerboard

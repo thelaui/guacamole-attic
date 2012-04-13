@@ -1,3 +1,0 @@
-color: 150 150 150
-vertex_shader: ../shaders/shiny.vert
-fragment_shader: ../shaders/shiny.frag

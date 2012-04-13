@@ -28,15 +28,11 @@
 #include <thread>
 #include <condition_variable>
 
-#include "renderer/RenderWindow.hpp"
-#include "traverser/OptimizedScene.hpp"
+#include "scenegraph/SceneGraph.hpp"
 
 namespace gua {
 
-class RenderBackend;
-class CameraNode;
-class GeometryNode;
-class LightNode;
+class RenderPipeline;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class represents one render thread.
@@ -52,7 +48,7 @@ class RenderClient {
         /// This constructs a new RenderClient.
         ///
         ////////////////////////////////////////////////////////////////////////
-        RenderClient(int width, int height, std::string const& camera, std::string const& screen, std::string const& display);
+        RenderClient(RenderPipeline* pipeline);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -62,29 +58,20 @@ class RenderClient {
         ////////////////////////////////////////////////////////////////////////
         virtual ~RenderClient();
 
-        void queue_draw(OptimizedScene const& scene);
-
-        std::string const& get_camera_name() const;
+        void queue_draw(SceneGraph const* graph);
 
     private:
         void draw_loop();
 
         std::thread* draw_thread_;
-        RenderBackend* render_backend_;
+        RenderPipeline* render_pipeline_;
+        SceneGraph graph_copy_;
 
         bool rendering_finished_;
         std::mutex render_mutex_;
         std::condition_variable render_condition_;
 
-        int width_;
-        int height_;
-        std::string camera_;
-        std::string screen_;
-        std::string display_;
-
         unsigned frame_;
-
-        OptimizedScene current_scene_;
 };
 
 }

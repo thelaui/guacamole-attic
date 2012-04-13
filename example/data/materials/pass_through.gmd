@@ -1,2 +1,0 @@
-vertex_shader: ../shaders/red.vert
-fragment_shader: ../shaders/pass_through.frag

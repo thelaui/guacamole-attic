@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="Workspace">
-		<Project filename="guacamole_rendering.cbp" />
 		<Project filename="guacamole_scenegraph.cbp" />
-		<Project filename="example/example.cbp" active="1">
+		<Project filename="guacamole_rendering.cbp" />
+		<Project filename="simple_example/simple_example.cbp">
 			<Depends filename="guacamole_scenegraph.cbp" />
 			<Depends filename="guacamole_rendering.cbp" />
+		</Project>
+		<Project filename="deferred_example/deferred_example.cbp" active="1">
+			<Depends filename="guacamole_rendering.cbp" />
+			<Depends filename="guacamole_scenegraph.cbp" />
 		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

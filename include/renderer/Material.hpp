@@ -26,6 +26,8 @@
 #include "renderer/ShaderProgram.hpp"
 #include "renderer/Texture.hpp"
 
+#include <memory>
+
 namespace gua {
 
 class RenderContext;
@@ -71,15 +73,15 @@ class Material {
         /// \param context The context which should use this Material.
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
+        void unuse(RenderContext const& context) const;
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Get the internal texture.
-        ///
-        /// Returns the internally used Texture.
-        ///
-        /// \return The texture of this Material.
-        ////////////////////////////////////////////////////////////////////////
-        Texture* get_texture() const;
+        void set_uniform_float(std::string const& uniform_name, float value);
+        void set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value);
+        void set_uniform_texture(std::string const& uniform_name, std::string const& texture_name);
+
+        void set_blend_state(scm::gl::blend_state_desc const& blend_state_desc);
+        void set_rasterizer_state(scm::gl::rasterizer_state_desc const& rasterizer_state_desc);
+        void set_depth_stencil_state(scm::gl::depth_stencil_state_desc const& depth_stencil_state_desc);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the internal shader.
@@ -88,13 +90,22 @@ class Material {
         ///
         /// \return The shader of this Material.
         ////////////////////////////////////////////////////////////////////////
-        ShaderProgram const& get_shader() const;
+        ShaderProgram* get_shader() const;
 
     private:
-        Texture* texture_;
-        ShaderProgram shader_;
-
         void construct_from_file(TextFile const& file);
+
+        std::map<std::string, std::shared_ptr<Texture>> texture_uniforms_;
+        std::map<std::string, float> float_uniforms_;
+        ShaderProgram* shader_;
+
+        scm::gl::blend_state_desc blend_state_desc_;
+        scm::gl::rasterizer_state_desc rasterizer_state_desc_;
+        scm::gl::depth_stencil_state_desc depth_stencil_state_desc_;
+
+        mutable scm::gl::blend_state_ptr blend_state_;
+        mutable scm::gl::rasterizer_state_ptr rasterizer_state_;
+        mutable scm::gl::depth_stencil_state_ptr depth_stencil_state_;
 };
 
 }

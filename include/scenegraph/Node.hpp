@@ -23,7 +23,9 @@
 #ifndef Node_HPP
 #define Node_HPP
 
+#include <set>
 #include <list>
+#include <vector>
 #include <memory>
 
 #include "scenegraph/SceneGraph.hpp"
@@ -55,7 +57,8 @@ class SceneGraph::Node {
         ///                 object.
         ////////////////////////////////////////////////////////////////////////
         Node(std::string const& name, math::mat4 transform = math::mat4::identity(),
-             Core* core = NULL, InheritanceMode mode = PUBLIC);
+             Core* core = NULL);
+
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -116,6 +119,15 @@ class SceneGraph::Node {
         ////////////////////////////////////////////////////////////////////////
         void set_name(std::string const& name);
 
+        void add_to_group(std::string const& group);
+        void add_to_groups(std::vector<std::string> const& groups);
+
+        void remove_from_group(std::string const& group);
+
+        bool is_in_group(std::string const& group) const;
+
+        std::set<std::string> const& get_groups() const;
+
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the transformation of the object the Node contains.
         ///
@@ -123,14 +135,14 @@ class SceneGraph::Node {
         ///
         ///\return transform The Object's transformation.
         ////////////////////////////////////////////////////////////////////////
-        math::mat4 const& get_transform(InheritanceMode mode) const;
+        math::mat4 const& get_transform() const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Sets the transformation of the object the Node contains.
         ///
         ///\param transform The new transformation of the Node's object.
         ////////////////////////////////////////////////////////////////////////
-        void set_transform(math::mat4 const& transform, InheritanceMode mode);
+        void set_transform(math::mat4 const& transform);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the Node's Core.
@@ -169,14 +181,8 @@ class SceneGraph::Node {
         ///\param x         The x value of the scaling.
         ///\param y         The y value of the scaling.
         ///\param z         The z value of the scaling.
-        ///\param transform_mode   Whether the transformation is applied in
-        ///                        object or world coordinates.
-        ///\param inheritance_mode Whether the transformation should affect
-        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void scale(float x, float y, float z,
-                   TransformMode transform_mode,
-                   InheritanceMode inheritance_mode);
+        void scale(float x, float y, float z);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Applies a rotation on the Node's transformation.
@@ -185,14 +191,8 @@ class SceneGraph::Node {
         ///\param x         The x factor of the rotation.
         ///\param y         The y factor of the rotation.
         ///\param z         The z factor of the rotation.
-        ///\param transform_mode   Whether the transformation is applied in
-        ///                        object or world coordinates.
-        ///\param inheritance_mode Whether the transformation should affect
-        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void rotate(float angle, float x, float y, float z,
-                    TransformMode transform_mode,
-                    InheritanceMode inheritance_mode);
+        void rotate(float angle, float x, float y, float z);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Applies a translation on the Node's transformation.
@@ -200,14 +200,8 @@ class SceneGraph::Node {
         ///\param x         The x value of the translation.
         ///\param y         The y value of the translation.
         ///\param z         The z value of the translation.
-        ///\param transform_mode   Whether the transformation is applied in
-        ///                        object or world coordinates.
-        ///\param inheritance_mode Whether the transformation should affect
-        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void translate(float x, float y, float z,
-                       TransformMode transform_mode,
-                       InheritanceMode inheritance_mode);
+        void translate(float x, float y, float z);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the Node's depth.
@@ -228,14 +222,18 @@ class SceneGraph::Node {
         ////////////////////////////////////////////////////////////////////////
         std::string const get_path() const;
 
+        SceneGraph::Node* deep_copy() const;
+
     private:
         std::string name_;
 
         Node* parent_;
         std::list<Node*> children_;
 
-        math::mat4 private_transform_;
-        math::mat4 public_transform_;
+        std::set<std::string> group_list_;
+
+        math::mat4 transform_;
+
         Core* core_;
 };
 

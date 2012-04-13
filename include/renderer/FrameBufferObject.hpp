@@ -10,11 +10,11 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
 /// \brief Declaration of the FrameBufferObject class.
@@ -61,12 +61,12 @@ class FrameBufferObject {
         /// This will attach a buffer to the FrameBufferObject.
         ///
         /// \param context The RenderContext to bind to.
-        /// \param buffer_type   The GL-type of the buffer
-        ///                     (e.g. GL_TEXTURE_2D).
-        /// \param buffer_id     The buffer's id.
+        /// \param buffer_type The GL-type of the buffer
+        /// (e.g. GL_TEXTURE_2D).
+        /// \param buffer_id The buffer's id.
         /// \param attachment_id The buffer's attachment id.
-        /// \param mip_level     The buffer's mip_level.
-        /// \param z_slice       The buffer's z_slice.
+        /// \param mip_level The buffer's mip_level.
+        /// \param z_slice The buffer's z_slice.
         ////////////////////////////////////////////////////////////
         void attach_color_buffer(RenderContext const& context, unsigned in_color_attachment, Texture const& buffer,
                                  int mip_level = 0, int z_slice = 0);
@@ -95,16 +95,19 @@ class FrameBufferObject {
         ////////////////////////////////////////////////////////////
         void unbind(RenderContext const& context);
 
+        unsigned width() const;
+        unsigned height() const;
+
     private:
+        bool set_size(Texture const& buffer);
+
+        unsigned width_, height_;
         mutable std::vector<scm::gl::frame_buffer_ptr> fbos_;
 };
 
 }
 
 # endif //FRAMEBUFFEROBJECT_HPP
-
-
-
 
 
 

@@ -26,11 +26,16 @@
 #include <memory>
 #include <string>
 
+#include <scm/gl_util/primitives/quad.h>
+
 #include "renderer/RenderContext.hpp"
+#include "renderer/ShaderProgram.hpp"
+#include "renderer/enums.hpp"
 
 namespace gua {
 
 class Geometry;
+class Texture;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A window for displaying stuff.
@@ -40,6 +45,20 @@ class Geometry;
 
 class RenderWindow {
     public:
+
+        struct Description {
+            Description(int w, int h, std::string const& titl, std::string const& disp, StereoMode str_md = MONO):
+                width(w),
+                height(h),
+                title(titl),
+                display(disp),
+                stereo_mode(str_md) {}
+
+            int width, height;
+            std::string title, display;
+            StereoMode stereo_mode;
+        };
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
@@ -52,7 +71,7 @@ class RenderWindow {
         /// \param display The display where this window should be opened.
         /// \throw An error message.
         ////////////////////////////////////////////////////////////////////////
-        RenderWindow( int width, int height, std::string const& window_title, std::string const& display );
+        RenderWindow( Description const& description ) throw (std::string);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
@@ -84,13 +103,16 @@ class RenderWindow {
         void finish_frame() const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Draws the given Geometry.
+        /// \brief Draws the given Texture to the window.
         ///
-        /// The given Geometry is drawn to the window.
+        /// The given Texture is drawn to the window.
         ///
-        /// \param geometry The Geometry to be drawn.
+        /// \param texture The Texture to be drawn.
         ////////////////////////////////////////////////////////////////////////
-        void draw(std::shared_ptr<Geometry> const& geometry) const;
+        void display_mono(std::shared_ptr<Texture> const& texture);
+        void display_stereo(std::shared_ptr<Texture> const& left_texture,
+                            std::shared_ptr<Texture> const& right_texture,
+                            StereoMode stereo_mode);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the RenderContext of this window.
@@ -102,17 +124,19 @@ class RenderWindow {
         ////////////////////////////////////////////////////////////////////////
         RenderContext const& get_context() const;
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Initialize RenderWindows.
-        ///
-        /// This should be called once in every application using guacamole.
-        ////////////////////////////////////////////////////////////////////////
-        static void init(int argc, char** argv);
-
     private:
         static unsigned last_context_id_;
 
         RenderContext ctx_;
+
+        ShaderProgram fullscreen_shader_;
+        scm::gl::quad_geometry_ptr fullscreen_quad_;
+
+        int frames_;
+        int frame_count_;
+        long frames_start_;
+
+        scm::gl::depth_stencil_state_ptr depth_stencil_state_;
 };
 
 }

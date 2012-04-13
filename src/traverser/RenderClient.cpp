@@ -23,22 +23,18 @@
 
 #include "scenegraph/SceneGraph.hpp"
 #include "renderer/RenderBackend.hpp"
+#include "renderer/RenderPipeline.hpp"
 #include "utils/Timer.hpp"
 #include "utils/debug.hpp"
 
 namespace gua {
 
-RenderClient::RenderClient(int width, int height, std::string const& camera, std::string const& screen, std::string const& display):
+RenderClient::RenderClient(RenderPipeline* pipeline):
     draw_thread_(NULL),
-    render_backend_(NULL),
+    render_pipeline_(pipeline),
     rendering_finished_(false),
     render_mutex_(),
     render_condition_(),
-    width_(width),
-    height_(height),
-    camera_(camera),
-    screen_(screen),
-    display_(display),
     frame_(0) {}
 
 RenderClient::~RenderClient() {
@@ -46,45 +42,39 @@ RenderClient::~RenderClient() {
         draw_thread_->detach();
         delete draw_thread_;
     }
-
-    if (render_backend_)
-        delete render_backend_;
 }
 
-void RenderClient::queue_draw(OptimizedScene const& scene) {
-    if(!draw_thread_)
+void RenderClient::queue_draw(SceneGraph const* graph) {
+    if(!draw_thread_) {
+        graph_copy_ = *graph;
         draw_thread_ = new std::thread(&RenderClient::draw_loop, this);
+    }
 
     // lock rendering
     std::unique_lock<std::mutex> lock(render_mutex_);
 
     if (rendering_finished_) {
-        current_scene_ = scene;
+        graph_copy_ = *graph;
+
         rendering_finished_ = false;
         // signal
         render_condition_.notify_one();
     }
 }
 
-std::string const& RenderClient::get_camera_name() const {
-    return camera_;
-}
-
 void RenderClient::draw_loop() {
-    if (!render_backend_)
-        render_backend_ = new RenderBackend(width_, height_, camera_, screen_, display_);
-
-    Timer timer;
-    timer.start();
+//    Timer timer;
+//    timer.start();
 
     while (true) {
-        if (++frame_ % 100 == 0) {
-            DEBUG("Renderer FPS: %f", frame_/timer.get_elapsed());
-            frame_ = 0;
-            timer.reset();
-        }
+//        if (++frame_ % 100 == 0) {
+//            DEBUG("Renderer FPS: %f", frame_/timer.get_elapsed());
+//            frame_ = 0;
+//            timer.reset();
+//        }
 
-        render_backend_->render(current_scene_);
+        // render
+        render_pipeline_->process(&graph_copy_);
 
         // lock rendering
         std::unique_lock<std::mutex> lock(render_mutex_);

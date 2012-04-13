@@ -10,11 +10,11 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
 /// \brief Declaration of the Texture class.
@@ -43,14 +43,14 @@ class Texture {
         ///
         /// This constructs a new texture with the given parameters.
         ///
-        /// \param width        The width of the resulting texture.
-        /// \param height       The height of the resulting texture.
-        /// \param color_depth  The color depth of the resulting
-        ///                     texture.
+        /// \param width The width of the resulting texture.
+        /// \param height The height of the resulting texture.
+        /// \param color_depth The color depth of the resulting
+        /// texture.
         /// \param color_format The color format of the resulting
-        ///                     texture.
-        /// \param type         The data type texture data is stored
-        ///                     in.
+        /// texture.
+        /// \param type The data type texture data is stored
+        /// in.
         ////////////////////////////////////////////////////////////
         Texture(unsigned width, unsigned height, scm::gl::data_format color_format = scm::gl::FORMAT_RGB_32F,
                 scm::gl::sampler_state_desc const& state_descripton = scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR));
@@ -63,7 +63,7 @@ class Texture {
         /// \param file The file which contains the texture data
         ////////////////////////////////////////////////////////////
         Texture(std::string const& file,
-                scm::gl::sampler_state_desc const& state_descripton = scm::gl::sampler_state_desc());
+                scm::gl::sampler_state_desc const& state_descripton = scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR, scm::gl::WRAP_REPEAT, scm::gl::WRAP_REPEAT));
 
         ////////////////////////////////////////////////////////////
         /// \brief Destructor.
@@ -78,10 +78,10 @@ class Texture {
         /// This will bind the texture to the current OpenGL context
         /// with the given layer.
         ///
-        ///\param context  The current context.
+        ///\param context The current context.
         ///\param texture_type The type of the texture.
         ////////////////////////////////////////////////////////////
-        void bind(RenderContext const& context, unsigned texture_type) const;
+        void bind(RenderContext const& context, int texture_type) const;
 
         ////////////////////////////////////////////////////////////
         /// \brief Unbind a texture.
@@ -89,7 +89,7 @@ class Texture {
         /// This will unbind the texture with the given position.
         /// \param texture_type The type of the texture.
         ////////////////////////////////////////////////////////////
-        void unbind(RenderContext const& context, unsigned texture_type);
+        void unbind(RenderContext const& context, int texture_type);
 
         ////////////////////////////////////////////////////////////
         /// \brief Get the Texture-ID.
@@ -98,8 +98,11 @@ class Texture {
         ////////////////////////////////////////////////////////////
         scm::gl::texture_2d_ptr const& get_buffer (RenderContext const& context) const;
 
+        unsigned width() const;
+        unsigned height() const;
+
     private:
-        unsigned width_, height_;
+        mutable unsigned width_, height_;
         scm::gl::data_format color_format_;
         std::string file_name_;
         scm::gl::sampler_state_desc state_descripton_;
@@ -112,8 +115,5 @@ class Texture {
 
 }
 # endif //TEXTURE_HPP
-
-
-
 
 

@@ -94,6 +94,15 @@ class SceneGraph::Iterator {
         ////////////////////////////////////////////////////////////////////////
         void set_name(std::string const& name) const;
 
+        void add_to_group(std::string const& group);
+        void add_to_groups(std::vector<std::string> const& groups);
+
+        void remove_from_group(std::string const& group);
+
+        bool is_in_group(std::string const& group) const;
+
+        std::set<std::string> const& get_groups() const;
+
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the transformation of the Iterator's Node.
         ///
@@ -101,14 +110,15 @@ class SceneGraph::Iterator {
         ///
         ///\return transform  The Node's transformation.
         ////////////////////////////////////////////////////////////////////////
-        math::mat4 const& get_transform(InheritanceMode mode = PUBLIC) const;
+        math::mat4 const& get_transform() const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Sets the transformation of the Iterator's Node.
         ///
         ///\param transform   The new transformation of the Node.
         ////////////////////////////////////////////////////////////////////////
-        void set_transform(math::mat4 const& transform, InheritanceMode mode = PUBLIC) const;
+        void set_transform(math::mat4 const& transform) const;
+
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the core of the Iterator's Node.
@@ -151,14 +161,8 @@ class SceneGraph::Iterator {
         ///\param x         The x value of the scaling.
         ///\param y         The y value of the scaling.
         ///\param z         The z value of the scaling.
-        ///\param transform_mode   Whether the transformation is applied in
-        ///                        object or world coordinates.
-        ///\param inheritance_mode Whether the transformation should affect
-        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void scale(float x, float y, float z,
-                   TransformMode transform_mode = GLOBAL,
-                   InheritanceMode inheritance_mode = PUBLIC);
+        void scale(double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Applies a rotation on the Iterator's Node's transformation.
@@ -167,14 +171,8 @@ class SceneGraph::Iterator {
         ///\param x         The x factor of the rotation.
         ///\param y         The y factor of the rotation.
         ///\param z         The z factor of the rotation.
-        ///\param transform_mode   Whether the transformation is applied in
-        ///                        object or world coordinates.
-        ///\param inheritance_mode Whether the transformation should affect
-        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void rotate(float angle, float x, float y, float z,
-                    TransformMode transform_mode = GLOBAL,
-                    InheritanceMode inheritance_mode = PUBLIC);
+        void rotate(double angle, double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Applies a translation on the Iterator's Node's transformation.
@@ -182,14 +180,8 @@ class SceneGraph::Iterator {
         ///\param x         The x value of the translation.
         ///\param y         The y value of the translation.
         ///\param z         The z value of the translation.
-        ///\param transform_mode   Whether the transformation is applied in
-        ///                        object or world coordinates.
-        ///\param inheritance_mode Whether the transformation should affect
-        ///                        children of this node.
         ////////////////////////////////////////////////////////////////////////
-        void translate(float x, float y, float z,
-                       TransformMode transform_mode = GLOBAL,
-                       InheritanceMode inheritance_mode = PUBLIC);
+        void translate(double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Sets the Iterator's type.

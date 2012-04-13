@@ -34,6 +34,9 @@ SceneGraph::SceneGraph():
     root_(new Node("/")),
     working_node_(root_) {}
 
+SceneGraph::SceneGraph(SceneGraph const& graph):
+    root_(graph.root_ ? graph.root_->deep_copy() : NULL),
+    working_node_(root_) {}
 
 SceneGraph::~SceneGraph() {
     delete root_;
@@ -116,7 +119,7 @@ void SceneGraph::set_working_node(std::string const& path_to_node) {
     working_node_ = find_node(path_to_node);
 }
 
-SceneGraph::Iterator SceneGraph::get_iterator(std::string const& path_to_node, IterationType type) {
+SceneGraph::Iterator SceneGraph::get_iterator(std::string const& path_to_node, IterationType type) const {
     return Iterator(find_node(path_to_node), type);
 }
 

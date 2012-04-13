@@ -49,8 +49,6 @@ class SceneGraph {
     public:
 
         enum IterationType {DEPTH_FIRST, BREADTH_FIRST};
-        enum TransformMode {LOCAL, GLOBAL};
-        enum InheritanceMode {PRIVATE, PUBLIC};
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Constructor.
@@ -58,6 +56,13 @@ class SceneGraph {
         /// This constructs an empty SceneGraph.
         ////////////////////////////////////////////////////////////////////////
         SceneGraph();
+
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Copy Constructor.
+        ///
+        /// This constructs an copied SceneGraph.
+        ////////////////////////////////////////////////////////////////////////
+        SceneGraph(SceneGraph const& graph);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Destructor.
@@ -181,7 +186,7 @@ class SceneGraph {
         ///
         ///\return Iterator      An Iterator on the given Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator get_iterator(std::string const& path_to_node, IterationType type = DEPTH_FIRST);
+        Iterator get_iterator(std::string const& path_to_node, IterationType type = DEPTH_FIRST) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns an iterator to the beginning of the SceneGraph.
