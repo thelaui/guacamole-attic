@@ -78,7 +78,7 @@ void RenderBackend::render(OptimizedScene const& scene, RenderContext const& con
             scm::math::translate(camera_transform, camera.stereo_width_*0.5f, 0.f, 0.f);
         }
 
-        auto projection(math::compute_frustum(camera_transform.column(3), screen.transform_, 0.1, 1000.f));
+        auto projection(math::compute_frustum(camera_transform.column(3), screen.transform_, 0.1, 100000.f));
 
         math::mat4 view_transform(screen.transform_);
         view_transform[12] = 0.f;
