@@ -22,6 +22,51 @@
 
 #include "guacamole.hpp"
 
+gua::RenderPipeline* create_pipe() {
+    // setup rendering pipeline
+    auto g_buffer_mirror = new gua::RenderPass("g_buffer_mirror", "mirror_camera", "floor_screen", "!floor & !lights", 0.5, 0.5);
+    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("color", 0));
+    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("normal", 1));
+    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("specular", 2));
+    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("position", 3));
+    g_buffer_mirror->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
+
+    auto lighting_mirror = new gua::RenderPass("lighting_mirror", "mirror_camera", "floor_screen", "lights | camerastuff", 0.5, 0.5);
+    lighting_mirror->add_buffer(gua::ColorBufferDescription("color", 0));
+    lighting_mirror->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
+    lighting_mirror->set_input_buffer("g_buffer_mirror", "color", "deferred_lighting", "tex_color");
+    lighting_mirror->set_input_buffer("g_buffer_mirror", "normal", "deferred_lighting", "tex_normal");
+    lighting_mirror->set_input_buffer("g_buffer_mirror", "specular", "deferred_lighting", "tex_specular");
+    lighting_mirror->set_input_buffer("g_buffer_mirror", "position", "deferred_lighting", "tex_position");
+    lighting_mirror->overwrite_uniform_float("deferred_lighting", "texel_width", 2.0/800);
+    lighting_mirror->overwrite_uniform_float("deferred_lighting", "texel_height", 2.0/600);
+
+    auto g_buffer = new gua::RenderPass("g_buffer", "camera", "screen", "!lights");
+    g_buffer->add_buffer(gua::ColorBufferDescription("color", 0));
+    g_buffer->add_buffer(gua::ColorBufferDescription("normal", 1));
+    g_buffer->add_buffer(gua::ColorBufferDescription("specular", 2));
+    g_buffer->add_buffer(gua::ColorBufferDescription("position", 3));
+    g_buffer->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
+    g_buffer->set_input_buffer("lighting_mirror", "color", "mirror_tiles", "tex_mirror");
+
+    auto lighting = new gua::RenderPass("lighting", "camera", "screen", "lights | camerastuff");
+    lighting->add_buffer(gua::ColorBufferDescription("color", 0));
+    lighting->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
+    lighting->set_input_buffer("g_buffer", "color", "deferred_lighting", "tex_color");
+    lighting->set_input_buffer("g_buffer", "normal", "deferred_lighting", "tex_normal");
+    lighting->set_input_buffer("g_buffer", "specular", "deferred_lighting", "tex_specular");
+    lighting->set_input_buffer("g_buffer", "position", "deferred_lighting", "tex_position");
+
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(800, 600, "deferred_example", ":0.0", gua::ANAGLYPH_RED_CYAN));
+    pipe->add_render_pass(g_buffer);
+    pipe->add_render_pass(g_buffer_mirror);
+    pipe->add_render_pass(lighting);
+    pipe->add_render_pass(lighting_mirror);
+    pipe->set_final_buffer("lighting", "color");
+
+    return pipe;
+}
+
 int main(int argc, char** argv) {
     // initialize guacamole
     gua::init(argc, argv);
@@ -82,48 +127,9 @@ int main(int argc, char** argv) {
     gua::MaterialBase::instance()->get("deferred_lighting")->set_rasterizer_state(scm::gl::rasterizer_state_desc(scm::gl::FILL_SOLID, scm::gl::CULL_FRONT));
     gua::MaterialBase::instance()->get("deferred_lighting")->set_depth_stencil_state(scm::gl::depth_stencil_state_desc(false, false));
 
-    // setup rendering pipeline
-    auto g_buffer_mirror = new gua::RenderPass("g_buffer_mirror", "mirror_camera", "floor_screen", "!floor & !lights", 0.5, 0.5);
-    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("color", 0));
-    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("normal", 1));
-    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("specular", 2));
-    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("position", 3));
-    g_buffer_mirror->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
 
-    auto lighting_mirror = new gua::RenderPass("lighting_mirror", "mirror_camera", "floor_screen", "lights | camerastuff", 0.5, 0.5);
-    lighting_mirror->add_buffer(gua::ColorBufferDescription("color", 0));
-    lighting_mirror->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
-    lighting_mirror->set_input_buffer("g_buffer_mirror", "color", "deferred_lighting", "tex_color");
-    lighting_mirror->set_input_buffer("g_buffer_mirror", "normal", "deferred_lighting", "tex_normal");
-    lighting_mirror->set_input_buffer("g_buffer_mirror", "specular", "deferred_lighting", "tex_specular");
-    lighting_mirror->set_input_buffer("g_buffer_mirror", "position", "deferred_lighting", "tex_position");
-    lighting_mirror->overwrite_uniform_float("deferred_lighting", "texel_width", 2.0/800);
-    lighting_mirror->overwrite_uniform_float("deferred_lighting", "texel_height", 2.0/600);
 
-    auto g_buffer = new gua::RenderPass("g_buffer", "camera", "screen", "!lights");
-    g_buffer->add_buffer(gua::ColorBufferDescription("color", 0));
-    g_buffer->add_buffer(gua::ColorBufferDescription("normal", 1));
-    g_buffer->add_buffer(gua::ColorBufferDescription("specular", 2));
-    g_buffer->add_buffer(gua::ColorBufferDescription("position", 3));
-    g_buffer->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
-    g_buffer->set_input_buffer("lighting_mirror", "color", "mirror_tiles", "tex_mirror");
-
-    auto lighting = new gua::RenderPass("lighting", "camera", "screen", "lights | camerastuff");
-    lighting->add_buffer(gua::ColorBufferDescription("color", 0));
-    lighting->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
-    lighting->set_input_buffer("g_buffer", "color", "deferred_lighting", "tex_color");
-    lighting->set_input_buffer("g_buffer", "normal", "deferred_lighting", "tex_normal");
-    lighting->set_input_buffer("g_buffer", "specular", "deferred_lighting", "tex_specular");
-    lighting->set_input_buffer("g_buffer", "position", "deferred_lighting", "tex_position");
-
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(800, 600, "deferred_example", ":0.0", gua::MONO));
-    pipe->add_render_pass(g_buffer);
-    pipe->add_render_pass(g_buffer_mirror);
-    pipe->add_render_pass(lighting);
-    pipe->add_render_pass(lighting_mirror);
-    pipe->set_final_buffer("lighting", "color");
-
-    gua::RenderServer renderer({pipe});
+    gua::RenderServer renderer({create_pipe()});
 
     // application loop
     while (true) {

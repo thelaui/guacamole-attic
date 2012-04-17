@@ -31,13 +31,18 @@ namespace gua {
 
 Geometry::Geometry():
     meshes_(),
+    upload_mutex_(),
     file_name_("") {}
 
 Geometry::Geometry(std::string const& file_name):
     meshes_(),
+    upload_mutex_(),
     file_name_(file_name) {}
 
 void Geometry::upload_to(RenderContext const& context) const {
+
+    std::unique_lock<std::mutex> lock(upload_mutex_);
+
     TextFile tmp(file_name_);
     if (tmp.is_valid()) {
         if (meshes_.size() <= context.id) {

@@ -31,7 +31,8 @@ namespace gua {
 
 ShaderProgram::ShaderProgram():
     programs_(),
-    texture_offset_(0),
+    texture_offsets_(),
+    upload_mutex_(),
     v_shader_(""),
     f_shader_("") {}
 
@@ -59,7 +60,7 @@ void ShaderProgram::use(RenderContext const& context) const {
 }
 
 void ShaderProgram::unuse(RenderContext const& context) const {
-    texture_offset_ = 0;
+    texture_offsets_[context.id] = 0;
     context.render_context->reset_program();
 }
 
@@ -89,10 +90,11 @@ void ShaderProgram::set_vec4(RenderContext const& context, std::string const& ve
 }
 
 void ShaderProgram::set_sampler2D(RenderContext const& context, std::string const& sampler_name, Texture const& sampler) {
+
     if (programs_.size() > context.id) {
-        sampler.bind(context, texture_offset_);
-        programs_[context.id]->uniform(sampler_name, texture_offset_);
-        ++texture_offset_;
+        sampler.bind(context, texture_offsets_[context.id]);
+        programs_[context.id]->uniform(sampler_name, texture_offsets_[context.id]);
+        ++texture_offsets_[context.id];
     }
 }
 
@@ -107,8 +109,13 @@ void ShaderProgram::set_int(RenderContext const& context, std::string const& int
 }
 
 void ShaderProgram::upload_to(RenderContext const& context) const {
+
+    std::unique_lock<std::mutex> lock(upload_mutex_);
+
     if (programs_.size() <= context.id) {
         programs_.resize(context.id+1);
+        texture_offsets_.resize(context.id+1);
+        texture_offsets_[context.id] = 0;
     }
 
     if (shaders_are_files_) {

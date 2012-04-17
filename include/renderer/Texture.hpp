@@ -27,6 +27,7 @@
 
 #include <string>
 #include <vector>
+#include <thread>
 #include <GL/glew.h>
 
 namespace gua {
@@ -89,7 +90,7 @@ class Texture {
         /// This will unbind the texture with the given position.
         /// \param texture_type The type of the texture.
         ////////////////////////////////////////////////////////////
-        void unbind(RenderContext const& context, int texture_type);
+        void unbind(RenderContext const& context);
 
         ////////////////////////////////////////////////////////////
         /// \brief Get the Texture-ID.
@@ -109,6 +110,7 @@ class Texture {
 
         mutable std::vector<scm::gl::texture_2d_ptr> textures_;
         mutable std::vector<scm::gl::sampler_state_ptr> sampler_states_;
+        mutable std::mutex upload_mutex_;
 
         void upload_to(RenderContext const& context) const;
 };

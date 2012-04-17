@@ -37,7 +37,8 @@ Texture::Texture(unsigned width, unsigned height, scm::gl::data_format color_for
                  file_name_(""),
                  state_descripton_(state_descripton),
                  textures_(),
-                 sampler_states_() {}
+                 sampler_states_(),
+                 upload_mutex_() {}
 
 Texture::Texture(std::string const& file, scm::gl::sampler_state_desc const& state_descripton):
     width_(0),
@@ -46,7 +47,8 @@ Texture::Texture(std::string const& file, scm::gl::sampler_state_desc const& sta
     file_name_(file),
     state_descripton_(state_descripton),
     textures_(),
-    sampler_states_() {}
+    sampler_states_(),
+    upload_mutex_() {}
 
 Texture::~Texture() {}
 
@@ -57,7 +59,7 @@ void Texture::bind(RenderContext const& context, int texture_type) const {
     context.render_context->bind_texture(textures_[context.id], sampler_states_[context.id], texture_type);
 }
 
-void Texture::unbind(RenderContext const& context, int texture_type) {
+void Texture::unbind(RenderContext const& context) {
     if (textures_.size() > context.id && textures_[context.id] != 0)
         context.render_context->reset_texture_units();
 }
@@ -78,6 +80,8 @@ unsigned Texture::height() const {
 }
 
 void Texture::upload_to(RenderContext const& context) const{
+
+    std::unique_lock<std::mutex> lock(upload_mutex_);
 
     if (textures_.size() <= context.id) {
         textures_.resize(context.id + 1);

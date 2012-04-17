@@ -97,6 +97,10 @@ void Material::use(RenderContext const& context) const {
 void Material::unuse(RenderContext const& context) const {
     shader_->unuse(context);
     context.render_context->reset_state_objects();
+
+    for (auto val : texture_uniforms_)
+        if (val.second != NULL)
+            val.second->unbind(context);
 }
 
 void Material::set_uniform_float(std::string const& uniform_name, float value) {

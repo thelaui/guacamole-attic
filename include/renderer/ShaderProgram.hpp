@@ -124,7 +124,8 @@ class ShaderProgram {
         void upload_to(RenderContext const& context) const;
 
         mutable std::vector<scm::gl::program_ptr> programs_;
-        mutable int texture_offset_;
+        mutable std::vector<int> texture_offsets_;
+        mutable std::mutex upload_mutex_;
 
         bool shaders_are_files_;
 

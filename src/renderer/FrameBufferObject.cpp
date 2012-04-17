@@ -33,6 +33,7 @@ namespace gua {
 
 FrameBufferObject::FrameBufferObject():
     fbos_(),
+    upload_mutex_(),
     width_(0),
     height_(0) {}
 
@@ -41,6 +42,8 @@ FrameBufferObject::~FrameBufferObject() {
 
 void FrameBufferObject::attach_color_buffer(RenderContext const& context, unsigned in_color_attachment, Texture const& buffer,
                                             int mip_level, int z_slice) {
+
+    std::unique_lock<std::mutex> lock(upload_mutex_);
 
     if (set_size(buffer)) {
         if (fbos_.size() <= context.id) {
@@ -54,6 +57,9 @@ void FrameBufferObject::attach_color_buffer(RenderContext const& context, unsign
 
 void FrameBufferObject::attach_depth_stencil_buffer(RenderContext const& context, Texture const& buffer,
                                                     int mip_level, int z_slice) {
+
+    std::unique_lock<std::mutex> lock(upload_mutex_);
+
     if (set_size(buffer)) {
         if (fbos_.size() <= context.id) {
             fbos_.resize(context.id+1);

@@ -103,6 +103,7 @@ class FrameBufferObject {
 
         unsigned width_, height_;
         mutable std::vector<scm::gl::frame_buffer_ptr> fbos_;
+        mutable std::mutex upload_mutex_;
 };
 
 }

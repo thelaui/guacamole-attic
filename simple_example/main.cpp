@@ -22,6 +22,19 @@
 
 #include "guacamole.hpp"
 
+gua::RenderPipeline* create_pipe() {
+    // setup rendering pipeline
+    auto pass = new gua::RenderPass("main", "camera", "screen");
+    pass->add_buffer(gua::ColorBufferDescription("color", 0));
+    pass->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
+
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, "simple_example", ":0.0", gua::ANAGLYPH_RED_CYAN));
+    pipe->add_render_pass(pass);
+    pipe->set_final_buffer("main", "color");
+
+    return pipe;
+}
+
 int main(int argc, char** argv) {
     // initialize guacamole
     gua::init(argc, argv);
@@ -55,16 +68,7 @@ int main(int argc, char** argv) {
     auto camera = graph.add_node("/screen", "camera", camera_core);
     camera.translate(0, 0, 1.5);
 
-    // setup rendering pipeline
-    auto pass = new gua::RenderPass("main", "camera", "screen");
-    pass->add_buffer(gua::ColorBufferDescription("color", 0));
-    pass->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
-
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, "simple_example", ":0.0"), gua::ANAGLYPH_RED_CYAN);
-    pipe->add_render_pass(pass);
-    pipe->set_final_buffer("main", "color");
-
-    gua::RenderServer renderer({pipe});
+    gua::RenderServer renderer({create_pipe(), create_pipe(), create_pipe(), create_pipe(), create_pipe(), create_pipe()});
 
     // application loop
     while (true) {

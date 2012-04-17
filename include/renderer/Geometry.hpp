@@ -24,6 +24,7 @@
 #define GEOMETRY_HPP
 
 #include <vector>
+#include <thread>
 #include <scm/gl_util/primitives/wavefront_obj.h>
 
 namespace gua {
@@ -69,6 +70,7 @@ class Geometry {
         void upload_to(RenderContext const& context) const;
 
         mutable std::vector<scm::gl::wavefront_obj_geometry_ptr> meshes_;
+        mutable std::mutex upload_mutex_;
         std::string file_name_;
 };
 
