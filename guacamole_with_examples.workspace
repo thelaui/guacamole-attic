@@ -3,15 +3,15 @@
 	<Workspace title="Workspace">
 		<Project filename="guacamole_scenegraph.cbp" />
 		<Project filename="guacamole_rendering.cbp" />
-		<Project filename="simple_example/simple_example.cbp">
-			<Depends filename="guacamole_scenegraph.cbp" />
-			<Depends filename="guacamole_rendering.cbp" />
-		</Project>
-		<Project filename="deferred_example/deferred_example.cbp">
+		<Project filename="examples/simple_example/simple_example.cbp">
 			<Depends filename="guacamole_rendering.cbp" />
 			<Depends filename="guacamole_scenegraph.cbp" />
 		</Project>
-		<Project filename="tracking_example/tracking_example.cbp" active="1">
+		<Project filename="examples/deferred_example/deferred_example.cbp" active="1">
+			<Depends filename="guacamole_rendering.cbp" />
+			<Depends filename="guacamole_scenegraph.cbp" />
+		</Project>
+		<Project filename="examples/tracking_example/tracking_example.cbp">
 			<Depends filename="guacamole_scenegraph.cbp" />
 			<Depends filename="guacamole_rendering.cbp" />
 		</Project>

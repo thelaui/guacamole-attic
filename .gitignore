@@ -9,9 +9,9 @@ guacamole-d
 *.gv
 *.dot
 *.so
-simple_example/obj/*
-simple_example/bin/*
-deferred_example/obj/*
-deferred_example/bin/*
-tracking_example/obj/*
-tracking_example/bin/*
+examples/simple_example/obj/*
+examples/simple_example/bin/*
+examples/deferred_example/obj/*
+examples/deferred_example/bin/*
+examples/tracking_example/obj/*
+examples/tracking_example/bin/*

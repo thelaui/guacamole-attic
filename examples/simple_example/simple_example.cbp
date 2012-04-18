@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="tracking_example" />
+		<Option title="simple_example" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/tracking_example" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/simple_example" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
-				<Option external_deps="../lib/libgua_scenegraph-d.so;../lib/libgua_rendering-d.so;" />
+				<Option external_deps="../../lib/libgua_scenegraph-d.so;../../lib/libgua_rendering-d.so;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -22,9 +22,9 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/tracking_example" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/simple_example" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
-				<Option external_deps="../lib/libgua_scenegraph.so;../lib/libgua_rendering.so;" />
+				<Option external_deps="../../lib/libgua_scenegraph.so;../../lib/libgua_rendering.so;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -39,12 +39,11 @@
 		</Build>
 		<Compiler>
 			<Add option="-std=c++0x" />
-			<Add directory="../include" />
-			<Add directory="../../../scm_gl_util/src" />
-			<Add directory="../../../scm_core/src" />
-			<Add directory="../../../scm_gl_core/src" />
+			<Add directory="../../include" />
+			<Add directory="../../../../scm_gl_util/src" />
+			<Add directory="../../../../scm_core/src" />
+			<Add directory="../../../../scm_gl_core/src" />
 			<Add directory="/opt/boost/current/include" />
-			<Add directory="../../../scm_input/src" />
 		</Compiler>
 		<Linker>
 			<Add library="libscm_cl_core" />
@@ -55,8 +54,8 @@
 			<Add library="libscm_input" />
 			<Add library="cuda" />
 			<Add library="cudart" />
-			<Add directory="../lib" />
-			<Add directory="../../../lib/linux_x86" />
+			<Add directory="../../lib" />
+			<Add directory="../../../../lib/linux_x86" />
 			<Add directory="/usr/lib/nvidia-current/" />
 			<Add directory="/opt/cuda/current/lib64" />
 			<Add directory="/opt/boost/current/lib" />

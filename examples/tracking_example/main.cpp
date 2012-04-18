@@ -30,7 +30,7 @@ gua::RenderPipeline* create_pipe(std::string const& camera, std::string const& s
     pass->add_buffer(gua::ColorBufferDescription("color", 0));
     pass->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
 
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 600, "tracking_example", display, gua::SIDE_BY_SIDE));
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(3840, 1200, "tracking_example", display, gua::SIDE_BY_SIDE));
     pipe->add_render_pass(pass);
     pipe->set_final_buffer("main", "color");
 
@@ -54,6 +54,10 @@ int main(int argc, char** argv) {
     scm::inp::tracker::target_container targets;
     targets.insert(scm::inp::tracker::target_container::value_type(1, scm::inp::target(1)));
     targets.insert(scm::inp::tracker::target_container::value_type(2, scm::inp::target(2)));
+    targets.insert(scm::inp::tracker::target_container::value_type(3, scm::inp::target(3)));
+    targets.insert(scm::inp::tracker::target_container::value_type(4, scm::inp::target(4)));
+    targets.insert(scm::inp::tracker::target_container::value_type(5, scm::inp::target(5)));
+    targets.insert(scm::inp::tracker::target_container::value_type(6, scm::inp::target(6)));
 
     // setup scene
     gua::SceneGraph graph;
@@ -71,7 +75,7 @@ int main(int argc, char** argv) {
     auto monkey_core = new gua::GeometryCore("monkey", "wood");
     auto ape = graph.add_node("/box", "monkey", monkey_core);
     ape.scale(0.5, 0.5, 0.5);
-    ape.translate(0, 1.5, 0);
+    ape.translate(0, 1.5, 1);
 
     auto screen_core(new gua::ScreenCore(4000, 3000));
     auto screen = graph.add_node("/", "screen", screen_core);
@@ -80,29 +84,48 @@ int main(int argc, char** argv) {
     auto camera_core = new gua::CameraCore(70.f);
     graph.add_node("/", "camera1", camera_core);
     graph.add_node("/", "camera2", camera_core);
+    graph.add_node("/", "camera3", camera_core);
+    graph.add_node("/", "camera4", camera_core);
+    graph.add_node("/", "camera5", camera_core);
+    graph.add_node("/", "camera6", camera_core);
 
-    gua::RenderServer renderer({create_pipe("camera1", "screen", ":0.0"), create_pipe("camera2", "screen", ":0.0")});
+    gua::RenderServer renderer({create_pipe("camera1", "screen", ":0.0")/*, create_pipe("camera2", "screen", ":0.1"),
+                                create_pipe("camera3", "screen", ":0.2"), create_pipe("camera4", "screen", ":0.3"),
+                                create_pipe("camera5", "screen", ":0.4"), create_pipe("camera6", "screen", ":0.5")*/});
 
     // application loop
     while (true) {
-        dtrack->update(targets);
+//        dtrack->update(targets);
 
 	    // head target
-	    auto target_it = targets.find(1);
+//	    auto target_it = targets.find(1);
+//	    if (target_it != targets.end())
+//            graph["/camera1"].set_transform(target_it->second.transform());
 
-	    if (target_it != targets.end())
-            graph["/camera1"].set_transform(target_it->second.transform());
-
-
-        target_it = targets.find(2);
-
-	    if (target_it != targets.end())
-            graph["/camera2"].set_transform(target_it->second.transform());
+//        target_it = targets.find(2);
+//	    if (target_it != targets.end())
+//            graph["/camera2"].set_transform(target_it->second.transform());
+//
+//        target_it = targets.find(3);
+//	    if (target_it != targets.end())
+//            graph["/camera3"].set_transform(target_it->second.transform());
+//
+//        target_it = targets.find(4);
+//	    if (target_it != targets.end())
+//            graph["/camera4"].set_transform(target_it->second.transform());
+//
+//        target_it = targets.find(5);
+//	    if (target_it != targets.end())
+//            graph["/camera5"].set_transform(target_it->second.transform());
+//
+//        target_it = targets.find(6);
+//	    if (target_it != targets.end())
+//            graph["/camera6"].set_transform(target_it->second.transform());
 
 
         renderer.queue_draw(&graph);
 
-        //std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
         graph["/box/monkey"].rotate(2, 0, 1, 0);
 //        graph["/screen"].rotate(0.1, 0, 1, 0);
