@@ -7,11 +7,11 @@
 			<Depends filename="guacamole_rendering.cbp" />
 			<Depends filename="guacamole_scenegraph.cbp" />
 		</Project>
-		<Project filename="examples/deferred_example/deferred_example.cbp" active="1">
+		<Project filename="examples/deferred_example/deferred_example.cbp">
 			<Depends filename="guacamole_rendering.cbp" />
 			<Depends filename="guacamole_scenegraph.cbp" />
 		</Project>
-		<Project filename="examples/tracking_example/tracking_example.cbp">
+		<Project filename="examples/tracking_example/tracking_example.cbp" active="1">
 			<Depends filename="guacamole_scenegraph.cbp" />
 			<Depends filename="guacamole_rendering.cbp" />
 		</Project>
