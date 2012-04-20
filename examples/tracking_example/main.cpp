@@ -30,7 +30,7 @@ gua::RenderPipeline* create_pipe(std::string const& camera, std::string const& s
     pass->add_buffer(gua::ColorBufferDescription("color", 0));
     pass->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
 
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(3840, 1200, "tracking_example", display, gua::SIDE_BY_SIDE));
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(3840, 1200, "tracking_example", display, gua::SIDE_BY_SIDE, "/opt/dlp-warpmatrices/"));
     pipe->add_render_pass(pass);
     pipe->set_final_buffer("main", "color");
 
@@ -96,12 +96,12 @@ int main(int argc, char** argv) {
     // application loop
     while (true) {
 //        dtrack->update(targets);
-
-	    // head target
+//
+//	    // head target
 //	    auto target_it = targets.find(1);
 //	    if (target_it != targets.end())
 //            graph["/camera1"].set_transform(target_it->second.transform());
-
+//
 //        target_it = targets.find(2);
 //	    if (target_it != targets.end())
 //            graph["/camera2"].set_transform(target_it->second.transform());
@@ -128,7 +128,6 @@ int main(int argc, char** argv) {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
         graph["/box/monkey"].rotate(2, 0, 1, 0);
-//        graph["/screen"].rotate(0.1, 0, 1, 0);
     }
 
     return 0;

@@ -40,9 +40,28 @@ RenderWindow::RenderWindow( Description const& description ) throw (std::string)
     frame_count_(0),
     frames_start_(0),
     fullscreen_quad_(),
-    depth_stencil_state_() {
+    depth_stencil_state_(),
+    warpRR_(NULL),
+    warpGR_(NULL),
+    warpBR_(NULL),
+    warpRL_(NULL),
+    warpGL_(NULL),
+    warpBL_(NULL) {
 
-    fullscreen_shader_.create_from_sources(STEREO_VERTEX_SHADER.c_str(), STEREO_FRAGMENT_SHADER.c_str());
+    if (description.warp_matrices_path == "") {
+        fullscreen_shader_.create_from_sources(STEREO_VERTEX_SHADER.c_str(), STEREO_FRAGMENT_SHADER.c_str());
+    } else {
+
+
+        warpRR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P1.warp");
+        warpGR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P2.warp");
+        warpBR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P3.warp");
+        warpRL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P4.warp");
+        warpGL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P5.warp");
+        warpBL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P6.warp");
+
+        fullscreen_shader_.create_from_sources(STEREO_VERTEX_SHADER.c_str(), STEREO_FRAGMENT_SHADER_WARPED.c_str());
+    }
 
     scm::gl::wm::surface::format_desc window_format(scm::gl::FORMAT_RGBA_8,
                                               scm::gl::FORMAT_D24_S8,
@@ -84,7 +103,12 @@ RenderWindow::RenderWindow( Description const& description ) throw (std::string)
 }
 
 RenderWindow::~RenderWindow() {
-
+    if (warpRR_) delete warpRR_;
+    if (warpGR_) delete warpGR_;
+    if (warpBR_) delete warpBR_;
+    if (warpRL_) delete warpRL_;
+    if (warpGL_) delete warpGL_;
+    if (warpBL_) delete warpBL_;
 }
 
 void RenderWindow::set_active(bool active) const {
@@ -112,6 +136,13 @@ void RenderWindow::display_stereo(std::shared_ptr<Texture> const& left_texture,
     ctx_.render_context->set_viewport(scm::gl::viewport(scm::math::vec2ui(0,0), scm::math::vec2ui(ctx_.width, ctx_.height)));
 
     fullscreen_shader_.use(ctx_);
+
+    if (warpRR_) fullscreen_shader_.set_sampler2D(ctx_, "warpRR", *warpRR_);
+    if (warpGR_) fullscreen_shader_.set_sampler2D(ctx_, "warpGR", *warpGR_);
+    if (warpBR_) fullscreen_shader_.set_sampler2D(ctx_, "warpBR", *warpBR_);
+    if (warpRL_) fullscreen_shader_.set_sampler2D(ctx_, "warpRL", *warpRL_);
+    if (warpGL_) fullscreen_shader_.set_sampler2D(ctx_, "warpGL", *warpGL_);
+    if (warpBL_) fullscreen_shader_.set_sampler2D(ctx_, "warpBL", *warpBL_);
 
     fullscreen_shader_.set_sampler2D(ctx_, "left_tex", *left_texture);
     fullscreen_shader_.set_sampler2D(ctx_, "right_tex", *right_texture);

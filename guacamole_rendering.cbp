@@ -75,6 +75,7 @@
 		<Unit filename="include/renderer/Texture.hpp" />
 		<Unit filename="include/renderer/TextureBase.hpp" />
 		<Unit filename="include/renderer/Uniform.hpp" />
+		<Unit filename="include/renderer/WarpMatrix.hpp" />
 		<Unit filename="include/renderer/enums.hpp" />
 		<Unit filename="include/renderer/glInclude.hpp" />
 		<Unit filename="include/traverser/CameraNode.hpp" />
@@ -114,6 +115,7 @@
 		<Unit filename="src/renderer/ShaderProgram.cpp" />
 		<Unit filename="src/renderer/Texture.cpp" />
 		<Unit filename="src/renderer/TextureBase.cpp" />
+		<Unit filename="src/renderer/WarpMatrix.cpp" />
 		<Unit filename="src/scenegraph/Core.cpp" />
 		<Unit filename="src/scenegraph/Iterator.cpp" />
 		<Unit filename="src/scenegraph/Node.cpp" />

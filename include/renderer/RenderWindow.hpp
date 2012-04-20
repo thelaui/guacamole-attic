@@ -30,6 +30,7 @@
 
 #include "renderer/RenderContext.hpp"
 #include "renderer/ShaderProgram.hpp"
+#include "renderer/WarpMatrix.hpp"
 #include "renderer/enums.hpp"
 
 namespace gua {
@@ -47,16 +48,18 @@ class RenderWindow {
     public:
 
         struct Description {
-            Description(int w, int h, std::string const& titl, std::string const& disp, StereoMode str_md = MONO):
+            Description(int w, int h, std::string const& titl, std::string const& disp, StereoMode str_md = MONO, std::string const& warp_matrices_pth=""):
                 width(w),
                 height(h),
                 title(titl),
                 display(disp),
-                stereo_mode(str_md) {}
+                stereo_mode(str_md),
+                warp_matrices_path(warp_matrices_pth) {}
 
             int width, height;
             std::string title, display;
             StereoMode stereo_mode;
+            std::string warp_matrices_path;
         };
 
         ////////////////////////////////////////////////////////////////////////
@@ -137,6 +140,9 @@ class RenderWindow {
         long frames_start_;
 
         scm::gl::depth_stencil_state_ptr depth_stencil_state_;
+
+        WarpMatrix *warpRR_, *warpGR_, *warpBR_,
+                   *warpRL_, *warpGL_, *warpBL_;
 };
 
 }

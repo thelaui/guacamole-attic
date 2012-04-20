@@ -26,10 +26,13 @@
 #include "utils/debug.hpp"
 
 #include "renderer/TextureBase.hpp"
+#include "renderer/WarpMatrix.hpp"
 
 #include <iostream>
 
 namespace gua {
+
+static std::shared_ptr<WarpMatrix> warp_mat(new WarpMatrix("/opt/dlp-warpmatrices/dlp_6_warp_P6.warp"));
 
 RenderPipeline::RenderPipeline(RenderWindow::Description const& window):
     window_(NULL),
@@ -85,6 +88,7 @@ void RenderPipeline::process(SceneGraph* graph) {
     switch (window_description_.stereo_mode) {
         case MONO:
             window_->display_mono(passes_[final_pass_]->get_buffer(final_buffer_, CENTER));
+//            window_->display_mono(warp_mat);
             break;
         default:
             window_->display_stereo(passes_[final_pass_]->get_buffer(final_buffer_, LEFT),

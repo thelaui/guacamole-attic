@@ -71,7 +71,7 @@ class Texture {
         ///
         /// This will delete all associated buffers.
         ////////////////////////////////////////////////////////////
-        ~Texture();
+        virtual ~Texture();
 
         ////////////////////////////////////////////////////////////
         /// \brief Bind the texture.
@@ -102,17 +102,18 @@ class Texture {
         unsigned width() const;
         unsigned height() const;
 
-    private:
+    protected:
         mutable unsigned width_, height_;
         scm::gl::data_format color_format_;
-        std::string file_name_;
         scm::gl::sampler_state_desc state_descripton_;
-
         mutable std::vector<scm::gl::texture_2d_ptr> textures_;
         mutable std::vector<scm::gl::sampler_state_ptr> sampler_states_;
         mutable std::mutex upload_mutex_;
 
-        void upload_to(RenderContext const& context) const;
+        virtual void upload_to(RenderContext const& context) const;
+
+    private:
+        std::string file_name_;
 };
 
 }
