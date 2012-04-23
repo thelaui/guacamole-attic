@@ -53,12 +53,12 @@ RenderWindow::RenderWindow( Description const& description ) throw (std::string)
     } else {
 
 
-        warpRR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P1.warp");
-        warpGR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P2.warp");
-        warpBR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P3.warp");
-        warpRL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P4.warp");
-        warpGL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P5.warp");
-        warpBL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P6.warp");
+        warpRR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P4.warp");
+        warpGR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P5.warp");
+        warpBR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P6.warp");
+        warpRL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P1.warp");
+        warpGL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P2.warp");
+        warpBL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P3.warp");
 
         fullscreen_shader_.create_from_sources(STEREO_VERTEX_SHADER.c_str(), STEREO_FRAGMENT_SHADER_WARPED.c_str());
     }
