@@ -13,3 +13,4 @@ examples/simple_example/obj/*
 examples/simple_example/bin/*
 examples/deferred_example/obj/*
 examples/deferred_example/bin/*
+examples/rendering_demo
