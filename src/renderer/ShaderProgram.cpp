@@ -166,8 +166,10 @@ void ShaderProgram::upload_to(RenderContext const& context) const {
             uniforms_[context.id][uniform.name_].location_ = glGetUniformLocation(program_id, uniform.name_.c_str());
 
         glBindAttribLocation(program_id, vertex_location, "in_position");
-        glBindAttribLocation(program_id, normal_location, "in_normal");
         glBindAttribLocation(program_id, texture_location, "in_tex_coord");
+        glBindAttribLocation(program_id, normal_location, "in_normal");
+        glBindAttribLocation(program_id, tangent_location, "in_tangent");
+        glBindAttribLocation(program_id, bi_tangent_location, "in_bi_tangent");
 
         program_ids_[context.id] = program_id;
     }

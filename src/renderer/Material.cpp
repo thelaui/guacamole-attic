@@ -35,6 +35,7 @@ namespace gua {
 Material::Material():
     texture_uniforms_(),
     float_uniforms_(),
+    int_uniforms_(),
     shader_(NULL),
     blend_enabled_(false),
     blend_src_(GL_ONE), blend_dest_(GL_ONE),
@@ -44,6 +45,7 @@ Material::Material():
 Material::Material(std::string const& file_name):
     texture_uniforms_(),
     float_uniforms_(),
+    int_uniforms_(),
     shader_(NULL),
     blend_enabled_(false),
     blend_src_(GL_ONE), blend_dest_(GL_ONE),
@@ -86,6 +88,9 @@ void Material::use(RenderContext const& context) const {
     for (auto val : float_uniforms_)
         shader_->set_float(context, val.first, val.second);
 
+    for (auto val : int_uniforms_)
+        shader_->set_int(context, val.first, val.second);
+
     for (auto val : texture_uniforms_)
         if (val.second == NULL) DEBUG("aarg"); else
         shader_->set_sampler2D(context, val.first, *val.second);
@@ -97,6 +102,10 @@ void Material::unuse(RenderContext const& context) const {
 
 void Material::set_uniform_float(std::string const& uniform_name, float value) {
     float_uniforms_[uniform_name] = value;
+}
+
+void Material::set_uniform_int(std::string const& uniform_name, int value) {
+    int_uniforms_[uniform_name] = value;
 }
 
 void Material::set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value) {
@@ -149,6 +158,11 @@ void Material::construct_from_file(TextFile const& file) {
             float value;
             parse_stream >> value;
             set_uniform_float(current_string, value);
+        } else if (current_string == "int") {
+            parse_stream >> current_string;
+            int value;
+            parse_stream >> value;
+            set_uniform_int(current_string, value);
         } else if (current_string == "vertex_shader") {
             parse_stream >> vertex_string;
         } else if (current_string == "fragment_shader") {

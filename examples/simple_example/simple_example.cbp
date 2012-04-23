@@ -45,6 +45,8 @@
 		<Linker>
 			<Add directory="../../lib" />
 		</Linker>
+		<Unit filename="data/shaders/base.frag" />
+		<Unit filename="data/shaders/base.vert" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

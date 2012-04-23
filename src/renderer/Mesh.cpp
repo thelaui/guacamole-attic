@@ -108,6 +108,21 @@ void Mesh::upload_to(RenderContext const& context) const {
         glVertexAttribPointer(ShaderProgram::texture_location, mesh_->mNumUVComponents[0], GL_FLOAT, 0, 0, 0);
     }
 
+    // buffer for vertex normals
+    if (mesh_->HasTangentsAndBitangents()) {
+        glGenBuffers(1, &buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*mesh_->mNumVertices, mesh_->mTangents, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ShaderProgram::tangent_location);
+        glVertexAttribPointer(ShaderProgram::tangent_location, 3, GL_FLOAT, 0, 0, 0);
+
+        glGenBuffers(1, &buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*mesh_->mNumVertices, mesh_->mBitangents, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(ShaderProgram::bi_tangent_location);
+        glVertexAttribPointer(ShaderProgram::bi_tangent_location, 3, GL_FLOAT, 0, 0, 0);
+    }
+
     // unbind buffers
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER,0);

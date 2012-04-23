@@ -44,7 +44,7 @@ Geometry::Geometry(std::string const& file_name):
 
     if (file.is_valid()) {
         Assimp::Importer* importer = new Assimp::Importer();
-        aiScene const* scene = importer->ReadFile(file_name, aiProcessPreset_TargetRealtime_Quality);
+        aiScene const* scene = importer->ReadFile(file_name, aiProcessPreset_TargetRealtime_Quality | aiProcess_CalcTangentSpace );
 
         meshes_ = std::vector<Mesh>(scene->mNumMeshes);
 
@@ -60,7 +60,7 @@ Geometry::Geometry(std::string const& file_name):
 Geometry::Geometry(char const* buffer_name, unsigned buffer_size):
     meshes_() {
     Assimp::Importer* importer = new Assimp::Importer();
-    aiScene const* scene = importer->ReadFileFromMemory(buffer_name, buffer_size, aiProcessPreset_TargetRealtime_Quality);
+    aiScene const* scene = importer->ReadFileFromMemory(buffer_name, buffer_size, aiProcessPreset_TargetRealtime_Quality | aiProcess_CalcTangentSpace);
 
     meshes_ = std::vector<Mesh>(scene->mNumMeshes);
 

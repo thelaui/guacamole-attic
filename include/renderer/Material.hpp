@@ -76,6 +76,7 @@ class Material {
         void unuse(RenderContext const& context) const;
 
         void set_uniform_float(std::string const& uniform_name, float value);
+        void set_uniform_int(std::string const& uniform_name, int value);
         void set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value);
         void set_uniform_texture(std::string const& uniform_name, std::string const& texture_name);
 
@@ -97,6 +98,7 @@ class Material {
 
         std::map<std::string, std::shared_ptr<Texture>> texture_uniforms_;
         std::map<std::string, float> float_uniforms_;
+        std::map<std::string, int> int_uniforms_;
         ShaderProgram* shader_;
 
         bool blend_enabled_;
