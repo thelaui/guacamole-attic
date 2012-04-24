@@ -89,38 +89,38 @@ int main(int argc, char** argv) {
     graph.add_node("/", "camera5", camera_core);
     graph.add_node("/", "camera6", camera_core);
 
-    gua::RenderServer renderer({create_pipe("camera1", "screen", ":0.0")/*, create_pipe("camera2", "screen", ":0.1"),
+    gua::RenderServer renderer({create_pipe("camera1", "screen", ":0.0"), create_pipe("camera2", "screen", ":0.1"),
                                 create_pipe("camera3", "screen", ":0.2"), create_pipe("camera4", "screen", ":0.3"),
-                                create_pipe("camera5", "screen", ":0.4"), create_pipe("camera6", "screen", ":0.5")*/});
+                                create_pipe("camera5", "screen", ":0.4"), create_pipe("camera6", "screen", ":0.5")});
 
     // application loop
     while (true) {
-//        dtrack->update(targets);
-//
-//	    // head target
-//	    auto target_it = targets.find(1);
-//	    if (target_it != targets.end())
-//            graph["/camera1"].set_transform(target_it->second.transform());
-//
-//        target_it = targets.find(2);
-//	    if (target_it != targets.end())
-//            graph["/camera2"].set_transform(target_it->second.transform());
-//
-//        target_it = targets.find(3);
-//	    if (target_it != targets.end())
-//            graph["/camera3"].set_transform(target_it->second.transform());
-//
-//        target_it = targets.find(4);
-//	    if (target_it != targets.end())
-//            graph["/camera4"].set_transform(target_it->second.transform());
-//
-//        target_it = targets.find(5);
-//	    if (target_it != targets.end())
-//            graph["/camera5"].set_transform(target_it->second.transform());
-//
-//        target_it = targets.find(6);
-//	    if (target_it != targets.end())
-//            graph["/camera6"].set_transform(target_it->second.transform());
+        dtrack->update(targets);
+
+	    // head target
+	    auto target_it = targets.find(1);
+	    if (target_it != targets.end())
+            graph["/camera1"].set_transform(target_it->second.transform());
+
+        target_it = targets.find(2);
+	    if (target_it != targets.end())
+            graph["/camera2"].set_transform(target_it->second.transform());
+
+        target_it = targets.find(3);
+	    if (target_it != targets.end())
+            graph["/camera3"].set_transform(target_it->second.transform());
+
+        target_it = targets.find(4);
+	    if (target_it != targets.end())
+            graph["/camera4"].set_transform(target_it->second.transform());
+
+        target_it = targets.find(5);
+	    if (target_it != targets.end())
+            graph["/camera5"].set_transform(target_it->second.transform());
+
+        target_it = targets.find(6);
+	    if (target_it != targets.end())
+            graph["/camera6"].set_transform(target_it->second.transform());
 
 
         renderer.queue_draw(&graph);
