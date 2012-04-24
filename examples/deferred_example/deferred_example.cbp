@@ -54,6 +54,7 @@
 			<Add library="libscm_input" />
 			<Add library="cuda" />
 			<Add library="cudart" />
+			<Add library="assimp" />
 			<Add directory="../../lib" />
 			<Add directory="../../../../lib/linux_x86" />
 			<Add directory="/usr/lib/nvidia-current/" />

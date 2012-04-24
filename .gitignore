@@ -15,3 +15,4 @@ examples/deferred_example/obj/*
 examples/deferred_example/bin/*
 examples/tracking_example/obj/*
 examples/tracking_example/bin/*
+examples/rendering_demo

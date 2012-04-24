@@ -10,82 +10,84 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program. If not, see <http://www.gnu.org/licenses/>.
+// this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the Geometry class.
+/// \brief Declaration of the Mesh class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GEOMETRY_HPP
-#define GEOMETRY_HPP
+#ifndef MESH_HPP
+#define MESH_HPP
 
-#include <string>
+#include <scm/gl_core.h>
+#include <thread>
 #include <vector>
 
-#include "renderer/Mesh.hpp"
-
-////////////////////////////////////////////////////////////////////////////////
-/// \brief Loads and draws meshes.
-///
-/// This class can load mesh data from files and display them in multiple
-/// contexts. A Geometry object is made of several Mesh objects.
-////////////////////////////////////////////////////////////////////////////////
-
-namespace Assimp {
-    class Importer;
-}
+class aiMesh;
 
 namespace gua {
 
-class Geometry {
+class RenderContext;
+
+////////////////////////////////////////////////////////////////////////////////
+/// \brief Stores geometry data.
+///
+/// A mesh can be loaded from a Assimp mesh and the draw onto multiple contexts.
+/// Do not use this class directly, it is just used by the Geometry class to
+/// store the individual meshes of a file.
+////////////////////////////////////////////////////////////////////////////////
+
+class Mesh {
     public:
         ////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor.
         ///
-        /// Constructs a new and empty Geometry.
+        /// Creates a new and empty Mesh.
         ////////////////////////////////////////////////////////////////////////
-        Geometry();
+        Mesh();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Constructor from a file.
+        /// \brief Constructor from an Assimp mesh.
         ///
-        /// Creates a new Geometry from a given file.
+        /// Initializes the mesh from a given Assimp mesh.
         ///
-        /// \param file_name The file to load the meh's data from.
+        /// \param mesh The Assimp mesh to load the data from.
         ////////////////////////////////////////////////////////////////////////
-        Geometry(std::string const& file_name);
-
-        ~Geometry();
+        Mesh( aiMesh* mesh );
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Constructor from memory buffer.
+        /// \brief Destructor.
         ///
-        /// Creates a new Geometry from a existing memory buffer.
-        ///
-        /// \param buffer_name The buffer to load the meh's data from.
-        /// \param buffer_size The buffer's size.
+        /// Cleans up and frees all associated memory.
         ////////////////////////////////////////////////////////////////////////
-        Geometry(char const* buffer_name, unsigned buffer_size);
+        ~Mesh();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Draws the Geometry.
+        /// \brief Draws the Mesh.
         ///
-        /// Draws this Geometry object to the given context.
+        /// Draws the Mesh to the given context.
         ///
-        /// \param context The RenderContext to which this object should be
-        /// drawn.
+        /// \param context The RenderContext to draw onto.
         ////////////////////////////////////////////////////////////////////////
         void draw(RenderContext const& context) const;
 
     private:
-        Assimp::Importer* importer_;
-        std::vector<Mesh*> meshes_;
+        void upload_to(RenderContext const& context) const;
+
+        mutable std::vector<scm::gl::buffer_ptr> vertices_;
+        mutable std::vector<scm::gl::buffer_ptr> indices_;
+        mutable std::vector<scm::gl::vertex_array_ptr> vertex_array_;
+        mutable std::mutex upload_mutex_;
+
+        aiMesh* mesh_;
 };
 
 }
 
-#endif // GEOMETRY_HPP
+#endif // MESH_HPP
+
+

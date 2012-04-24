@@ -10,11 +10,11 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
 /// \brief Definition of the Geometry class.
@@ -22,47 +22,67 @@
 
 #include "renderer/Geometry.hpp"
 
-#include "renderer/RenderContext.hpp"
-#include "renderer/ShaderProgram.hpp"
-#include "utils/debug.hpp"
+#include <assimp/assimp.hpp>
+#include <assimp/aiPostProcess.h>
+#include <assimp/aiScene.h>
+
 #include "utils/TextFile.hpp"
+#include "utils/debug.hpp"
+
+#include "renderer/LightSphere.hpp"
+
 
 namespace gua {
 
 Geometry::Geometry():
     meshes_(),
-    upload_mutex_(),
-    file_name_("") {}
+    importer_(NULL) {}
 
 Geometry::Geometry(std::string const& file_name):
     meshes_(),
-    upload_mutex_(),
-    file_name_(file_name) {}
+    importer_(NULL) {
 
-void Geometry::upload_to(RenderContext const& context) const {
+    TextFile file(file_name);
 
-    std::unique_lock<std::mutex> lock(upload_mutex_);
+    if (file.is_valid()) {
+        importer_ = new Assimp::Importer();
+        aiScene const* scene = importer_->ReadFile(file_name, aiProcessPreset_TargetRealtime_Quality | aiProcess_CalcTangentSpace );
 
-    TextFile tmp(file_name_);
-    if (tmp.is_valid()) {
-        if (meshes_.size() <= context.id) {
-            meshes_.resize(context.id+1);
+        meshes_ = std::vector<Mesh*>(scene->mNumMeshes);
+
+        for (unsigned int n = 0; n < scene->mNumMeshes; ++n) {
+            meshes_[n] = new Mesh(scene->mMeshes[n]);
         }
+    } else {
+        WARNING("Failed to load object \"%s\": File does not exist!", file_name.c_str());
+    }
 
-        meshes_[context.id] = scm::gl::wavefront_obj_geometry_ptr(
-            new scm::gl::wavefront_obj_geometry(context.render_device, file_name_));
+}
+
+Geometry::~Geometry() {
+    for (auto mesh: meshes_)
+        delete mesh;
+    if (importer_)
+        delete importer_;
+}
+
+Geometry::Geometry(char const* buffer_name, unsigned buffer_size):
+    meshes_(),
+    importer_(NULL) {
+
+    importer_ = new Assimp::Importer();
+    aiScene const* scene = importer_->ReadFileFromMemory(buffer_name, buffer_size, aiProcessPreset_TargetRealtime_Quality | aiProcess_CalcTangentSpace);
+
+    meshes_ = std::vector<Mesh*>(scene->mNumMeshes);
+
+    for (unsigned int n = 0; n < scene->mNumMeshes; ++n) {
+        meshes_[n] = new Mesh(scene->mMeshes[n]);
     }
 }
 
 void Geometry::draw(RenderContext const& context) const {
-    // upload to GPU if neccessary
-    if (meshes_.size() <= context.id || meshes_[context.id] == 0) {
-        upload_to(context);
-    }
-
-    if (meshes_[context.id])
-        meshes_[context.id]->draw_raw(context.render_context);
+    for (auto& mesh: meshes_)
+        mesh->draw(context);
 }
 
 }
-
