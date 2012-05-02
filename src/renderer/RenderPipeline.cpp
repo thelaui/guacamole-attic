@@ -22,7 +22,7 @@
 
 #include "renderer/RenderPipeline.hpp"
 
-#include "renderer/RenderPass.hpp"
+#include "renderer/GenericRenderPass.hpp"
 #include "utils/debug.hpp"
 
 #include "renderer/TextureBase.hpp"
@@ -32,25 +32,25 @@
 
 namespace gua {
 
-static std::shared_ptr<WarpMatrix> warp_mat(new WarpMatrix("/opt/dlp-warpmatrices/dlp_6_warp_P6.warp"));
 
 RenderPipeline::RenderPipeline(RenderWindow::Description const& window):
     window_(NULL),
     window_description_(window),
     passes_(),
-    current_graph_(NULL) {}
+    current_graph_(NULL),
+    application_fps_(0.f), rendering_fps_(0.f) {}
 
 RenderPipeline::~RenderPipeline() {
     if(window_)
         delete window_;
 }
 
-void RenderPipeline::add_render_pass(RenderPass* pass) {
+void RenderPipeline::add_render_pass(GenericRenderPass* pass) {
     pass->set_pipeline(this);
     passes_[pass->get_name()] = pass;
 }
 
-RenderPass* RenderPipeline::get_render_pass(std::string const& pass_name) {
+GenericRenderPass* RenderPipeline::get_render_pass(std::string const& pass_name) {
     return passes_[pass_name];
 }
 
@@ -74,8 +74,18 @@ StereoMode RenderPipeline::get_stereo_mode() const {
     return window_description_.stereo_mode;
 }
 
-void RenderPipeline::process(SceneGraph* graph) {
+float RenderPipeline::get_application_fps() const {
+    return application_fps_;
+}
+
+float RenderPipeline::get_rendering_fps() const {
+    return rendering_fps_;
+}
+
+void RenderPipeline::process(SceneGraph* graph, float application_fps, float rendering_fps) {
     current_graph_ = graph;
+    application_fps_ = application_fps;
+    rendering_fps_ = rendering_fps;
 
     if(!window_) {
         window_ = new RenderWindow(window_description_);
@@ -87,12 +97,11 @@ void RenderPipeline::process(SceneGraph* graph) {
 
     switch (window_description_.stereo_mode) {
         case MONO:
-            window_->display_mono(passes_[final_pass_]->get_buffer(final_buffer_, CENTER));
-//            window_->display_mono(warp_mat);
+            window_->display_mono(passes_[final_pass_]->get_buffer(final_buffer_, CENTER, true));
             break;
         default:
-            window_->display_stereo(passes_[final_pass_]->get_buffer(final_buffer_, LEFT),
-                                    passes_[final_pass_]->get_buffer(final_buffer_, RIGHT),
+            window_->display_stereo(passes_[final_pass_]->get_buffer(final_buffer_, LEFT, true),
+                                    passes_[final_pass_]->get_buffer(final_buffer_, RIGHT, true),
                                     window_description_.stereo_mode);
             break;
     }

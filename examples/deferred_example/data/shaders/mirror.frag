@@ -37,8 +37,8 @@ void main() {
 
     float spec = texture2D(tex_specular, coord).r;
 
-    out_specular = vec3(spec, spec, spec);
 	out_color    = (1-spec)*texture2D(tex_color, coord).rgb + spec*texture2D(tex_mirror, texcoord).rgb;
+    out_specular = vec3(spec, max(max(out_color.r, out_color.g), out_color.b), 0);
 	out_normal   = normal;
 	out_position = position;
 }

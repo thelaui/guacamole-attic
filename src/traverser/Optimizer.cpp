@@ -69,7 +69,7 @@ void Optimizer::check( SceneGraph const* scene_graph, RenderMask const& render_m
             current_groups.insert(groups_stack.top().begin(), groups_stack.top().end());
         current_groups.insert(node.get_groups().begin(), node.get_groups().end());
 
-        if (current_core && render_mask.check(current_groups)) {
+        if (current_core) {
             switch ( current_core->get_type() ) {
                 case Core::CoreType::CAMERA : {
                     auto camera_core = reinterpret_cast<CameraCore*> (current_core);
@@ -85,9 +85,10 @@ void Optimizer::check( SceneGraph const* scene_graph, RenderMask const& render_m
                     data_.screens_.insert( std::make_pair(node.get_name(), ScreenNode(current_matrix * scale)) );
                     break;
                 } case Core::CoreType::GEOMETRY : {
-                    auto geometry_core = reinterpret_cast<GeometryCore*> (current_core);
-                    data_.nodes_.push_back( GeometryNode( geometry_core->get_geometry(), geometry_core->get_material(), current_matrix ) );
-                    break;
+                    if (render_mask.check(current_groups)) {
+                        auto geometry_core = reinterpret_cast<GeometryCore*> (current_core);
+                        data_.nodes_.push_back( GeometryNode( geometry_core->get_geometry(), geometry_core->get_material(), current_matrix ) );
+                    } break;
                 } default: break;
             }
         }

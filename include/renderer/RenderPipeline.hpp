@@ -30,7 +30,7 @@
 
 namespace gua {
 
-class RenderPass;
+class GenericRenderPass;
 class SceneGraph;
 
 class RenderPipeline {
@@ -38,8 +38,8 @@ class RenderPipeline {
         RenderPipeline(RenderWindow::Description const& window);
         ~RenderPipeline();
 
-        void add_render_pass(RenderPass* pass);
-        RenderPass* get_render_pass(std::string const& pass_name);
+        void add_render_pass(GenericRenderPass* pass);
+        GenericRenderPass* get_render_pass(std::string const& pass_name);
 
         SceneGraph const* get_current_graph() const;
         RenderContext const& get_context() const;
@@ -48,18 +48,23 @@ class RenderPipeline {
 
         StereoMode get_stereo_mode() const;
 
+        float get_application_fps() const;
+        float get_rendering_fps() const;
+
         friend class RenderClient;
 
     private:
-        void process(SceneGraph* graph);
+        void process(SceneGraph* graph, float application_fps, float rendering_fps);
         void create_buffers();
 
         RenderWindow* window_;
         RenderWindow::Description window_description_;
         std::string final_pass_, final_buffer_;
-        std::map<std::string, RenderPass*> passes_;
+        std::map<std::string, GenericRenderPass*> passes_;
 
         SceneGraph* current_graph_;
+
+        float application_fps_, rendering_fps_;
 };
 
 }

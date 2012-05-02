@@ -23,9 +23,11 @@
 #include "renderer/RenderWindow.hpp"
 
 #include "utils/debug.hpp"
+#include "utils/string_utils.hpp"
 #include "renderer/Geometry.hpp"
 #include "renderer/Texture.hpp"
 #include "renderer/StereoShaders.hpp"
+#include "renderer/LightInformation.hpp"
 
 #include <sstream>
 #include <iostream>
@@ -36,9 +38,6 @@ unsigned RenderWindow::last_context_id_ = 0;
 
 RenderWindow::RenderWindow( Description const& description ) throw (std::string):
     fullscreen_shader_(),
-    frames_(0),
-    frame_count_(0),
-    frames_start_(0),
     fullscreen_quad_(),
     depth_stencil_state_(),
     warpRR_(NULL),
@@ -67,8 +66,8 @@ RenderWindow::RenderWindow( Description const& description ) throw (std::string)
                                               scm::gl::FORMAT_D24_S8,
                                               true /*double_buffer*/,
                                               false /*quad_buffer*/);
-    scm::gl::wm::context::attribute_desc context_attribs(3, //SCM_GL_CORE_OPENGL_VERSION / 100,
-                                                3, //SCM_GL_CORE_OPENGL_VERSION / 10 % 10,
+    scm::gl::wm::context::attribute_desc context_attribs(4, //SCM_GL_CORE_OPENGL_VERSION / 100,
+                                                2, //SCM_GL_CORE_OPENGL_VERSION / 10 % 10,
                                                 false /*compatibility*/,
                                                 false /*debug*/,
                                                 false /*forward*/);
@@ -95,6 +94,8 @@ RenderWindow::RenderWindow( Description const& description ) throw (std::string)
                                                                              math::vec2( 1.f,  1.f)));
 
     depth_stencil_state_ = ctx_.render_device->create_depth_stencil_state(false, false, scm::gl::COMPARISON_NEVER);
+
+    LightInformation::add_block_include_string(ctx_);
 
     start_frame();
     finish_frame();

@@ -20,30 +20,33 @@
 /// \brief Declaration of the RenderBackend class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDER_BACKEND_HPP
-#define RENDER_BACKEND_HPP
+#ifndef LIGHT_INFORMATION_HPP
+#define LIGHT_INFORMATION_HPP
 
 #include <string>
 
-#include "renderer/enums.hpp"
+#include "renderer/RenderContext.hpp"
+#include "utils/debug.hpp"
+#include "utils/math.hpp"
+
+#define GUA_MAX_LIGHT_COUNT 64
 
 namespace gua {
 
-struct OptimizedScene;
-class RenderPass;
-class RenderContext;
+struct LightInformation {
+    math::vec4 light_count;
+    math::vec4 position[GUA_MAX_LIGHT_COUNT];
+    math::vec4 color_radius[GUA_MAX_LIGHT_COUNT];
 
-class RenderBackend {
-    public:
-        RenderBackend(RenderPass* pass);
-
-        void render(OptimizedScene const& scene, RenderContext const& context,
-                    CameraMode mode);
+    static void add_block_include_string(RenderContext const& context);
 
     private:
-        RenderPass* pass_;
+        static const std::string shader_include_path_;
+        static const std::string shader_include_src_;
 };
+
 
 }
 
-#endif // RENDER_BACKEND_HPP
+#endif // LIGHT_INFORMATION_HPP
+

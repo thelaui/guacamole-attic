@@ -29,7 +29,7 @@ namespace gua {
 
 struct ColorBufferDescription {
     ColorBufferDescription(std::string const& n, unsigned loc,
-                           scm::gl::data_format form = scm::gl::data_format(scm::gl::FORMAT_RGB_32F)):
+                           scm::gl::data_format form = scm::gl::data_format(scm::gl::FORMAT_RGB_16F)):
                       name(n),
                       location(loc),
                       format(form) {}
@@ -40,7 +40,7 @@ struct ColorBufferDescription {
 
 struct DepthStencilBufferDescription {
     DepthStencilBufferDescription(std::string const& n,
-                      scm::gl::data_format form = scm::gl::data_format(scm::gl::FORMAT_D24_S8)):
+                      scm::gl::data_format form = scm::gl::data_format(scm::gl::FORMAT_D16)):
                       name(n),
                       format(form) {}
     std::string name;

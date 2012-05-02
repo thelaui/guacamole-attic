@@ -61,6 +61,11 @@ SceneGraph::Iterator SceneGraph::add_node(std::string const& path_to_parent, std
     return Iterator(new_node);
 }
 
+SceneGraph::Iterator SceneGraph::add_node(SceneGraph::Iterator const& parent, std::string const& node_name, Core* core,
+                          math::mat4 const& transform) {
+    return parent.add_child(node_name, core, transform);
+}
+
 SceneGraph::Iterator SceneGraph::add_node_recursively(std::string const& path_to_parent, std::string const& node_name, Core* core,
               math::mat4 const& transform) {
 

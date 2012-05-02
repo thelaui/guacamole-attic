@@ -93,6 +93,9 @@ class SceneGraph {
         Iterator add_node(std::string const& path_to_parent, std::string const& node_name, Core* core = NULL,
                           math::mat4 const& transform = math::mat4::identity());
 
+        Iterator add_node(Iterator const& parent, std::string const& node_name, Core* core = NULL,
+                          math::mat4 const& transform = math::mat4::identity());
+
         ////////////////////////////////////////////////////////////////////////
         ///\brief Adds a new Node.
         ///

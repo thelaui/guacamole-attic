@@ -23,8 +23,10 @@
 #include "renderer/RenderPass.hpp"
 
 #include "renderer/RenderPipeline.hpp"
-#include "renderer/RenderBackend.hpp"
+#include "renderer/LightInformation.hpp"
 #include "renderer/TextureBase.hpp"
+#include "renderer/GeometryBase.hpp"
+#include "renderer/MaterialBase.hpp"
 #include "traverser/Optimizer.hpp"
 #include "utils/debug.hpp"
 
@@ -32,26 +34,14 @@ namespace gua {
 
 RenderPass::RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& render_mask,
                        float width, float height, bool size_is_relative):
-    color_buffer_descriptions_(),
-    depth_stencil_buffer_description_(""),
-    name_(name),
-    camera_(camera),
-    screen_(screen),
-    render_mask_(render_mask),
-    width_(width),
-    height_(height),
-    size_is_relative_to_window_(size_is_relative),
-    left_eye_buffers_(), right_eye_buffers_(), center_eye_buffers_(),
-    left_eye_fbo_(), right_eye_fbo_(), center_eye_fbo_(),
-    pipeline_(NULL),
-    rendererd_left_eye_(false), rendererd_right_eye_(false), rendererd_center_eye_(false) {}
+    GenericRenderPass(name, camera, screen, render_mask, width, height, size_is_relative),
+    inputs_(),
+    texture_uniforms_(),
+    float_uniforms_(),
+    light_information_(NULL) {}
 
-void RenderPass::add_buffer(ColorBufferDescription const& buffer_desc) {
-    color_buffer_descriptions_.push_back(buffer_desc);
-}
-
-void RenderPass::add_buffer(DepthStencilBufferDescription const& buffer_desc) {
-    depth_stencil_buffer_description_ = buffer_desc;
+RenderPass::~RenderPass() {
+    if (light_information_) delete light_information_;
 }
 
 void RenderPass::set_input_buffer(std::string const& in_render_pass, std::string const& in_buffer,
@@ -71,11 +61,7 @@ void RenderPass::overwrite_uniform_texture(std::string const& material, std::str
     texture_uniforms_[material][uniform_name] = TextureBase::instance()->get(texture_name);
 }
 
-std::string const& RenderPass::get_name() const {
-    return name_;
-}
-
-std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, CameraMode mode) {
+std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
     if (mode == CENTER && rendererd_center_eye_)
         return center_eye_buffers_[name];
 
@@ -99,8 +85,143 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
         }
     }
 
-    RenderBackend renderer(this);
-    renderer.render(optimizer.get_data(), pipeline_->get_context(), mode);
+    OptimizedScene const& scene(optimizer.get_data());
+    RenderContext const& context(pipeline_->get_context());
+
+    FrameBufferObject* fbo(NULL);
+
+    switch (mode) {
+        case CENTER:
+            fbo = &center_eye_fbo_;
+            break;
+        case LEFT:
+            fbo = &left_eye_fbo_;
+            break;
+        case RIGHT:
+            fbo = &right_eye_fbo_;
+            break;
+    }
+
+    fbo->bind(context);
+
+    fbo->clear_color_buffers(context);
+    fbo->clear_depth_stencil_buffer(context);
+
+    context.render_context->set_viewport(scm::gl::viewport(scm::math::vec2ui(0,0), scm::math::vec2ui(fbo->width(),fbo->height())));
+
+    auto camera_it(scene.cameras_.find(camera_));
+    auto screen_it(scene.screens_.find(screen_));
+
+    if (camera_it != scene.cameras_.end() && screen_it != scene.screens_.end()) {
+        auto camera(camera_it->second);
+        auto screen(screen_it->second);
+
+        math::mat4 camera_transform(camera.transform_);
+        if (mode == LEFT) {
+            scm::math::translate(camera_transform,-camera.stereo_width_*0.5f, 0.f, 0.f);
+        } else if (mode == RIGHT) {
+            scm::math::translate(camera_transform, camera.stereo_width_*0.5f, 0.f, 0.f);
+        }
+
+        auto projection(math::compute_frustum(camera_transform.column(3), screen.transform_, 0.1, 100000.f));
+
+        math::mat4 view_transform(screen.transform_);
+        view_transform[12] = 0.f;
+        view_transform[13] = 0.f;
+        view_transform[14] = 0.f;
+        view_transform[15] = 1.f;
+
+        math::vec3 camera_position(camera_transform.column(3)[0], camera_transform.column(3)[1], camera_transform.column(3)[2]);
+        view_transform = scm::math::make_translation(camera_position) * view_transform;
+
+        math::mat4 view_matrix(scm::math::inverse(view_transform));
+
+        // update light data
+        if (scene.lights_.size() > 0) {
+
+            if (!light_information_) {
+                light_information_ = new scm::gl::uniform_block<LightInformation>(context.render_device);
+            }
+
+            light_information_->begin_manipulation(context.render_context);
+
+            LightInformation light;
+
+            light.light_count = math::vec4i(scene.lights_.size(), scene.lights_.size(), scene.lights_.size(), scene.lights_.size());
+
+            for (unsigned i(0); i < scene.lights_.size(); ++i) {
+
+                math::mat4 transform(scene.lights_[i].transform);
+
+                // calc light radius and position
+                light.position[i] = math::vec4(transform[12], transform[13], transform[14], transform[15]);
+                float radius = scm::math::length(light.position[i] - transform * math::vec4(0.f, 0.f, 1.f, 1.f));
+
+                light.color_radius[i] = math::vec4(scene.lights_[i].color.r(), scene.lights_[i].color.g(), scene.lights_[i].color.b(), radius);
+            }
+
+            **light_information_ = light;
+
+            light_information_->end_manipulation();
+
+            context.render_context->bind_uniform_buffer(light_information_->block_buffer(), 0);
+        }
+
+        for (auto& geometry_core: scene.nodes_) {
+
+            auto geometry = GeometryBase::instance()->get(geometry_core.geometry_);
+            auto material = MaterialBase::instance()->get(geometry_core.material_);
+
+            if (material && geometry) {
+                material->use(context);
+
+                if (float_uniforms_.find(geometry_core.material_) != float_uniforms_.end())
+                    for (auto val : float_uniforms_[geometry_core.material_])
+                        material->get_shader()->set_float(context, val.first, val.second);
+
+                if (texture_uniforms_.find(geometry_core.material_) != texture_uniforms_.end())
+                    for (auto val : texture_uniforms_[geometry_core.material_])
+                        material->get_shader()->set_sampler2D(context, val.first, *val.second);
+
+                material->get_shader()->set_mat4(context, "projection_matrix", projection);
+                material->get_shader()->set_mat4(context, "view_matrix", view_matrix);
+                material->get_shader()->set_mat4(context, "model_matrix", geometry_core.transform_);
+                material->get_shader()->set_mat4(context, "normal_matrix", scm::math::transpose(scm::math::inverse(geometry_core.transform_)));
+
+                geometry->draw(context);
+
+                material->unuse(context);
+
+            } else if (material) {
+                WARNING("Cannot render geometry \"%s\": Undefined geometry name!", geometry_core.geometry_.c_str());
+            } else if (geometry) {
+                WARNING("Cannot render geometry \"%s\": Undefined material name: \"%s\"!", geometry_core.geometry_.c_str(), geometry_core.material_.c_str());
+            } else {
+                WARNING("Cannot render geometry \"%s\": Undefined geometry and material name: \"%s\"!", geometry_core.geometry_.c_str(), geometry_core.material_.c_str());
+            }
+        }
+
+        if (scene.lights_.size() > 0) {
+            context.render_context->reset_uniform_buffers();
+        }
+    }
+
+    fbo->unbind(context);
+
+
+    if (draw_fps) {
+
+        if (!text_renderer_)
+            text_renderer_ = new TextRenderer(pipeline_->get_context());
+
+        if (mode == CENTER) {
+            text_renderer_->render_fps(pipeline_->get_context(), center_eye_fbo_, pipeline_->get_application_fps(), pipeline_->get_rendering_fps());
+        } else if (mode == LEFT) {
+            text_renderer_->render_fps(pipeline_->get_context(), left_eye_fbo_, pipeline_->get_application_fps(), pipeline_->get_rendering_fps());
+        } else {
+            text_renderer_->render_fps(pipeline_->get_context(), right_eye_fbo_, pipeline_->get_application_fps(), pipeline_->get_rendering_fps());
+        }
+    }
 
     if (mode == CENTER) {
         rendererd_center_eye_ = true;
@@ -114,58 +235,4 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
     }
 }
 
-void RenderPass::flush() {
-    rendererd_left_eye_ = false;
-    rendererd_right_eye_ = false;
-    rendererd_center_eye_ = false;
 }
-
-void RenderPass::create_buffers(StereoMode mode) {
-    switch(mode) {
-        case MONO:
-            create_buffer(center_eye_buffers_, center_eye_fbo_);
-            break;
-        default:
-            create_buffer(left_eye_buffers_, left_eye_fbo_);
-            create_buffer(right_eye_buffers_, right_eye_fbo_);
-            break;
-    }
-}
-
-void RenderPass::create_buffer(std::map<std::string, std::shared_ptr<Texture>>& buffer_store, FrameBufferObject& fbo) {
-    buffer_store.clear();
-
-    int width = size_is_relative_to_window_ ? width_*pipeline_->get_context().width : width_;
-    int height = size_is_relative_to_window_ ? height_*pipeline_->get_context().height : height_;
-
-    if (size_is_relative_to_window_ && pipeline_->get_stereo_mode() == SIDE_BY_SIDE)
-        width *= 0.5;
-
-    for (auto& description: color_buffer_descriptions_) {
-        Texture* new_buffer(new Texture(width, height, description.format));
-
-        buffer_store[description.name] = std::shared_ptr<Texture>(new_buffer);
-
-        fbo.attach_color_buffer(pipeline_->get_context(), description.location,
-                                *new_buffer);
-
-    }
-
-    if (depth_stencil_buffer_description_.name != "") {
-        Texture* new_buffer(new Texture(width, height,
-                                        depth_stencil_buffer_description_.format));
-
-        buffer_store[depth_stencil_buffer_description_.name] = std::shared_ptr<Texture>(new_buffer);
-
-        fbo.attach_depth_stencil_buffer(pipeline_->get_context(), *new_buffer);
-    }
-}
-
-void RenderPass::set_pipeline(RenderPipeline* pipeline) {
-    pipeline_ = pipeline;
-}
-
-}
-
-
-

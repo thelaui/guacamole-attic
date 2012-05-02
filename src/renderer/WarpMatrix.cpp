@@ -32,7 +32,7 @@ WarpMatrix::WarpMatrix():
     data_() {}
 
 WarpMatrix::WarpMatrix(std::string const& file_name):
-                 Texture(0, 0, scm::gl::FORMAT_RGBA_32F, scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR)),
+                 Texture(0, 0, scm::gl::FORMAT_RGBA_16F, scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR)),
                  data_() {
 
     std::ifstream file (file_name, std::ios::binary);
@@ -42,28 +42,9 @@ WarpMatrix::WarpMatrix(std::string const& file_name):
         file.read((char*) &width_, sizeof(unsigned));
         file.read((char*) &height_, sizeof(unsigned));
 
-        // shared_array<math::vec4f> img_data;
-        // file.read(img_data.get(), w * h * sizeof(math::vec4f));
+        data_ = std::vector<float>(width_*height_*4);
 
-        // std::vector<void*> mip_data;
-        // mip_data.push_back(imag_data.get());
-
-        // device->create_texture_2d(....)
-
-        data_ = std::vector<float>(sizeof(float)*width_*height_*4);
-        unsigned index(0);
-        for(unsigned i(0); i < width_ * height_; ++i){
-            float u, v, intensity, dummy;
-            file.read((char*) &u, sizeof(float));
-            file.read((char*) &v, sizeof(float));
-            file.read((char*) &intensity, sizeof(float));
-            file.read((char*) &dummy, sizeof(float));
-
-            data_[index++] = u;
-            data_[index++] = v;
-            data_[index++] = intensity;
-            data_[index++] = dummy;
-        }
+        file.read((char*) &data_[0], sizeof(float)*data_.size());
 
         file.close();
     } else {
@@ -89,7 +70,7 @@ void WarpMatrix::upload_to(RenderContext const& context) const{
     tmp_data.push_back(&data_[0]);
 
     textures_[context.id] = context.render_device->create_texture_2d(scm::gl::texture_2d_desc(scm::math::vec2ui(width_, height_), color_format_),
-                                                                     color_format_, tmp_data);
+                                                                     scm::gl::FORMAT_RGBA_32F, tmp_data);
 
     sampler_states_[context.id] = context.render_device->create_sampler_state(state_descripton_);
 }

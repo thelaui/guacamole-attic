@@ -17,28 +17,35 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of a math utilities.
+/// \brief Declaration of the TextRenderer class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <scm/core/math.h>
-#include <scm/gl_core/math.h>
+#ifndef TEXT_RENDERER_HPP
+#define TEXT_RENDERER_HPP
+
+#include "renderer/FrameBufferObject.hpp"
+
+#include <scm/gl_util/font/text.h>
+#include <scm/gl_util/font/text_renderer.h>
 
 namespace gua {
-    namespace math {
 
-        typedef scm::math::mat<float, 4, 4> mat4;
-        typedef scm::math::mat<float, 3, 3> mat3;
+class RenderContext;
 
-        typedef scm::math::vec<float, 4> vec4;
-        typedef scm::math::vec<float, 3> vec3;
-        typedef scm::math::vec<float, 2> vec2;
+class TextRenderer {
+    public:
+        TextRenderer(RenderContext const& context);
 
-        typedef scm::math::vec<int, 4> vec4i;
-        typedef scm::math::vec<int, 3> vec3i;
-        typedef scm::math::vec<int, 2> vec2i;
+        void render_fps(RenderContext const& context,
+                        FrameBufferObject& target,
+                        float application_fps, float rendering_fps) const;
 
-        math::mat4 const compute_frustum(math::vec4 const& eye_position, math::mat4 const& screen_transform,
-                                         float near_plane, float far_plane);
-    }
+    private:
+        scm::gl::text_renderer_ptr text_renderer_;
+        scm::gl::text_ptr frame_counter_text_;
+};
+
 }
+
+#endif // TEXT_RENDERER_HPP
 

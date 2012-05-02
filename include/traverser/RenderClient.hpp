@@ -29,6 +29,7 @@
 #include <condition_variable>
 
 #include "scenegraph/SceneGraph.hpp"
+#include "utils/Timer.hpp"
 
 namespace gua {
 
@@ -67,11 +68,13 @@ class RenderClient {
         RenderPipeline* render_pipeline_;
         SceneGraph graph_copy_;
 
+        float application_fps_, rendering_fps_;
+        unsigned application_frame_count_, rendering_frame_count_;
+        Timer application_timer_, rendering_timer_;
+
         bool rendering_finished_;
         std::mutex render_mutex_;
         std::condition_variable render_condition_;
-
-        unsigned frame_;
 };
 
 }

@@ -1,6 +1,5 @@
 vertex_shader ../shaders/base.vert
 fragment_shader ../shaders/base.frag
 
-float shinyness 50.0
-float emit 0.1
-texture tex checkerboard
+texture tex skybox
+float emit 1.0

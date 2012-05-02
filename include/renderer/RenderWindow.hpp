@@ -135,10 +135,6 @@ class RenderWindow {
         ShaderProgram fullscreen_shader_;
         scm::gl::quad_geometry_ptr fullscreen_quad_;
 
-        int frames_;
-        int frame_count_;
-        long frames_start_;
-
         scm::gl::depth_stencil_state_ptr depth_stencil_state_;
 
         WarpMatrix *warpRR_, *warpGR_, *warpBR_,

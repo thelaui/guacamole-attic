@@ -24,7 +24,7 @@
 
 #include "utils/debug.hpp"
 
-#include <scm/gl_util/imaging/texture_loader.h>
+#include <scm/gl_util/data/imaging/texture_loader.h>
 #include <iostream>
 
 namespace gua {

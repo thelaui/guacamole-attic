@@ -29,11 +29,15 @@ uniform mat4 model_matrix;
 uniform mat4 normal_matrix;
 
 out vec3 normal;
+out vec3 position;
+out vec3 camera_position;
 out vec2 texcoord;
 
 void main() {
 	normal = normalize(vec3(normal_matrix * vec4(in_normal, 0.0)));
 	texcoord = in_texcoord.st;
-	gl_Position = (projection_matrix * view_matrix * model_matrix) * vec4(in_position, 1.0);
+	position = (model_matrix * vec4(in_position, 1.0)).xyz;
+	camera_position = (inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+	gl_Position = projection_matrix * view_matrix * vec4(position, 1.0);
 }
 

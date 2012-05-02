@@ -66,9 +66,9 @@ class SceneGraph::Iterator {
         ///
         ///\return Iterator      An Iterator on the recently added Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator add_node(std::string const& node_name, Core* core = NULL,
-                          math::mat4 const& transform =
-                          math::mat4::identity());
+        Iterator add_child(std::string const& node_name, Core* core = NULL,
+                           math::mat4 const& transform =
+                           math::mat4::identity()) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns the depth of the Iterator.
@@ -244,7 +244,7 @@ class SceneGraph::Iterator {
         Iterator& operator << (Core*core);
 
     private:
-        Node* current_node_;
+        mutable Node* current_node_;
         Node* start_node_;
 
         SceneGraph::IterationType type_;

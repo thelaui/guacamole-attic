@@ -17,28 +17,20 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of a math utilities.
+/// \brief Declaration of some string utilities.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include <scm/core/math.h>
-#include <scm/gl_core/math.h>
+#include <sstream>
 
 namespace gua {
-    namespace math {
+    namespace string_utils {
 
-        typedef scm::math::mat<float, 4, 4> mat4;
-        typedef scm::math::mat<float, 3, 3> mat3;
-
-        typedef scm::math::vec<float, 4> vec4;
-        typedef scm::math::vec<float, 3> vec3;
-        typedef scm::math::vec<float, 2> vec2;
-
-        typedef scm::math::vec<int, 4> vec4i;
-        typedef scm::math::vec<int, 3> vec3i;
-        typedef scm::math::vec<int, 2> vec2i;
-
-        math::mat4 const compute_frustum(math::vec4 const& eye_position, math::mat4 const& screen_transform,
-                                         float near_plane, float far_plane);
+        template <typename T>
+        inline std::string to_string(T value) {
+            std::stringstream strstr;
+            strstr << value;
+            return strstr.str();
+        }
     }
 }
 

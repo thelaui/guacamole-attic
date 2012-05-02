@@ -49,7 +49,6 @@
 		<Linker>
 			<Add library="libscm_cl_core" />
 			<Add library="libscm_core" />
-			<Add library="libscm_data" />
 			<Add library="libscm_gl_core" />
 			<Add library="libscm_gl_util" />
 			<Add library="libscm_input" />

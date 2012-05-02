@@ -36,13 +36,13 @@
 namespace gua {
 
 struct LightNode {
-    LightNode(math::mat4 const& transform = math::mat4::identity(),
-              Color3f const& color = Color3f()):
-        transform_(transform),
-        color_(color) {}
+    LightNode(math::mat4 const& trans = math::mat4::identity(),
+              Color3f const& clr = Color3f()):
+        transform(trans),
+        color(clr) {}
 
-    math::mat4 transform_;
-    Color3f color_;
+    math::mat4 transform;
+    Color3f color;
 };
 
 }

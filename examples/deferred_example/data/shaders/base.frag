@@ -24,15 +24,16 @@ in vec2 texcoord;
 in vec3 position;
 
 uniform sampler2D tex;
+uniform float emit;
 
 layout(location=0) out vec3 out_color;
 layout(location=1) out vec3 out_normal;
-layout(location=2) out vec3 out_specular;
+layout(location=2) out vec3 out_specular_emit;
 layout(location=3) out vec3 out_position;
 
 void main() {
 	out_color = texture2D(tex, texcoord).rgb;
 	out_normal = normal;
 	out_position = position;
-	out_specular = vec3(0.5, 0.5, 0.5);
+	out_specular_emit = vec3(0.5, emit, 0.0);
 }

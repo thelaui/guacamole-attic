@@ -27,37 +27,34 @@ gua::RenderPipeline* create_pipe() {
     auto g_buffer_mirror = new gua::RenderPass("g_buffer_mirror", "mirror_camera", "floor_screen", "!floor & !lights", 0.5, 0.5);
     g_buffer_mirror->add_buffer(gua::ColorBufferDescription("color", 0));
     g_buffer_mirror->add_buffer(gua::ColorBufferDescription("normal", 1));
-    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("specular", 2));
+    g_buffer_mirror->add_buffer(gua::ColorBufferDescription("specular_emit", 2));
     g_buffer_mirror->add_buffer(gua::ColorBufferDescription("position", 3));
     g_buffer_mirror->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
 
-    auto lighting_mirror = new gua::RenderPass("lighting_mirror", "mirror_camera", "floor_screen", "lights | camerastuff", 0.5, 0.5);
+    auto lighting_mirror = new gua::FullscreenPass("lighting_mirror", "mirror_camera", "floor_screen", "deferred_lighting", "lights & box", 0.5, 0.5);
     lighting_mirror->add_buffer(gua::ColorBufferDescription("color", 0));
     lighting_mirror->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
-    lighting_mirror->set_input_buffer("g_buffer_mirror", "color", "deferred_lighting", "tex_color");
-    lighting_mirror->set_input_buffer("g_buffer_mirror", "normal", "deferred_lighting", "tex_normal");
-    lighting_mirror->set_input_buffer("g_buffer_mirror", "specular", "deferred_lighting", "tex_specular");
-    lighting_mirror->set_input_buffer("g_buffer_mirror", "position", "deferred_lighting", "tex_position");
-    lighting_mirror->overwrite_uniform_float("deferred_lighting", "texel_width", 2.0/800);
-    lighting_mirror->overwrite_uniform_float("deferred_lighting", "texel_height", 2.0/600);
+    lighting_mirror->set_input_buffer("g_buffer_mirror", "color", "tex_color");
+    lighting_mirror->set_input_buffer("g_buffer_mirror", "normal", "tex_normal");
+    lighting_mirror->set_input_buffer("g_buffer_mirror", "specular_emit", "tex_specular_emit");
+    lighting_mirror->set_input_buffer("g_buffer_mirror", "position", "tex_position");
 
     auto g_buffer = new gua::RenderPass("g_buffer", "camera", "screen", "!lights");
     g_buffer->add_buffer(gua::ColorBufferDescription("color", 0));
     g_buffer->add_buffer(gua::ColorBufferDescription("normal", 1));
-    g_buffer->add_buffer(gua::ColorBufferDescription("specular", 2));
+    g_buffer->add_buffer(gua::ColorBufferDescription("specular_emit", 2));
     g_buffer->add_buffer(gua::ColorBufferDescription("position", 3));
     g_buffer->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
     g_buffer->set_input_buffer("lighting_mirror", "color", "mirror_tiles", "tex_mirror");
 
-    auto lighting = new gua::RenderPass("lighting", "camera", "screen", "lights | camerastuff");
+    auto lighting = new gua::FullscreenPass("lighting", "camera", "screen", "deferred_lighting", "lights & box");
     lighting->add_buffer(gua::ColorBufferDescription("color", 0));
-    lighting->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
-    lighting->set_input_buffer("g_buffer", "color", "deferred_lighting", "tex_color");
-    lighting->set_input_buffer("g_buffer", "normal", "deferred_lighting", "tex_normal");
-    lighting->set_input_buffer("g_buffer", "specular", "deferred_lighting", "tex_specular");
-    lighting->set_input_buffer("g_buffer", "position", "deferred_lighting", "tex_position");
+    lighting->set_input_buffer("g_buffer", "color", "tex_color");
+    lighting->set_input_buffer("g_buffer", "normal", "tex_normal");
+    lighting->set_input_buffer("g_buffer", "specular_emit", "tex_specular_emit");
+    lighting->set_input_buffer("g_buffer", "position", "tex_position");
 
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(800, 600, "deferred_example", ":0.0", gua::ANAGLYPH_RED_CYAN));
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, "deferred_example", ":0.0", gua::MONO));
     pipe->add_render_pass(g_buffer);
     pipe->add_render_pass(g_buffer_mirror);
     pipe->add_render_pass(lighting);
@@ -65,6 +62,28 @@ gua::RenderPipeline* create_pipe() {
     pipe->set_final_buffer("lighting", "color");
 
     return pipe;
+}
+
+std::vector<gua::SceneGraph::Iterator> add_lights(gua::SceneGraph& graph, int count) {
+
+    std::vector<gua::SceneGraph::Iterator> lights(count);
+
+    auto sphere_core = new gua::GeometryCore("light_sphere", "bright");
+
+    for (int i(0); i<count; ++i) {
+        auto light_core = new gua::LightCore(gua::Color3f::random());
+
+        lights[i] = graph.add_node("/", "sphere"+gua::string_utils::to_string(i), sphere_core);
+        lights[i].scale(0.02, 0.02, 0.02);
+        lights[i].translate(gua::randomizer::random(-0.7f, 0.7f), gua::randomizer::random(0.05f, 0.1f), gua::randomizer::random(-0.7f, 0.7f));
+        lights[i].add_to_group("box");
+
+        auto light = lights[i].add_child("light", light_core);
+        light.scale(40, 40, 40);
+        light.add_to_group("lights");
+    }
+
+    return lights;
 }
 
 int main(int argc, char** argv) {
@@ -86,7 +105,6 @@ int main(int argc, char** argv) {
     auto floor_mirror_screen_core(new gua::ScreenCore(2, 2));
     auto floor_screen = graph.add_node("/", "floor_screen", floor_mirror_screen_core);
     floor_screen.rotate(90, 1, 0, 0);
-    floor_screen.add_to_group("camerastuff");
 
     auto cube_core = new gua::GeometryCore("cube", "tiles");
     auto box = graph.add_node("/", "box", cube_core);
@@ -94,49 +112,41 @@ int main(int argc, char** argv) {
     box.translate(0, 0.1, 0);
     box.add_to_group("box");
 
-    auto screen_core(new gua::ScreenCore(1.6, 1.2));
+    auto sky_core = new gua::GeometryCore("sky_sphere", "sky");
+    auto sky = graph.add_node("/", "sky", sky_core);
+    sky.scale(50, 50, 50);
+    box.add_to_group("box");
+
+    auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
     screen.translate(0, 0.45, 1);
-    screen.add_to_group("camerastuff");
+
+    auto lights = add_lights(graph, 20);
 
     auto camera_core = new gua::CameraCore(0.1f);
     auto camera = graph.add_node("/screen", "camera", camera_core);
     camera.translate(0, 0, 1.5);
-    camera.add_to_group("camerastuff");
 
     camera = graph.add_node("/screen/camera", "mirror_camera", camera_core);
     camera.translate(0, -0.9, 0);
-    camera.add_to_group("camerastuff");
-
-    auto light_core = new gua::GeometryCore("light_sphere", "deferred_lighting");
-    auto light = graph.add_node("/", "light1", light_core);
-    light.scale(10, 10, 10);
-    light.translate(0.3, 0.1, -0.2);
-    light.add_to_group("lights");
-
-    light = graph.add_node("/", "light4", light_core);
-    light.scale(15, 15, 15);
-    light.translate(-0.3, 0.5, 0.4);
-    light.add_to_group("lights");
-
-    gua::MaterialBase::instance()->get("deferred_lighting")->set_uniform_float("texel_width", 1.0/800);
-    gua::MaterialBase::instance()->get("deferred_lighting")->set_uniform_float("texel_height", 1.0/600);
-    gua::MaterialBase::instance()->get("deferred_lighting")->set_uniform_float("x_fragment_offset", 0);
-    gua::MaterialBase::instance()->get("deferred_lighting")->set_blend_state(scm::gl::blend_state_desc(
-                                                                             scm::gl::blend_ops(true, scm::gl::FUNC_ONE, scm::gl::FUNC_ONE, scm::gl::FUNC_ONE, scm::gl::FUNC_ONE)));
-    gua::MaterialBase::instance()->get("deferred_lighting")->set_rasterizer_state(scm::gl::rasterizer_state_desc(scm::gl::FILL_SOLID, scm::gl::CULL_FRONT));
-    gua::MaterialBase::instance()->get("deferred_lighting")->set_depth_stencil_state(scm::gl::depth_stencil_state_desc(false, false));
-
-
 
     gua::RenderServer renderer({create_pipe()});
+
+    gua::Timer timer;
+    timer.start();
 
     // application loop
     while (true) {
         renderer.queue_draw(&graph);
 
+        float time(timer.get_elapsed());
+
+        for (int i=0; i<lights.size(); ++i) {
+            lights[i].translate(0, std::sin(time*(i*0.1 + 0.5))*0.001, 0);
+        }
+
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        graph["/screen"].rotate(0.3, 0, 1, 0);
+        graph["/screen"].rotate(0.03, 0, 1, 0);
     }
 
     return 0;

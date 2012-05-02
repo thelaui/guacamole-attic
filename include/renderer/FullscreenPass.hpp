@@ -20,9 +20,10 @@
 /// \brief Declaration of the RenderPass class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDER_PASS_HPP
-#define RENDER_PASS_HPP
+#ifndef FULLSCREEN_PASS_HPP
+#define FULLSCREEN_PASS_HPP
 
+#include <scm/gl_util/primitives/quad.h>
 #include <scm/gl_core/buffer_objects/uniform_buffer_adaptor.h>
 
 #include "renderer/GenericRenderPass.hpp"
@@ -31,40 +32,43 @@ namespace gua {
 
 class LightInformation;
 
-class RenderPass : public GenericRenderPass{
+class FullscreenPass : public GenericRenderPass{
     public:
-        RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& render_mask = "",
-                   float width = 1.f, float height = 1.f, bool size_is_relative = true);
+        FullscreenPass(std::string const& name, std::string const& camera, std::string const& screen,
+                       std::string const& material, std::string const& render_mask = "",
+                       float width = 1.f, float height = 1.f, bool size_is_relative = true);
 
-        virtual ~RenderPass();
+        virtual ~FullscreenPass();
 
         void set_input_buffer(std::string const& in_render_pass, std::string const& in_buffer,
-                              std::string const& target_material, std::string const& target_uniform);
+                              std::string const& target_uniform);
 
-        void overwrite_uniform_float(std::string const& material, std::string const& uniform_name, float value);
-        void overwrite_uniform_texture(std::string const& material, std::string const& uniform_name, std::shared_ptr<Texture> const& value);
-        void overwrite_uniform_texture(std::string const& material, std::string const& uniform_name, std::string const& texture_name);
-
-        friend class RenderBackend;
-        friend class RenderPipeline;
+        void overwrite_uniform_float(std::string const& uniform_name, float value);
+        void overwrite_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value);
+        void overwrite_uniform_texture(std::string const& uniform_name, std::string const& texture_name);
 
     private:
         /*virtual*/ std::shared_ptr<Texture> const& get_buffer(std::string const& name, CameraMode mode, bool draw_fps = false);
 
-        // target material    target uniform        input pass             input buffer
-        std::map<std::string, std::map<std::string, std::pair<std::string, std::string>>> inputs_;
+        // target uniform        input pass             input buffer
+        std::map<std::string, std::pair<std::string, std::string>> inputs_;
 
-        // target material    target uniform        input buffer
-        std::map<std::string, std::map<std::string, std::shared_ptr<Texture>>> texture_uniforms_;
+        // target uniform    input buffer
+        std::map<std::string, std::shared_ptr<Texture>> texture_uniforms_;
 
-        // target material    target uniform        input value
-        std::map<std::string, std::map<std::string, float>> float_uniforms_;
+        // target uniform    input value
+        std::map<std::string, float> float_uniforms_;
+
+        scm::gl::quad_geometry_ptr fullscreen_quad_;
+        scm::gl::depth_stencil_state_ptr depth_stencil_state_;
+
+        std::string material_name_;
 
         scm::gl::uniform_block<LightInformation>* light_information_;
 };
 
 }
 
-#endif // RENDER_PASS_HPP
+#endif // FULLSCREEN_PASS_HPP
 
 

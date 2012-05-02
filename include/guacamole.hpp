@@ -28,6 +28,7 @@
 #include "renderer/TextureBase.hpp"
 #include "renderer/RenderPipeline.hpp"
 #include "renderer/RenderPass.hpp"
+#include "renderer/FullscreenPass.hpp"
 #include "renderer/enums.hpp"
 #include "traverser/RenderServer.hpp"
 #include "scenegraph/Iterator.hpp"
@@ -42,6 +43,8 @@
 #include "utils/Timer.hpp"
 #include "utils/debug.hpp"
 #include "utils/math.hpp"
+#include "utils/randomizer.hpp"
+#include "utils/string_utils.hpp"
 
 namespace gua {
 

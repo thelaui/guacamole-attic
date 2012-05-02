@@ -22,7 +22,6 @@
 #include "traverser/RenderClient.hpp"
 
 #include "scenegraph/SceneGraph.hpp"
-#include "renderer/RenderBackend.hpp"
 #include "renderer/RenderPipeline.hpp"
 #include "utils/Timer.hpp"
 #include "utils/debug.hpp"
@@ -32,10 +31,13 @@ namespace gua {
 RenderClient::RenderClient(RenderPipeline* pipeline):
     draw_thread_(NULL),
     render_pipeline_(pipeline),
+    graph_copy_(),
+    application_fps_(0.f), rendering_fps_(0.f),
+    application_frame_count_(0), rendering_frame_count_(0),
+    application_timer_(), rendering_timer_(),
     rendering_finished_(false),
     render_mutex_(),
-    render_condition_(),
-    frame_(0) {}
+    render_condition_() {}
 
 RenderClient::~RenderClient() {
     if (draw_thread_) {
@@ -46,12 +48,21 @@ RenderClient::~RenderClient() {
 
 void RenderClient::queue_draw(SceneGraph const* graph) {
     if(!draw_thread_) {
+        application_timer_.start();
+        rendering_timer_.start();
+
         graph_copy_ = *graph;
         draw_thread_ = new std::thread(&RenderClient::draw_loop, this);
     }
 
     // lock rendering
     std::unique_lock<std::mutex> lock(render_mutex_);
+
+    if (++application_frame_count_ == 100) {
+        application_fps_ = 100.f/application_timer_.get_elapsed();
+        application_timer_.reset();
+        application_frame_count_ = 0;
+    }
 
     if (rendering_finished_) {
         graph_copy_ = *graph;
@@ -63,21 +74,19 @@ void RenderClient::queue_draw(SceneGraph const* graph) {
 }
 
 void RenderClient::draw_loop() {
-//    Timer timer;
-//    timer.start();
-
     while (true) {
-//        if (++frame_ % 100 == 0) {
-//            DEBUG("Renderer FPS: %f", frame_/timer.get_elapsed());
-//            frame_ = 0;
-//            timer.reset();
-//        }
 
         // render
-        render_pipeline_->process(&graph_copy_);
+        render_pipeline_->process(&graph_copy_, application_fps_, rendering_fps_);
 
         // lock rendering
         std::unique_lock<std::mutex> lock(render_mutex_);
+
+        if (++rendering_frame_count_ == 100) {
+            rendering_fps_ = 100.f/rendering_timer_.get_elapsed();
+            rendering_timer_.reset();
+            rendering_frame_count_ = 0;
+        }
 
         rendering_finished_ = true;
 

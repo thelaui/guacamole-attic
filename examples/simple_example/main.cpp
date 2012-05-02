@@ -28,11 +28,31 @@ gua::RenderPipeline* create_pipe() {
     pass->add_buffer(gua::ColorBufferDescription("color", 0));
     pass->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
 
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, "simple_example", ":0.0", gua::ANAGLYPH_RED_CYAN));
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 900, "simple_example", ":0.0", gua::MONO));
     pipe->add_render_pass(pass);
     pipe->set_final_buffer("main", "color");
 
     return pipe;
+}
+
+std::vector<gua::SceneGraph::Iterator> add_lights(gua::SceneGraph& graph, int count) {
+
+    std::vector<gua::SceneGraph::Iterator> lights(count);
+
+    auto sphere_core = new gua::GeometryCore("light_sphere", "bright");
+
+    for (int i(0); i<count; ++i) {
+        auto light_core = new gua::LightCore(gua::Color3f::random());
+
+        lights[i] = graph.add_node("/", "sphere"+gua::string_utils::to_string(i), sphere_core);
+        lights[i].scale(0.02, 0.02, 0.02);
+        lights[i].translate(gua::randomizer::random(-0.8f, 0.8f), gua::randomizer::random(0.05f, 0.1f), gua::randomizer::random(-0.8f, 0.8f));
+
+        auto light = lights[i].add_child("light", light_core);
+        light.scale(20, 20, 20);
+    }
+
+    return lights;
 }
 
 int main(int argc, char** argv) {
@@ -60,6 +80,8 @@ int main(int argc, char** argv) {
     ape.scale(0.5, 0.5, 0.5);
     ape.translate(0, 1, 0);
 
+    auto lights = add_lights(graph, 64);
+
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
     screen.translate(0, 0.45, 0.5);
@@ -68,16 +90,29 @@ int main(int argc, char** argv) {
     auto camera = graph.add_node("/screen", "camera", camera_core);
     camera.translate(0, 0, 1.5);
 
-    gua::RenderServer renderer({create_pipe(), create_pipe(), create_pipe(), create_pipe(), create_pipe(), create_pipe()});
+    gua::RenderServer renderer({create_pipe()});
+
+    gua::Timer timer;
+    timer.start();
+
+    double time(0);
 
     // application loop
     while (true) {
         renderer.queue_draw(&graph);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-        graph["/box/monkey"].rotate(2, 0, 1, 0);
-        graph["/screen"].rotate(0.1, 0, 1, 0);
+        double frame_time(timer.get_elapsed());
+        time += frame_time;
+        timer.reset();
+
+        for (int i=0; i<lights.size(); ++i) {
+            lights[i].translate(0, std::sin(time*(i*0.1 + 0.5))*frame_time*0.5, 0);
+        }
+
+        graph["/box/monkey"].rotate(50*frame_time, 0, 1, 0);
+        graph["/screen"].rotate(20*frame_time, 0, 1, 0);
     }
 
     return 0;

@@ -16,3 +16,6 @@ examples/deferred_example/bin/*
 examples/tracking_example/obj/*
 examples/tracking_example/bin/*
 examples/rendering_demo
+examples/screen_demo
+examples/simple_demo
+guacamole_with_examples_and_demos.workspace
