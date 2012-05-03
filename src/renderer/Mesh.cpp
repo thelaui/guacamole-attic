@@ -20,15 +20,18 @@
 /// \brief Definition of the Mesh class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/Mesh.hpp"
 
-#include <assimp/assimp.hpp>
-#include <assimp/aiPostProcess.h>
-#include <assimp/aiScene.h>
-
+// guacamole headers
 #include "renderer/RenderContext.hpp"
 #include "renderer/ShaderProgram.hpp"
 #include "utils/debug.hpp"
+
+// external headers
+#include <assimp/assimp.hpp>
+#include <assimp/aiPostProcess.h>
+#include <assimp/aiScene.h>
 
 namespace {
     struct Vertex {

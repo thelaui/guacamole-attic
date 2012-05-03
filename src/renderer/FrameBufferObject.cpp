@@ -17,15 +17,18 @@
 // this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class to maintain Schism's FBOs.
+/// \brief Definition of the FrameBufferObject class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/FrameBufferObject.hpp"
 
+// guacamole headers
 #include "renderer/RenderContext.hpp"
 #include "utils/debug.hpp"
 #include "utils/math.hpp"
 
+// external headers
 #include <GL/glew.h>
 #include <string>
 
@@ -50,8 +53,11 @@ attach_color_buffer(RenderContext const& ctx, unsigned in_color_attachment,
 
     std::unique_lock<std::mutex> lock(upload_mutex_);
 
+    // only attach buffer if it has an appropriate size
     if (set_size(buffer)) {
-        if (fbos_.size() <= ctx.id) {
+
+        // create new fbo if there isn't any for this context
+        if (fbos_.size() <= ctx.id || fbos_[ctx.id] == NULL) {
             fbos_.resize(ctx.id+1);
             fbos_[ctx.id] = ctx.render_device->create_frame_buffer();
         }
@@ -70,8 +76,11 @@ attach_depth_stencil_buffer(RenderContext const& ctx, Texture const& buffer,
 
     std::unique_lock<std::mutex> lock(upload_mutex_);
 
+    // only attach buffer if it has an appropriate size
     if (set_size(buffer)) {
-        if (fbos_.size() <= ctx.id) {
+
+        // create new fbo if there isn't any for this context
+        if (fbos_.size() <= ctx.id || fbos_[ctx.id] == NULL) {
             fbos_.resize(ctx.id+1);
             fbos_[ctx.id] = ctx.render_device->create_frame_buffer();
         }
@@ -145,8 +154,8 @@ set_size(Texture const& buffer) {
         height_ = buffer.height();
         return true;
     } else if (buffer.width() != width_ || buffer.height() != height_) {
-        WARNING("Buffers attached to the same FrameBufferObject must have the \
-                same size!");
+        WARNING("Buffers attached to the same FrameBufferObject must have the "
+                "same size!");
 
         return false;
     }

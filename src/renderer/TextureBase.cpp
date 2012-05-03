@@ -20,11 +20,14 @@
 /// \brief Definition of the TextureBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/TextureBase.hpp"
 
+// guacamole headers
 #include "utils/Directory.hpp"
 #include "utils/debug.hpp"
 
+// external headers
 #include <sstream>
 #include <iostream>
 

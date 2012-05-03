@@ -17,11 +17,13 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the FullscreenPass class.
+/// \brief Definition of the FullscreenPass class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/FullscreenPass.hpp"
 
+// guacamole headers
 #include "renderer/RenderPipeline.hpp"
 #include "renderer/TextureBase.hpp"
 #include "renderer/MaterialBase.hpp"
@@ -38,7 +40,6 @@ FullscreenPass(std::string const& name, std::string const& camera,
                std::string const& screen, std::string const& material,
                std::string const& render_mask, float width, float height,
                bool size_is_relative):
-
     GenericRenderPass(name, camera, screen, render_mask,
                       width, height, size_is_relative),
     inputs_(),
@@ -90,14 +91,30 @@ void FullscreenPass::
 overwrite_uniform_texture(std::string const& uniform_name,
                           std::string const& texture_name) {
 
-    texture_uniforms_[uniform_name] = TextureBase::instance()->get(texture_name);
+    texture_uniforms_[uniform_name] = TextureBase::instance()->get(
+                                                                  texture_name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-std::shared_ptr<Texture> const& FullscreenPass::
+std::shared_ptr<Texture> FullscreenPass::
 get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
+    // check for existance of desired buffer
+    if ((mode == CENTER
+            && center_eye_buffers_.find(name) == center_eye_buffers_.end())
+     || (mode == LEFT
+            && left_eye_buffers_.find(name)  == left_eye_buffers_.end())
+     || (mode == RIGHT
+            && right_eye_buffers_.find(name) == right_eye_buffers_.end())) {
+
+        WARNING("Failed to get buffer \"%s\" from pass \"%s\": "
+                "A buffer with this name does not exist!",
+                name.c_str(), get_name().c_str());
+        return NULL;
+    }
+
+    // return appropriate buffer if it has been rendered already
     if (mode == CENTER && rendererd_center_eye_)
         return center_eye_buffers_[name];
 
@@ -107,14 +124,18 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
     if (mode == RIGHT && rendererd_right_eye_)
         return right_eye_buffers_[name];
 
+    // serialize the scenegraph
     Optimizer optimizer;
     optimizer.check(pipeline_->get_current_graph(), render_mask_);
 
+    // if there are dynamic texture inputs for this render pass, get the
+    // according buffers recursively
     for (auto val : inputs_)
         overwrite_uniform_texture(val.first,
                                   pipeline_->get_render_pass(val.second.first)->
                                   get_buffer(val.second.second, mode));
 
+    // we'll need these two very often now...
     OptimizedScene const& scene(optimizer.get_data());
     RenderContext const& ctx(pipeline_->get_context());
 
@@ -129,6 +150,7 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
                                                        math::vec2(-1.f, -1.f),
                                                        math::vec2( 1.f,  1.f)));
 
+    // get the fbo which should be rendered to
     FrameBufferObject* fbo(NULL);
 
     switch (mode) {
@@ -145,58 +167,58 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
     fbo->bind(ctx);
 
-    fbo->clear_color_buffers(ctx);
-    fbo->clear_depth_stencil_buffer(ctx);
-
     ctx.render_context->set_viewport(scm::gl::viewport(math::vec2(0,0),
                                                        math::vec2(fbo->width(),
                                                                fbo->height())));
 
-    // update light data
-    if (scene.lights_.size() > 0) {
-
-        if (!light_information_) {
-            light_information_ =
-                new scm::gl::uniform_block<LightInformation>(ctx.render_device);
-        }
-
-        light_information_->begin_manipulation(ctx.render_context);
-
-        LightInformation light;
-
-        light.light_count = math::vec4i(scene.lights_.size(),
-                                        scene.lights_.size(),
-                                        scene.lights_.size(),
-                                        scene.lights_.size());
-
-        for (unsigned i(0); i < scene.lights_.size(); ++i) {
-
-            math::mat4 transform(scene.lights_[i].transform);
-
-            // calc light radius and position
-            light.position[i] = math::vec4(transform[12], transform[13],
-                                           transform[14], transform[15]);
-
-            float radius = scm::math::length(light.position[i] - transform
-                                              * math::vec4(0.f, 0.f, 1.f, 1.f));
-
-            light.color_radius[i] = math::vec4(scene.lights_[i].color.r(),
-                                               scene.lights_[i].color.g(),
-                                               scene.lights_[i].color.b(),
-                                               radius);
-        }
-
-        **light_information_ = light;
-
-        light_information_->end_manipulation();
-
-        ctx.render_context->bind_uniform_buffer(
-                                         light_information_->block_buffer(), 0);
-    }
-
     auto material(MaterialBase::instance()->get(material_name_));
 
     if (material) {
+
+        // update light data uniform block
+        if (scene.lights_.size() > 0) {
+
+            if (!light_information_) {
+                light_information_ =
+                            new scm::gl::uniform_block<LightInformation>(
+                                                            ctx.render_device);
+            }
+
+            light_information_->begin_manipulation(ctx.render_context);
+
+            LightInformation light;
+
+            light.light_count = math::vec4i(scene.lights_.size(),
+                                            scene.lights_.size(),
+                                            scene.lights_.size(),
+                                            scene.lights_.size());
+
+            for (unsigned i(0); i < scene.lights_.size(); ++i) {
+
+                math::mat4 transform(scene.lights_[i].transform);
+
+                // calc light radius and position
+                light.position[i] = math::vec4(transform[12], transform[13],
+                                               transform[14], transform[15]);
+
+                float radius = scm::math::length(
+                                        light.position[i] - transform
+                                        * math::vec4(0.f, 0.f, 1.f, 1.f));
+
+                light.color_radius[i] = math::vec4(scene.lights_[i].color.r(),
+                                                   scene.lights_[i].color.g(),
+                                                   scene.lights_[i].color.b(),
+                                                   radius);
+            }
+
+            **light_information_ = light;
+
+            light_information_->end_manipulation();
+
+            ctx.render_context->bind_uniform_buffer(
+                                        light_information_->block_buffer(), 0);
+        }
+
         material->use(ctx);
 
         auto camera_it(scene.cameras_.find(camera_));
@@ -249,22 +271,21 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
         ctx.render_context->set_depth_stencil_state(depth_stencil_state_);
 
+        // draw the quad!
         fullscreen_quad_->draw(ctx.render_context);
 
         ctx.render_context->reset_state_objects();
         material->unuse(ctx);
 
+        if (scene.lights_.size() > 0) {
+            ctx.render_context->reset_uniform_buffers();
+        }
     }
-
-    if (scene.lights_.size() > 0) {
-        ctx.render_context->reset_uniform_buffers();
-    }
-
 
     fbo->unbind(ctx);
 
+    // draw fps on the screen
     if (draw_fps) {
-
         if (!text_renderer_)
             text_renderer_ = new TextRenderer(ctx);
 
@@ -283,6 +304,7 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
         }
     }
 
+    // return the buffer and set the already-rendered-flag
     if (mode == CENTER) {
         rendererd_center_eye_ = true;
         return center_eye_buffers_[name];

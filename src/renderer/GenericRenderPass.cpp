@@ -17,11 +17,13 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the RenderPass class.
+/// \brief Definition of the GenericRenderPass class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/GenericRenderPass.hpp"
 
+// guacamole headers
 #include "renderer/RenderPipeline.hpp"
 #include "utils/debug.hpp"
 
@@ -33,7 +35,6 @@ GenericRenderPass::
 GenericRenderPass(std::string const& name, std::string const& camera,
                   std::string const& screen, std::string const& render_mask,
                   float width, float height, bool size_is_relative):
-
     color_buffer_descriptions_(),
     depth_stencil_buffer_description_(""),
     name_(name),

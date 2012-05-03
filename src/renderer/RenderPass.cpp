@@ -17,11 +17,13 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the RenderPass class.
+/// \brief Definition of the RenderPass class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/RenderPass.hpp"
 
+// guacamole headers
 #include "renderer/RenderPipeline.hpp"
 #include "renderer/LightInformation.hpp"
 #include "renderer/TextureBase.hpp"
@@ -60,7 +62,7 @@ void RenderPass::
 set_input_buffer(std::string const& in_render_pass,
                  std::string const& in_buffer,
                  std::string const& target_material,
-                std::string const& target_uniform) {
+                 std::string const& target_uniform) {
 
     inputs_[target_material][target_uniform] = std::make_pair(in_render_pass,
                                                               in_buffer);
@@ -98,9 +100,24 @@ overwrite_uniform_texture(std::string const& material,
 
 ////////////////////////////////////////////////////////////////////////////////
 
-std::shared_ptr<Texture> const& RenderPass::
+std::shared_ptr<Texture> RenderPass::
 get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
+    // check for existance of desired buffer
+    if ((mode == CENTER
+            && center_eye_buffers_.find(name) == center_eye_buffers_.end())
+     || (mode == LEFT
+            && left_eye_buffers_.find(name)  == left_eye_buffers_.end())
+     || (mode == RIGHT
+            && right_eye_buffers_.find(name) == right_eye_buffers_.end())) {
+
+        WARNING("Failed to get buffer \"%s\" from pass \"%s\": "
+                "A buffer with this name does not exist!",
+                name.c_str(), get_name().c_str());
+        return NULL;
+    }
+
+    // return appropriate buffer if it has been rendered already
     if (mode == CENTER && rendererd_center_eye_)
         return center_eye_buffers_[name];
 
@@ -110,9 +127,12 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
     if (mode == RIGHT && rendererd_right_eye_)
         return right_eye_buffers_[name];
 
+    // serialize the scenegraph
     Optimizer optimizer;
     optimizer.check(pipeline_->get_current_graph(), render_mask_);
 
+    // if there are dynamic texture inputs for this render pass, get the
+    // according buffers recursively
     for (auto& node: optimizer.get_data().nodes_) {
         auto material(inputs_.find(node.material_));
 
@@ -125,9 +145,11 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
         }
     }
 
+    // we'll need these two very often now...
     OptimizedScene const& scene(optimizer.get_data());
     RenderContext const& ctx(pipeline_->get_context());
 
+    // get the fbo which should be rendered to
     FrameBufferObject* fbo(NULL);
 
     switch (mode) {
@@ -188,7 +210,7 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
         math::mat4 view_matrix(scm::math::inverse(view_transform));
 
-        // update light data
+        // update light data uniform block
         if (scene.lights_.size() > 0) {
 
             if (!light_information_) {
@@ -271,17 +293,17 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
                 material->unuse(ctx);
 
             } else if (material) {
-                WARNING("Cannot render geometry \"%s\": Undefined geometry \
-                        name!", core.geometry_.c_str());
+                WARNING("Cannot render geometry \"%s\": Undefined geometry "
+                        "name!", core.geometry_.c_str());
 
             } else if (geometry) {
-                WARNING("Cannot render geometry \"%s\": Undefined material \
-                        name: \"%s\"!", core.geometry_.c_str(),
+                WARNING("Cannot render geometry \"%s\": Undefined material "
+                        "name: \"%s\"!", core.geometry_.c_str(),
                         core.material_.c_str());
 
             } else {
-                WARNING("Cannot render geometry \"%s\": Undefined geometry \
-                        and material name: \"%s\"!", core.geometry_.c_str(),
+                WARNING("Cannot render geometry \"%s\": Undefined geometry "
+                        "and material name: \"%s\"!", core.geometry_.c_str(),
                         core.material_.c_str());
             }
         }
@@ -293,9 +315,8 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
     fbo->unbind(ctx);
 
-
+    // draw fps on the screen
     if (draw_fps) {
-
         if (!text_renderer_)
             text_renderer_ = new TextRenderer(pipeline_->get_context());
 
@@ -313,6 +334,8 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
                                        pipeline_->get_rendering_fps());
         }
     }
+
+    // return the buffer and set the already-rendered-flag
 
     if (mode == CENTER) {
         rendererd_center_eye_ = true;

@@ -20,17 +20,18 @@
 /// \brief Definition of the Geometry class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/Geometry.hpp"
 
+// guacamole headers
+#include "utils/TextFile.hpp"
+#include "utils/debug.hpp"
+#include "renderer/LightSphere.hpp"
+
+// external headers
 #include <assimp/assimp.hpp>
 #include <assimp/aiPostProcess.h>
 #include <assimp/aiScene.h>
-
-#include "utils/TextFile.hpp"
-#include "utils/debug.hpp"
-
-#include "renderer/LightSphere.hpp"
-
 
 namespace gua {
 

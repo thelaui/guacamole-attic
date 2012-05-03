@@ -17,10 +17,13 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Definition of the Render class.
+/// \brief Definition of the RenderServer class.
 ////////////////////////////////////////////////////////////////////////////////
+
+// class header
 #include "traverser/RenderServer.hpp"
 
+// guacamole headers
 #include "scenegraph/SceneGraph.hpp"
 #include "traverser/RenderClient.hpp"
 #include "traverser/Optimizer.hpp"
@@ -28,21 +31,35 @@
 
 namespace gua {
 
-RenderServer::RenderServer(std::vector<RenderPipeline*> const& pipelines) {
+////////////////////////////////////////////////////////////////////////////////
+
+RenderServer::
+RenderServer(std::vector<RenderPipeline*> const& pipelines) {
+
     for (auto& pipeline: pipelines)
         render_clients_.push_back(new RenderClient(pipeline));
 }
 
-RenderServer::~RenderServer(){
-    for ( auto client( render_clients_.begin() ); client != render_clients_.end(); ++client ){
-        delete (*client);
+////////////////////////////////////////////////////////////////////////////////
+
+RenderServer::
+~RenderServer(){
+
+    for (auto c(render_clients_.begin()); c != render_clients_.end(); ++c){
+        delete (*c);
     }
 }
 
-void RenderServer::queue_draw( SceneGraph const* scene_graph ) {
-    for ( auto client(render_clients_.begin()); client != render_clients_.end(); ++ client ) {
-        (*client)->queue_draw(scene_graph);
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderServer::
+queue_draw( SceneGraph const* scene_graph ) {
+
+    for (auto c(render_clients_.begin()); c != render_clients_.end(); ++c) {
+        (*c)->queue_draw(scene_graph);
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

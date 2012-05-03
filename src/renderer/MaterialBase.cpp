@@ -20,10 +20,13 @@
 /// \brief Definition of the MaterialBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/MaterialBase.hpp"
 
+// guacamole headers
 #include "utils/Directory.hpp"
 
+// external headers
 #include <sstream>
 
 namespace gua {

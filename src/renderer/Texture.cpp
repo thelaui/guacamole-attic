@@ -17,14 +17,17 @@
 // this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class to easily load, bind and undbind textures.
+/// \brief Definition of the Texture class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/Texture.hpp"
 
+// guacamole headers
 #include "utils/debug.hpp"
 #include "utils/math.hpp"
 
+// external headers
 #include <scm/gl_util/data/imaging/texture_loader.h>
 #include <iostream>
 

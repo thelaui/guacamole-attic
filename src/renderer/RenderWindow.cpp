@@ -20,8 +20,10 @@
 /// \brief Definition of the RenderWindow class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/RenderWindow.hpp"
 
+// guacamole headers
 #include "utils/debug.hpp"
 #include "utils/string_utils.hpp"
 #include "renderer/Geometry.hpp"
@@ -29,6 +31,7 @@
 #include "renderer/StereoShaders.hpp"
 #include "renderer/LightInformation.hpp"
 
+// external headers
 #include <sstream>
 #include <iostream>
 

@@ -20,16 +20,18 @@
 /// \brief Definition of the Material class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/Material.hpp"
 
+// guacamole headers
 #include "renderer/ShaderProgram.hpp"
 #include "renderer/RenderContext.hpp"
 #include "renderer/TextureBase.hpp"
-
 #include "utils/PathParser.hpp"
 #include "utils/TextFile.hpp"
 #include "utils/debug.hpp"
 
+// external headers
 #include <sstream>
 
 namespace gua {
@@ -71,8 +73,8 @@ Material(std::string const& file_name):
     if (file.is_valid()) {
         construct_from_file(file);
     } else {
-        WARNING("Failed to load material description \"%s\": \
-                File does not exist!", file_name.c_str());
+        WARNING("Failed to load material description \"%s\": "
+                "File does not exist!", file_name.c_str());
     }
 }
 
@@ -165,7 +167,8 @@ set_uniform_texture(std::string const& uniform_name,
     auto searched_tex(TextureBase::instance()->get(texture_name));
     if (searched_tex)
         texture_uniforms_[uniform_name] = searched_tex;
-    else WARNING ("A texture with the name %s does not exist within the database!", texture_name.c_str());
+    else WARNING ("A texture with the name %s does not exist within the "
+                  "database!", texture_name.c_str());
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -48,7 +48,7 @@ class FullscreenPass : public GenericRenderPass{
         void overwrite_uniform_texture(std::string const& uniform_name, std::string const& texture_name);
 
     private:
-        /*virtual*/ std::shared_ptr<Texture> const& get_buffer(std::string const& name, CameraMode mode, bool draw_fps = false);
+        /*virtual*/ std::shared_ptr<Texture> get_buffer(std::string const& name, CameraMode mode, bool draw_fps = false);
 
         // target uniform        input pass             input buffer
         std::map<std::string, std::pair<std::string, std::string>> inputs_;

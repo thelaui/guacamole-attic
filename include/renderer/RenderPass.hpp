@@ -49,7 +49,7 @@ class RenderPass : public GenericRenderPass{
         friend class RenderPipeline;
 
     private:
-        /*virtual*/ std::shared_ptr<Texture> const& get_buffer(std::string const& name, CameraMode mode, bool draw_fps = false);
+        /*virtual*/ std::shared_ptr<Texture> get_buffer(std::string const& name, CameraMode mode, bool draw_fps = false);
 
         // target material    target uniform        input pass             input buffer
         std::map<std::string, std::map<std::string, std::pair<std::string, std::string>>> inputs_;

@@ -54,7 +54,7 @@ class GenericRenderPass {
         friend class FullscreenPass;
 
     protected:
-        virtual std::shared_ptr<Texture> const& get_buffer(std::string const& name, CameraMode mode, bool draw_fps = false) = 0;
+        virtual std::shared_ptr<Texture> get_buffer(std::string const& name, CameraMode mode, bool draw_fps = false) = 0;
 
         void flush();
         void create_buffers(StereoMode mode);

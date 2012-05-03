@@ -20,9 +20,12 @@
 /// \brief Definition of the TextRenderer class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/TextRenderer.hpp"
 
+// guacamole headers
 #include "utils/string_utils.hpp"
+#include "utils/math.hpp"
 
 namespace gua {
 
@@ -31,20 +34,20 @@ namespace gua {
 TextRenderer::
 TextRenderer(RenderContext const& ctx) {
 
-    scm::gl::font_face_ptr counter_font(
-                            new scm::gl::font_face(
-                                ctx.render_device,
-                                "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
-                                24, 0.7f, scm::gl::font_face::smooth_normal));
+    scm::gl::font_face_ptr font(new scm::gl::font_face(
+                            ctx.render_device,
+                            "/usr/share/fonts/truetype/freefont/FreeSans.ttf",
+                            24, 0.7f, scm::gl::font_face::smooth_normal));
 
     text_renderer_.reset(new scm::gl::text_renderer(ctx.render_device));
+
     frame_counter_text_.reset(new scm::gl::text(
-                                            ctx.render_device, counter_font,
-                                            scm::gl::font_face::style_regular,
-                                            "Application FPS: 0"));
-    frame_counter_text_->text_color(scm::math::vec4f(1.0f, 1.0f, 0.0f, 1.0f));
-    frame_counter_text_->text_outline_color(
-                                    scm::math::vec4f(0.0f, 0.0f, 0.0f, 1.0f));
+                            ctx.render_device, font,
+                            scm::gl::font_face::style_regular,
+                            "Application FPS: 0"));
+
+    frame_counter_text_->text_color(math::vec4(1.0f, 1.0f, 0.0f, 1.0f));
+    frame_counter_text_->text_outline_color(math::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     frame_counter_text_->text_kerning(true);
 }
 
@@ -56,17 +59,23 @@ render_fps(RenderContext const& ctx, FrameBufferObject& target,
 
     target.bind(ctx);
 
-    scm::math::mat4f fs_projection = scm::math::make_ortho_matrix(
-                                      0.0f, static_cast<float>(target.width()),
-                                      0.0f, static_cast<float>(target.height()),
-                                      -1.0f, 1.0f);
+    math::mat4 fs_projection = scm::math::make_ortho_matrix(
+                                  0.0f, static_cast<float>(target.width()),
+                                  0.0f, static_cast<float>(target.height()),
+                                  -1.0f, 1.0f);
 
     text_renderer_->projection_matrix(fs_projection);
 
-    frame_counter_text_->text_string("Application FPS: " + string_utils::to_string(application_fps) + "\n" + "Rendering FPS: " + string_utils::to_string(rendering_fps));
+    frame_counter_text_->text_string("Application FPS: "
+                            + string_utils::to_string(application_fps)
+                            + "\nRendering FPS: "
+                            + string_utils::to_string(rendering_fps));
 
-    scm::math::vec2i text_ur = scm::math::vec2i(40, target.height() - frame_counter_text_->text_bounding_box().y + 10);
-    text_renderer_->draw_outlined(ctx.render_context, text_ur, frame_counter_text_);
+    math::vec2i text_ur = math::vec2i(40, target.height()
+                            - frame_counter_text_->text_bounding_box().y + 10);
+
+    text_renderer_->draw_outlined(
+                            ctx.render_context, text_ur, frame_counter_text_);
 
     target.unbind(ctx);
 }

@@ -17,10 +17,13 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Definition of the Render class.
+/// \brief Definition of the RenderClient class.
 ////////////////////////////////////////////////////////////////////////////////
+
+// class header
 #include "traverser/RenderClient.hpp"
 
+// guacamole headers
 #include "scenegraph/SceneGraph.hpp"
 #include "renderer/RenderPipeline.hpp"
 #include "utils/Timer.hpp"
@@ -28,7 +31,10 @@
 
 namespace gua {
 
-RenderClient::RenderClient(RenderPipeline* pipeline):
+////////////////////////////////////////////////////////////////////////////////
+
+RenderClient::
+RenderClient(RenderPipeline* pipeline):
     draw_thread_(NULL),
     render_pipeline_(pipeline),
     graph_copy_(),
@@ -39,14 +45,22 @@ RenderClient::RenderClient(RenderPipeline* pipeline):
     render_mutex_(),
     render_condition_() {}
 
-RenderClient::~RenderClient() {
+////////////////////////////////////////////////////////////////////////////////
+
+RenderClient::
+~RenderClient() {
+
     if (draw_thread_) {
         draw_thread_->detach();
         delete draw_thread_;
     }
 }
 
-void RenderClient::queue_draw(SceneGraph const* graph) {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderClient::
+queue_draw(SceneGraph const* graph) {
+
     if(!draw_thread_) {
         application_timer_.start();
         rendering_timer_.start();
@@ -73,11 +87,16 @@ void RenderClient::queue_draw(SceneGraph const* graph) {
     }
 }
 
-void RenderClient::draw_loop() {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderClient::
+draw_loop() {
+
     while (true) {
 
         // render
-        render_pipeline_->process(&graph_copy_, application_fps_, rendering_fps_);
+        render_pipeline_->process(
+                                &graph_copy_, application_fps_, rendering_fps_);
 
         // lock rendering
         std::unique_lock<std::mutex> lock(render_mutex_);
@@ -94,6 +113,8 @@ void RenderClient::draw_loop() {
         render_condition_.wait(lock);
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

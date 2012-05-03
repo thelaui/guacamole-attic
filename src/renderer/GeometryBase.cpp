@@ -20,10 +20,13 @@
 /// \brief Definition of the GeometryBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/GeometryBase.hpp"
 
+// guacamole headers
 #include "utils/Directory.hpp"
 
+// external headers
 #include <sstream>
 
 namespace gua {

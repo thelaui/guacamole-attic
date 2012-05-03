@@ -17,12 +17,16 @@
 // this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class to easily load, bind and undbind textures.
+/// \brief Definition of the WarpMatrix class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/WarpMatrix.hpp"
+
+// guacamole headers
 #include "utils/debug.hpp"
 
+// external headers
 #include <fstream>
 
 namespace gua {
@@ -54,8 +58,8 @@ WarpMatrix(std::string const& file_name):
 
         file.close();
     } else {
-        WARNING ("Unable to load Warpmatrix! File %s does \
-                 not exist.", file_name.c_str());
+        WARNING ("Unable to load Warpmatrix! File %s does "
+                 "not exist.", file_name.c_str());
     }
 }
 

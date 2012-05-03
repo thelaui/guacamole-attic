@@ -1,4 +1,3 @@
-
 ////////////////////////////////////////////////////////////////////////////////
 // guacamole - an interesting scenegraph implementation
 //
@@ -18,11 +17,13 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the RenderBackend class.
+/// \brief Definition of the LightInformation class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/LightInformation.hpp"
 
+// guacamole headers
 #include "utils/string_utils.hpp"
 
 namespace gua {
