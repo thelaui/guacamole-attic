@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -25,7 +26,6 @@
 
 // guacamole headers
 #include "renderer/RenderContext.hpp"
-#include "renderer/glInclude.hpp"
 #include "utils/debug.hpp"
 
 namespace gua {

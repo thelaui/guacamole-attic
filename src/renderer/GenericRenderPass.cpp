@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -124,19 +125,19 @@ create_buffer(std::map<std::string, std::shared_ptr<Texture>>& buffer_store,
         && pipeline_->get_stereo_mode() == SIDE_BY_SIDE) width *= 0.5;
 
     for (auto& description: color_buffer_descriptions_) {
-        Texture* new_buffer(new Texture(width, height, description.format));
+        Texture* new_buffer(new Texture(width, height, description.format_));
 
-        buffer_store[description.name] = std::shared_ptr<Texture>(new_buffer);
+        buffer_store[description.name_] = std::shared_ptr<Texture>(new_buffer);
 
-        fbo.attach_color_buffer(pipeline_->get_context(), description.location,
+        fbo.attach_color_buffer(pipeline_->get_context(), description.location_,
                                 *new_buffer);
     }
 
-    if (depth_stencil_buffer_description_.name != "") {
+    if (depth_stencil_buffer_description_.name_ != "") {
         Texture* new_buffer(new Texture(width, height,
-                                     depth_stencil_buffer_description_.format));
+                                     depth_stencil_buffer_description_.format_));
 
-        buffer_store[depth_stencil_buffer_description_.name] =
+        buffer_store[depth_stencil_buffer_description_.name_] =
                                            std::shared_ptr<Texture>(new_buffer);
 
         fbo.attach_depth_stencil_buffer(pipeline_->get_context(), *new_buffer);

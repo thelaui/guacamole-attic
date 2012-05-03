@@ -78,10 +78,8 @@
 		<Unit filename="include/renderer/TextRenderer.hpp" />
 		<Unit filename="include/renderer/Texture.hpp" />
 		<Unit filename="include/renderer/TextureBase.hpp" />
-		<Unit filename="include/renderer/Uniform.hpp" />
 		<Unit filename="include/renderer/WarpMatrix.hpp" />
 		<Unit filename="include/renderer/enums.hpp" />
-		<Unit filename="include/renderer/glInclude.hpp" />
 		<Unit filename="include/traverser/CameraNode.hpp" />
 		<Unit filename="include/traverser/GeometryNode.hpp" />
 		<Unit filename="include/traverser/LightNode.hpp" />

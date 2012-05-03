@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -29,23 +30,23 @@
 namespace gua {
 
 struct ColorBufferDescription {
-    ColorBufferDescription(std::string const& n, unsigned loc,
-                           scm::gl::data_format form = scm::gl::data_format(scm::gl::FORMAT_RGB_16F)):
-                      name(n),
-                      location(loc),
-                      format(form) {}
-    std::string name;
-    unsigned location;
-    scm::gl::data_format format;
+    ColorBufferDescription(std::string const& name, unsigned location,
+                           scm::gl::data_format format = scm::gl::data_format(scm::gl::FORMAT_RGB_16F)):
+                      name_(name),
+                      location_(location),
+                      format_(format) {}
+    std::string name_;
+    unsigned location_;
+    scm::gl::data_format format_;
 };
 
 struct DepthStencilBufferDescription {
-    DepthStencilBufferDescription(std::string const& n,
-                      scm::gl::data_format form = scm::gl::data_format(scm::gl::FORMAT_D16)):
-                      name(n),
-                      format(form) {}
-    std::string name;
-    scm::gl::data_format format;
+    DepthStencilBufferDescription(std::string const& name,
+                      scm::gl::data_format format = scm::gl::data_format(scm::gl::FORMAT_D16)):
+                      name_(name),
+                      format_(format) {}
+    std::string name_;
+    scm::gl::data_format format_;
 };
 
 }
