@@ -32,57 +32,102 @@
 
 namespace gua {
 
+////////////////////////////////////////////////////////////////////////////////
 
-RenderPipeline::RenderPipeline(RenderWindow::Description const& window):
+RenderPipeline::
+RenderPipeline(RenderWindow::Description const& window):
+
     window_(NULL),
     window_description_(window),
     passes_(),
     current_graph_(NULL),
     application_fps_(0.f), rendering_fps_(0.f) {}
 
-RenderPipeline::~RenderPipeline() {
+////////////////////////////////////////////////////////////////////////////////
+
+RenderPipeline::
+~RenderPipeline() {
+
     if(window_)
         delete window_;
 }
 
-void RenderPipeline::add_render_pass(GenericRenderPass* pass) {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPipeline::
+add_render_pass(GenericRenderPass* pass) {
+
     pass->set_pipeline(this);
     passes_[pass->get_name()] = pass;
 }
 
-GenericRenderPass* RenderPipeline::get_render_pass(std::string const& pass_name) {
+////////////////////////////////////////////////////////////////////////////////
+
+GenericRenderPass* RenderPipeline::
+get_render_pass(std::string const& pass_name) {
+
     return passes_[pass_name];
 }
 
-SceneGraph const* RenderPipeline::get_current_graph() const {
+////////////////////////////////////////////////////////////////////////////////
+
+SceneGraph const* RenderPipeline::
+get_current_graph() const {
+
     return current_graph_;
 }
 
-RenderContext const& RenderPipeline::get_context() const {
+////////////////////////////////////////////////////////////////////////////////
+
+RenderContext const& RenderPipeline::
+get_context() const {
+
     if (!window_)
-        ERROR("Failed to return Context, the RenderWindow has not been initialized yet!");
+        ERROR("Failed to return Context, the RenderWindow has not been \
+              initialized yet!");
 
     return window_->get_context();
 }
 
-void RenderPipeline::set_final_buffer(std::string const& pass_name, std::string const& buffer_name) {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPipeline::
+set_final_buffer(std::string const& pass_name,
+                 std::string const& buffer_name) {
+
     final_pass_ = pass_name;
     final_buffer_ = buffer_name;
 }
 
-StereoMode RenderPipeline::get_stereo_mode() const {
+////////////////////////////////////////////////////////////////////////////////
+
+StereoMode RenderPipeline::
+get_stereo_mode() const {
+
     return window_description_.stereo_mode;
 }
 
-float RenderPipeline::get_application_fps() const {
+////////////////////////////////////////////////////////////////////////////////
+
+float RenderPipeline::
+get_application_fps() const {
+
     return application_fps_;
 }
 
-float RenderPipeline::get_rendering_fps() const {
+////////////////////////////////////////////////////////////////////////////////
+
+float RenderPipeline::
+get_rendering_fps() const {
+
     return rendering_fps_;
 }
 
-void RenderPipeline::process(SceneGraph* graph, float application_fps, float rendering_fps) {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPipeline::
+process(SceneGraph* graph, float application_fps, float rendering_fps) {
+
     current_graph_ = graph;
     application_fps_ = application_fps;
     rendering_fps_ = rendering_fps;
@@ -95,15 +140,15 @@ void RenderPipeline::process(SceneGraph* graph, float application_fps, float ren
     window_->set_active(true);
     window_->start_frame();
 
-    switch (window_description_.stereo_mode) {
-        case MONO:
-            window_->display_mono(passes_[final_pass_]->get_buffer(final_buffer_, CENTER, true));
-            break;
-        default:
-            window_->display_stereo(passes_[final_pass_]->get_buffer(final_buffer_, LEFT, true),
-                                    passes_[final_pass_]->get_buffer(final_buffer_, RIGHT, true),
-                                    window_description_.stereo_mode);
-            break;
+    if (window_description_.stereo_mode == MONO) {
+        window_->display_mono(passes_[final_pass_]->get_buffer(final_buffer_,
+                                                               CENTER, true));
+    } else {
+        window_->display_stereo(passes_[final_pass_]->get_buffer(final_buffer_,
+                                                               LEFT, true),
+                                passes_[final_pass_]->get_buffer(final_buffer_,
+                                                               RIGHT, true),
+                                window_description_.stereo_mode);
     }
 
     window_->finish_frame();
@@ -112,10 +157,16 @@ void RenderPipeline::process(SceneGraph* graph, float application_fps, float ren
         pass.second->flush();
 }
 
-void RenderPipeline::create_buffers() {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPipeline::
+create_buffers() {
+
     for (auto& pass: passes_)
         pass.second->create_buffers(window_description_.stereo_mode);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

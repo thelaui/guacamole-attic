@@ -42,25 +42,38 @@ namespace {
 
 namespace gua {
 
-Mesh::Mesh():
+////////////////////////////////////////////////////////////////////////////////
+
+Mesh::
+Mesh():
+
     vertices_(),
     indices_(),
     vertex_array_(),
     upload_mutex_(),
     mesh_(NULL) {}
 
-Mesh::Mesh( aiMesh* mesh ):
+////////////////////////////////////////////////////////////////////////////////
+
+Mesh::
+Mesh( aiMesh* mesh ):
+
     vertices_(),
     indices_(),
     vertex_array_(),
     upload_mutex_(),
     mesh_(mesh) {}
 
-Mesh::~Mesh() {
+////////////////////////////////////////////////////////////////////////////////
 
-}
+Mesh::
+~Mesh() {}
 
-void Mesh::upload_to(RenderContext const& context) const {
+////////////////////////////////////////////////////////////////////////////////
+
+void Mesh::
+upload_to(RenderContext const& ctx) const {
+
     if (!mesh_->HasPositions()) {
         WARNING("Unable to load Mesh! Has no vertex data.");
         return;
@@ -68,15 +81,20 @@ void Mesh::upload_to(RenderContext const& context) const {
 
     std::unique_lock<std::mutex> lock(upload_mutex_);
 
-    if (vertices_.size() <= context.id) {
-        vertices_.resize(context.id+1);
-        indices_.resize(context.id+1);
-        vertex_array_.resize(context.id+1);
+    if (vertices_.size() <= ctx.id) {
+        vertices_.resize(ctx.id+1);
+        indices_.resize(ctx.id+1);
+        vertex_array_.resize(ctx.id+1);
     }
 
-    vertices_[context.id] = context.render_device->create_buffer(scm::gl::BIND_VERTEX_BUFFER, scm::gl::USAGE_STATIC_DRAW, mesh_->mNumVertices * sizeof(Vertex), 0);
+    vertices_[ctx.id] = ctx.render_device->create_buffer(
+                                    scm::gl::BIND_VERTEX_BUFFER,
+                                    scm::gl::USAGE_STATIC_DRAW,
+                                    mesh_->mNumVertices * sizeof(Vertex), 0);
 
-    Vertex* data = static_cast<Vertex*>(context.render_context->map_buffer(vertices_[context.id], scm::gl::ACCESS_WRITE_INVALIDATE_BUFFER));
+    Vertex* data(static_cast<Vertex*>(ctx.render_context->map_buffer(
+                                     vertices_[ctx.id],
+                                     scm::gl::ACCESS_WRITE_INVALIDATE_BUFFER)));
 
     for (unsigned v(0); v < mesh_->mNumVertices; ++v) {
         data[v].pos = scm::math::vec3(mesh_->mVertices[v].x,
@@ -102,6 +120,7 @@ void Mesh::upload_to(RenderContext const& context) const {
             data[v].tangent = scm::math::vec3(mesh_->mTangents[v].x,
                                               mesh_->mTangents[v].y,
                                               mesh_->mTangents[v].z);
+
             data[v].bitangent = scm::math::vec3(mesh_->mBitangents[v].x,
                                               mesh_->mBitangents[v].y,
                                               mesh_->mBitangents[v].z);
@@ -111,7 +130,7 @@ void Mesh::upload_to(RenderContext const& context) const {
         }
     }
 
-    context.render_context->unmap_buffer(vertices_[context.id]);
+    ctx.render_context->unmap_buffer(vertices_[ctx.id]);
 
     std::vector<unsigned> index_array(mesh_->mNumFaces * 3);
 
@@ -123,33 +142,45 @@ void Mesh::upload_to(RenderContext const& context) const {
         index_array[t*3+2] = face->mIndices[2];
     }
 
-    indices_[context.id] = context.render_device->create_buffer(scm::gl::BIND_INDEX_BUFFER, scm::gl::USAGE_STATIC_DRAW,
-                                                                mesh_->mNumFaces * 3 * sizeof(unsigned), &index_array[0]);
+    indices_[ctx.id] = ctx.render_device->create_buffer(
+                                      scm::gl::BIND_INDEX_BUFFER,
+                                      scm::gl::USAGE_STATIC_DRAW,
+                                      mesh_->mNumFaces * 3 * sizeof(unsigned),
+                                      &index_array[0]);
 
-    vertex_array_[context.id] = context.render_device->create_vertex_array(scm::gl::vertex_format(0, 0, scm::gl::TYPE_VEC3F, sizeof(Vertex))
-                                                                                        (0, 1, scm::gl::TYPE_VEC2F, sizeof(Vertex))
-                                                                                        (0, 2, scm::gl::TYPE_VEC3F, sizeof(Vertex))
-                                                                                        (0, 3, scm::gl::TYPE_VEC3F, sizeof(Vertex))
-                                                                                        (0, 4, scm::gl::TYPE_VEC3F, sizeof(Vertex)),
-                                                                                        {vertices_[context.id]});
+    vertex_array_[ctx.id] = ctx.render_device->create_vertex_array(
+             scm::gl::vertex_format(0, 0, scm::gl::TYPE_VEC3F, sizeof(Vertex))
+                                   (0, 1, scm::gl::TYPE_VEC2F, sizeof(Vertex))
+                                   (0, 2, scm::gl::TYPE_VEC3F, sizeof(Vertex))
+                                   (0, 3, scm::gl::TYPE_VEC3F, sizeof(Vertex))
+                                   (0, 4, scm::gl::TYPE_VEC3F, sizeof(Vertex)),
+                                   {vertices_[ctx.id]});
 
 }
 
-void Mesh::draw(RenderContext const& context) const {
+////////////////////////////////////////////////////////////////////////////////
+
+void Mesh::
+draw(RenderContext const& ctx) const {
+
     // upload to GPU if neccessary
-    if (vertices_.size() <= context.id || vertices_[context.id] == NULL) {
-        upload_to(context);
+    if (vertices_.size() <= ctx.id || vertices_[ctx.id] == NULL) {
+        upload_to(ctx);
     }
 
-    scm::gl::context_vertex_input_guard vig(context.render_context);
+    scm::gl::context_vertex_input_guard vig(ctx.render_context);
 
-    context.render_context->bind_vertex_array(vertex_array_[context.id]);
+    ctx.render_context->bind_vertex_array(vertex_array_[ctx.id]);
 
-    context.render_context->bind_index_buffer(indices_[context.id], scm::gl::PRIMITIVE_TRIANGLE_LIST, scm::gl::TYPE_UINT);
+    ctx.render_context->bind_index_buffer(indices_[ctx.id],
+                                          scm::gl::PRIMITIVE_TRIANGLE_LIST,
+                                          scm::gl::TYPE_UINT);
 
-    context.render_context->apply();
-    context.render_context->draw_elements(mesh_->mNumFaces*3);
+    ctx.render_context->apply();
+    ctx.render_context->draw_elements(mesh_->mNumFaces*3);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

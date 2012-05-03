@@ -34,11 +34,17 @@
 
 namespace gua {
 
-Geometry::Geometry():
+Geometry::
+Geometry():
+
     meshes_(),
     importer_(NULL) {}
 
-Geometry::Geometry(std::string const& file_name):
+////////////////////////////////////////////////////////////////////////////////
+
+Geometry::
+Geometry(std::string const& file_name):
+
     meshes_(),
     importer_(NULL) {
 
@@ -46,32 +52,35 @@ Geometry::Geometry(std::string const& file_name):
 
     if (file.is_valid()) {
         importer_ = new Assimp::Importer();
-        aiScene const* scene = importer_->ReadFile(file_name, aiProcessPreset_TargetRealtime_Quality | aiProcess_CalcTangentSpace );
+        aiScene const* scene(importer_->ReadFile(file_name,
+                                          aiProcessPreset_TargetRealtime_Quality
+                                          | aiProcess_CalcTangentSpace ));
 
         meshes_ = std::vector<Mesh*>(scene->mNumMeshes);
 
-        for (unsigned int n = 0; n < scene->mNumMeshes; ++n) {
+        for (unsigned int n = 0; n < scene->mNumMeshes; ++n)
             meshes_[n] = new Mesh(scene->mMeshes[n]);
-        }
+
     } else {
-        WARNING("Failed to load object \"%s\": File does not exist!", file_name.c_str());
+        WARNING("Failed to load object \"%s\": File does not exist!",
+                file_name.c_str());
     }
 
 }
 
-Geometry::~Geometry() {
-    for (auto mesh: meshes_)
-        delete mesh;
-    if (importer_)
-        delete importer_;
-}
+////////////////////////////////////////////////////////////////////////////////
 
-Geometry::Geometry(char const* buffer_name, unsigned buffer_size):
+Geometry::
+Geometry(char const* buffer_name, unsigned buffer_size):
+
     meshes_(),
     importer_(NULL) {
 
     importer_ = new Assimp::Importer();
-    aiScene const* scene = importer_->ReadFileFromMemory(buffer_name, buffer_size, aiProcessPreset_TargetRealtime_Quality | aiProcess_CalcTangentSpace);
+    aiScene const* scene(importer_->ReadFileFromMemory(
+                                          buffer_name, buffer_size,
+                                          aiProcessPreset_TargetRealtime_Quality
+                                          | aiProcess_CalcTangentSpace));
 
     meshes_ = std::vector<Mesh*>(scene->mNumMeshes);
 
@@ -80,9 +89,26 @@ Geometry::Geometry(char const* buffer_name, unsigned buffer_size):
     }
 }
 
-void Geometry::draw(RenderContext const& context) const {
+////////////////////////////////////////////////////////////////////////////////
+
+Geometry::
+~Geometry() {
+
+    for (auto mesh: meshes_)
+        delete mesh;
+    if (importer_)
+        delete importer_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void Geometry::
+draw(RenderContext const& context) const {
+
     for (auto& mesh: meshes_)
         mesh->draw(context);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

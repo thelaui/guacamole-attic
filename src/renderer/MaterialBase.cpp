@@ -28,20 +28,28 @@
 
 namespace gua {
 
-void MaterialBase::load_materials_from(std::string const& path_to_materials) {
-    gua::Directory directory(path_to_materials);
+////////////////////////////////////////////////////////////////////////////////
 
-    std::stringstream content(directory.get_content());
+void MaterialBase::
+load_materials_from(std::string const& path_to_materials) {
 
+    gua::Directory dir(path_to_materials);
+    std::stringstream content(dir.get_content());
     std::string parse_string;
+
     while (content >> parse_string) {
         unsigned suffix_pos(parse_string.find(".gmd"));
+
         if(parse_string.length() - suffix_pos == 4) {
+            auto mat(new Material(dir.get_directory_name() + parse_string));
+
             instance()->add(parse_string.substr(0, suffix_pos),
-                            std::shared_ptr<Material>(new Material(directory.get_directory_name() + parse_string)));
+                            std::shared_ptr<Material>(mat));
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

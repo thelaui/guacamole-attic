@@ -27,26 +27,41 @@
 
 namespace gua {
 
-void LightInformation::add_block_include_string(RenderContext const& context) {
-    if (!context.render_device->add_include_string(shader_include_path_, shader_include_src_)) {
+////////////////////////////////////////////////////////////////////////////////
+
+void LightInformation::
+add_block_include_string(RenderContext const& ctx) {
+
+    if (!ctx.render_device->add_include_string(shader_include_path_,
+                                               shader_include_src_)) {
+
         WARNING("Error adding light information block include string.");
     }
 }
 
-const std::string LightInformation::shader_include_path_ = "/gua/LightInformation.glslh";
-const std::string LightInformation::shader_include_src_ =   " \
-                #ifndef GUA_LIGHT_INFORMATION_INCLUDED      \n\
-                #define GUA_LIGHT_INFORMATION_INCLUDED      \n\
-                                                            \n\
-                layout(std140, column_major, binding=0)     \n\
-                uniform GuaLightInformation {               \n\
-                    vec4 light_count;                       \n\
-                    vec4 position[" + string_utils::to_string(GUA_MAX_LIGHT_COUNT) + "];                          \n\
-                    vec4 color_radius[" + string_utils::to_string(GUA_MAX_LIGHT_COUNT) + "];                             \n\
-                } gua_light_information;                   \n\
-                uniform int gua_light_count;                \n\
-                                                            \n\
-                #endif // GUA_LIGHT_INFORMATION_INCLUDED    \n";
+////////////////////////////////////////////////////////////////////////////////
+
+const std::string LightInformation::
+shader_include_path_ = "/gua/LightInformation.glslh";
+
+////////////////////////////////////////////////////////////////////////////////
+
+const std::string LightInformation::
+shader_include_src_ =   " \
+    #ifndef GUA_LIGHT_INFORMATION_INCLUDED                                  \n\
+    #define GUA_LIGHT_INFORMATION_INCLUDED                                  \n\
+                                                                            \n\
+    layout(std140, column_major, binding=0)                                 \n\
+    uniform GuaLightInformation {                                           \n\
+        vec4 light_count;                                                   \n\
+        vec4 position["+string_utils::to_string(GUA_MAX_LIGHT_COUNT)+"];    \n\
+        vec4 color_radius["+string_utils::to_string(GUA_MAX_LIGHT_COUNT)+"];\n\
+    } gua_light_information;                                                \n\
+    uniform int gua_light_count;                                            \n\
+                                                                            \n\
+    #endif // GUA_LIGHT_INFORMATION_INCLUDED                                \n";
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

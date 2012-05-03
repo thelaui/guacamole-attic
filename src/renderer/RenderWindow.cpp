@@ -34,9 +34,15 @@
 
 namespace gua {
 
+////////////////////////////////////////////////////////////////////////////////
+
 unsigned RenderWindow::last_context_id_ = 0;
 
-RenderWindow::RenderWindow( Description const& description ) throw (std::string):
+////////////////////////////////////////////////////////////////////////////////
+
+RenderWindow::
+RenderWindow(Description const& description) throw (std::string):
+
     fullscreen_shader_(),
     fullscreen_quad_(),
     depth_stencil_state_(),
@@ -48,52 +54,77 @@ RenderWindow::RenderWindow( Description const& description ) throw (std::string)
     warpBL_(NULL) {
 
     if (description.warp_matrices_path == "") {
-        fullscreen_shader_.create_from_sources(STEREO_VERTEX_SHADER.c_str(), STEREO_FRAGMENT_SHADER.c_str());
+        fullscreen_shader_.create_from_sources(
+                                STEREO_VERTEX_SHADER.c_str(),
+                                STEREO_FRAGMENT_SHADER.c_str());
     } else {
+        warpRR_ = new WarpMatrix(
+                        description.warp_matrices_path + "/dlp_6_warp_P4.warp");
+
+        warpGR_ = new WarpMatrix(
+                        description.warp_matrices_path + "/dlp_6_warp_P5.warp");
+
+        warpBR_ = new WarpMatrix(
+                        description.warp_matrices_path + "/dlp_6_warp_P6.warp");
+
+        warpRL_ = new WarpMatrix(
+                        description.warp_matrices_path + "/dlp_6_warp_P1.warp");
+
+        warpGL_ = new WarpMatrix(
+                        description.warp_matrices_path + "/dlp_6_warp_P2.warp");
+
+        warpBL_ = new WarpMatrix(
+                        description.warp_matrices_path + "/dlp_6_warp_P3.warp");
 
 
-        warpRR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P4.warp");
-        warpGR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P5.warp");
-        warpBR_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P6.warp");
-        warpRL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P1.warp");
-        warpGL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P2.warp");
-        warpBL_ = new WarpMatrix(description.warp_matrices_path + "/dlp_6_warp_P3.warp");
-
-        fullscreen_shader_.create_from_sources(STEREO_VERTEX_SHADER.c_str(), STEREO_FRAGMENT_SHADER_WARPED.c_str());
+        fullscreen_shader_.create_from_sources(
+                                STEREO_VERTEX_SHADER.c_str(),
+                                STEREO_FRAGMENT_SHADER_WARPED.c_str());
     }
 
-    scm::gl::wm::surface::format_desc window_format(scm::gl::FORMAT_RGBA_8,
-                                              scm::gl::FORMAT_D24_S8,
-                                              true /*double_buffer*/,
-                                              false /*quad_buffer*/);
-    scm::gl::wm::context::attribute_desc context_attribs(4, //SCM_GL_CORE_OPENGL_VERSION / 100,
-                                                2, //SCM_GL_CORE_OPENGL_VERSION / 10 % 10,
-                                                false /*compatibility*/,
-                                                false /*debug*/,
-                                                false /*forward*/);
+    scm::gl::wm::surface::format_desc window_format(
+                        scm::gl::FORMAT_RGBA_8, scm::gl::FORMAT_D24_S8,
+                        true, false);
 
-    ctx_.display = scm::gl::wm::display_ptr(new scm::gl::wm::display(description.display));
-    ctx_.window = scm::gl::wm::window_ptr (new scm::gl::wm::window(ctx_.display, 0, description.title,
-                                          scm::math::vec2i(0, 0), scm::math::vec2ui(description.width, description.height),
-                                          window_format));
-    ctx_.context = scm::gl::wm::context_ptr(new scm::gl::wm::context(ctx_.window, context_attribs));
+    scm::gl::wm::context::attribute_desc context_attribs(
+                        4, 2, false, false, false);
+
+    ctx_.display = scm::gl::wm::display_ptr(
+                        new scm::gl::wm::display(description.display));
+
+    ctx_.window = scm::gl::wm::window_ptr(
+                        new scm::gl::wm::window(
+                                ctx_.display, 0, description.title,
+                                math::vec2i(0, 0), math::vec2ui(
+                                                        description.width,
+                                                        description.height),
+                                window_format));
+
+    ctx_.context = scm::gl::wm::context_ptr(new scm::gl::wm::context(
+                                                 ctx_.window, context_attribs));
 
     ctx_.window->show();
 
     set_active(true);
 
-    ctx_.render_device = scm::gl::render_device_ptr(new scm::gl::render_device());
+    ctx_.render_device = scm::gl::render_device_ptr(
+                                new scm::gl::render_device());
+
     ctx_.render_context = ctx_.render_device->main_context();
 
     ctx_.width = description.width;
     ctx_.height = description.height;
     ctx_.id = last_context_id_++;
 
-    fullscreen_quad_ = scm::gl::quad_geometry_ptr(new scm::gl::quad_geometry(ctx_.render_device,
-                                                                             math::vec2(-1.f, -1.f),
-                                                                             math::vec2( 1.f,  1.f)));
+    fullscreen_quad_ = scm::gl::quad_geometry_ptr(
+                                new scm::gl::quad_geometry(
+                                                    ctx_.render_device,
+                                                    math::vec2(-1.f, -1.f),
+                                                    math::vec2( 1.f,  1.f)));
 
-    depth_stencil_state_ = ctx_.render_device->create_depth_stencil_state(false, false, scm::gl::COMPARISON_NEVER);
+    depth_stencil_state_ = ctx_.render_device->create_depth_stencil_state(
+                                                    false, false,
+                                                    scm::gl::COMPARISON_NEVER);
 
     LightInformation::add_block_include_string(ctx_);
 
@@ -103,7 +134,11 @@ RenderWindow::RenderWindow( Description const& description ) throw (std::string)
 
 }
 
-RenderWindow::~RenderWindow() {
+////////////////////////////////////////////////////////////////////////////////
+
+RenderWindow::
+~RenderWindow() {
+
     if (warpRR_) delete warpRR_;
     if (warpGR_) delete warpGR_;
     if (warpBR_) delete warpBR_;
@@ -112,29 +147,53 @@ RenderWindow::~RenderWindow() {
     if (warpBL_) delete warpBL_;
 }
 
-void RenderWindow::set_active(bool active) const {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderWindow::
+set_active(bool active) const {
+
     ctx_.context->make_current(ctx_.window, active);
 }
 
-void RenderWindow::start_frame() const {
-    ctx_.render_context->clear_default_color_buffer(scm::gl::FRAMEBUFFER_BACK, scm::math::vec4f(0.f, 0.f, 0.f, 1.0f));
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderWindow::
+start_frame() const {
+
+    ctx_.render_context->clear_default_color_buffer(
+            scm::gl::FRAMEBUFFER_BACK, scm::math::vec4f(0.f, 0.f, 0.f, 1.0f));
+
     ctx_.render_context->clear_default_depth_stencil_buffer();
 }
 
-void RenderWindow::finish_frame() const {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderWindow::
+finish_frame() const {
+
     set_active(true);
     ctx_.window->swap_buffers(0);
 }
 
-void RenderWindow::display_mono(std::shared_ptr<Texture> const& texture) {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderWindow::
+display_mono(std::shared_ptr<Texture> const& texture) {
+
     display_stereo(texture, texture, MONO);
 }
 
-void RenderWindow::display_stereo(std::shared_ptr<Texture> const& left_texture,
-                                  std::shared_ptr<Texture> const& right_texture,
-                                  StereoMode stereo_mode) {
+////////////////////////////////////////////////////////////////////////////////
 
-    ctx_.render_context->set_viewport(scm::gl::viewport(scm::math::vec2ui(0,0), scm::math::vec2ui(ctx_.width, ctx_.height)));
+void RenderWindow::
+display_stereo(std::shared_ptr<Texture> const& left_texture,
+               std::shared_ptr<Texture> const& right_texture,
+               StereoMode stereo_mode) {
+
+    ctx_.render_context->set_viewport(
+                            scm::gl::viewport(
+                                    math::vec2(0,0),
+                                    math::vec2(ctx_.width, ctx_.height)));
 
     fullscreen_shader_.use(ctx_);
 
@@ -157,9 +216,15 @@ void RenderWindow::display_stereo(std::shared_ptr<Texture> const& left_texture,
     fullscreen_shader_.unuse(ctx_);
 }
 
-RenderContext const& RenderWindow::get_context() const {
+////////////////////////////////////////////////////////////////////////////////
+
+RenderContext const& RenderWindow::
+get_context() const {
+
     return ctx_;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

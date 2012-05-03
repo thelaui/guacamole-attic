@@ -37,6 +37,10 @@ namespace gua {
         typedef scm::math::vec<int, 3> vec3i;
         typedef scm::math::vec<int, 2> vec2i;
 
+        typedef scm::math::vec<unsigned, 4> vec4ui;
+        typedef scm::math::vec<unsigned, 3> vec3ui;
+        typedef scm::math::vec<unsigned, 2> vec2ui;
+
         math::mat4 const compute_frustum(math::vec4 const& eye_position, math::mat4 const& screen_transform,
                                          float near_plane, float far_plane);
     }

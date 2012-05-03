@@ -32,36 +32,75 @@
 
 namespace gua {
 
-RenderPass::RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& render_mask,
-                       float width, float height, bool size_is_relative):
-    GenericRenderPass(name, camera, screen, render_mask, width, height, size_is_relative),
+////////////////////////////////////////////////////////////////////////////////
+
+RenderPass::
+RenderPass(std::string const& name, std::string const& camera,
+           std::string const& screen, std::string const& render_mask,
+           float width, float height, bool size_is_relative):
+
+    GenericRenderPass(name, camera, screen, render_mask,
+                      width, height, size_is_relative),
     inputs_(),
     texture_uniforms_(),
     float_uniforms_(),
     light_information_(NULL) {}
 
-RenderPass::~RenderPass() {
+////////////////////////////////////////////////////////////////////////////////
+
+RenderPass::
+~RenderPass() {
+
     if (light_information_) delete light_information_;
 }
 
-void RenderPass::set_input_buffer(std::string const& in_render_pass, std::string const& in_buffer,
-                                  std::string const& target_material, std::string const& target_uniform) {
-    inputs_[target_material][target_uniform] = std::make_pair(in_render_pass, in_buffer);
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPass::
+set_input_buffer(std::string const& in_render_pass,
+                 std::string const& in_buffer,
+                 std::string const& target_material,
+                std::string const& target_uniform) {
+
+    inputs_[target_material][target_uniform] = std::make_pair(in_render_pass,
+                                                              in_buffer);
 }
 
-void RenderPass::overwrite_uniform_float(std::string const& material, std::string const& uniform_name, float value) {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPass::
+overwrite_uniform_float(std::string const& material,
+                        std::string const& uniform_name, float value) {
+
     float_uniforms_[material][uniform_name] = value;
 }
 
-void RenderPass::overwrite_uniform_texture(std::string const& material, std::string const& uniform_name, std::shared_ptr<Texture> const& value) {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPass::
+overwrite_uniform_texture(std::string const& material,
+                          std::string const& uniform_name,
+                          std::shared_ptr<Texture> const& value) {
+
     texture_uniforms_[material][uniform_name] = value;
 }
 
-void RenderPass::overwrite_uniform_texture(std::string const& material, std::string const& uniform_name, std::string const& texture_name) {
-    texture_uniforms_[material][uniform_name] = TextureBase::instance()->get(texture_name);
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPass::
+overwrite_uniform_texture(std::string const& material,
+                          std::string const& uniform_name,
+                          std::string const& texture_name) {
+
+    texture_uniforms_[material][uniform_name] = TextureBase::instance()->
+                                                              get(texture_name);
 }
 
-std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
+////////////////////////////////////////////////////////////////////////////////
+
+std::shared_ptr<Texture> const& RenderPass::
+get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
+
     if (mode == CENTER && rendererd_center_eye_)
         return center_eye_buffers_[name];
 
@@ -80,13 +119,14 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
         if (material != inputs_.end()) {
             for (auto& uniform: material->second) {
                 overwrite_uniform_texture(material->first, uniform.first,
-                                          pipeline_->get_render_pass(uniform.second.first)->get_buffer(uniform.second.second, mode));
+                              pipeline_->get_render_pass(uniform.second.first)->
+                              get_buffer(uniform.second.second, mode));
             }
         }
     }
 
     OptimizedScene const& scene(optimizer.get_data());
-    RenderContext const& context(pipeline_->get_context());
+    RenderContext const& ctx(pipeline_->get_context());
 
     FrameBufferObject* fbo(NULL);
 
@@ -102,28 +142,36 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
             break;
     }
 
-    fbo->bind(context);
+    fbo->bind(ctx);
 
-    fbo->clear_color_buffers(context);
-    fbo->clear_depth_stencil_buffer(context);
+    fbo->clear_color_buffers(ctx);
+    fbo->clear_depth_stencil_buffer(ctx);
 
-    context.render_context->set_viewport(scm::gl::viewport(scm::math::vec2ui(0,0), scm::math::vec2ui(fbo->width(),fbo->height())));
+    ctx.render_context->set_viewport(scm::gl::viewport(math::vec2(0,0),
+                                                    math::vec2(fbo->width(),
+                                                               fbo->height())));
 
     auto camera_it(scene.cameras_.find(camera_));
     auto screen_it(scene.screens_.find(screen_));
 
-    if (camera_it != scene.cameras_.end() && screen_it != scene.screens_.end()) {
+    if (camera_it != scene.cameras_.end()
+        && screen_it != scene.screens_.end()) {
+
         auto camera(camera_it->second);
         auto screen(screen_it->second);
 
         math::mat4 camera_transform(camera.transform_);
         if (mode == LEFT) {
-            scm::math::translate(camera_transform,-camera.stereo_width_*0.5f, 0.f, 0.f);
+            scm::math::translate(camera_transform,
+                                 -camera.stereo_width_*0.5f, 0.f, 0.f);
         } else if (mode == RIGHT) {
-            scm::math::translate(camera_transform, camera.stereo_width_*0.5f, 0.f, 0.f);
+            scm::math::translate(camera_transform,
+                                 camera.stereo_width_*0.5f, 0.f, 0.f);
         }
 
-        auto projection(math::compute_frustum(camera_transform.column(3), screen.transform_, 0.1, 100000.f));
+        auto projection(math::compute_frustum(camera_transform.column(3),
+                                              screen.transform_,
+                                              0.1, 100000.f));
 
         math::mat4 view_transform(screen.transform_);
         view_transform[12] = 0.f;
@@ -131,8 +179,12 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
         view_transform[14] = 0.f;
         view_transform[15] = 1.f;
 
-        math::vec3 camera_position(camera_transform.column(3)[0], camera_transform.column(3)[1], camera_transform.column(3)[2]);
-        view_transform = scm::math::make_translation(camera_position) * view_transform;
+        math::vec3 camera_position(camera_transform.column(3)[0],
+                                   camera_transform.column(3)[1],
+                                   camera_transform.column(3)[2]);
+
+        view_transform = scm::math::make_translation(camera_position)
+                         * view_transform;
 
         math::mat4 view_matrix(scm::math::inverse(view_transform));
 
@@ -140,73 +192,106 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
         if (scene.lights_.size() > 0) {
 
             if (!light_information_) {
-                light_information_ = new scm::gl::uniform_block<LightInformation>(context.render_device);
+                light_information_ =
+                new scm::gl::uniform_block<LightInformation>(ctx.render_device);
             }
 
-            light_information_->begin_manipulation(context.render_context);
+            light_information_->begin_manipulation(ctx.render_context);
 
             LightInformation light;
 
-            light.light_count = math::vec4i(scene.lights_.size(), scene.lights_.size(), scene.lights_.size(), scene.lights_.size());
+            light.light_count = math::vec4i(scene.lights_.size(),
+                                            scene.lights_.size(),
+                                            scene.lights_.size(),
+                                            scene.lights_.size());
 
             for (unsigned i(0); i < scene.lights_.size(); ++i) {
 
                 math::mat4 transform(scene.lights_[i].transform);
 
                 // calc light radius and position
-                light.position[i] = math::vec4(transform[12], transform[13], transform[14], transform[15]);
-                float radius = scm::math::length(light.position[i] - transform * math::vec4(0.f, 0.f, 1.f, 1.f));
+                light.position[i] = math::vec4(transform[12], transform[13],
+                                               transform[14], transform[15]);
+                float radius = scm::math::length(light.position[i] - transform
+                                              * math::vec4(0.f, 0.f, 1.f, 1.f));
 
-                light.color_radius[i] = math::vec4(scene.lights_[i].color.r(), scene.lights_[i].color.g(), scene.lights_[i].color.b(), radius);
+                light.color_radius[i] = math::vec4(scene.lights_[i].color.r(),
+                                                   scene.lights_[i].color.g(),
+                                                   scene.lights_[i].color.b(),
+                                                   radius);
             }
 
             **light_information_ = light;
 
             light_information_->end_manipulation();
 
-            context.render_context->bind_uniform_buffer(light_information_->block_buffer(), 0);
+            ctx.render_context->bind_uniform_buffer(
+                                         light_information_->block_buffer(), 0);
         }
 
-        for (auto& geometry_core: scene.nodes_) {
+        for (auto& core: scene.nodes_) {
 
-            auto geometry = GeometryBase::instance()->get(geometry_core.geometry_);
-            auto material = MaterialBase::instance()->get(geometry_core.material_);
+            auto geometry = GeometryBase::instance()->get(core.geometry_);
+            auto material = MaterialBase::instance()->get(core.material_);
 
             if (material && geometry) {
-                material->use(context);
+                material->use(ctx);
 
-                if (float_uniforms_.find(geometry_core.material_) != float_uniforms_.end())
-                    for (auto val : float_uniforms_[geometry_core.material_])
-                        material->get_shader()->set_float(context, val.first, val.second);
+                if (float_uniforms_.find(core.material_)
+                    != float_uniforms_.end())  {
 
-                if (texture_uniforms_.find(geometry_core.material_) != texture_uniforms_.end())
-                    for (auto val : texture_uniforms_[geometry_core.material_])
-                        material->get_shader()->set_sampler2D(context, val.first, *val.second);
+                    for (auto val : float_uniforms_[core.material_])
+                        material->get_shader()->set_float(ctx, val.first,
+                                                          val.second);
+                }
 
-                material->get_shader()->set_mat4(context, "projection_matrix", projection);
-                material->get_shader()->set_mat4(context, "view_matrix", view_matrix);
-                material->get_shader()->set_mat4(context, "model_matrix", geometry_core.transform_);
-                material->get_shader()->set_mat4(context, "normal_matrix", scm::math::transpose(scm::math::inverse(geometry_core.transform_)));
+                if (texture_uniforms_.find(core.material_)
+                    != texture_uniforms_.end()) {
 
-                geometry->draw(context);
+                    for (auto val : texture_uniforms_[core.material_])
+                        material->get_shader()->set_sampler2D(ctx, val.first,
+                                                              *val.second);
+                }
 
-                material->unuse(context);
+                material->get_shader()->set_mat4(ctx, "projection_matrix",
+                                                 projection);
+
+                material->get_shader()->set_mat4(ctx, "view_matrix",
+                                                 view_matrix);
+
+                material->get_shader()->set_mat4(ctx, "model_matrix",
+                                                 core.transform_);
+
+                material->get_shader()->set_mat4(ctx, "normal_matrix",
+                                          scm::math::transpose(
+                                          scm::math::inverse(core.transform_)));
+
+                geometry->draw(ctx);
+
+                material->unuse(ctx);
 
             } else if (material) {
-                WARNING("Cannot render geometry \"%s\": Undefined geometry name!", geometry_core.geometry_.c_str());
+                WARNING("Cannot render geometry \"%s\": Undefined geometry \
+                        name!", core.geometry_.c_str());
+
             } else if (geometry) {
-                WARNING("Cannot render geometry \"%s\": Undefined material name: \"%s\"!", geometry_core.geometry_.c_str(), geometry_core.material_.c_str());
+                WARNING("Cannot render geometry \"%s\": Undefined material \
+                        name: \"%s\"!", core.geometry_.c_str(),
+                        core.material_.c_str());
+
             } else {
-                WARNING("Cannot render geometry \"%s\": Undefined geometry and material name: \"%s\"!", geometry_core.geometry_.c_str(), geometry_core.material_.c_str());
+                WARNING("Cannot render geometry \"%s\": Undefined geometry \
+                        and material name: \"%s\"!", core.geometry_.c_str(),
+                        core.material_.c_str());
             }
         }
 
         if (scene.lights_.size() > 0) {
-            context.render_context->reset_uniform_buffers();
+            ctx.render_context->reset_uniform_buffers();
         }
     }
 
-    fbo->unbind(context);
+    fbo->unbind(ctx);
 
 
     if (draw_fps) {
@@ -215,11 +300,17 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
             text_renderer_ = new TextRenderer(pipeline_->get_context());
 
         if (mode == CENTER) {
-            text_renderer_->render_fps(pipeline_->get_context(), center_eye_fbo_, pipeline_->get_application_fps(), pipeline_->get_rendering_fps());
+            text_renderer_->render_fps(pipeline_->get_context(), center_eye_fbo_,
+                                       pipeline_->get_application_fps(),
+                                       pipeline_->get_rendering_fps());
         } else if (mode == LEFT) {
-            text_renderer_->render_fps(pipeline_->get_context(), left_eye_fbo_, pipeline_->get_application_fps(), pipeline_->get_rendering_fps());
+            text_renderer_->render_fps(pipeline_->get_context(), left_eye_fbo_,
+                                       pipeline_->get_application_fps(),
+                                       pipeline_->get_rendering_fps());
         } else {
-            text_renderer_->render_fps(pipeline_->get_context(), right_eye_fbo_, pipeline_->get_application_fps(), pipeline_->get_rendering_fps());
+            text_renderer_->render_fps(pipeline_->get_context(), right_eye_fbo_,
+                                       pipeline_->get_application_fps(),
+                                       pipeline_->get_rendering_fps());
         }
     }
 
@@ -234,5 +325,7 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
         return right_eye_buffers_[name];
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

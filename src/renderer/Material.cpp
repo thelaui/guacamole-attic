@@ -34,7 +34,11 @@
 
 namespace gua {
 
-Material::Material():
+////////////////////////////////////////////////////////////////////////////////
+
+Material::
+Material():
+
     texture_uniforms_(),
     float_uniforms_(),
     int_uniforms_(),
@@ -46,7 +50,11 @@ Material::Material():
     rasterizer_state_(),
     depth_stencil_state_() {}
 
-Material::Material(std::string const& file_name):
+////////////////////////////////////////////////////////////////////////////////
+
+Material::
+Material(std::string const& file_name):
+
     texture_uniforms_(),
     float_uniforms_(),
     int_uniforms_(),
@@ -63,91 +71,143 @@ Material::Material(std::string const& file_name):
     if (file.is_valid()) {
         construct_from_file(file);
     } else {
-        WARNING("Failed to load material description \"%s\": File does not exist!", file_name.c_str());
+        WARNING("Failed to load material description \"%s\": \
+                File does not exist!", file_name.c_str());
     }
 }
 
-Material::~Material() {
+////////////////////////////////////////////////////////////////////////////////
+
+Material::
+~Material() {
+
     if (shader_)
         delete shader_;
 }
 
-void Material::use(RenderContext const& context) const {
+////////////////////////////////////////////////////////////////////////////////
+
+void Material::
+use(RenderContext const& ctx) const {
 
     if (!blend_state_)
-        blend_state_ = context.render_device->create_blend_state(blend_state_desc_);
-    context.render_context->set_blend_state(blend_state_);
+        blend_state_ = ctx.render_device->create_blend_state(blend_state_desc_);
+
+    ctx.render_context->set_blend_state(blend_state_);
 
     if (!rasterizer_state_)
-        rasterizer_state_ = context.render_device->create_rasterizer_state(rasterizer_state_desc_);
-    context.render_context->set_rasterizer_state(rasterizer_state_);
+        rasterizer_state_ = ctx.render_device->create_rasterizer_state(
+                                                        rasterizer_state_desc_);
+    ctx.render_context->set_rasterizer_state(rasterizer_state_);
 
     if (!depth_stencil_state_)
-        depth_stencil_state_ = context.render_device->create_depth_stencil_state(depth_stencil_state_desc_);
-    context.render_context->set_depth_stencil_state(depth_stencil_state_);
+        depth_stencil_state_ = ctx.render_device->create_depth_stencil_state(
+                                                     depth_stencil_state_desc_);
+    ctx.render_context->set_depth_stencil_state(depth_stencil_state_);
 
-    shader_->use(context);
+    shader_->use(ctx);
 
     for (auto val : float_uniforms_)
-        shader_->set_float(context, val.first, val.second);
+        shader_->set_float(ctx, val.first, val.second);
 
     for (auto val : int_uniforms_)
-        shader_->set_int(context, val.first, val.second);
+        shader_->set_int(ctx, val.first, val.second);
 
     for (auto val : texture_uniforms_)
         if (val.second != NULL)
-            shader_->set_sampler2D(context, val.first, *val.second);
+            shader_->set_sampler2D(ctx, val.first, *val.second);
 }
 
-void Material::unuse(RenderContext const& context) const {
-    shader_->unuse(context);
-    context.render_context->reset_state_objects();
+////////////////////////////////////////////////////////////////////////////////
+
+void Material::
+unuse(RenderContext const& ctx) const {
+
+    shader_->unuse(ctx);
+    ctx.render_context->reset_state_objects();
 
     for (auto val : texture_uniforms_)
         if (val.second != NULL)
-            val.second->unbind(context);
+            val.second->unbind(ctx);
 }
 
-void Material::set_uniform_float(std::string const& uniform_name, float value) {
+////////////////////////////////////////////////////////////////////////////////
+
+void Material::
+set_uniform_float(std::string const& uniform_name, float value) {
+
     float_uniforms_[uniform_name] = value;
 }
 
-void Material::set_uniform_int(std::string const& uniform_name, int value) {
+////////////////////////////////////////////////////////////////////////////////
+
+void Material::
+set_uniform_int(std::string const& uniform_name, int value) {
+
     int_uniforms_[uniform_name] = value;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 
-void Material::set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value) {
+void Material::
+set_uniform_texture(std::string const& uniform_name,
+                    std::shared_ptr<Texture> const& value) {
+
     texture_uniforms_[uniform_name] = value;
 }
 
-void Material::set_uniform_texture(std::string const& uniform_name, std::string const& texture_name) {
+////////////////////////////////////////////////////////////////////////////////
+
+void Material::
+set_uniform_texture(std::string const& uniform_name,
+                    std::string const& texture_name) {
+
     auto searched_tex(TextureBase::instance()->get(texture_name));
     if (searched_tex)
         texture_uniforms_[uniform_name] = searched_tex;
     else WARNING ("A texture with the name %s does not exist within the database!", texture_name.c_str());
 }
 
-void Material::set_blend_state(scm::gl::blend_state_desc const& blend_state_desc) {
+////////////////////////////////////////////////////////////////////////////////
+
+void Material::
+set_blend_state(scm::gl::blend_state_desc const& blend_state_desc) {
+
     blend_state_desc_ = blend_state_desc;
     blend_state_.reset();
 }
 
-void Material::set_rasterizer_state(scm::gl::rasterizer_state_desc const& rasterizer_state_desc) {
-    rasterizer_state_desc_ = rasterizer_state_desc;
+////////////////////////////////////////////////////////////////////////////////
+
+void Material::
+set_rasterizer_state(scm::gl::rasterizer_state_desc const& desc) {
+
+    rasterizer_state_desc_ = desc;
     rasterizer_state_.reset();
 }
 
-void Material::set_depth_stencil_state(scm::gl::depth_stencil_state_desc const& depth_stencil_state_desc) {
-    depth_stencil_state_desc_ = depth_stencil_state_desc;
+////////////////////////////////////////////////////////////////////////////////
+
+void Material::
+set_depth_stencil_state(scm::gl::depth_stencil_state_desc const& desc) {
+
+    depth_stencil_state_desc_ = desc;
     depth_stencil_state_.reset();
 }
 
-ShaderProgram* Material::get_shader() const {
+////////////////////////////////////////////////////////////////////////////////
+
+ShaderProgram* Material::
+get_shader() const {
+
     return shader_;
 }
 
-void Material::construct_from_file(TextFile const& file) {
+////////////////////////////////////////////////////////////////////////////////
+
+void Material::
+construct_from_file(TextFile const& file) {
+
     std::string content(file.get_content());
     std::stringstream parse_stream(content);
 
@@ -197,5 +257,7 @@ void Material::construct_from_file(TextFile const& file) {
     shader_ = new gua::ShaderProgram();
     shader_->create_from_files(vertex_shader, fragment_shader);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

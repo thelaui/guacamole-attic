@@ -28,22 +28,29 @@
 
 namespace gua {
 
-void GeometryBase::load_objects_from(std::string const& path_to_objects) {
+////////////////////////////////////////////////////////////////////////////////
 
-    gua::Directory directory(path_to_objects);
+void GeometryBase::
+load_objects_from(std::string const& path_to_objects) {
 
-    std::stringstream content(directory.get_content());
-
+    gua::Directory dir(path_to_objects);
+    std::stringstream content(dir.get_content());
     std::string parse_string;
+
     while (content >> parse_string) {
         unsigned suffix_pos(parse_string.find(".obj"));
+
         if(suffix_pos != std::string::npos) {
+            auto geo(new Geometry(dir.get_directory_name() + parse_string));
+
             instance()->add(parse_string.substr(0, suffix_pos),
-                            std::shared_ptr<Geometry>(new Geometry(directory.get_directory_name() + parse_string)));
+                            std::shared_ptr<Geometry>(geo));
         }
     }
 
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 
