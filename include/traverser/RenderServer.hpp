@@ -38,7 +38,6 @@ class RenderPipeline;
 /// \brief This class is used to provide a renderer frontend interface to the user.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
 class RenderServer {
     public:
 

@@ -57,28 +57,28 @@ RenderWindow(Description const& description) throw (std::string):
     warpGL_(NULL),
     warpBL_(NULL) {
 
-    if (description.warp_matrices_path == "") {
+    if (description.warp_matrices_path_ == "") {
         fullscreen_shader_.create_from_sources(
                                 STEREO_VERTEX_SHADER.c_str(),
                                 STEREO_FRAGMENT_SHADER.c_str());
     } else {
         warpRR_ = new WarpMatrix(
-                        description.warp_matrices_path + "/dlp_6_warp_P4.warp");
+                        description.warp_matrices_path_ + "/dlp_6_warp_P4.warp");
 
         warpGR_ = new WarpMatrix(
-                        description.warp_matrices_path + "/dlp_6_warp_P5.warp");
+                        description.warp_matrices_path_ + "/dlp_6_warp_P5.warp");
 
         warpBR_ = new WarpMatrix(
-                        description.warp_matrices_path + "/dlp_6_warp_P6.warp");
+                        description.warp_matrices_path_ + "/dlp_6_warp_P6.warp");
 
         warpRL_ = new WarpMatrix(
-                        description.warp_matrices_path + "/dlp_6_warp_P1.warp");
+                        description.warp_matrices_path_ + "/dlp_6_warp_P1.warp");
 
         warpGL_ = new WarpMatrix(
-                        description.warp_matrices_path + "/dlp_6_warp_P2.warp");
+                        description.warp_matrices_path_ + "/dlp_6_warp_P2.warp");
 
         warpBL_ = new WarpMatrix(
-                        description.warp_matrices_path + "/dlp_6_warp_P3.warp");
+                        description.warp_matrices_path_ + "/dlp_6_warp_P3.warp");
 
 
         fullscreen_shader_.create_from_sources(
@@ -94,14 +94,14 @@ RenderWindow(Description const& description) throw (std::string):
                         4, 2, false, false, false);
 
     ctx_.display = scm::gl::wm::display_ptr(
-                        new scm::gl::wm::display(description.display));
+                        new scm::gl::wm::display(description.display_));
 
     ctx_.window = scm::gl::wm::window_ptr(
                         new scm::gl::wm::window(
-                                ctx_.display, 0, description.title,
+                                ctx_.display, 0, description.title_,
                                 math::vec2i(0, 0), math::vec2ui(
-                                                        description.width,
-                                                        description.height),
+                                                        description.width_,
+                                                        description.height_),
                                 window_format));
 
     ctx_.context = scm::gl::wm::context_ptr(new scm::gl::wm::context(
@@ -116,8 +116,8 @@ RenderWindow(Description const& description) throw (std::string):
 
     ctx_.render_context = ctx_.render_device->main_context();
 
-    ctx_.width = description.width;
-    ctx_.height = description.height;
+    ctx_.width = description.width_;
+    ctx_.height = description.height_;
     ctx_.id = last_context_id_++;
 
     fullscreen_quad_ = scm::gl::quad_geometry_ptr(

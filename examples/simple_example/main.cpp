@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
     ape.scale(0.5, 0.5, 0.5);
     ape.translate(0, 1, 0);
 
-    auto lights = add_lights(graph, 64);
+    auto lights = add_lights(graph, 36);
 
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
     while (true) {
         renderer.queue_draw(&graph);
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
         double frame_time(timer.get_elapsed());
         time += frame_time;

@@ -35,7 +35,6 @@ class SceneGraph;
 /// \brief This class is used to convert the scengraph to a (opimized) sequence.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
 class Optimizer {
     public:
 
@@ -43,7 +42,6 @@ class Optimizer {
         ///\brief Constructor.
         ///
         /// This constructs an Optimizer.
-        ///
         ////////////////////////////////////////////////////////////////////////
         Optimizer();
 
@@ -51,7 +49,6 @@ class Optimizer {
         ///\brief Destructor.
         ///
         /// This destroys an Optimizer.
-        ///
         ////////////////////////////////////////////////////////////////////////
         virtual ~Optimizer();
 
@@ -60,8 +57,14 @@ class Optimizer {
         ///
         ///\param scene_graph          The SceneGraph to be processed.
         ////////////////////////////////////////////////////////////////////////
-        void check( SceneGraph const* scene_graph, RenderMask const& render_mask );
+        void check(SceneGraph const* scene_graph,
+                   RenderMask const& render_mask);
 
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Destructor.
+        ///
+        /// This destroys an Optimizer.
+        ////////////////////////////////////////////////////////////////////////
         OptimizedScene const& get_data() const;
 
     private:

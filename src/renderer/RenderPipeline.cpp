@@ -120,7 +120,7 @@ set_final_buffer(std::string const& pass_name,
 StereoMode RenderPipeline::
 get_stereo_mode() const {
 
-    return window_description_.stereo_mode;
+    return window_description_.stereo_mode_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -162,12 +162,12 @@ process(SceneGraph* graph, float application_fps, float rendering_fps) {
 
         auto pass(it->second);
 
-        if (window_description_.stereo_mode == MONO) {
+        if (window_description_.stereo_mode_ == MONO) {
             window_->display_mono(pass->get_buffer(final_buffer_,CENTER, true));
         } else {
             window_->display_stereo(pass->get_buffer(final_buffer_, LEFT, true),
                                     pass->get_buffer(final_buffer_,RIGHT, true),
-                                    window_description_.stereo_mode);
+                                    window_description_.stereo_mode_);
         }
     } else {
         WARNING("Failed to display buffer \"%s\" from pass \"%s\": A pass "
@@ -187,7 +187,7 @@ void RenderPipeline::
 create_buffers() {
 
     for (auto& pass: passes_)
-        pass.second->create_buffers(window_description_.stereo_mode);
+        pass.second->create_buffers(window_description_.stereo_mode_);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

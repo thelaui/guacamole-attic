@@ -25,8 +25,25 @@
 #define GUA_ENUMS_HPP
 
 namespace gua {
-    enum CameraMode { CENTER, LEFT, RIGHT };
-    enum StereoMode { MONO, SIDE_BY_SIDE, ANAGLYPH_RED_GREEN, ANAGLYPH_RED_CYAN };
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief A database for accessing data.
+    ///
+    ///
+    ////////////////////////////////////////////////////////////////////////////
+    enum CameraMode { CENTER,
+                       LEFT,
+                       RIGHT };
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief A database for accessing data.
+    ///
+    ///
+    ////////////////////////////////////////////////////////////////////////////
+    enum StereoMode { MONO,
+                      SIDE_BY_SIDE,
+                      ANAGLYPH_RED_GREEN,
+                      ANAGLYPH_RED_CYAN };
 }
 
 #endif // GUA_ENUMS_HPP

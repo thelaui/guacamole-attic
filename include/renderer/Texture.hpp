@@ -32,6 +32,7 @@
 #include <GL/glew.h>
 
 namespace gua {
+
 ////////////////////////////////////////////////////////////////////
 /// \brief A class representing a texture.
 ///
@@ -40,6 +41,7 @@ namespace gua {
 ////////////////////////////////////////////////////////////////////
 class Texture {
     public:
+
         ////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
@@ -54,8 +56,10 @@ class Texture {
         /// \param type The data type texture data is stored
         /// in.
         ////////////////////////////////////////////////////////////
-        Texture(unsigned width, unsigned height, scm::gl::data_format color_format = scm::gl::FORMAT_RGB_32F,
-                scm::gl::sampler_state_desc const& state_descripton = scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR));
+        Texture(unsigned width, unsigned height,
+                scm::gl::data_format color_format = scm::gl::FORMAT_RGB_32F,
+                scm::gl::sampler_state_desc const& state_descripton
+                = scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR));
 
         ////////////////////////////////////////////////////////////
         /// \brief Constructor.
@@ -65,7 +69,10 @@ class Texture {
         /// \param file The file which contains the texture data
         ////////////////////////////////////////////////////////////
         Texture(std::string const& file,
-                scm::gl::sampler_state_desc const& state_descripton = scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR, scm::gl::WRAP_REPEAT, scm::gl::WRAP_REPEAT));
+                scm::gl::sampler_state_desc const& state_descripton
+                        = scm::gl::sampler_state_desc(
+                                scm::gl::FILTER_MIN_MAG_LINEAR,
+                                scm::gl::WRAP_REPEAT, scm::gl::WRAP_REPEAT));
 
         ////////////////////////////////////////////////////////////
         /// \brief Destructor.
@@ -98,8 +105,14 @@ class Texture {
         ///
         /// \return The texture's ID
         ////////////////////////////////////////////////////////////
-        scm::gl::texture_2d_ptr const& get_buffer (RenderContext const& context) const;
+        scm::gl::texture_2d_ptr const& get_buffer (
+                                        RenderContext const& context) const;
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Default constructor.
+        ///
+        /// Creates a new (invalid) shader program.
+        ////////////////////////////////////////////////////////////////////////
         unsigned width() const;
         unsigned height() const;
 

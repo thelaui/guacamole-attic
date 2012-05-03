@@ -28,17 +28,17 @@
 #include "renderer/DataBase.hpp"
 #include "renderer/Geometry.hpp"
 
+namespace gua {
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A data base for meshes.
 ///
 /// This DataBase stores geometry data. It can be accessed via string
 /// identifiers.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
     public:
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Pre-loads some meshes.
         ///

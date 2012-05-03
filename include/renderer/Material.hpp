@@ -39,9 +39,9 @@ class TextFile;
 ///
 /// For now, materials are defined by a shader only.
 ////////////////////////////////////////////////////////////////////////////////
-
 class Material {
     public:
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor.
         ///
@@ -74,16 +74,37 @@ class Material {
         /// \param context The context which should use this Material.
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         void unuse(RenderContext const& context) const;
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         void set_uniform_float(std::string const& uniform_name, float value);
         void set_uniform_int(std::string const& uniform_name, int value);
-        void set_uniform_texture(std::string const& uniform_name, std::shared_ptr<Texture> const& value);
-        void set_uniform_texture(std::string const& uniform_name, std::string const& texture_name);
+        void set_uniform_texture(std::string const& uniform_name,
+                                 std::shared_ptr<Texture> const& value);
+        void set_uniform_texture(std::string const& uniform_name,
+                                 std::string const& texture_name);
 
-        void set_blend_state(scm::gl::blend_state_desc const& blend_state_desc);
-        void set_rasterizer_state(scm::gl::rasterizer_state_desc const& rasterizer_state_desc);
-        void set_depth_stencil_state(scm::gl::depth_stencil_state_desc const& depth_stencil_state_desc);
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
+        void set_blend_state(
+            scm::gl::blend_state_desc const& blend_state_desc);
+        void set_rasterizer_state(
+            scm::gl::rasterizer_state_desc const& rasterizer_state_desc);
+        void set_depth_stencil_state(
+            scm::gl::depth_stencil_state_desc const& depth_stencil_state_desc);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the internal shader.

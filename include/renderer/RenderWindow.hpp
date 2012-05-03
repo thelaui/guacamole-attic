@@ -44,23 +44,49 @@ class Texture;
 ///
 /// It's an X window which can display OpenGL stuff.
 ////////////////////////////////////////////////////////////////////////////////
-
 class RenderWindow {
     public:
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         struct Description {
-            Description(int w, int h, std::string const& titl, std::string const& disp, StereoMode str_md = MONO, std::string const& warp_matrices_pth=""):
-                width(w),
-                height(h),
-                title(titl),
-                display(disp),
-                stereo_mode(str_md),
-                warp_matrices_path(warp_matrices_pth) {}
+            Description(int width, int height, std::string const& title,
+                        std::string const& display,
+                        StereoMode stereo_mode = MONO,
+                        std::string const& warp_matrices_path=""):
+                width_(width), height_(height),
+                title_(title),
+                display_(display),
+                stereo_mode_(stereo_mode),
+                warp_matrices_path_(warp_matrices_path) {}
 
-            int width, height;
-            std::string title, display;
-            StereoMode stereo_mode;
-            std::string warp_matrices_path;
+            ////////////////////////////////////////////////////////////////////
+            /// \brief The X display where this context was opened.
+            ////////////////////////////////////////////////////////////////////
+            int width_, height_;
+
+            ////////////////////////////////////////////////////////////////////
+            /// \brief The X display where this context was opened.
+            ////////////////////////////////////////////////////////////////////
+            std::string title_;
+
+            ////////////////////////////////////////////////////////////////////
+            /// \brief The X display where this context was opened.
+            ////////////////////////////////////////////////////////////////////
+            std::string display_;
+
+            ////////////////////////////////////////////////////////////////////
+            /// \brief The X display where this context was opened.
+            ////////////////////////////////////////////////////////////////////
+            StereoMode stereo_mode_;
+
+            ////////////////////////////////////////////////////////////////////
+            /// \brief The X display where this context was opened.
+            ////////////////////////////////////////////////////////////////////
+            std::string warp_matrices_path_;
         };
 
         ////////////////////////////////////////////////////////////////////////
@@ -114,6 +140,12 @@ class RenderWindow {
         /// \param texture The Texture to be drawn.
         ////////////////////////////////////////////////////////////////////////
         void display_mono(std::shared_ptr<Texture> const& texture);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         void display_stereo(std::shared_ptr<Texture> const& left_texture,
                             std::shared_ptr<Texture> const& right_texture,
                             StereoMode stereo_mode);

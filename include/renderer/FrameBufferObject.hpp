@@ -69,13 +69,33 @@ class FrameBufferObject {
         /// \param mip_level The buffer's mip_level.
         /// \param z_slice The buffer's z_slice.
         ////////////////////////////////////////////////////////////
-        void attach_color_buffer(RenderContext const& context, unsigned in_color_attachment, Texture const& buffer,
+        void attach_color_buffer(RenderContext const& context,
+                                 unsigned in_color_attachment,
+                                 Texture const& buffer,
                                  int mip_level = 0, int z_slice = 0);
 
-        void attach_depth_stencil_buffer(RenderContext const& context, Texture const& buffer,
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
+        void attach_depth_stencil_buffer(RenderContext const& context,
+                                         Texture const& buffer,
                                          int mip_level = 0, int z_slice = 0);
 
-        void clear_color_buffers(RenderContext const& context, Color3f const& clear_color = Color3f());
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
+        void clear_color_buffers(RenderContext const& context,
+                                 Color3f const& clear_color = Color3f());
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         void clear_depth_stencil_buffer(RenderContext const& context);
 
         ////////////////////////////////////////////////////////////
@@ -96,6 +116,11 @@ class FrameBufferObject {
         ////////////////////////////////////////////////////////////
         void unbind(RenderContext const& context);
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         unsigned width() const;
         unsigned height() const;
 

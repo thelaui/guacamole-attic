@@ -28,6 +28,8 @@
 #include "renderer/DataBase.hpp"
 #include "renderer/Texture.hpp"
 
+namespace gua {
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A data base for textures.
 ///
@@ -35,11 +37,14 @@
 /// identifiers.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace gua {
-
 class TextureBase: public DataBase<Texture>, public Singleton<TextureBase> {
     public:
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Default constructor.
+        ///
+        /// Creates a new (invalid) shader program.
+        ////////////////////////////////////////////////////////////////////////
         static void load_textures_from(std::string const& path_to_textures);
 
         friend class Singleton<TextureBase>;

@@ -39,15 +39,50 @@ namespace gua {
 
 class RenderPipeline;
 
+////////////////////////////////////////////////////////////////////////////////
+/// \brief A database for accessing data.
+///
+///
+////////////////////////////////////////////////////////////////////////////////
 class GenericRenderPass {
     public:
-        GenericRenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& render_mask, float width, float height, bool size_is_relative);
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
+        GenericRenderPass(std::string const& name, std::string const& camera,
+                          std::string const& screen,
+                          std::string const& render_mask,
+                          float width, float height, bool size_is_relative);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         virtual ~GenericRenderPass();
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         void add_buffer(ColorBufferDescription const& buffer_desc);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         void add_buffer(DepthStencilBufferDescription const& buffer_desc);
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Material and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
         std::string const& get_name() const;
 
         friend class RenderPipeline;
@@ -55,11 +90,16 @@ class GenericRenderPass {
         friend class FullscreenPass;
 
     protected:
-        virtual std::shared_ptr<Texture> get_buffer(std::string const& name, CameraMode mode, bool draw_fps = false) = 0;
+        virtual std::shared_ptr<Texture> get_buffer(std::string const& name,
+                                                     CameraMode mode,
+                                                     bool draw_fps = false)=0;
 
         void flush();
         void create_buffers(StereoMode mode);
-        void create_buffer(std::map<std::string, std::shared_ptr<Texture>>& buffer_store, FrameBufferObject& fbo);
+        void create_buffer(std::map<std::string,
+                           std::shared_ptr<Texture>>& buffer_store,
+                           FrameBufferObject& fbo);
+
         void set_pipeline(RenderPipeline* pipeline);
 
         std::vector<ColorBufferDescription> color_buffer_descriptions_;
@@ -70,7 +110,10 @@ class GenericRenderPass {
         float width_, height_;
         bool size_is_relative_to_window_;
 
-        std::map<std::string, std::shared_ptr<Texture>> left_eye_buffers_, right_eye_buffers_, center_eye_buffers_;
+        std::map<std::string, std::shared_ptr<Texture>> left_eye_buffers_,
+                                                        right_eye_buffers_,
+                                                        center_eye_buffers_;
+
         FrameBufferObject left_eye_fbo_, right_eye_fbo_, center_eye_fbo_;
 
         RenderPipeline* pipeline_;

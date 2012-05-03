@@ -196,7 +196,7 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
             for (unsigned i(0); i < scene.lights_.size(); ++i) {
 
-                math::mat4 transform(scene.lights_[i].transform);
+                math::mat4 transform(scene.lights_[i].transform_);
 
                 // calc light radius and position
                 light.position[i] = math::vec4(transform[12], transform[13],
@@ -206,9 +206,9 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
                                         light.position[i] - transform
                                         * math::vec4(0.f, 0.f, 1.f, 1.f));
 
-                light.color_radius[i] = math::vec4(scene.lights_[i].color.r(),
-                                                   scene.lights_[i].color.g(),
-                                                   scene.lights_[i].color.b(),
+                light.color_radius[i] = math::vec4(scene.lights_[i].color_.r(),
+                                                   scene.lights_[i].color_.g(),
+                                                   scene.lights_[i].color_.b(),
                                                    radius);
             }
 

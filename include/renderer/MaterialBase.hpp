@@ -28,17 +28,17 @@
 #include "renderer/DataBase.hpp"
 #include "renderer/Material.hpp"
 
+namespace gua {
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A data base for materials.
 ///
 /// This DataBase stores material data. It can be accessed via string
 /// identifiers.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 class MaterialBase: public DataBase<Material>, public Singleton<MaterialBase> {
     public:
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Pre-loads some Materials.
         ///

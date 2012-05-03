@@ -28,17 +28,15 @@
 #include <string>
 #include <map>
 
+namespace gua {
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A database for accessing data.
 ///
 /// It can store any type of Data. The data is mapped on strings, which then can
 /// be used to access this data.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 template <typename T>
-
 class DataBase {
     public:
 

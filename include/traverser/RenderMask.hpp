@@ -30,6 +30,10 @@
 
 namespace gua {
 
+////////////////////////////////////////////////////////////////////////////////
+/// \brief Stores information on a light for rendering.
+///
+////////////////////////////////////////////////////////////////////////////////
 class RenderMask {
     public:
 
@@ -40,6 +44,11 @@ class RenderMask {
         ////////////////////////////////////////////////////////////////////////
         RenderMask(std::string const& render_mask);
 
+        ////////////////////////////////////////////////////////////////////////
+        ///\brief Destructor.
+        ///
+        /// This destroys an Optimizer.
+        ////////////////////////////////////////////////////////////////////////
         bool check(std::set<std::string> const& groups) const;
 
     private:
@@ -51,7 +60,8 @@ class RenderMask {
                 bool check(std::set<std::string> const& groups) const;
 
             private:
-                std::string remove_useless_brackets(std::string const& input) const;
+                std::string remove_useless_brackets(
+                                            std::string const& input) const;
 
                 enum Operation { AND, OR, NOT, VALUE } type_;
 

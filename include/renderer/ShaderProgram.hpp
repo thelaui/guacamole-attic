@@ -30,17 +30,17 @@
 #include "utils/Color3f.hpp"
 #include "utils/math.hpp"
 
+namespace gua {
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief An actual shader which can be applied to the Graphics pipeline.
 ///
 /// It combines data from a FragmentShader and a VertexShader in order to
 /// achieve different visual appearances of the same mesh.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 class ShaderProgram {
     public:
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor.
         ///
@@ -57,9 +57,16 @@ class ShaderProgram {
         /// \param v_shader The VertexShader.
         /// \param f_shader The FragmentShader.
         ////////////////////////////////////////////////////////////////////////
-        void create_from_files(std::string const& v_shader_file, std::string const& f_shader_file);
+        void create_from_files(std::string const& v_shader_file,
+                               std::string const& f_shader_file);
 
-        void create_from_sources(std::string const& v_shader_source, std::string const& f_shader_source);
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Default constructor.
+        ///
+        /// Creates a new (invalid) shader program.
+        ////////////////////////////////////////////////////////////////////////
+        void create_from_sources(std::string const& v_shader_source,
+                                 std::string const& f_shader_source);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
@@ -78,30 +85,48 @@ class ShaderProgram {
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Default constructor.
+        ///
+        /// Creates a new (invalid) shader program.
+        ////////////////////////////////////////////////////////////////////////
         void unuse(RenderContext const& context) const;
 
-        void set_mat4(RenderContext const& context, std::string const& mat_name,
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Default constructor.
+        ///
+        /// Creates a new (invalid) shader program.
+        ////////////////////////////////////////////////////////////////////////
+        void set_mat4(RenderContext const& context,
+                      std::string const& mat_name,
                       math::mat4 const& mat);
 
-        void set_vec2(RenderContext const& context, std::string const& vec_name,
+        void set_vec2(RenderContext const& context,
+                      std::string const& vec_name,
                       math::vec2 const& vec);
 
-        void set_vec3(RenderContext const& context, std::string const& vec_name,
+        void set_vec3(RenderContext const& context,
+                      std::string const& vec_name,
                       math::vec3 const& vec);
 
-        void set_color3f(RenderContext const& context, std::string const& color_name,
+        void set_color3f(RenderContext const& context,
+                         std::string const& color_name,
                       Color3f const& color);
 
-        void set_vec4(RenderContext const& context, std::string const& vec_name,
+        void set_vec4(RenderContext const& context,
+                      std::string const& vec_name,
                       math::vec4 const& vec);
 
-        void set_sampler2D(RenderContext const& context, std::string const& sampler_name,
+        void set_sampler2D(RenderContext const& context,
+                           std::string const& sampler_name,
                            Texture const& sampler);
 
-        void set_float(RenderContext const& context, std::string const& float_name,
+        void set_float(RenderContext const& context,
+                       std::string const& float_name,
                        float value);
 
-        void set_int(RenderContext const& context, std::string const& int_name,
+        void set_int(RenderContext const& context,
+                     std::string const& int_name,
                      int value);
 
     private:
