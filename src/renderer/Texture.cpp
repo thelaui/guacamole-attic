@@ -23,24 +23,32 @@
 #include "renderer/Texture.hpp"
 
 #include "utils/debug.hpp"
+#include "utils/math.hpp"
 
 #include <scm/gl_util/data/imaging/texture_loader.h>
 #include <iostream>
 
 namespace gua {
 
-Texture::Texture(unsigned width, unsigned height, scm::gl::data_format color_format,
-                 scm::gl::sampler_state_desc const& state_descripton):
-                 width_(width),
-                 height_(height),
-                 color_format_(color_format),
-                 file_name_(""),
-                 state_descripton_(state_descripton),
-                 textures_(),
-                 sampler_states_(),
-                 upload_mutex_() {}
+////////////////////////////////////////////////////////////////////////////////
 
-Texture::Texture(std::string const& file, scm::gl::sampler_state_desc const& state_descripton):
+Texture::
+Texture(unsigned width, unsigned height, scm::gl::data_format color_format,
+     scm::gl::sampler_state_desc const& state_descripton):
+     width_(width),
+     height_(height),
+     color_format_(color_format),
+     file_name_(""),
+     state_descripton_(state_descripton),
+     textures_(),
+     sampler_states_(),
+     upload_mutex_() {}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Texture::
+Texture(std::string const& file,
+        scm::gl::sampler_state_desc const& state_descripton):
     width_(0),
     height_(0),
     color_format_(scm::gl::FORMAT_NULL),
@@ -50,36 +58,62 @@ Texture::Texture(std::string const& file, scm::gl::sampler_state_desc const& sta
     sampler_states_(),
     upload_mutex_() {}
 
+////////////////////////////////////////////////////////////////////////////////
+
 Texture::~Texture() {}
 
-void Texture::bind(RenderContext const& context, int texture_type) const {
+////////////////////////////////////////////////////////////////////////////////
+
+void Texture::
+bind(RenderContext const& context, int texture_type) const {
+
     if (textures_.size() <= context.id || textures_[context.id] == 0)
         upload_to(context);
 
-    context.render_context->bind_texture(textures_[context.id], sampler_states_[context.id], texture_type);
+    context.render_context->bind_texture(
+              textures_[context.id], sampler_states_[context.id], texture_type);
 }
 
-void Texture::unbind(RenderContext const& context) {
+////////////////////////////////////////////////////////////////////////////////
+
+void Texture::
+unbind(RenderContext const& context) {
+
     if (textures_.size() > context.id && textures_[context.id] != 0)
         context.render_context->reset_texture_units();
 }
 
-scm::gl::texture_2d_ptr const& Texture::get_buffer(RenderContext const& context) const {
+////////////////////////////////////////////////////////////////////////////////
+
+scm::gl::texture_2d_ptr const& Texture::
+get_buffer(RenderContext const& context) const {
+
     if (textures_.size() <= context.id || textures_[context.id] == 0)
         upload_to(context);
 
     return textures_[context.id];
 }
 
-unsigned Texture::width() const {
+////////////////////////////////////////////////////////////////////////////////
+
+unsigned Texture::
+width() const {
+
     return width_;
 }
 
-unsigned Texture::height() const {
+////////////////////////////////////////////////////////////////////////////////
+
+unsigned Texture::
+height() const {
+
     return height_;
 }
 
-void Texture::upload_to(RenderContext const& context) const{
+////////////////////////////////////////////////////////////////////////////////
+
+void Texture::
+upload_to(RenderContext const& context) const{
 
     std::unique_lock<std::mutex> lock(upload_mutex_);
 
@@ -89,10 +123,13 @@ void Texture::upload_to(RenderContext const& context) const{
     }
 
     if (file_name_ == "") {
-        textures_[context.id] = context.render_device->create_texture_2d(scm::math::vec2ui(width_, height_), color_format_);
+        textures_[context.id] = context.render_device->create_texture_2d(
+                                    math::vec2ui(width_, height_),
+                                    color_format_);
     } else {
         scm::gl::texture_loader loader;
-        textures_[context.id] = loader.load_texture_2d(*context.render_device, file_name_, true);
+        textures_[context.id] = loader.load_texture_2d(
+                                    *context.render_device, file_name_, true);
 
         if(textures_[context.id]) {
             width_  = textures_[context.id]->dimensions()[0];
@@ -100,7 +137,10 @@ void Texture::upload_to(RenderContext const& context) const{
         }
     }
 
-    sampler_states_[context.id] = context.render_device->create_sampler_state(state_descripton_);
+    sampler_states_[context.id] = context.render_device->create_sampler_state(
+                                    state_descripton_);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

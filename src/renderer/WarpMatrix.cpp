@@ -27,18 +27,24 @@
 
 namespace gua {
 
-WarpMatrix::WarpMatrix():
+////////////////////////////////////////////////////////////////////////////////
+
+WarpMatrix::
+WarpMatrix():
     Texture(0, 0),
     data_() {}
 
-WarpMatrix::WarpMatrix(std::string const& file_name):
-                 Texture(0, 0, scm::gl::FORMAT_RGBA_16F, scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR)),
-                 data_() {
+////////////////////////////////////////////////////////////////////////////////
+
+WarpMatrix::
+WarpMatrix(std::string const& file_name):
+    Texture(0, 0, scm::gl::FORMAT_RGBA_16F,
+            scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR)),
+    data_() {
 
     std::ifstream file (file_name, std::ios::binary);
 
     if (file) {
-
         file.read((char*) &width_, sizeof(unsigned));
         file.read((char*) &height_, sizeof(unsigned));
 
@@ -48,32 +54,42 @@ WarpMatrix::WarpMatrix(std::string const& file_name):
 
         file.close();
     } else {
-        WARNING ("Unable to load Warpmatrix! File %s does not exist.", file_name.c_str());
+        WARNING ("Unable to load Warpmatrix! File %s does \
+                 not exist.", file_name.c_str());
     }
-
 }
 
-WarpMatrix::~WarpMatrix() {
+////////////////////////////////////////////////////////////////////////////////
 
-}
+WarpMatrix::
+~WarpMatrix() {}
 
-void WarpMatrix::upload_to(RenderContext const& context) const{
+////////////////////////////////////////////////////////////////////////////////
+
+void WarpMatrix::
+upload_to(RenderContext const& ctx) const {
 
     std::unique_lock<std::mutex> lock(upload_mutex_);
 
-    if (textures_.size() <= context.id) {
-        textures_.resize(context.id + 1);
-        sampler_states_.resize(context.id + 1);
+    if (textures_.size() <= ctx.id) {
+        textures_.resize(ctx.id + 1);
+        sampler_states_.resize(ctx.id + 1);
     }
 
     std::vector<void*> tmp_data;
     tmp_data.push_back(&data_[0]);
 
-    textures_[context.id] = context.render_device->create_texture_2d(scm::gl::texture_2d_desc(scm::math::vec2ui(width_, height_), color_format_),
-                                                                     scm::gl::FORMAT_RGBA_32F, tmp_data);
+    textures_[ctx.id] = ctx.render_device->create_texture_2d(
+                                        scm::gl::texture_2d_desc(
+                                            scm::math::vec2ui(width_, height_),
+                                            color_format_),
+                                        scm::gl::FORMAT_RGBA_32F, tmp_data);
 
-    sampler_states_[context.id] = context.render_device->create_sampler_state(state_descripton_);
+    sampler_states_[ctx.id] = ctx.render_device->create_sampler_state(
+                                                            state_descripton_);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 
