@@ -30,22 +30,27 @@
 
 namespace gua {
 
-void TextureBase::load_textures_from(std::string const& path_to_textures) {
+////////////////////////////////////////////////////////////////////////////////
 
-    gua::Directory directory(path_to_textures);
+void TextureBase::
+load_textures_from(std::string const& path_to_textures) {
 
-    std::stringstream content(directory.get_content());
-
+    gua::Directory dir(path_to_textures);
+    std::stringstream content(dir.get_content());
     std::string parse_string;
+
     while (content >> parse_string) {
         unsigned suffix_pos(parse_string.find("."));
+        auto tex = new Texture(dir.get_directory_name() + parse_string);
+
         if(suffix_pos != std::string::npos) {
             instance()->add(parse_string.substr(0, suffix_pos),
-                            std::shared_ptr<Texture>(new Texture(directory.get_directory_name() + parse_string)));
+                            std::shared_ptr<Texture>(tex));
         }
     }
-
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 
