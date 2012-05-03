@@ -20,8 +20,8 @@
 /// \brief Declaration of the RenderContext struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDERCONTEXT_HPP
-#define RENDERCONTEXT_HPP
+#ifndef GUA_RENDERCONTEXT_HPP
+#define GUA_RENDERCONTEXT_HPP
 
 #include "renderer/glInclude.hpp"
 

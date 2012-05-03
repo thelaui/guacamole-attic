@@ -20,8 +20,8 @@
 /// \brief Declaration of the RenderBackend class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef LIGHT_INFORMATION_HPP
-#define LIGHT_INFORMATION_HPP
+#ifndef GUA_LIGHT_INFORMATION_HPP
+#define GUA_LIGHT_INFORMATION_HPP
 
 #include <string>
 
@@ -48,5 +48,5 @@ struct LightInformation {
 
 }
 
-#endif // LIGHT_INFORMATION_HPP
+#endif // GUA_LIGHT_INFORMATION_HPP
 

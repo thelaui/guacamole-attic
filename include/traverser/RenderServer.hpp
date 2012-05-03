@@ -20,8 +20,8 @@
 /// \brief Declaration of the CameraCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDERER_SERVER_HPP
-#define RENDERER_HPP
+#ifndef GUA_RENDERER_SERVER_HPP
+#define GUA_RENDERER_HPP
 
 #include <vector>
 #include <string>
@@ -72,4 +72,4 @@ class RenderServer {
 
 }
 
-#endif // RENDERER_SERVER_HPP
+#endif // GUA_RENDERER_SERVER_HPP

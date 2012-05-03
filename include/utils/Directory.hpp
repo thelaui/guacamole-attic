@@ -20,8 +20,8 @@
 /// \brief Declaration of the Directory class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DIRECTORY_HPP
-#define DIRECTORY_HPP
+#ifndef GUA_DIRECTORY_HPP
+#define GUA_DIRECTORY_HPP
 
 #include <string>
 
@@ -81,7 +81,7 @@ class Directory {
 
 }
 
-#endif // DIRECTORY_HPP
+#endif // GUA_DIRECTORY_HPP
 
 
 

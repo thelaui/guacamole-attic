@@ -20,8 +20,8 @@
 /// \brief Declaration of the Material class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_HPP
-#define MATERIAL_HPP
+#ifndef GUA_MATERIAL_HPP
+#define GUA_MATERIAL_HPP
 
 #include "renderer/ShaderProgram.hpp"
 #include "renderer/Texture.hpp"
@@ -112,6 +112,6 @@ class Material {
 
 }
 
-#endif // MATERIAL_HPP
+#endif // GUA_MATERIAL_HPP
 
 

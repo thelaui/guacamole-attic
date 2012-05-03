@@ -20,8 +20,8 @@
 /// \brief Declaration and implementation of the DataBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DATA_BASE_HPP
-#define DATA_BASE_HPP
+#ifndef GUA_DATA_BASE_HPP
+#define GUA_DATA_BASE_HPP
 
 #include <memory>
 #include <string>
@@ -88,4 +88,5 @@ class DataBase {
 };
 
 }
-#endif // DATA_BASE_HPP
+
+#endif // GUA_DATA_BASE_HPP

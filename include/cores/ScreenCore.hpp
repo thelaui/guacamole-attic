@@ -20,8 +20,8 @@
 /// \brief Declaration of the ScreenCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SCREEN_CORE_HPP
-#define SCREEN_CORE_HPP
+#ifndef GUA_SCREEN_CORE_HPP
+#define GUA_SCREEN_CORE_HPP
 
 #include "scenegraph/Core.hpp"
 
@@ -54,5 +54,5 @@ class ScreenCore: public Core {
 
 }
 
-#endif // SCREEN_CORE_HPP
+#endif // GUA_SCREEN_CORE_HPP
 

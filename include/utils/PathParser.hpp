@@ -20,8 +20,8 @@
 /// \brief Declaration of the PathParser class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef PATH_PARSER_HPP
-#define PATH_PARSER_HPP
+#ifndef GUA_PATH_PARSER_HPP
+#define GUA_PATH_PARSER_HPP
 
 #include <vector>
 #include <string>

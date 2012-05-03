@@ -20,8 +20,8 @@
 /// \brief Declaration of the GenericRenderPass class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GENERIC_RENDER_PASS_HPP
-#define GENERIC_RENDER_PASS_HPP
+#ifndef GUA_GENERIC_RENDER_PASS_HPP
+#define GUA_GENERIC_RENDER_PASS_HPP
 
 #include <memory>
 #include <string>
@@ -80,7 +80,7 @@ class GenericRenderPass {
 
 }
 
-#endif // GENERIC_RENDER_PASS_HPP
+#endif // GUA_GENERIC_RENDER_PASS_HPP
 
 
 

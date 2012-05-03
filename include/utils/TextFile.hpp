@@ -20,8 +20,8 @@
 /// \brief Declaration of the TextFile class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TEXTFILE_HPP
-#define TEXTFILE_HPP
+#ifndef GUA_TEXTFILE_HPP
+#define GUA_TEXTFILE_HPP
 
 #include <string>
 
@@ -81,7 +81,7 @@ class TextFile {
 
 }
 
-#endif // TEXTFILE_HPP
+#endif // GUA_TEXTFILE_HPP
 
 
 

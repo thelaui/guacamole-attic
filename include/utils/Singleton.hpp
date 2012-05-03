@@ -20,8 +20,8 @@
 /// \brief A singleton base class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SINGLETON_HPP
-#define SINGLETON_HPP
+#ifndef GUA_SINGLETON_HPP
+#define GUA_SINGLETON_HPP
 
 #include <cstddef>
 

@@ -20,8 +20,8 @@
 /// \brief Declaration of the Node class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef Node_HPP
-#define Node_HPP
+#ifndef GUA_Node_HPP
+#define GUA_Node_HPP
 
 #include <set>
 #include <list>

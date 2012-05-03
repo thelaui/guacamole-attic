@@ -20,8 +20,8 @@
 /// \brief Declaration of the TextureBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TEXTURE_BASE_HPP
-#define TEXTURE_BASE_HPP
+#ifndef GUA_TEXTURE_BASE_HPP
+#define GUA_TEXTURE_BASE_HPP
 
 #include "utils/Singleton.hpp"
 #include "renderer/DataBase.hpp"
@@ -50,7 +50,7 @@ class TextureBase: public DataBase<Texture>, public Singleton<TextureBase> {
 
 }
 
-#endif // TEXTURE_BASE_HPP
+#endif // GUA_TEXTURE_BASE_HPP
 
 
 

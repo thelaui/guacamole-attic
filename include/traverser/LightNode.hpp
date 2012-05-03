@@ -20,8 +20,8 @@
 /// \brief Declaration and definition of the LightNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef LIGHT_NODE_HPP
-#define LIGHT_NODE_HPP
+#ifndef GUA_LIGHT_NODE_HPP
+#define GUA_LIGHT_NODE_HPP
 
 #include "utils/Color3f.hpp"
 #include "utils/math.hpp"

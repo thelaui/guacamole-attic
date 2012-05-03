@@ -20,8 +20,8 @@
 /// \brief Declaration of the RenderPipeline class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDER_PIPELINE_HPP
-#define RENDER_PIPELINE_HPP
+#ifndef GUA_RENDER_PIPELINE_HPP
+#define GUA_RENDER_PIPELINE_HPP
 
 
 #include <map>
@@ -69,7 +69,7 @@ class RenderPipeline {
 
 }
 
-#endif // RENDER_PIPELINE_HPP
+#endif // GUA_RENDER_PIPELINE_HPP
 
 
 

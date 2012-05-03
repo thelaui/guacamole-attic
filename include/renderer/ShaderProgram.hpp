@@ -20,8 +20,8 @@
 /// \brief Declaration of the ShaderProgram class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SHADERPROGRAM_HPP
-#define SHADERPROGRAM_HPP
+#ifndef GUA_SHADERPROGRAM_HPP
+#define GUA_SHADERPROGRAM_HPP
 
 #include <map>
 
@@ -120,4 +120,4 @@ class ShaderProgram {
 
 }
 
-#endif // SHADERPROGRAM_HPP
+#endif // GUA_SHADERPROGRAM_HPP

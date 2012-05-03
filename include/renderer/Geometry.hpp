@@ -20,8 +20,8 @@
 /// \brief Declaration of the Geometry class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GEOMETRY_HPP
-#define GEOMETRY_HPP
+#ifndef GUA_GEOMETRY_HPP
+#define GUA_GEOMETRY_HPP
 
 #include <string>
 #include <vector>
@@ -88,4 +88,4 @@ class Geometry {
 
 }
 
-#endif // GEOMETRY_HPP
+#endif // GUA_GEOMETRY_HPP

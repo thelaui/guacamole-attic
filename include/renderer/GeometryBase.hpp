@@ -20,8 +20,8 @@
 /// \brief Declaration of the GeometryBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GEOMETRY_BASE_HPP
-#define GEOMETRY_BASE_HPP
+#ifndef GUA_GEOMETRY_BASE_HPP
+#define GUA_GEOMETRY_BASE_HPP
 
 #include "utils/Singleton.hpp"
 #include "renderer/DataBase.hpp"
@@ -56,6 +56,6 @@ class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
 
 }
 
-#endif // GEOMETRY_BASE_HPP
+#endif // GUA_GEOMETRY_BASE_HPP
 
 

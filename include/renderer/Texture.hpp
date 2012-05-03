@@ -20,8 +20,8 @@
 /// \brief Declaration of the Texture class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TEXTURE_HPP
-#define TEXTURE_HPP
+#ifndef GUA_TEXTURE_HPP
+#define GUA_TEXTURE_HPP
 
 #include "renderer/RenderContext.hpp"
 

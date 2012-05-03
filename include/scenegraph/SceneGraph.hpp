@@ -20,8 +20,8 @@
 /// \brief Declaration of the SceneGraph class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SCENE_GRAPH_HPP
-#define SCENE_GRAPH_HPP
+#ifndef GUA_SCENE_GRAPH_HPP
+#define GUA_SCENE_GRAPH_HPP
 
 #include "scenegraph/Core.hpp"
 #include "utils/math.hpp"
@@ -270,4 +270,4 @@ std::ostream& operator<<(std::ostream& os, SceneGraph const& graph);
 
 }
 
-#endif // SCENE_GRAPH_HPP
+#endif // GUA_SCENE_GRAPH_HPP

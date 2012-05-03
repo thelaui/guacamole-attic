@@ -20,8 +20,8 @@
 /// \brief Declaration of the KnownObject class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef KNOWN_OBJECT_HPP
-#define KNOWN_OBJECT_HPP
+#ifndef GUA_KNOWN_OBJECT_HPP
+#define GUA_KNOWN_OBJECT_HPP
 
 #include <cstddef>
 #include <vector>

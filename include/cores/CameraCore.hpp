@@ -20,8 +20,8 @@
 /// \brief Declaration of the CameraCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef CAMERA_CORE_HPP
-#define CAMERA_CORE_HPP
+#ifndef GUA_CAMERA_CORE_HPP
+#define GUA_CAMERA_CORE_HPP
 
 #include "scenegraph/Core.hpp"
 
@@ -66,4 +66,4 @@ class CameraCore: public Core {
 
 }
 
-#endif // CAMERA_CORE_HPP
+#endif // GUA_CAMERA_CORE_HPP

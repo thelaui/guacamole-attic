@@ -20,8 +20,8 @@
 /// \brief Declaration of the OptimizedScene struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OPTIMIZED_SCENE_HPP
-#define OPTIMIZED_SCENE_HPP
+#ifndef GUA_OPTIMIZED_SCENE_HPP
+#define GUA_OPTIMIZED_SCENE_HPP
 
 #include <vector>
 #include <string>
@@ -43,5 +43,5 @@ struct OptimizedScene {
 
 }
 
-#endif // OPTIMIZED_SCENE_HPP
+#endif // GUA_OPTIMIZED_SCENE_HPP
 

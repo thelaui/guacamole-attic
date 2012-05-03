@@ -20,8 +20,8 @@
 /// \brief Declaration and definition of the CameraNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef CAMERA_NODE_HPP
-#define CAMERA_NODE_HPP
+#ifndef GUA_CAMERA_NODE_HPP
+#define GUA_CAMERA_NODE_HPP
 
 
 #include <string>

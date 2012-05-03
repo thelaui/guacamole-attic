@@ -20,8 +20,8 @@
 /// \brief Declaration of the TextRenderer class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TEXT_RENDERER_HPP
-#define TEXT_RENDERER_HPP
+#ifndef GUA_TEXT_RENDERER_HPP
+#define GUA_TEXT_RENDERER_HPP
 
 #include "renderer/FrameBufferObject.hpp"
 
@@ -47,5 +47,5 @@ class TextRenderer {
 
 }
 
-#endif // TEXT_RENDERER_HPP
+#endif // GUA_TEXT_RENDERER_HPP
 

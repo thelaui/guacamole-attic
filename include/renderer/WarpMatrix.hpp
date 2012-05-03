@@ -20,8 +20,8 @@
 /// \brief Declaration of the Texture class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef WARP_MATRIX_HPP
-#define WARP_MATRIX_HPP
+#ifndef GUA_WARP_MATRIX_HPP
+#define GUA_WARP_MATRIX_HPP
 
 #include "renderer/Texture.hpp"
 

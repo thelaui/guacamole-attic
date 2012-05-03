@@ -20,8 +20,8 @@
 /// \brief Declaration of the MaterialBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MATERIAL_BASE_HPP
-#define MATERIAL_BASE_HPP
+#ifndef GUA_MATERIAL_BASE_HPP
+#define GUA_MATERIAL_BASE_HPP
 
 #include "utils/Singleton.hpp"
 #include "renderer/DataBase.hpp"
@@ -54,4 +54,4 @@ class MaterialBase: public DataBase<Material>, public Singleton<MaterialBase> {
 
 }
 
-#endif // MATERIAL_BASE_HPP
+#endif // GUA_MATERIAL_BASE_HPP

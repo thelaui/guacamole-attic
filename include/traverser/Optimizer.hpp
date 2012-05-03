@@ -20,8 +20,8 @@
 /// \brief Declaration of the Optimizer class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OPTIMIZER_HPP
-#define OPTIMIZER_HPP
+#ifndef GUA_OPTIMIZER_HPP
+#define GUA_OPTIMIZER_HPP
 
 #include "traverser/OptimizedScene.hpp"
 #include "traverser/RenderMask.hpp"
@@ -70,4 +70,4 @@ class Optimizer {
 
 }
 
-#endif // OPTIMIZER_HPP
+#endif // GUA_OPTIMIZER_HPP

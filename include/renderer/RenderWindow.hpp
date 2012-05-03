@@ -20,8 +20,8 @@
 /// \brief Declaration of the RenderWindow class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDERWINDOW_HPP
-#define RENDERWINDOW_HPP
+#ifndef GUA_RENDERWINDOW_HPP
+#define GUA_RENDERWINDOW_HPP
 
 #include <memory>
 #include <string>

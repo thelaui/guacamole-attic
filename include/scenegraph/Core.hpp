@@ -20,8 +20,8 @@
 /// \brief Declaration of the Core class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef CORE_HPP
-#define CORE_HPP
+#ifndef GUA_CORE_HPP
+#define GUA_CORE_HPP
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class is used to represent certain Node properties.
@@ -74,4 +74,4 @@ class Core {
 
 }
 
-#endif // CORE_HPP
+#endif // GUA_CORE_HPP

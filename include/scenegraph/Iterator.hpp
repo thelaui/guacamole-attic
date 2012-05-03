@@ -20,8 +20,8 @@
 /// \brief Declaration of the Iterator class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ITERATOR_HPP
-#define ITERATOR_HPP
+#ifndef GUA_ITERATOR_HPP
+#define GUA_ITERATOR_HPP
 
 #include "scenegraph/SceneGraph.hpp"
 #include "scenegraph/Node.hpp"

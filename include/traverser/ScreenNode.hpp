@@ -20,8 +20,8 @@
 /// \brief Declaration and definition of the ScreenNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SCREEN_NODE_HPP
-#define SCREEN_NODE_HPP
+#ifndef GUA_SCREEN_NODE_HPP
+#define GUA_SCREEN_NODE_HPP
 
 
 

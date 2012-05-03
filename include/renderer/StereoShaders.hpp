@@ -20,8 +20,8 @@
 /// \brief Shaders for filling deferred rendering buffers.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef STEREO_SHADERS_HPP
-#define STEREO_SHADERS_HPP
+#ifndef GUA_STEREO_SHADERS_HPP
+#define GUA_STEREO_SHADERS_HPP
 
 #include <string>
 

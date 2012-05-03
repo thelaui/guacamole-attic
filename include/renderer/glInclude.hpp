@@ -20,8 +20,8 @@
 /// \brief Includes all neccesary OpenGL headers.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GLINCLUDE_HPP
-#define GLINCLUDE_HPP
+#ifndef GUA_GLINCLUDE_HPP
+#define GUA_GLINCLUDE_HPP
 
 #include <GL/glew.h>
 #include <GL/glxew.h>

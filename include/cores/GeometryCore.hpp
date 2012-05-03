@@ -20,8 +20,8 @@
 /// \brief Declaration of the GeometryCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GEOMETRY_CORE_HPP
-#define GEOMETRY_CORE_HPP
+#ifndef GUA_GEOMETRY_CORE_HPP
+#define GUA_GEOMETRY_CORE_HPP
 
 #include "scenegraph/Core.hpp"
 
@@ -76,4 +76,4 @@ class GeometryCore: public Core {
 
 }
 
-#endif // GEOMETRY_CORE_HPP
+#endif // GUA_GEOMETRY_CORE_HPP

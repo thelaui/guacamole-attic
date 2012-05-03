@@ -20,8 +20,8 @@
 /// \brief Declaration of the RenderPass class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef FULLSCREEN_PASS_HPP
-#define FULLSCREEN_PASS_HPP
+#ifndef GUA_FULLSCREEN_PASS_HPP
+#define GUA_FULLSCREEN_PASS_HPP
 
 #include <scm/gl_util/primitives/quad.h>
 #include <scm/gl_core/buffer_objects/uniform_buffer_adaptor.h>
@@ -69,6 +69,6 @@ class FullscreenPass : public GenericRenderPass{
 
 }
 
-#endif // FULLSCREEN_PASS_HPP
+#endif // GUA_FULLSCREEN_PASS_HPP
 
 

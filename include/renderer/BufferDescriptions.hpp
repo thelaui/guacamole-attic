@@ -17,11 +17,12 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration and implementation of the BufferDescription structs.
+/// \brief Declaration and implementation of the BufferDescription
+///       structs.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef BUFFER_DESCRIPTIONS_HPP
-#define BUFFER_DESCRIPTIONS_HPP
+#ifndef GUA_BUFFER_DESCRIPTIONS_HPP
+#define GUA_BUFFER_DESCRIPTIONS_HPP
 
 #include <string>
 
@@ -49,7 +50,7 @@ struct DepthStencilBufferDescription {
 
 }
 
-#endif // BUFFER_DESCRIPTIONS_HPP
+#endif // GUA_BUFFER_DESCRIPTIONS_HPP
 
 
 

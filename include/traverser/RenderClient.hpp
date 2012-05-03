@@ -20,8 +20,8 @@
 /// \brief Declaration of the CameraCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDERCLIENT_HPP
-#define RENDERCLIENT_HPP
+#ifndef GUA_RENDERCLIENT_HPP
+#define GUA_RENDERCLIENT_HPP
 
 #include <vector>
 #include <string>
@@ -79,5 +79,5 @@ class RenderClient {
 
 }
 
-#endif // RENDERCLIENT_HPP
+#endif // GUA_RENDERCLIENT_HPP
 

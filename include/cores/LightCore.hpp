@@ -20,8 +20,8 @@
 /// \brief Declaration of the LightCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef LIGHT_CORE_HPP
-#define LIGHT_CORE_HPP
+#ifndef GUA_LIGHT_CORE_HPP
+#define GUA_LIGHT_CORE_HPP
 
 #include "scenegraph/Core.hpp"
 
@@ -69,4 +69,4 @@ class LightCore: public Core {
 
 }
 
-#endif // LIGHT_CORE_HPP
+#endif // GUA_LIGHT_CORE_HPP

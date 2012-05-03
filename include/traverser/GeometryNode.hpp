@@ -20,8 +20,8 @@
 /// \brief Declaration and definition of the GeometryNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GEOMETRY_NODE_HPP
-#define GEOMETRY_NODE_HPP
+#ifndef GUA_GEOMETRY_NODE_HPP
+#define GUA_GEOMETRY_NODE_HPP
 
 
 #include <string>

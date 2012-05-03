@@ -20,8 +20,8 @@
 /// \brief Declaration of the RenderMask class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDER_MASK_HPP
-#define RENDER_MASK_HPP
+#ifndef GUA_RENDER_MASK_HPP
+#define GUA_RENDER_MASK_HPP
 
 #include <string>
 #include <vector>
@@ -62,5 +62,5 @@ class RenderMask {
 
 }
 
-#endif // RENDER_MASK_HPP
+#endif // GUA_RENDER_MASK_HPP
 

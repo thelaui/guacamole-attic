@@ -20,8 +20,8 @@
 /// \brief Declaration of the Mesh class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef MESH_HPP
-#define MESH_HPP
+#ifndef GUA_MESH_HPP
+#define GUA_MESH_HPP
 
 #include <scm/gl_core.h>
 #include <thread>
@@ -88,6 +88,6 @@ class Mesh {
 
 }
 
-#endif // MESH_HPP
+#endif // GUA_MESH_HPP
 
 

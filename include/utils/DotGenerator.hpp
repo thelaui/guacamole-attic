@@ -20,8 +20,8 @@
 /// \brief Declaration of the DotGenerator class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DOT_GENERATOR_HPP
-#define DOT_GENERATOR_HPP
+#ifndef GUA_DOT_GENERATOR_HPP
+#define GUA_DOT_GENERATOR_HPP
 
 #include <vector>
 #include <string>

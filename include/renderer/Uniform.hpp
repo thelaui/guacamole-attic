@@ -20,8 +20,8 @@
 /// \brief Declaration of the Uniform struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef UNIFORM_HPP
-#define UNIFORM_HPP
+#ifndef GUA_UNIFORM_HPP
+#define GUA_UNIFORM_HPP
 
 #include <string>
 
@@ -54,5 +54,5 @@ struct Uniform {
 
 }
 
-#endif // UNIFORM_HPP
+#endif // GUA_UNIFORM_HPP
 

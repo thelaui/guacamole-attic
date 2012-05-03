@@ -20,8 +20,8 @@
 /// \brief Declaration of the Timer class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TIMER_HPP
-#define TIMER_HPP
+#ifndef GUA_TIMER_HPP
+#define GUA_TIMER_HPP
 
 #include <string>
 
@@ -48,7 +48,7 @@ class Timer {
 
 }
 
-#endif // TIMER_HPP
+#endif // GUA_TIMER_HPP
 
 
 

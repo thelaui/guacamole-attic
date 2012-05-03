@@ -20,8 +20,8 @@
 /// \brief Declaration of the RenderPass class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDER_PASS_HPP
-#define RENDER_PASS_HPP
+#ifndef GUA_RENDER_PASS_HPP
+#define GUA_RENDER_PASS_HPP
 
 #include <scm/gl_core/buffer_objects/uniform_buffer_adaptor.h>
 
@@ -65,6 +65,6 @@ class RenderPass : public GenericRenderPass{
 
 }
 
-#endif // RENDER_PASS_HPP
+#endif // GUA_RENDER_PASS_HPP
 
 
