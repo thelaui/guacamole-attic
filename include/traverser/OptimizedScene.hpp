@@ -24,14 +24,16 @@
 #ifndef GUA_OPTIMIZED_SCENE_HPP
 #define GUA_OPTIMIZED_SCENE_HPP
 
-#include <vector>
-#include <string>
-#include <map>
-
+// guacamole headers
 #include "traverser/LightNode.hpp"
 #include "traverser/GeometryNode.hpp"
 #include "traverser/CameraNode.hpp"
 #include "traverser/ScreenNode.hpp"
+
+// external headers
+#include <vector>
+#include <string>
+#include <map>
 
 namespace gua {
 

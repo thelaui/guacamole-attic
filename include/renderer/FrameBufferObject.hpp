@@ -24,105 +24,115 @@
 # ifndef FRAMEBUFFEROBJECT_HPP
 # define FRAMEBUFFEROBJECT_HPP
 
-#include <vector>
-
+// guacamole headers
 #include "renderer/Texture.hpp"
 #include "utils/Color3f.hpp"
+
+// external headers
+#include <vector>
 
 namespace gua {
 
 class RenderContext;
 
-////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 /// \brief A class representing a FrameBufferObject.
 ///
-/// This class allows to load texture data from a file and bind the
-/// texture to an OpenGL context.
-////////////////////////////////////////////////////////////////////
+/// This class allows to bind textures to a FBO. This FBO
+/// can be used as drawing target for an rendering context.
+////////////////////////////////////////////////////////////////////////////////
 class FrameBufferObject {
     public:
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
         /// This constructs a new FrameBufferObject.
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         FrameBufferObject();
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
         ///
         /// This will delete all associated buffers.
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         ~FrameBufferObject();
 
-        ////////////////////////////////////////////////////////////
-        /// \brief Attaches a buffer to the FrameBufferObject.
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Attaches a color buffer to the FrameBufferObject.
         ///
         /// This will attach a buffer to the FrameBufferObject.
         ///
-        /// \param context The RenderContext to bind to.
-        /// \param buffer_type The GL-type of the buffer
-        /// (e.g. GL_TEXTURE_2D).
-        /// \param buffer_id The buffer's id.
-        /// \param attachment_id The buffer's attachment id.
-        /// \param mip_level The buffer's mip_level.
-        /// \param z_slice The buffer's z_slice.
-        ////////////////////////////////////////////////////////////
+        /// \param context              The RenderContext to bind to.
+        /// \param in_color_attachment  The buffer's attachment id.
+        /// \param buffer               The texture to bind.
+        /// \param mip_level            The buffer's mip_level.
+        /// \param z_slice              The buffer's z_slice.
+        ////////////////////////////////////////////////////////////////////////
         void attach_color_buffer(RenderContext const& context,
                                  unsigned in_color_attachment,
                                  Texture const& buffer,
                                  int mip_level = 0, int z_slice = 0);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Attaches a depth stencil buffer to the FrameBufferObject.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// This will attach a buffer to the FrameBufferObject.
+        ///
+        /// \param context              The RenderContext to bind to.
+        /// \param buffer               The texture to bind.
+        /// \param mip_level            The buffer's mip_level.
+        /// \param z_slice              The buffer's z_slice.
         ////////////////////////////////////////////////////////////////////////
         void attach_depth_stencil_buffer(RenderContext const& context,
                                          Texture const& buffer,
                                          int mip_level = 0, int z_slice = 0);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Clears all associated color buffers.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// All color buffers are set to the given color. Black if no
+        /// argument is given.
+        ///
+        /// \param context              The RenderContext to bind to.
+        /// \param clear_color          The color used for clearing.
         ////////////////////////////////////////////////////////////////////////
         void clear_color_buffers(RenderContext const& context,
                                  Color3f const& clear_color = Color3f());
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Clears the depth stencil buffer.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// \param context              The RenderContext to bind to.
         ////////////////////////////////////////////////////////////////////////
         void clear_depth_stencil_buffer(RenderContext const& context);
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Bind the FrameBufferObject.
         ///
         /// This will bind a FrameBufferObject to the current
         /// OpenGL context.
         ///
         /// \param context The RenderContext to bind to.
-        /// \param attachment_id The id of the attachment to be bound.
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         void bind(RenderContext const& context);
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Unbind the FrameBufferObject.
         ///
         /// This will unbind the FrameBufferObject.
-        ////////////////////////////////////////////////////////////
+        ///
+        /// \param context The RenderContext to bind to.
+        ////////////////////////////////////////////////////////////////////////
         void unbind(RenderContext const& context);
 
+        ///@{
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
-        ///
-        /// Deletes the Material and frees all associated data.
+        /// \brief Gets the size of the FrameBufferObject.
         ////////////////////////////////////////////////////////////////////////
         unsigned width() const;
         unsigned height() const;
+        ///@}
 
     private:
         bool set_size(Texture const& buffer);
@@ -134,7 +144,7 @@ class FrameBufferObject {
 
 }
 
-# endif //FRAMEBUFFEROBJECT_HPP
+# endif // GUA_FRAMEBUFFEROBJECT_HPP
 
 
 

@@ -24,9 +24,11 @@
 #ifndef GUA_LIGHT_NODE_HPP
 #define GUA_LIGHT_NODE_HPP
 
+// guacamole headers
 #include "utils/Color3f.hpp"
 #include "utils/math.hpp"
 
+// external headers
 #include <string>
 
 namespace gua {
@@ -64,5 +66,5 @@ struct LightNode {
 
 }
 
-#endif //LIGHT_NODE_HPP
+#endif // GUA_LIGHT_NODE_HPP
 

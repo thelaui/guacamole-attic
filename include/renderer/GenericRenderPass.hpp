@@ -24,16 +24,18 @@
 #ifndef GUA_GENERIC_RENDER_PASS_HPP
 #define GUA_GENERIC_RENDER_PASS_HPP
 
-#include <memory>
-#include <string>
-#include <map>
-
+// guacamole headers
 #include "renderer/FrameBufferObject.hpp"
 #include "renderer/BufferDescriptions.hpp"
 #include "renderer/TextRenderer.hpp"
 #include "renderer/Texture.hpp"
 #include "renderer/enums.hpp"
 #include "traverser/RenderMask.hpp"
+
+// external headers
+#include <memory>
+#include <string>
+#include <map>
 
 namespace gua {
 
@@ -42,15 +44,35 @@ class RenderPipeline;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A database for accessing data.
 ///
+/// A virtual base class for render passes. It has a name, manages addition of
+/// buffers and provides a basic interface which has to be implemented by
+/// derived classes.
 ///
+/// Render passes are part of a rendering pipeline. Basically they encapsulate
+/// some FBOs to which the scene is rendered. The user has to add some color
+/// buffers to this pass and a depth stencil buffer if desired. The scene is
+/// rendered frome the point of view of a given camera through a given screen.
+/// With render masks a part of the scene may be hidden.
 ////////////////////////////////////////////////////////////////////////////////
 class GenericRenderPass {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Constructor.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Creates a new GenericRenderPass from the given parameters.
+        ///
+        /// \param name             The name of this rendering pass.
+        /// \param camera           The name of the camera used for this pass.
+        /// \param screen           The name of the screen used for pass.
+        /// \param render_mask      The rendering mask which should be applied
+        ///                         to the scene before rendering this pass.
+        /// \param width            The width of this pass. Either relative to
+        ///                         the window size or absolute pixel size.
+        /// \param height           The height of this pass. Either relative to
+        ///                         the window size or absolute pixel size.
+        /// \param size_is_relative Determines whether width and height are
+        ///                         interpreted as abolute or as releative.
         ////////////////////////////////////////////////////////////////////////
         GenericRenderPass(std::string const& name, std::string const& camera,
                           std::string const& screen,
@@ -60,28 +82,32 @@ class GenericRenderPass {
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Deletes the GenericRenderPass and frees all associated data.
         ////////////////////////////////////////////////////////////////////////
         virtual ~GenericRenderPass();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Adds a new color buffer to this pass.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Adds a new color buffer to the internally used FBO.
+        ///
+        /// \param buffer_desc      The description of the new buffer.
         ////////////////////////////////////////////////////////////////////////
         void add_buffer(ColorBufferDescription const& buffer_desc);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Adds a new depth stencil buffer to this pass.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Adds a new depth stencil buffer to the internally used FBO.
+        ///
+        /// \param buffer_desc      The description of the new buffer.
         ////////////////////////////////////////////////////////////////////////
         void add_buffer(DepthStencilBufferDescription const& buffer_desc);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Gets the name of the pass.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// \return                 The name of this pass.
         ////////////////////////////////////////////////////////////////////////
         std::string const& get_name() const;
 

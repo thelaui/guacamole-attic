@@ -24,6 +24,7 @@
 #ifndef GUA_GEOMETRY_BASE_HPP
 #define GUA_GEOMETRY_BASE_HPP
 
+// guacamole headers
 #include "utils/Singleton.hpp"
 #include "renderer/DataBase.hpp"
 #include "renderer/Geometry.hpp"
@@ -42,9 +43,11 @@ class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
         ////////////////////////////////////////////////////////////////////////
         /// \brief Pre-loads some meshes.
         ///
-        /// This method loads some default meshes to the data base. For example
-        /// a simple cube ("cube"), the famous Utah Teapot ("teapot") and
-        /// Suzanne from Blender ("monkey").
+        /// This method loads meshes to the data base. All obj meshes in the
+        /// given directory are loaded.
+        ///
+        /// \param path_to_objects      An absolute or relative path to the
+        ///                             directory containing obj files.
         ////////////////////////////////////////////////////////////////////////
         static void load_objects_from(std::string const& path_to_objects);
 

@@ -24,6 +24,7 @@
 #ifndef GUA_SCREEN_NODE_HPP
 #define GUA_SCREEN_NODE_HPP
 
+// guacamole headers
 #include "cores/ScreenCore.hpp"
 
 namespace gua {
@@ -59,6 +60,6 @@ struct ScreenNode {
 
 }
 
-#endif //SCREEN_NODE_HPP
+#endif // GUA_SCREEN_NODE_HPP
 
 

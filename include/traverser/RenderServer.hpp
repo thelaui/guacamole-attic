@@ -24,6 +24,7 @@
 #ifndef GUA_RENDERER_SERVER_HPP
 #define GUA_RENDERER_HPP
 
+// external headers
 #include <vector>
 #include <string>
 #include <thread>

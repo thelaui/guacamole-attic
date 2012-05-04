@@ -24,8 +24,10 @@
 #ifndef GUA_TEXT_RENDERER_HPP
 #define GUA_TEXT_RENDERER_HPP
 
+// guacamole headers
 #include "renderer/FrameBufferObject.hpp"
 
+// external headers
 #include <scm/gl_util/font/text.h>
 #include <scm/gl_util/font/text_renderer.h>
 

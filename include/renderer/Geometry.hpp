@@ -24,10 +24,12 @@
 #ifndef GUA_GEOMETRY_HPP
 #define GUA_GEOMETRY_HPP
 
+// guacamole headers
+#include "renderer/Mesh.hpp"
+
+// external headers
 #include <string>
 #include <vector>
-
-#include "renderer/Mesh.hpp"
 
 namespace Assimp {
     class Importer;
@@ -56,14 +58,14 @@ class Geometry {
         ///
         /// Creates a new Geometry from a given file.
         ///
-        /// \param file_name The file to load the meh's data from.
+        /// \param file_name        The file to load the meh's data from.
         ////////////////////////////////////////////////////////////////////////
         Geometry(std::string const& file_name);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Deletes the Geometry and frees all associated data.
         ////////////////////////////////////////////////////////////////////////
         ~Geometry();
 
@@ -72,8 +74,8 @@ class Geometry {
         ///
         /// Creates a new Geometry from a existing memory buffer.
         ///
-        /// \param buffer_name The buffer to load the meh's data from.
-        /// \param buffer_size The buffer's size.
+        /// \param buffer_name      The buffer to load the meh's data from.
+        /// \param buffer_size      The buffer's size.
         ////////////////////////////////////////////////////////////////////////
         Geometry(char const* buffer_name, unsigned buffer_size);
 
@@ -82,8 +84,8 @@ class Geometry {
         ///
         /// Draws this Geometry object to the given context.
         ///
-        /// \param context The RenderContext to which this object should be
-        /// drawn.
+        /// \param context          The RenderContext to which this object
+        ///                         should be drawn.
         ////////////////////////////////////////////////////////////////////////
         void draw(RenderContext const& context) const;
 

@@ -24,8 +24,10 @@
 #ifndef GUA_TEXTURE_HPP
 #define GUA_TEXTURE_HPP
 
+// guacamole headers
 #include "renderer/RenderContext.hpp"
 
+// external headers
 #include <string>
 #include <vector>
 #include <thread>
@@ -131,6 +133,6 @@ class Texture {
 };
 
 }
-# endif //TEXTURE_HPP
+# endif // GUA_TEXTURE_HPP
 
 

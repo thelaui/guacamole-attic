@@ -24,6 +24,7 @@
 #ifndef GUA_TEXTURE_BASE_HPP
 #define GUA_TEXTURE_BASE_HPP
 
+// guacamole headers
 #include "utils/Singleton.hpp"
 #include "renderer/DataBase.hpp"
 #include "renderer/Texture.hpp"

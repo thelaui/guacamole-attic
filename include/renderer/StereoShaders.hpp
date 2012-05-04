@@ -24,6 +24,7 @@
 #ifndef GUA_STEREO_SHADERS_HPP
 #define GUA_STEREO_SHADERS_HPP
 
+// external headers
 #include <string>
 
 namespace gua {
@@ -175,5 +176,5 @@ const std::string STEREO_FRAGMENT_SHADER_WARPED = {
 
 }
 
-#endif //STEREO_SHADERS_HPP
+#endif // GUA_STEREO_SHADERS_HPP
 

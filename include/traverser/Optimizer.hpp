@@ -24,6 +24,7 @@
 #ifndef GUA_OPTIMIZER_HPP
 #define GUA_OPTIMIZER_HPP
 
+// guacamole headers
 #include "traverser/OptimizedScene.hpp"
 #include "traverser/RenderMask.hpp"
 

@@ -24,15 +24,16 @@
 #ifndef GUA_RENDERWINDOW_HPP
 #define GUA_RENDERWINDOW_HPP
 
-#include <memory>
-#include <string>
-
-#include <scm/gl_util/primitives/quad.h>
-
+// guacamole headers
 #include "renderer/RenderContext.hpp"
 #include "renderer/ShaderProgram.hpp"
 #include "renderer/WarpMatrix.hpp"
 #include "renderer/enums.hpp"
+
+// external headers
+#include <memory>
+#include <string>
+#include <scm/gl_util/primitives/quad.h>
 
 namespace gua {
 
@@ -42,17 +43,33 @@ class Texture;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A window for displaying stuff.
 ///
-/// It's an X window which can display OpenGL stuff.
+/// It's a window which can display OpenGL stuff.
 ////////////////////////////////////////////////////////////////////////////////
 class RenderWindow {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief A description of a window.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Used when creating a window.
         ////////////////////////////////////////////////////////////////////////
         struct Description {
+
+            ////////////////////////////////////////////////////////////////////
+            /// \brief Constructor.
+            ///
+            /// Creates a new window description.
+            ///
+            /// \param width                The width of the window.
+            /// \param height               The height of the window.
+            /// \param title                The title of the window.
+            /// \param display              The X display where the window
+            ///                             should open.
+            /// \param stereo_mode          The stereo mode used for the window.
+            /// \param warp_matrices_path   An absolute path to a directory
+            ///                             where warp matrices are stored.
+            ///                             "" if no warping is desired.
+            ////////////////////////////////////////////////////////////////////
             Description(int width, int height, std::string const& title,
                         std::string const& display,
                         StereoMode stereo_mode = MONO,
@@ -64,27 +81,35 @@ class RenderWindow {
                 warp_matrices_path_(warp_matrices_path) {}
 
             ////////////////////////////////////////////////////////////////////
-            /// \brief The X display where this context was opened.
+            /// \brief The width of the window.
             ////////////////////////////////////////////////////////////////////
-            int width_, height_;
+            int width_;
 
             ////////////////////////////////////////////////////////////////////
-            /// \brief The X display where this context was opened.
+            /// \brief The height of the window.
+            ////////////////////////////////////////////////////////////////////
+            int height_;
+
+            ////////////////////////////////////////////////////////////////////
+            /// \brief The title of the window.
             ////////////////////////////////////////////////////////////////////
             std::string title_;
 
             ////////////////////////////////////////////////////////////////////
-            /// \brief The X display where this context was opened.
+            /// \brief The X display where the window should opened.
             ////////////////////////////////////////////////////////////////////
             std::string display_;
 
             ////////////////////////////////////////////////////////////////////
-            /// \brief The X display where this context was opened.
+            /// \brief The stereo mode used for the window.
             ////////////////////////////////////////////////////////////////////
             StereoMode stereo_mode_;
 
             ////////////////////////////////////////////////////////////////////
-            /// \brief The X display where this context was opened.
+            /// \brief An absolute path to a directory where warp matrices are
+            ///        stored.
+            ///
+            /// "" if no warping is desired.
             ////////////////////////////////////////////////////////////////////
             std::string warp_matrices_path_;
         };
@@ -95,13 +120,9 @@ class RenderWindow {
         /// Creates a new RenderWindow. It owns a RenderContext where Geomtries
         /// can be drawn to.
         ///
-        /// \param width   The width of the window.
-        /// \param height  The height of the window.
-        /// \param window_title The window's title.
-        /// \param display The display where this window should be opened.
-        /// \throw An error message.
+        /// \param description   The description of the window.
         ////////////////////////////////////////////////////////////////////////
-        RenderWindow( Description const& description ) throw (std::string);
+        RenderWindow(Description const& description);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
@@ -137,14 +158,19 @@ class RenderWindow {
         ///
         /// The given Texture is drawn to the window.
         ///
-        /// \param texture The Texture to be drawn.
+        /// \param texture          The Texture to be drawn.
         ////////////////////////////////////////////////////////////////////////
         void display_mono(std::shared_ptr<Texture> const& texture);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Draws the given Textures to the window.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// The given Textures are drawn to the window. They are drawn according
+        /// to the given stereo mode.
+        ///
+        /// \param left_texture     The left eye texture.
+        /// \param right_texture    The reight eye exture.
+        /// \param stereo_mode      The stereo mode for mapping both textures.
         ////////////////////////////////////////////////////////////////////////
         void display_stereo(std::shared_ptr<Texture> const& left_texture,
                             std::shared_ptr<Texture> const& right_texture,
@@ -176,4 +202,4 @@ class RenderWindow {
 
 }
 
-#endif //RENDERWINDOW_HPP
+#endif // GUA_RENDERWINDOW_HPP

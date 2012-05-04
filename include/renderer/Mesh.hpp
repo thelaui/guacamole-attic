@@ -24,6 +24,7 @@
 #ifndef GUA_MESH_HPP
 #define GUA_MESH_HPP
 
+// external headers
 #include <scm/gl_core.h>
 #include <thread>
 #include <vector>
@@ -37,7 +38,8 @@ class RenderContext;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores geometry data.
 ///
-/// A mesh can be loaded from a Assimp mesh and the draw onto multiple contexts.
+/// A mesh can be loaded from an Assimp mesh and the draw onto multiple
+/// contexts.
 /// Do not use this class directly, it is just used by the Geometry class to
 /// store the individual meshes of a file.
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,9 +58,9 @@ class Mesh {
         ///
         /// Initializes the mesh from a given Assimp mesh.
         ///
-        /// \param mesh The Assimp mesh to load the data from.
+        /// \param mesh             The Assimp mesh to load the data from.
         ////////////////////////////////////////////////////////////////////////
-        Mesh( aiMesh* mesh );
+        Mesh(aiMesh* mesh);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
@@ -72,7 +74,7 @@ class Mesh {
         ///
         /// Draws the Mesh to the given context.
         ///
-        /// \param context The RenderContext to draw onto.
+        /// \param context          The RenderContext to draw onto.
         ////////////////////////////////////////////////////////////////////////
         void draw(RenderContext const& context) const;
 

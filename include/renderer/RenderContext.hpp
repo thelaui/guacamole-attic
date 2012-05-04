@@ -24,6 +24,7 @@
 #ifndef GUA_RENDERCONTEXT_HPP
 #define GUA_RENDERCONTEXT_HPP
 
+// external headers
 #include <scm/gl_core/config.h>
 #include <scm/gl_core/data_formats.h>
 #include <scm/core.h>
@@ -43,27 +44,27 @@ namespace gua {
 struct RenderContext {
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The glx context of this RenderContext.
+    /// \brief The schism context of this RenderContext.
     ////////////////////////////////////////////////////////////////////////////
     scm::gl::wm::context_ptr context;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The X display where this context was opened.
+    /// \brief The display where this context was opened.
     ////////////////////////////////////////////////////////////////////////////
     scm::gl::wm::display_ptr display;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The X window associated with this context.
+    /// \brief The window associated with this context.
     ////////////////////////////////////////////////////////////////////////////
     scm::gl::wm::window_ptr window;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The X window associated with this context.
+    /// \brief The schism render constext associated with this context.
     ////////////////////////////////////////////////////////////////////////////
     scm::gl::render_context_ptr render_context;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The X window associated with this context.
+    /// \brief The schism render device associated with this context.
     ////////////////////////////////////////////////////////////////////////////
     scm::gl::render_device_ptr render_device;
 
@@ -85,4 +86,4 @@ struct RenderContext {
 
 }
 
-#endif //RENDERCONTEXT_HPP
+#endif // GUA_RENDERCONTEXT_HPP

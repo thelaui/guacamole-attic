@@ -24,13 +24,15 @@
 #ifndef GUA_RENDERCLIENT_HPP
 #define GUA_RENDERCLIENT_HPP
 
+// guacamole headers
+#include "scenegraph/SceneGraph.hpp"
+#include "utils/Timer.hpp"
+
+// external headers
 #include <vector>
 #include <string>
 #include <thread>
 #include <condition_variable>
-
-#include "scenegraph/SceneGraph.hpp"
-#include "utils/Timer.hpp"
 
 namespace gua {
 

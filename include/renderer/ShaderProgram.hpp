@@ -24,11 +24,13 @@
 #ifndef GUA_SHADERPROGRAM_HPP
 #define GUA_SHADERPROGRAM_HPP
 
-#include <map>
-
+// guacamole headers
 #include "renderer/Texture.hpp"
 #include "utils/Color3f.hpp"
 #include "utils/math.hpp"
+
+// external headers
+#include <map>
 
 namespace gua {
 

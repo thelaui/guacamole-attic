@@ -24,6 +24,7 @@
 #ifndef GUA_WARP_MATRIX_HPP
 #define GUA_WARP_MATRIX_HPP
 
+// guacamole headers
 #include "renderer/Texture.hpp"
 
 namespace gua {
@@ -65,7 +66,7 @@ class WarpMatrix : public Texture {
 };
 
 }
-# endif //WARP_MATRIX_HPP
+# endif // GUA_WARP_MATRIX_HPP
 
 
 

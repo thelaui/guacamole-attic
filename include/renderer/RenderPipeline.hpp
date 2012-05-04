@@ -24,10 +24,11 @@
 #ifndef GUA_RENDER_PIPELINE_HPP
 #define GUA_RENDER_PIPELINE_HPP
 
-
-#include <map>
-
+// guacamole headers
 #include "renderer/RenderWindow.hpp"
+
+// external headers
+#include <map>
 
 namespace gua {
 
@@ -35,81 +36,105 @@ class GenericRenderPass;
 class SceneGraph;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief A database for accessing data.
+/// \brief A rendering pipeline describes how an image is generated.
 ///
-///
+/// A rendering pipeline consists of multiple passes. These are rendering parts
+/// of (or the entire) SceneGraph to buffers. These buffers may be used as input
+/// for other passes. One final buffer of a final pass is shown on the screen.
 ////////////////////////////////////////////////////////////////////////////////
 class RenderPipeline {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Constructor.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Creates a new RenderPipeline.
+        ///
+        /// \param window           The description of the window which should
+        ///                         be opened by this pipe.
         ////////////////////////////////////////////////////////////////////////
         RenderPipeline(RenderWindow::Description const& window);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Deletes the RenderPipeline and frees all associated data.
         ////////////////////////////////////////////////////////////////////////
         ~RenderPipeline();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Adds a render pass to the pipe.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Adds a new render pass to the pipe. It should have an unique among
+        /// the passes of this pipe, else it won't function properly.
+        ///
+        /// \param pass             The pass to be added.
         ////////////////////////////////////////////////////////////////////////
         void add_render_pass(GenericRenderPass* pass);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Returns a render pass.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Retrieves a previously added pass from the pipe.
+        ///
+        /// \param pass_name        The name of the desired pass.
+        /// \return                 The desired pass or NULL if it doesn't
+        ///                         exist.
         ////////////////////////////////////////////////////////////////////////
         GenericRenderPass* get_render_pass(std::string const& pass_name);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Returns the graph of this pipe.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// \return                 A pointer to the pipe's copy of the current
+        ///                         scene. This pointer invalidates after each
+        ///                         frame. Use with care.
         ////////////////////////////////////////////////////////////////////////
         SceneGraph const* get_current_graph() const;
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /////////////////////////////////////////////////////////////////////////
+        /// \brief Get the RenderContext of this pipe.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Can be called in order to retrieve the RenderContext of the
+        /// RenderWindow created by this pipe.
+        ///
+        /// \return The context owned by this pipe's window.
         ////////////////////////////////////////////////////////////////////////
         RenderContext const& get_context() const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Sets the buffer displayed on screen.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Specifies which buffer from which pass should be displayed on the
+        /// screen.
+        ///
+        /// \param pass_name        The name of the target pass.
+        /// \param buffer_name      The name of the target buffer.
         ////////////////////////////////////////////////////////////////////////
         void set_final_buffer(std::string const& pass_name,
                               std::string const& buffer_name);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Gets the stereo mode of this pipe.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// \return                 The stereo mode of this pipe.
         ////////////////////////////////////////////////////////////////////////
         StereoMode get_stereo_mode() const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Gets the FPS of the application loop.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// \return                 Returns the rate at which the queue_draw
+        ///                         call fired. Should be aproximately the same
+        ///                         among all pipes.
         ////////////////////////////////////////////////////////////////////////
         float get_application_fps() const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Gets the FPS of the rendering loop.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// \return                 Returns the rate at which the pipe is
+        ///                         actually rendering.
         ////////////////////////////////////////////////////////////////////////
         float get_rendering_fps() const;
 

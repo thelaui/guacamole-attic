@@ -24,42 +24,49 @@
 #ifndef GUA_LIGHT_INFORMATION_HPP
 #define GUA_LIGHT_INFORMATION_HPP
 
-#include <string>
-
+// guacamole headers
 #include "renderer/RenderContext.hpp"
 #include "utils/debug.hpp"
 #include "utils/math.hpp"
+
+// external headers
+#include <string>
 
 #define GUA_MAX_LIGHT_COUNT 64
 
 namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief A database for accessing data.
+/// \brief A struct containing information on many light sources.
 ///
-///
+/// This struct is used to transfer light information from the scene to the GPU.
+/// Only GUA_MAX_LIGHT_COUNT light sources are allowed.
 ////////////////////////////////////////////////////////////////////////////////
 struct LightInformation {
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The X window associated with this context.
+    /// \brief The amount of actually stored lights.
     ////////////////////////////////////////////////////////////////////////////
     math::vec4 light_count;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The X window associated with this context.
+    /// \brief An array of light positions.
     ////////////////////////////////////////////////////////////////////////////
     math::vec4 position[GUA_MAX_LIGHT_COUNT];
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The X window associated with this context.
+    /// \brief An array of information on color and radius of light sources.
+    ///
+    /// It is stored like this: (red, green, blue, radius).
     ////////////////////////////////////////////////////////////////////////////
     math::vec4 color_radius[GUA_MAX_LIGHT_COUNT];
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief Destructor.
+    /// \brief Adds the shader include string.
     ///
-    /// Deletes the Material and frees all associated data.
+    /// Has to be called by the RenderWindow after the context has been created.
+    /// All shaders including "/gua/LightInformation.glslh" will be able to
+    /// access light information.
     ////////////////////////////////////////////////////////////////////////////
     static void add_block_include_string(RenderContext const& context);
 

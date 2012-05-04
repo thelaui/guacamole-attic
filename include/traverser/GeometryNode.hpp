@@ -24,7 +24,7 @@
 #ifndef GUA_GEOMETRY_NODE_HPP
 #define GUA_GEOMETRY_NODE_HPP
 
-
+// external headers
 #include <string>
 
 namespace gua {
@@ -68,5 +68,5 @@ struct GeometryNode {
 
 }
 
-#endif //GEOMETRY_NODE_HPP
+#endif // GUA_GEOMETRY_NODE_HPP
 

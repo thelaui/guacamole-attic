@@ -24,9 +24,11 @@
 #ifndef GUA_MATERIAL_HPP
 #define GUA_MATERIAL_HPP
 
+// guacamole headers
 #include "renderer/ShaderProgram.hpp"
 #include "renderer/Texture.hpp"
 
+// external headers
 #include <memory>
 
 namespace gua {
@@ -37,7 +39,8 @@ class TextFile;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a Material.
 ///
-/// For now, materials are defined by a shader only.
+/// Materials are defined by a fragment and a vertex shader. Additionally
+/// uniforms of this shaders may be set to specific values.
 ////////////////////////////////////////////////////////////////////////////////
 class Material {
     public:
@@ -55,7 +58,7 @@ class Material {
         ///
         /// Creates a new Material from a given material description.
         ///
-        /// \param file_name The file used to describe this material.
+        /// \param file_name        The file used to describe this material.
         ////////////////////////////////////////////////////////////////////////
         Material(std::string const& file_name);
 
@@ -71,40 +74,59 @@ class Material {
         ///
         /// Any preceeding draw call will use this Material.
         ///
-        /// \param context The context which should use this Material.
+        /// \param context          The context which should use this Material.
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Unuses the material.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// Preceeding draw calls won't use this material anymore.
+        ///
+        /// \param context          The context which should use this Material.
         ////////////////////////////////////////////////////////////////////////
         void unuse(RenderContext const& context) const;
 
+        ///@{
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Overwrites a uniform value.
         ///
-        /// Deletes the Material and frees all associated data.
+        /// With this method material uniforms may be overwritten.
+        /// The uniforms will be set to the given values when the material
+        /// is used.
+        ///
+        /// \param uniform_name     The name of the uniform to be overwritten.
+        /// \param value            The value to which the uniform shall be set.
         ////////////////////////////////////////////////////////////////////////
         void set_uniform_float(std::string const& uniform_name, float value);
+
         void set_uniform_int(std::string const& uniform_name, int value);
+
         void set_uniform_texture(std::string const& uniform_name,
                                  std::shared_ptr<Texture> const& value);
-        void set_uniform_texture(std::string const& uniform_name,
-                                 std::string const& texture_name);
 
+        void set_uniform_texture(std::string const& uniform_name,
+                                 std::string const& value);
+        ///@}
+
+        ///@{
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Destructor.
+        /// \brief Sets specific GL states for this material.
         ///
         /// Deletes the Material and frees all associated data.
+        ///
+        /// \param state_desc       The state to be set when this material is
+        ///                         used.
         ////////////////////////////////////////////////////////////////////////
         void set_blend_state(
-            scm::gl::blend_state_desc const& blend_state_desc);
+                        scm::gl::blend_state_desc const& state_desc);
+
         void set_rasterizer_state(
-            scm::gl::rasterizer_state_desc const& rasterizer_state_desc);
+                        scm::gl::rasterizer_state_desc const& state_desc);
+
         void set_depth_stencil_state(
-            scm::gl::depth_stencil_state_desc const& depth_stencil_state_desc);
+                        scm::gl::depth_stencil_state_desc const& state_desc);
+        ///@}
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the internal shader.

@@ -24,6 +24,7 @@
 #ifndef GUA_RENDER_MASK_HPP
 #define GUA_RENDER_MASK_HPP
 
+// external headers
 #include <string>
 #include <vector>
 #include <set>

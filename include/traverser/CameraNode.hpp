@@ -24,9 +24,11 @@
 #ifndef GUA_CAMERA_NODE_HPP
 #define GUA_CAMERA_NODE_HPP
 
-#include <string>
-
+// guacamole headers
 #include "cores/CameraCore.hpp"
+
+// external headers
+#include <string>
 
 namespace gua {
 
@@ -70,5 +72,5 @@ struct CameraNode {
 
 }
 
-#endif //CAMERA_NODE_HPP
+#endif // GUA_CAMERA_NODE_HPP
 

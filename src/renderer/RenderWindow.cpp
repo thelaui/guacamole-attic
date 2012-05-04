@@ -45,7 +45,7 @@ unsigned RenderWindow::last_context_id_ = 0;
 ////////////////////////////////////////////////////////////////////////////////
 
 RenderWindow::
-RenderWindow(Description const& description) throw (std::string):
+RenderWindow(Description const& description):
 
     fullscreen_shader_(),
     fullscreen_quad_(),
