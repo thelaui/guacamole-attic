@@ -35,88 +35,91 @@
 
 namespace gua {
 
-////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 /// \brief A class representing a texture.
 ///
 /// This class allows to load texture data from a file and bind the
 /// texture to an OpenGL context.
-////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 class Texture {
     public:
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
         /// This constructs a new texture with the given parameters.
         ///
-        /// \param width The width of the resulting texture.
-        /// \param height The height of the resulting texture.
-        /// \param color_depth The color depth of the resulting
-        /// texture.
-        /// \param color_format The color format of the resulting
-        /// texture.
-        /// \param type The data type texture data is stored
-        /// in.
-        ////////////////////////////////////////////////////////////
+        /// \param width            The width of the resulting texture.
+        /// \param height           The height of the resulting texture.
+        /// \param color_format     The color format of the resulting
+        ///                         texture.
+        /// \param state_descripton The sampler state for the loaded texture.
+        ////////////////////////////////////////////////////////////////////////
         Texture(unsigned width, unsigned height,
                 scm::gl::data_format color_format = scm::gl::FORMAT_RGB_32F,
                 scm::gl::sampler_state_desc const& state_descripton
                 = scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR));
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
         /// This constructs a new texture from a given file.
         ///
-        /// \param file The file which contains the texture data
-        ////////////////////////////////////////////////////////////
+        /// \param file             The file which contains the texture data.
+        /// \param state_descripton The sampler state for the loaded texture.
+        ////////////////////////////////////////////////////////////////////////
         Texture(std::string const& file,
                 scm::gl::sampler_state_desc const& state_descripton
                         = scm::gl::sampler_state_desc(
                                 scm::gl::FILTER_MIN_MAG_LINEAR,
                                 scm::gl::WRAP_REPEAT, scm::gl::WRAP_REPEAT));
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
         ///
         /// This will delete all associated buffers.
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         virtual ~Texture();
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Bind the texture.
         ///
-        /// This will bind the texture to the current OpenGL context
-        /// with the given layer.
+        /// This will bind the texture to the given OpenGL context
+        /// to the given position.
         ///
-        ///\param context The current context.
-        ///\param texture_type The type of the texture.
-        ////////////////////////////////////////////////////////////
-        void bind(RenderContext const& context, int texture_type) const;
+        /// \param context          The current context.
+        /// \param position         The position of the texture.
+        ////////////////////////////////////////////////////////////////////////
+        void bind(RenderContext const& context, int position) const;
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Unbind a texture.
         ///
-        /// This will unbind the texture with the given position.
-        /// \param texture_type The type of the texture.
-        ////////////////////////////////////////////////////////////
+        /// This will unbind the texture for the given context.
+        ///
+        /// \param context          The current context.
+        ////////////////////////////////////////////////////////////////////////
         void unbind(RenderContext const& context);
 
-        ////////////////////////////////////////////////////////////
-        /// \brief Get the Texture-ID.
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Get the schism texture.
         ///
-        /// \return The texture's ID
-        ////////////////////////////////////////////////////////////
+        /// \param context          The context for which the texture should be
+        ///                         returned.
+        /// \return                 A pointer to the schism texture.
+        ////////////////////////////////////////////////////////////////////////
         scm::gl::texture_2d_ptr const& get_buffer (
                                         RenderContext const& context) const;
 
+        ///@{
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor.
+        /// \brief Gets the size.
         ///
-        /// Creates a new (invalid) shader program.
+        /// Returns the size of the Texture.
         ////////////////////////////////////////////////////////////////////////
         unsigned width() const;
         unsigned height() const;
+        ///@}
 
     protected:
         mutable unsigned width_, height_;

@@ -41,30 +41,40 @@ class RenderPipeline;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class represents one render thread.
 ///
+/// The queue_draw method is directly called by the RenderServer. Internally it
+/// uses a threaded rendering loop which always waits for queue_draw calls. When
+/// it fails to finish rendering before the next queue_draw is called, it will
+/// ignore this call.
 ////////////////////////////////////////////////////////////////////////////////
 class RenderClient {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs a new RenderClient.
         ///
+        /// \param pipeline         The pipeline which should be processed by
+        ///                         this RenderClient.
         ////////////////////////////////////////////////////////////////////////
         RenderClient(RenderPipeline* pipeline);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Destructor.
         ///
         /// This destroys a RenderClient.
-        ///
         ////////////////////////////////////////////////////////////////////////
         virtual ~RenderClient();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Draw the scene.
         ///
-        /// This destroys an Optimizer.
+        /// This requests a drawing operation of the given graph. If the client
+        /// is still processing the last call of this function it will be
+        /// ignored.
+        ///
+        /// \param graph            A pointer to the graph which
+        ///                         should be drawn.
         ////////////////////////////////////////////////////////////////////////
         void queue_draw(SceneGraph const* graph);
 

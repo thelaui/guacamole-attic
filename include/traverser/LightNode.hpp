@@ -36,30 +36,29 @@ namespace gua {
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a light for rendering.
 ///
+/// This is a struct used for serializing the graph.
 ////////////////////////////////////////////////////////////////////////////////
 struct LightNode {
 
     ////////////////////////////////////////////////////////////////////////////
-    ///\brief Destructor.
+    ///\brief Constructor.
     ///
-    /// This destroys an Optimizer.
+    /// This creates a new serialized node.
+    ///
+    /// \param transform        The global transformation of this node.
+    /// \param color            The color of the light.
     ////////////////////////////////////////////////////////////////////////////
-    LightNode(math::mat4 const& transform = math::mat4::identity(),
-              Color3f const& color = Color3f()):
+    LightNode(math::mat4 const& transform, Color3f const& color):
         transform_(transform),
         color_(color) {}
 
     ////////////////////////////////////////////////////////////////////////////
-    ///\brief Destructor.
-    ///
-    /// This destroys an Optimizer.
+    ///\brief The global transformation of this node.
     ////////////////////////////////////////////////////////////////////////////
     math::mat4 transform_;
 
     ////////////////////////////////////////////////////////////////////////////
-    ///\brief Destructor.
-    ///
-    /// This destroys an Optimizer.
+    ///\brief The color of the light.
     ////////////////////////////////////////////////////////////////////////////
     Color3f color_;
 };

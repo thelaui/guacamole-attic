@@ -32,36 +32,37 @@ namespace gua {
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a geometry for rendering.
 ///
+/// This is a struct used for serializing the graph.
 ////////////////////////////////////////////////////////////////////////////////
 struct GeometryNode {
 
     ////////////////////////////////////////////////////////////////////////////
-    ///\brief Destructor.
+    ///\brief Constructor.
     ///
-    /// This destroys an Optimizer.
+    /// This creates a new serialized node.
+    ///
+    /// \param geometry         The geometry of this node.
+    /// \param material         The material of this geometry.
+    /// \param transform        The global transformation of this node.
     ////////////////////////////////////////////////////////////////////////////
     GeometryNode(std::string const& geometry, std::string const& material,
-                 math::mat4 const& transform = math::mat4::identity()):
-        geometry_(geometry), material_(material), transform_(transform) {}
+                 math::mat4 const& transform):
+        geometry_(geometry),
+        material_(material),
+        transform_(transform) {}
 
     ////////////////////////////////////////////////////////////////////////////
-    ///\brief Destructor.
-    ///
-    /// This destroys an Optimizer.
+    ///\brief The geometry of this node.
     ////////////////////////////////////////////////////////////////////////////
     std::string geometry_;
 
     ////////////////////////////////////////////////////////////////////////////
-    ///\brief Destructor.
-    ///
-    /// This destroys an Optimizer.
+    ///\brief The material of this geometry.
     ////////////////////////////////////////////////////////////////////////////
     std::string material_;
 
     ////////////////////////////////////////////////////////////////////////////
-    ///\brief Destructor.
-    ///
-    /// This destroys an Optimizer.
+    ///\brief The global transformation of this node.
     ////////////////////////////////////////////////////////////////////////////
     math::mat4 transform_;
 };

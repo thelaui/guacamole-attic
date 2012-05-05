@@ -57,6 +57,7 @@ std::vector<gua::SceneGraph::Iterator> add_lights(gua::SceneGraph& graph, int co
 }
 
 int main(int argc, char** argv) {
+
     // initialize guacamole
     gua::init(argc, argv);
 

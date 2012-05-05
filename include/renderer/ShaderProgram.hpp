@@ -53,19 +53,23 @@ class ShaderProgram {
         ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor from shaders.
         ///
-        /// This method takes a VertexShader and a FragmentShader and combines
-        /// them to a ShaderProgram.
+        /// This method takes a vertex shader file and a fragment shader file
+        /// and combines them to a ShaderProgram.
         ///
-        /// \param v_shader The VertexShader.
-        /// \param f_shader The FragmentShader.
+        /// \param v_shader_file        The VertexShader file path.
+        /// \param f_shader_file        The FragmentShader file path.
         ////////////////////////////////////////////////////////////////////////
         void create_from_files(std::string const& v_shader_file,
                                std::string const& f_shader_file);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor.
+        /// \brief Constructor.
         ///
-        /// Creates a new (invalid) shader program.
+        /// This method takes a vertex shader source and a fragment shader
+        /// source and combines them to a ShaderProgram.
+        ///
+        /// \param v_shader_source      The vertex shader source.
+        /// \param f_shader_source      The fragment shader source.
         ////////////////////////////////////////////////////////////////////////
         void create_from_sources(std::string const& v_shader_source,
                                  std::string const& f_shader_source);
@@ -83,53 +87,60 @@ class ShaderProgram {
         /// All preceeding draw calls on the given context will be affected by
         /// this shader.
         ///
-        /// \param context The context which should use this shader.
+        /// \param context             The context which should use this shader.
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor.
+        /// \brief Unuses the shader.
         ///
-        /// Creates a new (invalid) shader program.
+        /// Preceeding draw calls won't use this shader anymore.
         ////////////////////////////////////////////////////////////////////////
         void unuse(RenderContext const& context) const;
 
+        ///@{
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor.
+        /// \brief Sets an uniform value.
         ///
-        /// Creates a new (invalid) shader program.
+        /// Sets an uniform value of a currently used shader.
+        ///
+        /// \param context             The context which should use this shader.
+        /// \param uniform             The name of the uniform to be set.
+        /// \param value               The value to which the uniform should be
+        ///                            set.
         ////////////////////////////////////////////////////////////////////////
         void set_mat4(RenderContext const& context,
-                      std::string const& mat_name,
-                      math::mat4 const& mat);
+                      std::string const& uniform,
+                      math::mat4 const& value);
 
         void set_vec2(RenderContext const& context,
-                      std::string const& vec_name,
-                      math::vec2 const& vec);
+                      std::string const& uniform,
+                      math::vec2 const& value);
 
         void set_vec3(RenderContext const& context,
-                      std::string const& vec_name,
-                      math::vec3 const& vec);
+                      std::string const& uniform,
+                      math::vec3 const& value);
 
         void set_color3f(RenderContext const& context,
-                         std::string const& color_name,
+                      std::string const& uniform,
                       Color3f const& color);
 
         void set_vec4(RenderContext const& context,
-                      std::string const& vec_name,
-                      math::vec4 const& vec);
+                      std::string const& uniform,
+                      math::vec4 const& value);
 
         void set_sampler2D(RenderContext const& context,
-                           std::string const& sampler_name,
-                           Texture const& sampler);
+                      std::string const& uniform,
+                      Texture const& value);
 
         void set_float(RenderContext const& context,
-                       std::string const& float_name,
-                       float value);
+                      std::string const& uniform,
+                      float value);
 
         void set_int(RenderContext const& context,
-                     std::string const& int_name,
-                     int value);
+                      std::string const& uniform,
+                      int value);
+        ///@}
 
     private:
 

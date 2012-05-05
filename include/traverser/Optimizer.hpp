@@ -35,36 +35,40 @@ class SceneGraph;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class is used to convert the scengraph to a (opimized) sequence.
 ///
+/// It serializes the scene graph.
 ////////////////////////////////////////////////////////////////////////////////
 class Optimizer {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs an Optimizer.
         ////////////////////////////////////////////////////////////////////////
         Optimizer();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Destructor.
         ///
         /// This destroys an Optimizer.
         ////////////////////////////////////////////////////////////////////////
         virtual ~Optimizer();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Takes the Scengraph and processes geometry, light and camera lists.
+        /// \brief Takes the Scengraph and processes geometry, light and camera
+        ///        lists.
         ///
-        ///\param scene_graph          The SceneGraph to be processed.
+        /// \param scene_graph          The SceneGraph to be processed.
+        /// \param render_mask          The mask to be applied to the nodes of
+        ///                             the graph.
         ////////////////////////////////////////////////////////////////////////
         void check(SceneGraph const* scene_graph,
                    RenderMask const& render_mask);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Returns the optimized scene.
         ///
-        /// This destroys an Optimizer.
+        /// \return An OptimizedScene of the current scene graph.
         ////////////////////////////////////////////////////////////////////////
         OptimizedScene const& get_data() const;
 

@@ -32,23 +32,37 @@
 namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief Stores information on a light for rendering.
+/// \brief RenderMasks are used to display only parts of a scene graph.
 ///
+/// A RenderMask is a string like "floor & lights". This RenderMask will only
+/// display nodes which are in both groups; "floor" and "lights" --- all other
+/// nodes are discarded. If the mask is "floor | lights" all nodes which are in
+/// one (or both) groups are shown. Supported operators are:
+/// & --- and
+/// | --- or
+/// ! --- not
+/// ( --- opening parenthesis
+/// ) --- closing parenthesis
+/// Whitespaces are ignored and all other characters are treated as group names.
 ////////////////////////////////////////////////////////////////////////////////
 class RenderMask {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs an RenderMask.
+        ///
+        /// \param render_mask      The RenderMask's string representation.
         ////////////////////////////////////////////////////////////////////////
         RenderMask(std::string const& render_mask);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Checks a given list of groups against this mask.
         ///
-        /// This destroys an Optimizer.
+        /// \param groups           A set of groups.
+        /// \return                 true, if the given list of groups is
+        ///                         supported by this RenderMask.
         ////////////////////////////////////////////////////////////////////////
         bool check(std::set<std::string> const& groups) const;
 

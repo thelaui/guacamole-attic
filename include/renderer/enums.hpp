@@ -27,18 +27,20 @@
 namespace gua {
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief A database for accessing data.
+    /// \brief Eye of a camera.
     ///
-    ///
+    /// An enumeration used for determining from which point of view a scene
+    /// has to be rendered. Either from the left eye of a camera, from the
+    /// right or from the exact camera position.
     ////////////////////////////////////////////////////////////////////////////
     enum CameraMode { CENTER,
-                       LEFT,
-                       RIGHT };
+                      LEFT,
+                      RIGHT };
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief A database for accessing data.
+    /// \brief Stereo mode for a pipeline.
     ///
-    ///
+    /// Determines how two stereo images should be mapped to each other.
     ////////////////////////////////////////////////////////////////////////////
     enum StereoMode { MONO,
                       SIDE_BY_SIDE,

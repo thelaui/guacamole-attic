@@ -30,9 +30,11 @@
 namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief A database for accessing data.
+/// \brief A class representing a warp matrix.
 ///
-///
+/// Warp matrices are used to align colors of pixels of an projected image,
+/// when the projecting beamers for the colors red, green and blue don't
+/// overlap exactly.
 ////////////////////////////////////////////////////////////////////////////////
 class WarpMatrix : public Texture {
     public:
@@ -40,21 +42,23 @@ class WarpMatrix : public Texture {
         ////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor.
         ///
-        /// Creates a new (invalid) shader program.
+        /// Creates a new (invalid) WarpMatrix.
         ////////////////////////////////////////////////////////////////////////
         WarpMatrix();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor.
+        /// \brief Constructor.
         ///
-        /// Creates a new (invalid) shader program.
+        /// Creates a new WarpMatrix from a given path to a warp matrix file.
+        ///
+        /// \param file_name            Path to a warp matrix file.
         ////////////////////////////////////////////////////////////////////////
         WarpMatrix(std::string const& file_name);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor.
+        /// \brief Destructor.
         ///
-        /// Creates a new (invalid) shader program.
+        /// Clears all associated buffers.
         ////////////////////////////////////////////////////////////////////////
         ~WarpMatrix();
 

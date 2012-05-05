@@ -30,9 +30,9 @@
 namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief A database for accessing data.
+/// \brief Vertex shader source.
 ///
-///
+/// Vertex shader for displaying buffers on fullscreen quads.
 ////////////////////////////////////////////////////////////////////////////////
 const std::string STEREO_VERTEX_SHADER = {
 "#version 330\n"\
@@ -50,9 +50,9 @@ const std::string STEREO_VERTEX_SHADER = {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief A database for accessing data.
+/// \brief Fragment shader source.
 ///
-///
+/// Fragment shader for displaying buffers on fullscreen quads.
 ////////////////////////////////////////////////////////////////////////////////
 const std::string STEREO_FRAGMENT_SHADER = {
 "#version 330\n"\
@@ -86,9 +86,10 @@ const std::string STEREO_FRAGMENT_SHADER = {
 };
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief A database for accessing data.
+/// \brief Fragment shader source.
 ///
-///
+/// Fragment shader for displaying buffers on fullscreen quads. The colors are
+/// warped according to the warp matrices.
 ////////////////////////////////////////////////////////////////////////////////
 const std::string STEREO_FRAGMENT_SHADER_WARPED = {
 "#version 330\n"\
@@ -171,8 +172,6 @@ const std::string STEREO_FRAGMENT_SHADER_WARPED = {
 "} \n"\
 
 };
-
-
 
 }
 

@@ -36,24 +36,33 @@ namespace gua {
 class RenderContext;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief A database for accessing data.
+/// \brief A class used for writing text on FBOs.
 ///
-///
+/// It can write some predefined strings and information on a given FBO.
 ////////////////////////////////////////////////////////////////////////////////
 class TextRenderer {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor.
+        /// \brief Constructor.
         ///
-        /// Creates a new (invalid) shader program.
+        /// Creates a new TextRenderer.
+        ///
+        /// \param context              The context to which this renderer
+        ///                             belongs.
         ////////////////////////////////////////////////////////////////////////
         TextRenderer(RenderContext const& context);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor.
+        /// \brief Draws the FPS on the FBO.
         ///
-        /// Creates a new (invalid) shader program.
+        /// Draws the frames per second on the top left corner of the FBO.
+        ///
+        /// \param context              The context to which this renderer
+        ///                             belongs.
+        /// \param target               The target framebuffer object.
+        /// \param application_fps      The amount of fps of the application.
+        /// \param rendering_fps        The amount of fps of the rendering loop.
         ////////////////////////////////////////////////////////////////////////
         void render_fps(RenderContext const& context,
                         FrameBufferObject& target,

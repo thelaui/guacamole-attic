@@ -69,13 +69,13 @@ Texture::~Texture() {}
 ////////////////////////////////////////////////////////////////////////////////
 
 void Texture::
-bind(RenderContext const& context, int texture_type) const {
+bind(RenderContext const& context, int position) const {
 
     if (textures_.size() <= context.id || textures_[context.id] == 0)
         upload_to(context);
 
     context.render_context->bind_texture(
-              textures_[context.id], sampler_states_[context.id], texture_type);
+              textures_[context.id], sampler_states_[context.id], position);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

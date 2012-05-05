@@ -42,9 +42,12 @@ class TextureBase: public DataBase<Texture>, public Singleton<TextureBase> {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Default constructor.
+        /// \brief Pre-loads some textures.
         ///
-        /// Creates a new (invalid) shader program.
+        /// This method loads textures to the data base.
+        ///
+        /// \param path_to_textures     An absolute or relative path to the
+        ///                             directory containing texture files.
         ////////////////////////////////////////////////////////////////////////
         static void load_textures_from(std::string const& path_to_textures);
 
