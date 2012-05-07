@@ -26,6 +26,7 @@
 
 // guacamole headers
 #include "utils/debug.hpp"
+#include "utils/Profiler.hpp"
 #include "utils/string_utils.hpp"
 #include "renderer/Geometry.hpp"
 #include "renderer/Texture.hpp"

@@ -46,6 +46,7 @@
 #include "utils/math.hpp"
 #include "utils/randomizer.hpp"
 #include "utils/string_utils.hpp"
+#include "utils/Profiler.hpp"
 
 namespace gua {
 

@@ -27,6 +27,7 @@
 // guacamole headers
 #include "renderer/GenericRenderPass.hpp"
 #include "utils/debug.hpp"
+#include "utils/Profiler.hpp"
 #include "renderer/TextureBase.hpp"
 #include "renderer/WarpMatrix.hpp"
 

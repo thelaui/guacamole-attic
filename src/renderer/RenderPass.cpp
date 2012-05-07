@@ -32,6 +32,7 @@
 #include "renderer/MaterialBase.hpp"
 #include "traverser/Optimizer.hpp"
 #include "utils/debug.hpp"
+#include "utils/Profiler.hpp"
 
 namespace gua {
 
@@ -214,6 +215,7 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
         // update light data uniform block
         if (scene.lights_.size() > 0) {
 
+
             if (!light_information_) {
                 light_information_ =
                 new scm::gl::uniform_block<LightInformation>(ctx.render_device);
@@ -253,6 +255,8 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
         }
 
         for (auto& core: scene.nodes_) {
+
+            gua::Profiler::Timer t("geometry");
 
             auto geometry = GeometryBase::instance()->get(core.geometry_);
             auto material = MaterialBase::instance()->get(core.material_);

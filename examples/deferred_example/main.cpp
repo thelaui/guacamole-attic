@@ -95,6 +95,8 @@ int main(int argc, char** argv) {
     gua::TextureBase::load_textures_from("data/textures/");
     gua::MaterialBase::load_materials_from("data/materials/");
 
+    gua::Profiler::enable(true);
+
     // setup scene
     gua::SceneGraph graph;
 
@@ -138,16 +140,19 @@ int main(int argc, char** argv) {
 
     // application loop
     while (true) {
-        renderer.queue_draw(&graph);
-
         float time(timer.get_elapsed());
 
         for (int i=0; i<lights.size(); ++i) {
             lights[i].translate(0, std::sin(time*(i*0.1 + 0.5))*0.001, 0);
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
         graph["/screen"].rotate(0.03, 0, 1, 0);
+
+        renderer.queue_draw(&graph);
+
+        gua::Profiler::update(100);
+        gua::Profiler::print_specific({"lights", "geometry"});
     }
 
     return 0;
