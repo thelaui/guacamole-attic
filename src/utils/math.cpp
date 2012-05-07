@@ -21,16 +21,23 @@
 /// \brief Implementation of the math utilities.
 ////////////////////////////////////////////////////////////////////////////////
 
+// header
 #include "utils/math.hpp"
 
+// external headers
 #include <iostream>
 
 namespace gua {
 
-math::mat4 const math::compute_frustum(math::vec4 const& eye_position, math::mat4 const& screen_transform,
-                                       float near_plane, float far_plane) {
+////////////////////////////////////////////////////////////////////////////////
 
-    math::vec4 relative_eye_position(scm::math::inverse(screen_transform) * eye_position);
+math::mat4 const math::
+compute_frustum(math::vec4 const& eye_position, 
+                math::mat4 const& screen_transform,
+                float near_plane, float far_plane) {
+
+    math::vec4 relative_eye_position(scm::math::inverse(screen_transform) 
+                                     * eye_position);
 
     float d(relative_eye_position[2]);
     float ox(-relative_eye_position[0]);
@@ -49,5 +56,7 @@ math::mat4 const math::compute_frustum(math::vec4 const& eye_position, math::mat
 
     return frustum;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

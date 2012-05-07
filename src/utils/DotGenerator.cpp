@@ -21,23 +21,33 @@
 /// \brief A utility class to generate DOT-files from a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "utils/DotGenerator.hpp"
 
+// guacamole headers
 #include "scenegraph/SceneGraph.hpp"
 #include "scenegraph/Iterator.hpp"
 #include "cores/GeometryCore.hpp"
 
+// external headers
 #include <fstream>
 #include <sstream>
 #include <map>
 
 namespace gua {
 
-DotGenerator::DotGenerator():
+////////////////////////////////////////////////////////////////////////////////
+
+DotGenerator::
+DotGenerator():
     parse_data_(),
     graph_name_() {}
 
-void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name) {
+////////////////////////////////////////////////////////////////////////////////
+
+void DotGenerator::
+parse_graph(SceneGraph const* graph, std::string const& name) {
+
     graph_name_ = name;
     parse_data_ += "graph " + graph_name_ + " { \n";
 
@@ -80,10 +90,13 @@ void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name)
                     fillcolor += " \"#55DDFF\"";
                     break;
                 case Core::GEOMETRY: {
-                    auto geometry_core(reinterpret_cast<GeometryCore*>(current_core));
+                    auto geometry_core(
+                                 reinterpret_cast<GeometryCore*>(current_core));
                     fillcolor += " \"#EEEEEE\"";
-                    parse_data_ +=  "| geometry: " + geometry_core->get_geometry()
-                                +   "| material: " + geometry_core->get_material();
+                    parse_data_ +=  "| geometry: " 
+                                + geometry_core->get_geometry()
+                                +   "| material: " 
+                                + geometry_core->get_material();
                 } break;
 
                 default:;
@@ -105,11 +118,17 @@ void DotGenerator::parse_graph(SceneGraph const* graph, std::string const& name)
     parse_data_ += "} \n";
 }
 
-void DotGenerator::save(std::string const& path_to_file) const {
+////////////////////////////////////////////////////////////////////////////////
+
+void DotGenerator::
+save(std::string const& path_to_file) const {
+
     std::fstream file;
     file.open(path_to_file + graph_name_ + ".gv", std::fstream::out);
     file.write(parse_data_.c_str(), parse_data_.size());
     file.close();
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

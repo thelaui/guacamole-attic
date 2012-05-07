@@ -21,32 +21,49 @@
 /// \brief Implementation of the Timer class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "utils/Timer.hpp"
 
+// external headers
 #include <thread>
 
 namespace gua {
 
-void Timer::start() {
+////////////////////////////////////////////////////////////////////////////////
+
+void Timer::
+start() {
+
     start_ = get_now();
 }
 
-void Timer::reset() {
+////////////////////////////////////////////////////////////////////////////////
+
+void Timer::
+reset() {
+
     start_ = get_now();
 }
 
-double Timer::get_elapsed() const {
+////////////////////////////////////////////////////////////////////////////////
+
+double Timer::
+get_elapsed() const {
+
     return get_now() - start_;
 }
 
-double Timer::get_now() {
+////////////////////////////////////////////////////////////////////////////////
+
+double Timer::
+get_now() {
+
     auto time = std::chrono::system_clock::now();
     auto since_epoch = time.time_since_epoch();
     return std::chrono::duration_cast<std::chrono::milliseconds>(since_epoch).count()*0.001;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 }
-
-
-
 

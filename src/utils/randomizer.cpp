@@ -21,39 +21,68 @@
 /// \brief Implementation of the randomizer utility.
 ////////////////////////////////////////////////////////////////////////////////
 
+// header
 #include "utils/randomizer.hpp"
 
+// external headers
 #include <cstdlib>
 #include <ctime>
 
 namespace gua {
 
+////////////////////////////////////////////////////////////////////////////////
+
 namespace {
 
-    unsigned int init_seed() {
+////////////////////////////////////////////////////////////////////////////////
+
+    unsigned int 
+    init_seed() {
+
         unsigned int seed = static_cast<unsigned int>(std::time(NULL));
         std::srand(seed);
         return seed;
     }
 
     unsigned int global_seed = init_seed();
+
+////////////////////////////////////////////////////////////////////////////////
+
 }
 
-void randomizer::set_seed(unsigned int seed) {
+////////////////////////////////////////////////////////////////////////////////
+
+void randomizer::
+set_seed(unsigned int seed) {
+
     std::srand(seed);
     global_seed = seed;
 }
 
-unsigned int randomizer::get_seed() {
+////////////////////////////////////////////////////////////////////////////////
+
+unsigned int randomizer::
+get_seed() {
+
     return global_seed;
 }
 
-float randomizer::random(float begin, float end) {
+////////////////////////////////////////////////////////////////////////////////
+
+float randomizer::
+random(float begin, float end) {
+
     return static_cast<float>(std::rand()) / RAND_MAX * (end - begin) + begin;
 }
 
-int randomizer::random(int begin, int end) {
+////////////////////////////////////////////////////////////////////////////////
+
+int randomizer::
+random(int begin, int end) {
+
     return std::rand() % (end - begin + 1) + begin;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
