@@ -34,17 +34,34 @@ namespace gua {
 scm::gl::util::profiling_host_ptr Profiler::
 profile_host_ = scm::make_shared<scm::gl::util::profiling_host>();
 
+std::set<std::string> Profiler::
+timer_names_;
+
+int Profiler::
+interval_ = 500;
+
+int Profiler::
+frame_count_ = 0;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 Profiler::Timer::
 Timer(std::string const& name):
-    timer_(*Profiler::profile_host_, name) {}
+    timer_(*Profiler::profile_host_, name) {
+
+    if (Profiler::profile_host_->enabled())
+        Profiler::timer_names_.insert(name);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 Profiler::Timer::
 Timer(std::string const& name, RenderContext const& context):
-    timer_(*Profiler::profile_host_, name, context.render_context) {}
+    timer_(*Profiler::profile_host_, name, context.render_context) {
+
+    if (Profiler::profile_host_->enabled())
+        Profiler::timer_names_.insert(name);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -54,36 +71,57 @@ enable(bool enable) {
     profile_host_->enabled(enable);
 }
 
-void Profiler::
-update(int interval) {
+////////////////////////////////////////////////////////////////////////////////
 
-    profile_host_->update(interval);
+void Profiler::
+update() {
+
+    profile_host_->update(interval_);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//void Profiler::
-//print_all() {
-//
-//    if (profile_host_->enabled()) {
-//
-//    }
-//}
+void Profiler::
+set_interval(int interval) {
+
+    interval_ = interval;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void Profiler::
+print_all() {
+
+    if (profile_host_->enabled() && ++frame_count_ > interval_) {
+        for (auto& name: timer_names_) {
+            double time(scm::gl::util::profiling_result(
+                                    profile_host_, name,
+                                    scm::time::time_io(
+                                        scm::time::time_io::msec, 3)).time());
+
+            PROFILING("%s:\t %3.3f", name.c_str(), time);
+        }
+
+        frame_count_ = 0;
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 void Profiler::
 print_specific(std::vector<std::string> const& names) {
 
-    if (profile_host_->enabled()) {
+    if (profile_host_->enabled() && ++frame_count_ > interval_) {
         for (auto& name: names) {
             double time(scm::gl::util::profiling_result(
                                     profile_host_, name,
                                     scm::time::time_io(
                                         scm::time::time_io::msec, 3)).time());
 
-            PROFILING("%s: %3.3f", name.c_str(), time);
+            PROFILING("%s:\t %3.3f", name.c_str(), time);
         }
+
+        frame_count_ = 0;
     }
 }
 

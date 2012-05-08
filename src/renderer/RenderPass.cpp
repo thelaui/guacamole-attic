@@ -215,6 +215,7 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
         // update light data uniform block
         if (scene.lights_.size() > 0) {
 
+            gua::Profiler::Timer t("RenderPass: Uploading lights");
 
             if (!light_information_) {
                 light_information_ =
@@ -256,7 +257,7 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
         for (auto& core: scene.nodes_) {
 
-            gua::Profiler::Timer t("geometry");
+            gua::Profiler::Timer t("RenderPass: Drawing geometry");
 
             auto geometry = GeometryBase::instance()->get(core.geometry_);
             auto material = MaterialBase::instance()->get(core.material_);
@@ -322,6 +323,9 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
     // draw fps on the screen
     if (draw_fps) {
+
+        gua::Profiler::Timer t("RenderPass: Drawing fps");
+
         if (!text_renderer_)
             text_renderer_ = new TextRenderer(pipeline_->get_context());
 

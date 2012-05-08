@@ -68,7 +68,7 @@
 # define DEBUG(...)
 # endif
 
-# define PROFILING(_fmt, ...) printf(PRINT_PURPLE "[ PROFILING ]"WHERE_STR PRINT_RESET _fmt "\n", WHERE_ARG, ##__VA_ARGS__)
+# define PROFILING(_fmt, ...) printf(PRINT_PURPLE "[PROFILING] " PRINT_RESET _fmt "\n", ##__VA_ARGS__)
 # ifndef PROFILING
 # define PROFILING(...)
 # endif

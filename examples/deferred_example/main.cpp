@@ -151,8 +151,8 @@ int main(int argc, char** argv) {
 
         renderer.queue_draw(&graph);
 
-        gua::Profiler::update(100);
-        gua::Profiler::print_specific({"lights", "geometry"});
+        gua::Profiler::update();
+        gua::Profiler::print_all();
     }
 
     return 0;

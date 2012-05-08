@@ -53,15 +53,21 @@ class Profiler {
 
         static void enable(bool enable);
 
-        static void update(int interval = 100);
+        static void set_interval(int interval);
 
-       // static void print_all();
+        static void update();
+
+        static void print_all();
         static void print_specific(std::vector<std::string> const& names);
 
         friend class Timer;
 
     private:
         static scm::gl::util::profiling_host_ptr profile_host_;
+        static std::set<std::string> timer_names_;
+
+        static int interval_;
+        static int frame_count_;
 };
 
 }
