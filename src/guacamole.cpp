@@ -21,12 +21,12 @@
 /// \brief The init file of guacamole.
 ////////////////////////////////////////////////////////////////////////////////
 
-// class header
+// header
 #include "guacamole.hpp"
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace gua {
-    void 
+    void
     init(int argc, char** argv) {
         static scm::shared_ptr<scm::core> scm_core(new scm::core(argc, argv));
     }
