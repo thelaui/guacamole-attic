@@ -83,8 +83,8 @@ set_name(std::string const& name) const {
 
     if (current_node_) {
         if (current_node_->get_name() == "/")
-            WARNING("You are trying to set the name of the root node, which is"
-                    " not allowed!");
+            WARNING("You are trying to set the name of the root node, which"
+                    " is not allowed!");
         else current_node_->set_name(name);
     }
 }
@@ -265,8 +265,6 @@ operator << (Core* core) {
 void SceneGraph::Iterator::
 find_next_node_depth() {
 
-//    gua::Profiler::Timer t("find_next_node_depth");
-
     if (!current_node_->get_children().empty()) {
         current_node_ = current_node_->get_children().front();
         ++current_depth_;
@@ -302,7 +300,9 @@ find_next_node_breadth() {
     }
 
     auto end(breadth_nodes_[current_depth_].end());
-    for (auto node(breadth_nodes_[current_depth_].begin()); node != end; ++node) {
+    for (auto node(breadth_nodes_[current_depth_].begin());
+              node != end; ++node) {
+
         if (*node == current_node_) {
             if (++node != end) {
                 current_node_ = *node;
@@ -320,7 +320,9 @@ gua::SceneGraph::Node* SceneGraph::Iterator::
 get_neighbour(Node* to_be_checked) {
 
     auto end(to_be_checked->get_parent()->get_children().end());
-    for (auto child(to_be_checked->get_parent()->get_children().begin()); child != end; ++child) {
+    for (auto child(to_be_checked->get_parent()->get_children().begin());
+              child != end; ++child) {
+
         if (*child == to_be_checked) {
             if (++child != end) {
                 return *child;

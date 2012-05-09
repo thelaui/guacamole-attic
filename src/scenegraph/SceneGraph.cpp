@@ -216,7 +216,8 @@ find_node(std::string const& path_to_node, std::string const& path_to_start,
     PathParser parser;
     parser.parse(path_to_node);
 
-    Node* to_be_found(path_to_start == working_node_->get_name() ? working_node_ : find_node(path_to_start));
+    Node* to_be_found(path_to_start == working_node_->get_name()
+                      ? working_node_ : find_node(path_to_start));
 
     for (auto const& node_name : parser.get_parsed_path()) {
 
@@ -230,8 +231,8 @@ find_node(std::string const& path_to_node, std::string const& path_to_start,
         if (to_be_found->get_name() != node_name) {
             if (!add_missing_nodes) return NULL;
 
-            MESSAGE("A node with the name %s does not exist! Creating it with default parameters.",
-                    node_name.c_str());
+            MESSAGE("A node with the name %s does not exist! Creating"
+                    " it with default parameters.", node_name.c_str());
             Node* new_child(new Node(node_name));
             to_be_found->add_child(new_child);
             to_be_found = new_child;
@@ -256,9 +257,9 @@ has_child(Node* parent, std::string const& child_name) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-std::ostream& 
+std::ostream&
 operator<<(std::ostream& os, SceneGraph const& graph) {
-    
+
     for (SceneGraph::Iterator it(graph.begin()); it!=graph.end(); ++it) {
         for (int i(0); i<it.get_depth(); ++i)
             os << "  ";
