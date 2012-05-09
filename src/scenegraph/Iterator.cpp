@@ -27,6 +27,7 @@
 
 // guacamole headers
 #include "scenegraph/Node.hpp"
+#include "utils/Profiler.hpp"
 #include "utils/debug.hpp"
 
 namespace gua {
@@ -82,7 +83,8 @@ set_name(std::string const& name) const {
 
     if (current_node_) {
         if (current_node_->get_name() == "/")
-            WARNING("You are trying to set the name of the root node, which is not allowed!");
+            WARNING("You are trying to set the name of the root node, which is"
+                    " not allowed!");
         else current_node_->set_name(name);
     }
 }
@@ -262,6 +264,8 @@ operator << (Core* core) {
 
 void SceneGraph::Iterator::
 find_next_node_depth() {
+
+//    gua::Profiler::Timer t("find_next_node_depth");
 
     if (!current_node_->get_children().empty()) {
         current_node_ = current_node_->get_children().front();

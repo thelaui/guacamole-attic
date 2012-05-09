@@ -15,6 +15,9 @@ examples/deferred_example/obj/*
 examples/deferred_example/bin/*
 examples/tracking_example/obj/*
 examples/tracking_example/bin/*
+examples/big_scenegraph_example/bin/*
+examples/big_scenegraph_example/obj/*
+examples/big_scenegraph_example/data/objects/audi.obj
 examples/rendering_demo
 examples/screen_demo
 examples/simple_demo

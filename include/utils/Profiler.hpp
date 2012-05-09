@@ -57,8 +57,8 @@ class Profiler {
 
         static void update();
 
-        static void print_all();
-        static void print_specific(std::vector<std::string> const& names);
+        static void print();
+        static void print(std::vector<std::string> const& names);
 
         friend class Timer;
 

@@ -93,9 +93,9 @@ parse_graph(SceneGraph const* graph, std::string const& name) {
                     auto geometry_core(
                                  reinterpret_cast<GeometryCore*>(current_core));
                     fillcolor += " \"#EEEEEE\"";
-                    parse_data_ +=  "| geometry: " 
+                    parse_data_ +=  "| geometry: "
                                 + geometry_core->get_geometry()
-                                +   "| material: " 
+                                +   "| material: "
                                 + geometry_core->get_material();
                 } break;
 
@@ -125,8 +125,14 @@ save(std::string const& path_to_file) const {
 
     std::fstream file;
     file.open(path_to_file + graph_name_ + ".gv", std::fstream::out);
-    file.write(parse_data_.c_str(), parse_data_.size());
-    file.close();
+
+    if (file.good()) {
+        file.write(parse_data_.c_str(), parse_data_.size());
+        file.close();
+    } else {
+        DEBUG("Failed to save dot graph: Failed to open file \"%s\"",
+              (path_to_file + graph_name_ + ".gv").c_str());
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

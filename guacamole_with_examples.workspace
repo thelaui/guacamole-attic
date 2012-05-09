@@ -11,9 +11,10 @@
 			<Depends filename="guacamole_rendering.cbp" />
 			<Depends filename="guacamole_scenegraph.cbp" />
 		</Project>
-		<Project filename="examples/tracking_example/tracking_example.cbp" active="1">
+		<Project filename="examples/tracking_example/tracking_example.cbp">
 			<Depends filename="guacamole_scenegraph.cbp" />
 			<Depends filename="guacamole_rendering.cbp" />
 		</Project>
+		<Project filename="examples/big_scenegraph_example/big_scenegraph_example.cbp" active="1" />
 	</Workspace>
 </CodeBlocks_workspace_file>

@@ -90,16 +90,17 @@ set_interval(int interval) {
 ////////////////////////////////////////////////////////////////////////////////
 
 void Profiler::
-print_all() {
+print() {
 
     if (profile_host_->enabled() && ++frame_count_ > interval_) {
-        for (auto& name: timer_names_) {
-            double time(scm::gl::util::profiling_result(
-                                    profile_host_, name,
-                                    scm::time::time_io(
-                                        scm::time::time_io::msec, 3)).time());
 
-            PROFILING("%s:\t %3.3f", name.c_str(), time);
+        PROFILING("#### start of profiling information ####");
+
+        for (auto& name: timer_names_) {
+            std::cout << name << ": " << scm::gl::util::profiling_result(
+                profile_host_, name, scm::time::time_io(
+                                                scm::time::time_io::msec, 3))
+            << std::endl;
         }
 
         frame_count_ = 0;
@@ -109,16 +110,17 @@ print_all() {
 ////////////////////////////////////////////////////////////////////////////////
 
 void Profiler::
-print_specific(std::vector<std::string> const& names) {
+print(std::vector<std::string> const& names) {
 
     if (profile_host_->enabled() && ++frame_count_ > interval_) {
-        for (auto& name: names) {
-            double time(scm::gl::util::profiling_result(
-                                    profile_host_, name,
-                                    scm::time::time_io(
-                                        scm::time::time_io::msec, 3)).time());
 
-            PROFILING("%s:\t %3.3f", name.c_str(), time);
+        PROFILING("#### start of profiling information ####");
+
+        for (auto& name: names) {
+            std::cout << name << ": " << scm::gl::util::profiling_result(
+                profile_host_, name, scm::time::time_io(
+                                                scm::time::time_io::msec, 3))
+            << std::endl;
         }
 
         frame_count_ = 0;

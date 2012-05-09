@@ -180,8 +180,6 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
         // update light data uniform block
         if (scene.lights_.size() > 0) {
 
-            gua::Profiler::Timer t("FullscreenPass: Uploading lights");
-
             if (!light_information_) {
                 light_information_ =
                             new scm::gl::uniform_block<LightInformation>(
@@ -222,8 +220,6 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
             ctx.render_context->bind_uniform_buffer(
                                         light_information_->block_buffer(), 0);
         }
-
-        gua::Profiler::Timer t("FullscreenPass: Drawing geometry");
 
         material->use(ctx);
 
@@ -292,8 +288,6 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
     // draw fps on the screen
     if (draw_fps) {
-
-        gua::Profiler::Timer t("FullscreenPass: Drawing fps");
 
         if (!text_renderer_)
             text_renderer_ = new TextRenderer(ctx);

@@ -215,8 +215,6 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
         // update light data uniform block
         if (scene.lights_.size() > 0) {
 
-            gua::Profiler::Timer t("RenderPass: Uploading lights");
-
             if (!light_information_) {
                 light_information_ =
                 new scm::gl::uniform_block<LightInformation>(ctx.render_device);
@@ -256,8 +254,6 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
         }
 
         for (auto& core: scene.nodes_) {
-
-            gua::Profiler::Timer t("RenderPass: Drawing geometry");
 
             auto geometry = GeometryBase::instance()->get(core.geometry_);
             auto material = MaterialBase::instance()->get(core.material_);
@@ -324,8 +320,6 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
     // draw fps on the screen
     if (draw_fps) {
 
-        gua::Profiler::Timer t("RenderPass: Drawing fps");
-
         if (!text_renderer_)
             text_renderer_ = new TextRenderer(pipeline_->get_context());
 
@@ -345,7 +339,6 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
     }
 
     // return the buffer and set the already-rendered-flag
-
     if (mode == CENTER) {
         rendererd_center_eye_ = true;
         return center_eye_buffers_[name];
