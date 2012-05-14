@@ -27,7 +27,6 @@
 // guacamole headers
 #include "renderer/GenericRenderPass.hpp"
 #include "utils/debug.hpp"
-#include "utils/Profiler.hpp"
 #include "renderer/TextureBase.hpp"
 #include "renderer/WarpMatrix.hpp"
 
@@ -45,7 +44,9 @@ RenderPipeline(RenderWindow::Description const& window):
     window_description_(window),
     passes_(),
     current_graph_(NULL),
-    application_fps_(0.f), rendering_fps_(0.f) {}
+    application_fps_(0.f), rendering_fps_(0.f) {
+
+    }
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -145,47 +146,44 @@ get_rendering_fps() const {
 void RenderPipeline::
 process(SceneGraph* graph, float application_fps, float rendering_fps) {
 
-    {
-        current_graph_ = graph;
-        application_fps_ = application_fps;
-        rendering_fps_ = rendering_fps;
+    current_graph_ = graph;
+    application_fps_ = application_fps;
+    rendering_fps_ = rendering_fps;
 
-        if(!window_) {
-            window_ = new RenderWindow(window_description_);
-            create_buffers();
-        }
-
-        gua::Profiler::Timer t("rendering", get_context());
-
-        window_->set_active(true);
-        window_->start_frame();
-
-        auto it(passes_.find(final_pass_));
-
-        if (it != passes_.end()) {
-
-            auto pass(it->second);
-
-            if (window_description_.stereo_mode_ == MONO) {
-                window_->display_mono(pass->get_buffer(final_buffer_,CENTER, true));
-            } else {
-                window_->display_stereo(pass->get_buffer(final_buffer_, LEFT, true),
-                                        pass->get_buffer(final_buffer_,RIGHT, true),
-                                        window_description_.stereo_mode_);
-            }
-        } else {
-            WARNING("Failed to display buffer \"%s\" from pass \"%s\": A pass "
-                    "with this name does not exist!", final_buffer_.c_str(),
-                    final_pass_.c_str());
-        }
+    if(!window_) {
+        window_ = new RenderWindow(window_description_);
+        create_buffers();
     }
 
-    gua::Profiler::Timer t("swap buffers", get_context());
+    window_->set_active(true);
+    window_->start_frame();
+
+    auto it(passes_.find(final_pass_));
+
+    if (it != passes_.end()) {
+
+        auto pass(it->second);
+
+        if (window_description_.stereo_mode_ == MONO) {
+            window_->display_mono(pass->get_buffer(final_buffer_,CENTER, true));
+        } else {
+            window_->display_stereo(pass->get_buffer(final_buffer_, LEFT, true),
+                                    pass->get_buffer(final_buffer_,RIGHT, true),
+                                    window_description_.stereo_mode_);
+        }
+    } else {
+        WARNING("Failed to display buffer \"%s\" from pass \"%s\": A pass "
+                "with this name does not exist!", final_buffer_.c_str(),
+                final_pass_.c_str());
+    }
+
+    {
 
     window_->finish_frame();
 
     for (auto& pass: passes_)
         pass.second->flush();
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

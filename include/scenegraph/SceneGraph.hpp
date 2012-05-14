@@ -279,6 +279,7 @@ class SceneGraph {
         ///\return Iterator      An Iterator on the given Node.
         ////////////////////////////////////////////////////////////////////////
         Iterator operator [](std::string const& path_to_node);
+        SceneGraph const& operator= (SceneGraph const& rhs);
 
     private:
         Node *root_, *working_node_;

@@ -26,6 +26,7 @@
 
 // guacamole headers
 #include "renderer/RenderWindow.hpp"
+#include "utils/Profiler.hpp"
 
 // external headers
 #include <map>

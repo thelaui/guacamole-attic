@@ -146,7 +146,6 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
             }
         }
     }
-
     // we'll need these two very often now...
     OptimizedScene const& scene(optimizer.get_data());
     RenderContext const& ctx(pipeline_->get_context());
@@ -319,7 +318,6 @@ get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
 
     // draw fps on the screen
     if (draw_fps) {
-
         if (!text_renderer_)
             text_renderer_ = new TextRenderer(pipeline_->get_context());
 

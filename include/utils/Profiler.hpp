@@ -44,30 +44,34 @@ class Profiler {
 
         class Timer {
             public:
-                Timer(std::string const& name);
-                Timer(std::string const& name, RenderContext const& context);
+                Timer(Profiler const& profiler, std::string const& name);
+
+                Timer(Profiler const& profiler,
+                      std::string const& name, RenderContext const& context);
 
             private:
                 scm::gl::util::scoped_timer timer_;
         };
 
-        static void enable(bool enable);
+        Profiler();
 
-        static void set_interval(int interval);
+        void enable(bool enable);
 
-        static void update();
+        void set_interval(int interval);
 
-        static void print();
-        static void print(std::vector<std::string> const& names);
+        void update();
+
+        void print();
+        void print(std::vector<std::string> const& names);
 
         friend class Timer;
 
     private:
-        static scm::gl::util::profiling_host_ptr profile_host_;
-        static std::set<std::string> timer_names_;
+        scm::gl::util::profiling_host_ptr profile_host_;
+        mutable std::set<std::string> timer_names_;
 
-        static int interval_;
-        static int frame_count_;
+        int interval_;
+        int frame_count_;
 };
 
 }

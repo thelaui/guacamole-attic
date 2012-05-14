@@ -95,8 +95,6 @@ int main(int argc, char** argv) {
     gua::TextureBase::load_textures_from("data/textures/");
     gua::MaterialBase::load_materials_from("data/materials/");
 
-    gua::Profiler::enable(true);
-
     // setup scene
     gua::SceneGraph graph;
 
@@ -150,9 +148,6 @@ int main(int argc, char** argv) {
         graph["/screen"].rotate(0.03, 0, 1, 0);
 
         renderer.queue_draw(&graph);
-
-        gua::Profiler::update();
-        gua::Profiler::print_all();
     }
 
     return 0;

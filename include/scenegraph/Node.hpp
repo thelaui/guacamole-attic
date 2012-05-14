@@ -138,7 +138,7 @@ class SceneGraph::Node {
         ///
         /// \param groups    The names of the groups the Node will be added to.
         ////////////////////////////////////////////////////////////////////////
-        void add_to_groups(std::vector<std::string> const& groups);
+        void add_to_groups(std::set<std::string> const& groups);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Removes the Node from a group.

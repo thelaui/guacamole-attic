@@ -38,13 +38,14 @@ RenderClient::
 RenderClient(RenderPipeline* pipeline):
     draw_thread_(NULL),
     render_pipeline_(pipeline),
-    graph_copy_(),
+    graph_copy1_(),
+    graph_copy2_(),
     application_fps_(0.f), rendering_fps_(0.f),
     application_frame_count_(0), rendering_frame_count_(0),
     application_timer_(), rendering_timer_(),
-    rendering_finished_(false),
-    render_mutex_(),
-    render_condition_() {}
+    rendering_copy1_(true),
+    new_graph_available_(false),
+    copy_mutex_() {}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -66,12 +67,10 @@ queue_draw(SceneGraph const* graph) {
         application_timer_.start();
         rendering_timer_.start();
 
-        graph_copy_ = *graph;
+        graph_copy1_ = *graph;
+        graph_copy2_ = *graph;
         draw_thread_ = new std::thread(&RenderClient::draw_loop, this);
     }
-
-    // lock rendering
-    std::unique_lock<std::mutex> lock(render_mutex_);
 
     if (++application_frame_count_ == 100) {
         application_fps_ = 100.f/application_timer_.get_elapsed();
@@ -79,12 +78,14 @@ queue_draw(SceneGraph const* graph) {
         application_frame_count_ = 0;
     }
 
-    if (rendering_finished_) {
-        graph_copy_ = *graph;
+    // lock rendering
+    std::unique_lock<std::mutex> lock(copy_mutex_);
+    new_graph_available_ = true;
 
-        rendering_finished_ = false;
-        // signal
-        render_condition_.notify_one();
+    if (rendering_copy1_) {
+        graph_copy2_ = *graph;
+    } else {
+        graph_copy1_ = *graph;
     }
 }
 
@@ -96,11 +97,14 @@ draw_loop() {
     while (true) {
 
         // render
-        render_pipeline_->process(
-                                &graph_copy_, application_fps_, rendering_fps_);
+        if (rendering_copy1_) {
+            render_pipeline_->process(
+                               &graph_copy1_, application_fps_, rendering_fps_);
+        } else {
+            render_pipeline_->process(
+                               &graph_copy2_, application_fps_, rendering_fps_);
+        }
 
-        // lock rendering
-        std::unique_lock<std::mutex> lock(render_mutex_);
 
         if (++rendering_frame_count_ == 100) {
             rendering_fps_ = 100.f/rendering_timer_.get_elapsed();
@@ -108,10 +112,13 @@ draw_loop() {
             rendering_frame_count_ = 0;
         }
 
-        rendering_finished_ = true;
+        // lock rendering
+        std::unique_lock<std::mutex> lock(copy_mutex_);
 
-        // unlock rendering and wait
-        render_condition_.wait(lock);
+        if (new_graph_available_) {
+            new_graph_available_ = false;
+            rendering_copy1_ = !rendering_copy1_;
+        }
     }
 }
 

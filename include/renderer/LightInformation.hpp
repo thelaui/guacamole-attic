@@ -32,7 +32,7 @@
 // external headers
 #include <string>
 
-#define GUA_MAX_LIGHT_COUNT 64
+#define GUA_MAX_LIGHT_COUNT 256
 
 namespace gua {
 

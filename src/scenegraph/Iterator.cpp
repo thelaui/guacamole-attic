@@ -99,7 +99,7 @@ add_to_group(std::string const& group) {
 }
 
 void SceneGraph::Iterator::
-add_to_groups(std::vector<std::string> const& groups) {
+add_to_groups(std::set<std::string> const& groups) {
 
     if (current_node_)
         current_node_->add_to_groups(groups);

@@ -31,37 +31,32 @@ namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-scm::gl::util::profiling_host_ptr Profiler::
-profile_host_ = scm::make_shared<scm::gl::util::profiling_host>();
-
-std::set<std::string> Profiler::
-timer_names_;
-
-int Profiler::
-interval_ = 500;
-
-int Profiler::
-frame_count_ = 0;
-
-////////////////////////////////////////////////////////////////////////////////
-
 Profiler::Timer::
-Timer(std::string const& name):
-    timer_(*Profiler::profile_host_, name) {
+Timer(Profiler const& profiler, std::string const& name):
+    timer_(*profiler.profile_host_, name) {
 
-    if (Profiler::profile_host_->enabled())
-        Profiler::timer_names_.insert(name);
+    if (profiler.profile_host_->enabled())
+        profiler.timer_names_.insert(name);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
 Profiler::Timer::
-Timer(std::string const& name, RenderContext const& context):
-    timer_(*Profiler::profile_host_, name, context.render_context) {
+Timer(Profiler const& profiler, std::string const& name,
+      RenderContext const& context):
+    timer_(*profiler.profile_host_, name, context.render_context) {
 
-    if (Profiler::profile_host_->enabled())
-        Profiler::timer_names_.insert(name);
+    if (profiler.profile_host_->enabled())
+        profiler.timer_names_.insert(name);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+Profiler::Profiler():
+    profile_host_(scm::make_shared<scm::gl::util::profiling_host>()),
+    timer_names_(),
+    interval_(500),
+    frame_count_(0) {}
 
 ////////////////////////////////////////////////////////////////////////////////
 

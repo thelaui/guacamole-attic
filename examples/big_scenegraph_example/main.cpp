@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
     gua::TextureBase::load_textures_from("data/textures/");
     gua::MaterialBase::load_materials_from("data/materials/");
 
-    gua::Profiler::enable(true);
+   // gua::Profiler::enable(true);
 
     // setup scene
     gua::SceneGraph graph;
@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
     // 3       436.604   1.736  112.189.000 Vertices  /    217 draw calls
     // 4     2.609.564  10.376              Vertices  /  1.297 draw calls
     // 5    15.647.324  62.216              Vertices  /  7.777 draw calls
-    setup_scene(graph, root_monkey, 5);
+    setup_scene(graph, root_monkey, 4);
 
     auto lights = add_lights(graph, 56);
 
@@ -150,19 +150,13 @@ int main(int argc, char** argv) {
 
     // application loop
     while (true) {
-        gua::Profiler::Timer t("main loop");
-
         double frame_time(timer.get_elapsed());
         time += frame_time;
         timer.reset();
 
-        {
-            gua::Profiler::Timer t("manipulate");
-
-            for (auto it(graph.begin()); it != graph.end(); ++it) {
-                if (it.get_core() && it.get_core()->get_type() == gua::Core::GEOMETRY)
-                    it.rotate(frame_time*3, 1, 1, 0);
-            }
+        for (auto it(graph.begin()); it != graph.end(); ++it) {
+            if (it.get_core() && it.get_core()->get_type() == gua::Core::GEOMETRY)
+                it.rotate(frame_time*3, 1, 1, 0);
         }
 
         for (int i=0; i<lights.size(); ++i) {
@@ -172,13 +166,7 @@ int main(int argc, char** argv) {
         graph["/root_ape"].rotate(15*frame_time, 0, 1, 0);
         graph["/screen"].rotate(20*frame_time, 0, 1, 0);
 
-        {
-            gua::Profiler::Timer t2("queue draw");
-            renderer.queue_draw(&graph);
-        }
-
-        gua::Profiler::update();
-        gua::Profiler::print();
+        renderer.queue_draw(&graph);
     }
 
     return 0;

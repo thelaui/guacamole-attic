@@ -121,7 +121,7 @@ add_to_group(std::string const& group) {
 ////////////////////////////////////////////////////////////////////////////////
 
 void SceneGraph::Node::
-add_to_groups(std::vector<std::string> const& groups) {
+add_to_groups(std::set<std::string> const& groups) {
 
     group_list_.insert(groups.begin(), groups.end());
 }
@@ -230,6 +230,7 @@ SceneGraph::Node* SceneGraph::Node::
 deep_copy() const {
 
     Node* copy = new Node(name_, transform_, core_);
+    copy->add_to_groups(group_list_);
 
     for (auto child: children_)
         copy->add_child(child->deep_copy());

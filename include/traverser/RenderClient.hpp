@@ -83,15 +83,16 @@ class RenderClient {
 
         std::thread* draw_thread_;
         RenderPipeline* render_pipeline_;
-        SceneGraph graph_copy_;
+        SceneGraph graph_copy1_;
+        SceneGraph graph_copy2_;
 
         float application_fps_, rendering_fps_;
         unsigned application_frame_count_, rendering_frame_count_;
         Timer application_timer_, rendering_timer_;
 
-        bool rendering_finished_;
-        std::mutex render_mutex_;
-        std::condition_variable render_condition_;
+        bool rendering_copy1_;
+        bool new_graph_available_;
+        std::mutex copy_mutex_;
 };
 
 }

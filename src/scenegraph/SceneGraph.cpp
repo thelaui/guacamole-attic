@@ -209,6 +209,19 @@ operator [](std::string const& path_to_node) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+SceneGraph const& SceneGraph::
+operator= (SceneGraph const& rhs) {
+
+    delete root_;
+
+    root_ = rhs.root_ ? rhs.root_->deep_copy() : NULL;
+    working_node_ = root_;
+
+    return *this;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 SceneGraph::Node* SceneGraph::
 find_node(std::string const& path_to_node, std::string const& path_to_start,
           bool add_missing_nodes) const {

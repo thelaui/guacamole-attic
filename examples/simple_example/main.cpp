@@ -40,7 +40,7 @@ std::vector<gua::SceneGraph::Iterator> add_lights(gua::SceneGraph& graph, int co
 
     std::vector<gua::SceneGraph::Iterator> lights(count);
 
-    auto sphere_core = new gua::GeometryCore("light_sphere", "bright");
+    auto sphere_core = new gua::GeometryCore("light_sphere", "light");
 
     for (int i(0); i<count; ++i) {
         auto light_core = new gua::LightCore(gua::Color3f::random());
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
     ape.scale(0.5, 0.5, 0.5);
     ape.translate(0, 1, 0);
 
-    auto lights = add_lights(graph, 36);
+    auto lights = add_lights(graph, 64);
 
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
