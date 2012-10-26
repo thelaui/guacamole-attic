@@ -30,7 +30,7 @@ gua::RenderPipeline* create_pipe(std::string const& camera, std::string const& s
     pass->add_buffer(gua::ColorBufferDescription("color", 0));
     pass->add_buffer(gua::DepthStencilBufferDescription("depth_stencil"));
 
-    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(3840, 1200, "tracking_example", display, gua::SIDE_BY_SIDE, "/opt/dlp-warpmatrices/"));
+    auto pipe = new gua::RenderPipeline(gua::RenderWindow::Description(1600, 600, "tracking_example", display, gua::SIDE_BY_SIDE, "/opt/dlp-warpmatrices/"));
     pipe->add_render_pass(pass);
     pipe->set_final_buffer("main", "color");
 
@@ -64,63 +64,50 @@ int main(int argc, char** argv) {
 
     auto plane_core = new gua::GeometryCore("plane", "tiles");
     auto floor = graph.add_node("/", "floor", plane_core);
-    floor.scale(4000, 1, 4000);
-    floor.translate(0, 0, -3900);
+    floor.scale(5, 1, 5);
 
     auto cube_core = new gua::GeometryCore("cube", "tiles_small");
     auto box = graph.add_node("/", "box", cube_core);
-    box.scale(500, 500, 500);
-    box.translate(0, 250, -2150);
+    box.scale(0.5, 0.5, 0.5);
+    box.translate(0, 0.25, 0);
 
     auto monkey_core = new gua::GeometryCore("monkey", "wood");
     auto ape = graph.add_node("/box", "monkey", monkey_core);
     ape.scale(0.5, 0.5, 0.5);
-    ape.translate(0, 1.5, 1);
+    ape.translate(0, 1, 0);
 
-    auto screen_core(new gua::ScreenCore(4000, 3000));
+    auto screen_core(new gua::ScreenCore(4.18f, 2.58f));
     auto screen = graph.add_node("/", "screen", screen_core);
-    screen.translate(0, 1500, -1900);
+    screen.translate(0, 1.57, 1.5);
 
-    auto camera_core = new gua::CameraCore(70.f);
-    graph.add_node("/", "camera1", camera_core);
-    graph.add_node("/", "camera2", camera_core);
-    graph.add_node("/", "camera3", camera_core);
-    graph.add_node("/", "camera4", camera_core);
-    graph.add_node("/", "camera5", camera_core);
-    graph.add_node("/", "camera6", camera_core);
+    auto camera_core = new gua::CameraCore(0.065f);
+    graph.add_node("/screen", "camera1", camera_core);
+    graph.add_node("/screen", "camera2", camera_core);
+    graph.add_node("/screen", "camera3", camera_core);
+    graph.add_node("/screen", "camera4", camera_core);
+    graph.add_node("/screen", "camera5", camera_core);
+    graph.add_node("/screen", "camera6", camera_core);
 
-    gua::RenderServer renderer({create_pipe("camera1", "screen", ":0.0"), create_pipe("camera2", "screen", ":0.1"),
+    gua::RenderServer renderer({create_pipe("camera1", "screen", ":0.0")/*, create_pipe("camera2", "screen", ":0.1"),
                                 create_pipe("camera3", "screen", ":0.2"), create_pipe("camera4", "screen", ":0.3"),
-                                create_pipe("camera5", "screen", ":0.4"), create_pipe("camera6", "screen", ":0.5")});
+                                create_pipe("camera5", "screen", ":0.4"), create_pipe("camera6", "screen", ":0.5")*/});
 
     // application loop
     while (true) {
         dtrack->update(targets);
 
 	    // head target
-	    auto target_it = targets.find(1);
-	    if (target_it != targets.end())
-            graph["/camera1"].set_transform(target_it->second.transform());
-
-        target_it = targets.find(2);
-	    if (target_it != targets.end())
-            graph["/camera2"].set_transform(target_it->second.transform());
-
-        target_it = targets.find(3);
-	    if (target_it != targets.end())
-            graph["/camera3"].set_transform(target_it->second.transform());
-
-        target_it = targets.find(4);
-	    if (target_it != targets.end())
-            graph["/camera4"].set_transform(target_it->second.transform());
-
-        target_it = targets.find(5);
-	    if (target_it != targets.end())
-            graph["/camera5"].set_transform(target_it->second.transform());
-
-        target_it = targets.find(6);
-	    if (target_it != targets.end())
-            graph["/camera6"].set_transform(target_it->second.transform());
+	    for (unsigned i(0); i < targets.size(); ++i) {
+            auto target_it = targets.find(i+1);
+            if (target_it != targets.end()) {
+                auto transform(target_it->second.transform());
+                transform[12] /= 1000.f;
+                transform[13] /= 1000.f;
+                transform[14] /= 1000.f;
+                transform = scm::math::make_translation(0.f, -1.57f, 2.f) * transform;
+                graph["/screen/camera" + gua::string_utils::to_string<int>(i+1)].set_transform(transform);
+            }
+        }
 
 
         renderer.queue_draw(&graph);

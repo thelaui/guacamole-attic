@@ -17,11 +17,11 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
 
-#version 330
+#version 420
 
 layout(location=0) in vec3 in_position;
-layout(location=1) in vec3 in_normal;
-layout(location=2) in vec3 in_texcoord;
+layout(location=1) in vec3 in_texcoord;
+layout(location=2) in vec3 in_normal;
 
 uniform mat4 projection_matrix;
 uniform mat4 view_matrix;

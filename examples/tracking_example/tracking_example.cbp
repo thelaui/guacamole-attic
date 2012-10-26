@@ -43,7 +43,7 @@
 			<Add directory="../../../../scm_gl_util/src" />
 			<Add directory="../../../../scm_core/src" />
 			<Add directory="../../../../scm_gl_core/src" />
-			<Add directory="/opt/boost/current/include" />
+			<Add directory="/opt/boost/boost_1_48_0/include" />
 			<Add directory="../../../../scm_input/src" />
 		</Compiler>
 		<Linker>
@@ -54,11 +54,13 @@
 			<Add library="libscm_input" />
 			<Add library="cuda" />
 			<Add library="cudart" />
+			<Add library="boost_system" />
+			<Add library="boost_chrono" />
 			<Add directory="../../lib" />
 			<Add directory="../../../../lib/linux_x86" />
 			<Add directory="/usr/lib/nvidia-current/" />
 			<Add directory="/opt/cuda/current/lib64" />
-			<Add directory="/opt/boost/current/lib" />
+			<Add directory="/opt/boost/boost_1_48_0/lib" />
 			<Add directory="/opt/cuda/current/cuda/lib64" />
 		</Linker>
 		<Unit filename="data/shaders/base.frag" />

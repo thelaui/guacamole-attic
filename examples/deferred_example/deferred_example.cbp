@@ -55,6 +55,7 @@
 			<Add library="cudart" />
 			<Add library="assimp" />
 			<Add library="boost_system" />
+			<Add library="boost_chrono" />
 			<Add directory="../../lib" />
 			<Add directory="../../../../lib/linux_x86" />
 			<Add directory="/usr/lib/nvidia-current/" />
