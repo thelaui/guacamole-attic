@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,36 +21,54 @@
 /// \brief A simple directory reader to get the members of a directory.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "utils/Directory.hpp"
 
-#include <iostream>
-#include <dirent.h>
-
+// guacamole headers
 #include "utils/PathParser.hpp"
 #include "utils/debug.hpp"
 
+// external headers
+#include <iostream>
+#include <dirent.h>
+
 namespace gua {
 
-Directory::Directory():
+////////////////////////////////////////////////////////////////////////////////
+
+Directory::
+Directory():
     path_name_(""),
     content_(""),
     is_loaded_(false) {}
 
-Directory::Directory(std::string const& path_name):
+////////////////////////////////////////////////////////////////////////////////
+
+Directory::
+Directory(std::string const& path_name):
     path_name_(path_name),
     content_(""),
     is_loaded_(false) {
+
         PathParser path_parser;
         path_parser.parse(path_name_);
         if (!path_parser.path_is_finished_by_slash())
             path_name_ += "/";
     }
 
-bool Directory::is_valid() const {
+////////////////////////////////////////////////////////////////////////////////
+
+bool Directory::
+is_valid() const {
+
     return opendir(path_name_.c_str());
 }
 
-std::string const& Directory::get_content() const {
+////////////////////////////////////////////////////////////////////////////////
+
+std::string const& Directory::
+get_content() const {
+
     if (is_loaded_)
         return content_;
 
@@ -76,12 +95,15 @@ std::string const& Directory::get_content() const {
     return content_;
 }
 
-std::string const& Directory::get_directory_name() const{
+////////////////////////////////////////////////////////////////////////////////
+
+std::string const& Directory::
+get_directory_name() const{
+
     return path_name_;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 }
-
-
-
 

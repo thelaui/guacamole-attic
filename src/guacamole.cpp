@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,17 +21,17 @@
 /// \brief The init file of guacamole.
 ////////////////////////////////////////////////////////////////////////////////
 
+// header
 #include "guacamole.hpp"
 
-#include <IL/il.h>
-
+////////////////////////////////////////////////////////////////////////////////
 namespace gua {
-    void init() {
-        ilInit();
-        XInitThreads();
-        glXCreateContextAttribsARB = (GLXContext(*)(Display* dpy, GLXFBConfig config, GLXContext share_context, Bool direct, const int *attrib_list))glXGetProcAddressARB((GLubyte*)"glXCreateContextAttribsARB");
-        glXChooseFBConfig = (GLXFBConfig*(*)(Display *dpy, int screen, const int *attrib_list, int *nelements))glXGetProcAddressARB((GLubyte*)"glXChooseFBConfig");
-        glXGetVisualFromFBConfig = (XVisualInfo*(*)(Display *dpy, GLXFBConfig config))glXGetProcAddressARB((GLubyte*)"glXGetVisualFromFBConfig");
+    void
+    init(int argc, char** argv) {
+        static scm::shared_ptr<scm::core> scm_core(new scm::core(argc, argv));
     }
+
+////////////////////////////////////////////////////////////////////////////////
+
 }
 

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -65,6 +66,11 @@
 # define DEBUG(_fmt, ...) printf(PRINT_BLUE "[ DEBUG ]"WHERE_STR PRINT_RESET _fmt "\n", WHERE_ARG, ##__VA_ARGS__)
 # ifndef DEBUG
 # define DEBUG(...)
+# endif
+
+# define PROFILING(_fmt, ...) printf(PRINT_PURPLE "[PROFILING] " PRINT_RESET _fmt "\n", ##__VA_ARGS__)
+# ifndef PROFILING
+# define PROFILING(...)
 # endif
 
 # endif // DEBUG_HPP

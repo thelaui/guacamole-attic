@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,9 +21,10 @@
 /// \brief Declaration of the CameraCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDERER_SERVER_HPP
-#define RENDERER_HPP
+#ifndef GUA_RENDERER_SERVER_HPP
+#define GUA_RENDERER_HPP
 
+// external headers
 #include <vector>
 #include <string>
 #include <thread>
@@ -34,37 +36,38 @@ class RenderClient;
 class RenderPipeline;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief This class is used to provide a renderer frontend interface to the user.
+/// \brief Manages the rendering on multiple contexts.
 ///
+/// This class is used to provide a renderer frontend interface to the user.
 ////////////////////////////////////////////////////////////////////////////////
-
 class RenderServer {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs a new RenderServer.
         ///
+        /// \param pipelines        A vector of Pipelines to process. For each
+        ///                         pipeline a RenderClient is created.
         ////////////////////////////////////////////////////////////////////////
         RenderServer(std::vector<RenderPipeline*> const& pipelines);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Destructor.
         ///
         /// This destroys a RenderServer.
-        ///
         ////////////////////////////////////////////////////////////////////////
         virtual ~RenderServer();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Start the Render Loop
+        /// \brief Request a redraw of all RenderClients.
         ///
-        /// Takes a Scenegraph and starts to render.
+        /// Takes a Scenegraph and asks all clients to draw it.
         ///
-        ///\param scene_graph          The SceneGraph to be processed.
+        /// \param scene_graph      The SceneGraph to be processed.
         ////////////////////////////////////////////////////////////////////////
-        void queue_draw( SceneGraph const* scene_graph );
+        void queue_draw(SceneGraph const* scene_graph);
 
     private:
         std::vector<RenderClient*> render_clients_;
@@ -72,4 +75,4 @@ class RenderServer {
 
 }
 
-#endif // RENDERER_SERVER_HPP
+#endif // GUA_RENDERER_SERVER_HPP

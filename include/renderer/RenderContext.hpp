@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,34 +21,52 @@
 /// \brief Declaration of the RenderContext struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDERCONTEXT_HPP
-#define RENDERCONTEXT_HPP
+#ifndef GUA_RENDERCONTEXT_HPP
+#define GUA_RENDERCONTEXT_HPP
 
-#include "renderer/glInclude.hpp"
+// external headers
+#include <scm/gl_core/config.h>
+#include <scm/gl_core/data_formats.h>
+#include <scm/core.h>
+#include <scm/gl_core.h>
+#include <scm/gl_core/window_management/context.h>
+#include <scm/gl_core/window_management/display.h>
+#include <scm/gl_core/window_management/surface.h>
+#include <scm/gl_core/window_management/window.h>
+
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Information on a specific context.
 ///
 /// Stores all relevant information on a OpenGL context.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 struct RenderContext {
-    ////////////////////////////////////////////////////////////////////////////
-    /// \brief The glx context of this RenderContext.
-    ////////////////////////////////////////////////////////////////////////////
-    GLXContext context;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The X display where this context was opened.
+    /// \brief The schism context of this RenderContext.
     ////////////////////////////////////////////////////////////////////////////
-    Display *display;
+    scm::gl::wm::context_ptr context;
 
     ////////////////////////////////////////////////////////////////////////////
-    /// \brief The X window associated with this context.
+    /// \brief The display where this context was opened.
     ////////////////////////////////////////////////////////////////////////////
-    Window window;
+    scm::gl::wm::display_ptr display;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief The window associated with this context.
+    ////////////////////////////////////////////////////////////////////////////
+    scm::gl::wm::window_ptr window;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief The schism render constext associated with this context.
+    ////////////////////////////////////////////////////////////////////////////
+    scm::gl::render_context_ptr render_context;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief The schism render device associated with this context.
+    ////////////////////////////////////////////////////////////////////////////
+    scm::gl::render_device_ptr render_device;
 
     ////////////////////////////////////////////////////////////////////////////
     /// \brief The width of the window.
@@ -67,4 +86,4 @@ struct RenderContext {
 
 }
 
-#endif //RENDERCONTEXT_HPP
+#endif // GUA_RENDERCONTEXT_HPP

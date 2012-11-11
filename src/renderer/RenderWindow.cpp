@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,185 +21,215 @@
 /// \brief Definition of the RenderWindow class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/RenderWindow.hpp"
 
+// guacamole headers
 #include "utils/debug.hpp"
+#include "utils/Profiler.hpp"
+#include "utils/string_utils.hpp"
 #include "renderer/Geometry.hpp"
 #include "renderer/Texture.hpp"
 #include "renderer/StereoShaders.hpp"
+#include "renderer/LightInformation.hpp"
 
-#include <IL/il.h>
+// external headers
 #include <sstream>
 #include <iostream>
 
 namespace gua {
 
+////////////////////////////////////////////////////////////////////////////////
+
 unsigned RenderWindow::last_context_id_ = 0;
 
-RenderWindow::RenderWindow( Description const& description ) throw (std::string):
-    fullscreen_shader_(VertexShader(STEREO_VERTEX_SHADER.c_str()),
-                       FragmentShader(STEREO_FRAGMENT_SHADER.c_str())),
-    frames_(0),
-    frame_count_(0),
-    frames_start_(0) {
+////////////////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////
-    // Open X display
-    ///////////////////////////////////////////////
+RenderWindow::
+RenderWindow(Description const& description):
 
-    ctx_.display = XOpenDisplay(description.display.c_str());
-    ctx_.width = description.width;
-    ctx_.height = description.height;
-    ctx_.id = last_context_id_++;
+    fullscreen_shader_(),
+    fullscreen_quad_(),
+    depth_stencil_state_(),
+    warpRR_(NULL),
+    warpGR_(NULL),
+    warpBR_(NULL),
+    warpRL_(NULL),
+    warpGL_(NULL),
+    warpBL_(NULL) {
 
-    int major_glx(0);
-    int minor_glx(0);
-    glXQueryVersion(ctx_.display, &major_glx, &minor_glx);
-    MESSAGE("Supported GLX version - %i.%i", major_glx, minor_glx);
+    if (description.warp_matrices_path_ == "") {
+        fullscreen_shader_.create_from_sources(
+                                STEREO_VERTEX_SHADER.c_str(),
+                                STEREO_FRAGMENT_SHADER.c_str());
+    } else {
+        warpRR_ = new WarpMatrix(
+                        description.warp_matrices_path_ + "/dlp_6_warp_P4.warp");
 
-    if(major_glx == 1 && minor_glx < 2)
-        throw std::string("GLX 1.2 or greater is necessary!");
+        warpGR_ = new WarpMatrix(
+                        description.warp_matrices_path_ + "/dlp_6_warp_P5.warp");
 
-    ///////////////////////////////////////////////
-    // Configure Framebuffer
-    ///////////////////////////////////////////////
+        warpBR_ = new WarpMatrix(
+                        description.warp_matrices_path_ + "/dlp_6_warp_P6.warp");
 
-    static int fbAttribs[] = {
-        GLX_RENDER_TYPE,   GLX_RGBA_BIT,
-        GLX_X_RENDERABLE,  True,
-        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-        GLX_DOUBLEBUFFER,  True,
-        GLX_RED_SIZE, 8,
-        GLX_BLUE_SIZE, 8,
-        GLX_GREEN_SIZE, 8,
-        0
-    };
+        warpRL_ = new WarpMatrix(
+                        description.warp_matrices_path_ + "/dlp_6_warp_P1.warp");
 
-    int numConfigs = 0;
-    GLXFBConfig* fbConfigs = glXChooseFBConfig(ctx_.display, DefaultScreen(ctx_.display), fbAttribs, &numConfigs);
-    XVisualInfo* visualInfo = glXGetVisualFromFBConfig(ctx_.display, fbConfigs[0]);
+        warpGL_ = new WarpMatrix(
+                        description.warp_matrices_path_ + "/dlp_6_warp_P2.warp");
 
-    ///////////////////////////////////////////////
-    // Create an X window
-    ///////////////////////////////////////////////
+        warpBL_ = new WarpMatrix(
+                        description.warp_matrices_path_ + "/dlp_6_warp_P3.warp");
 
-    XSetWindowAttributes winAttribs;
-    winAttribs.event_mask = ExposureMask | VisibilityChangeMask | KeyPressMask | PointerMotionMask | StructureNotifyMask;
 
-    winAttribs.border_pixel = 0;
-    winAttribs.bit_gravity = StaticGravity;
-    winAttribs.colormap = XCreateColormap(ctx_.display, RootWindow(ctx_.display, visualInfo->screen),
-                                          visualInfo->visual, AllocNone);
-
-    GLint winmask = CWBorderPixel | CWBitGravity | CWEventMask| CWColormap;
-
-    ctx_.window = XCreateWindow(ctx_.display, DefaultRootWindow(ctx_.display), 20, 20,
-                 ctx_.width, ctx_.height, 0, visualInfo->depth, InputOutput, visualInfo->visual, winmask, &winAttribs);
-
-    if (ctx_.window == 0)
-        throw std::string("Failed to create X window!");
-
-    XSetStandardProperties(ctx_.display, ctx_.window, "guacamole", "folder", None, NULL, 0, NULL);
-
-    XMapWindow(ctx_.display, ctx_.window);
-
-    ///////////////////////////////////////////////
-    // Create the context
-    ///////////////////////////////////////////////
-
-    GLint attribs[] = {
-        GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-        GLX_CONTEXT_MINOR_VERSION_ARB, 3,
-        //GLX_CONTEXT_PROFILE_MASK_ARB,GLX_CONTEXT_CORE_PROFILE_BIT_ARB, 0          // for 3.1
-        GLX_CONTEXT_PROFILE_MASK_ARB,GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB, 0   // for 4.1
-    };
-
-    ctx_.context = glXCreateContextAttribsARB(ctx_.display, fbConfigs[0], 0, True, attribs);
-    if (!glXMakeCurrent(ctx_.display, ctx_.window, ctx_.context))
-        throw std::string("Failed to make context current!");
-
-    ///////////////////////////////////////////////
-    // Initialize GLEW
-    ///////////////////////////////////////////////
-
-    glewExperimental = GL_TRUE;
-    GLenum err = glewInit();
-
-    if (GLEW_OK != err)
-        throw std::string("Failed to initialize GLEW!");
-
-    auto vendor_char(glGetString(GL_VENDOR));
-    std::stringstream vendor_stream;
-    for (unsigned i(0); i<sizeof(vendor_char); ++i)
-        vendor_stream << vendor_char[i];
-
-    std::string vendor_string(vendor_stream.str());
-    if (vendor_string.find("NVIDIA") != std::string::npos) {
-//        if (!glxewIsSupported("GLX_NV_swap_group"))
-//            throw std::string("Swap groups are not supported!");
-//
-//        if (!glXJoinSwapGroupNV(ctx_.display, ctx_.window, 0))
-//            throw std::string("Failed to join swap group");
+        fullscreen_shader_.create_from_sources(
+                                STEREO_VERTEX_SHADER.c_str(),
+                                STEREO_FRAGMENT_SHADER_WARPED.c_str());
     }
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_MULTISAMPLE);
+    scm::gl::wm::surface::format_desc window_format(
+                        scm::gl::FORMAT_RGBA_8, scm::gl::FORMAT_D24_S8,
+                        true, false);
 
-    //glXMakeCurrent(ctx_.display, None, NULL);
+    scm::gl::wm::context::attribute_desc context_attribs(
+                        4, 2, false, false, false);
+
+    ctx_.display = scm::gl::wm::display_ptr(
+                        new scm::gl::wm::display(description.display_));
+
+    ctx_.window = scm::gl::wm::window_ptr(
+                        new scm::gl::wm::window(
+                                ctx_.display, 0, description.title_,
+                                math::vec2i(0, 0), math::vec2ui(
+                                                        description.width_,
+                                                        description.height_),
+                                window_format));
+
+    ctx_.context = scm::gl::wm::context_ptr(new scm::gl::wm::context(
+                                                 ctx_.window, context_attribs));
+
+    ctx_.window->show();
+
+    set_active(true);
+
+    ctx_.render_device = scm::gl::render_device_ptr(
+                                new scm::gl::render_device());
+
+    ctx_.render_context = ctx_.render_device->main_context();
+
+    ctx_.width = description.width_;
+    ctx_.height = description.height_;
+    ctx_.id = last_context_id_++;
+
+    fullscreen_quad_ = scm::gl::quad_geometry_ptr(
+                                new scm::gl::quad_geometry(
+                                                    ctx_.render_device,
+                                                    math::vec2(-1.f, -1.f),
+                                                    math::vec2( 1.f,  1.f)));
+
+    depth_stencil_state_ = ctx_.render_device->create_depth_stencil_state(
+                                                    false, false,
+                                                    scm::gl::COMPARISON_NEVER);
+
+    LightInformation::add_block_include_string(ctx_);
+
+    start_frame();
+    finish_frame();
+    //set_active(false);
+
 }
 
-RenderWindow::~RenderWindow() {
-    glXMakeCurrent(ctx_.display, None, NULL);
-    glXDestroyContext(ctx_.display, ctx_.context);
-    XDestroyWindow(ctx_.display, ctx_.window);
-    XCloseDisplay(ctx_.display);
+////////////////////////////////////////////////////////////////////////////////
+
+RenderWindow::
+~RenderWindow() {
+
+    if (warpRR_) delete warpRR_;
+    if (warpGR_) delete warpGR_;
+    if (warpBR_) delete warpBR_;
+    if (warpRL_) delete warpRL_;
+    if (warpGL_) delete warpGL_;
+    if (warpBL_) delete warpBL_;
 }
 
-void RenderWindow::set_active() const {
-    glXMakeCurrent(ctx_.display, ctx_.window, ctx_.context);
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderWindow::
+set_active(bool active) const {
+
+    ctx_.context->make_current(ctx_.window, active);
 }
 
-void RenderWindow::start_frame() const {
+////////////////////////////////////////////////////////////////////////////////
 
+void RenderWindow::
+start_frame() const {
+
+    ctx_.render_context->clear_default_color_buffer(
+            scm::gl::FRAMEBUFFER_BACK, scm::math::vec4f(0.f, 0.f, 0.f, 1.0f));
+
+    ctx_.render_context->clear_default_depth_stencil_buffer();
 }
 
-void RenderWindow::finish_frame() const {
-    glXSwapBuffers(ctx_.display, ctx_.window);
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderWindow::
+finish_frame() const {
+
+    set_active(true);
+    ctx_.window->swap_buffers(0);
 }
 
-void RenderWindow::display_mono(std::shared_ptr<Texture> const& texture) const {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderWindow::
+display_mono(std::shared_ptr<Texture> const& texture) {
+
     display_stereo(texture, texture, MONO);
 }
 
-void RenderWindow::display_stereo(std::shared_ptr<Texture> const& left_texture,
-                                  std::shared_ptr<Texture> const& right_texture,
-                                  StereoMode stereo_mode) const {
+////////////////////////////////////////////////////////////////////////////////
 
-    glViewport(0, 0, ctx_.width, ctx_.height);
+void RenderWindow::
+display_stereo(std::shared_ptr<Texture> const& left_texture,
+               std::shared_ptr<Texture> const& right_texture,
+               StereoMode stereo_mode) {
+
+    ctx_.render_context->set_viewport(
+                            scm::gl::viewport(
+                                    math::vec2(0,0),
+                                    math::vec2(ctx_.width, ctx_.height)));
+
     fullscreen_shader_.use(ctx_);
+
+    if (warpRR_) fullscreen_shader_.set_sampler2D(ctx_, "warpRR", *warpRR_);
+    if (warpGR_) fullscreen_shader_.set_sampler2D(ctx_, "warpGR", *warpGR_);
+    if (warpBR_) fullscreen_shader_.set_sampler2D(ctx_, "warpBR", *warpBR_);
+    if (warpRL_) fullscreen_shader_.set_sampler2D(ctx_, "warpRL", *warpRL_);
+    if (warpGL_) fullscreen_shader_.set_sampler2D(ctx_, "warpGL", *warpGL_);
+    if (warpBL_) fullscreen_shader_.set_sampler2D(ctx_, "warpBL", *warpBL_);
 
     fullscreen_shader_.set_sampler2D(ctx_, "left_tex", *left_texture);
     fullscreen_shader_.set_sampler2D(ctx_, "right_tex", *right_texture);
     fullscreen_shader_.set_int(ctx_, "mode", stereo_mode);
 
-    glDisable(GL_DEPTH_TEST);
-    glDisable(GL_BLEND);
-    glDisable(GL_CULL_FACE);
+    ctx_.render_context->set_depth_stencil_state(depth_stencil_state_);
 
-    glBegin(GL_QUADS);
-        glVertex2f(-1, -1);
-        glVertex2f(1, -1);
-        glVertex2f(1, 1);
-        glVertex2f(-1, 1);
-    glEnd();
+    fullscreen_quad_->draw(ctx_.render_context);
 
-    glEnable(GL_DEPTH_TEST);
-
+    ctx_.render_context->reset_state_objects();
     fullscreen_shader_.unuse(ctx_);
 }
 
-RenderContext const& RenderWindow::get_context() const {
+////////////////////////////////////////////////////////////////////////////////
+
+RenderContext const& RenderWindow::
+get_context() const {
+
     return ctx_;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 }
+

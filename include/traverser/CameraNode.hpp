@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,32 +21,48 @@
 /// \brief Declaration and definition of the CameraNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef CAMERA_NODE_HPP
-#define CAMERA_NODE_HPP
+#ifndef GUA_CAMERA_NODE_HPP
+#define GUA_CAMERA_NODE_HPP
 
-#include <eigen2/Eigen/Geometry>
+// guacamole headers
+#include "cores/CameraCore.hpp"
+
+// external headers
 #include <string>
 
-#include "cores/CameraCore.hpp"
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a camera for rendering.
 ///
+/// This is a struct used for serializing the graph.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 struct CameraNode {
-    CameraNode() {};
-    CameraNode(CameraCore const& core, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
-        transform_(t),
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief Constructor.
+    ///
+    /// This creates a new serialized node.
+    ///
+    /// \param core             The serialized core.
+    /// \param transform        The global transformation of this node.
+    ////////////////////////////////////////////////////////////////////////////
+    CameraNode(CameraCore const& core, math::mat4 const& transform):
+        transform_(transform),
         stereo_width_(core.get_stereo_width()) {}
 
-    Eigen::Matrix4f transform_;
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief The global transformation of this node.
+    ////////////////////////////////////////////////////////////////////////////
+    math::mat4 transform_;
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief The eyeseparation.
+    ////////////////////////////////////////////////////////////////////////////
     float stereo_width_;
 };
 
 }
 
-#endif //CAMERA_NODE_HPP
+#endif // GUA_CAMERA_NODE_HPP
 

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -37,8 +38,8 @@ void main() {
 
     float spec = texture2D(tex_specular, coord).r;
 
-    out_specular = vec3(spec, spec, spec);
 	out_color    = (1-spec)*texture2D(tex_color, coord).rgb + spec*texture2D(tex_mirror, texcoord).rgb;
+    out_specular = vec3(spec, max(max(out_color.r, out_color.g), out_color.b), 0);
 	out_normal   = normal;
 	out_position = position;
 }

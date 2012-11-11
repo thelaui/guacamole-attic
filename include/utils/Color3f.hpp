@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -23,74 +24,96 @@
 # ifndef COLOR_3F_HPP
 # define COLOR_3F_HPP
 
-/// A struct for color handling.
-/// It stores the color in RGB values, but provides an HSV
-/// interface as well.
-
 namespace gua {
+
+////////////////////////////////////////////////////////////////////////
+/// \brief A struct for color handling.
+///
+/// This class stores color values in RGB manner, but provides an HSV
+/// interface as well.
+////////////////////////////////////////////////////////////////////////
 
 struct Color3f {
     public:
-        /// Default ctor, white.
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Constructor.
+        ///
+        /// This constructs a Color with all values set to 0 (black).
+        ////////////////////////////////////////////////////////////////////////
         Color3f ();
-        /// Copy ctor.
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Copy constructor.
+        ///
+        /// This constructs a Color from an existing one.
+        ///
+        /// \param color    The existing color to be copied.
+        ////////////////////////////////////////////////////////////////////////
         Color3f (Color3f const& color);
-        /// Ctor from RGB values.
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Constructor.
+        ///
+        /// This constructs a Color from given RGB values.
+        ///
+        /// \param red       The red value.
+        /// \param green     The green value.
+        /// \param blue      The blue value.
+        ////////////////////////////////////////////////////////////////////////
         Color3f (float red, float green, float blue);
 
-        /// \name Getters
         ///@{
-
-        /// Returns the red part of the color.
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Returns a single Color value.
+        ////////////////////////////////////////////////////////////////////////
         float r() const;
-        /// Returns the green part of the color.
         float g() const;
-        /// Returns the blue part of the color.
         float b() const;
-        /// Returns the hue of the color.
         float h() const;
-        /// Returns the saturation of the color.
         float s() const;
-        /// Returns the value of the color.
         float v() const;
         ///@}
 
-        /// \name Setters
         ///@{
-
-        /// Sets the red part of the color.
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Sets a single Color value.
+        ///
+        /// \param value    The new value to be set.
+        ////////////////////////////////////////////////////////////////////////
         void r(float red);
-        /// Sets the green part of the color.
         void g(float green);
-        /// Sets the blue part of the color.
         void b(float blue);
-        /// Sets the hue of the color.
         void h(float hue);
-        /// Sets the saturation of the color.
         void s(float saturation);
-        /// Sets the value of the color.
         void v(float value);
         ///@}
 
-        /// Inverts the color.
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Returns an inverted copy of the Color.
+        ///
+        /// \param color      The inverted copy of the Color.
+        ////////////////////////////////////////////////////////////////////////
         Color3f const inverted() const;
 
-        /// Brightens the color if it is too dark
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Returns an inverted copy of the Color.
+        ///
+        /// \param color      The inverted copy of the Color.
+        ////////////////////////////////////////////////////////////////////////
         Color3f const brightened() const;
 
-        /// Creates a random color struct.
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Returns a randomly generated Color.
+        ///
+        /// \return color      A randomly generated color.
+        ////////////////////////////////////////////////////////////////////////
         static const Color3f random();
 
     private:
-        /// Helper function to set the RGB values from HSV values.
         void set_hsv (float hue, float saturation, float value);
 
-        /// \name Data
-        /// The members storing the color information in RGB values.
-        /// They are clamped from 0.0 to 1.0
-        ///@{
         float r_, g_ , b_;
-        ///@}
 };
 
 /// Multiplication of a color with a float.

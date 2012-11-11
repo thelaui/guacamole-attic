@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -10,60 +11,66 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Declaration of the VertexShader class.
+/// \brief Declaration of the WarpMatrix class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef VERTEXSHADER_HPP
-#define VERTEXSHADER_HPP
+#ifndef GUA_WARP_MATRIX_HPP
+#define GUA_WARP_MATRIX_HPP
 
-#include "renderer/Shader.hpp"
-
-////////////////////////////////////////////////////////////////////////////////
-/// \brief A Vertex Shader abstraction.
-///
-/// Can be used to load a vertex shader from file.
-////////////////////////////////////////////////////////////////////////////////
+// guacamole headers
+#include "renderer/Texture.hpp"
 
 namespace gua {
 
-class VertexShader: public Shader {
+////////////////////////////////////////////////////////////////////////////////
+/// \brief A class representing a warp matrix.
+///
+/// Warp matrices are used to align colors of pixels of an projected image,
+/// when the projecting beamers for the colors red, green and blue don't
+/// overlap exactly.
+////////////////////////////////////////////////////////////////////////////////
+class WarpMatrix : public Texture {
     public:
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor.
         ///
-        /// Creates a new (invalid) VertexShader. Use the other constructor in
-        /// order to retrieve a useful shader object.
+        /// Creates a new (invalid) WarpMatrix.
         ////////////////////////////////////////////////////////////////////////
-        VertexShader();
+        WarpMatrix();
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Constructor from source file.
+        /// \brief Constructor.
         ///
-        /// This constructor will create a new VertexShader object. It is loaded
-        /// from a given glsl source file.
+        /// Creates a new WarpMatrix from a given path to a warp matrix file.
         ///
-        /// \param file The glsl source file.
+        /// \param file_name            Path to a warp matrix file.
         ////////////////////////////////////////////////////////////////////////
-        VertexShader(std::string const& file);
+        WarpMatrix(std::string const& file_name);
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Constructor from data buffer.
+        /// \brief Destructor.
         ///
-        /// Loads a shader from a data buffer.
-        ///
-        /// \param data The data buffer for this shader.
+        /// Clears all associated buffers.
         ////////////////////////////////////////////////////////////////////////
-        VertexShader(char const* data);
+        ~WarpMatrix();
+
+    private:
+        /*virtual*/ void upload_to(RenderContext const& context) const;
+
+        mutable std::vector<float> data_;
+
 };
 
 }
+# endif // GUA_WARP_MATRIX_HPP
 
-#endif // VERTEXSHADER_HPP
+
 

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,23 +21,40 @@
 /// \brief A Core representing geometry in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "cores/GeometryCore.hpp"
 
 namespace gua {
 
-GeometryCore::GeometryCore(std::string const& geometry, std::string const& material):
+////////////////////////////////////////////////////////////////////////////////
+
+GeometryCore::
+GeometryCore(std::string const& geometry, std::string const& material):
     Core(Core::GEOMETRY),
     geometry_(geometry),
     material_(material) {}
 
-GeometryCore::~GeometryCore() {}
+////////////////////////////////////////////////////////////////////////////////
 
-std::string const& GeometryCore::get_geometry() const {
+GeometryCore::
+~GeometryCore() {}
+
+////////////////////////////////////////////////////////////////////////////////
+
+std::string const& GeometryCore::
+get_geometry() const {
+
     return geometry_;
 }
 
-std::string const& GeometryCore::get_material() const {
+////////////////////////////////////////////////////////////////////////////////
+
+std::string const& GeometryCore::
+get_material() const {
+
     return material_;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

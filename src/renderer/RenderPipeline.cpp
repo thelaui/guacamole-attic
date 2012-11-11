@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -17,93 +18,184 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the RenderPipeline class.
+/// \brief Definition of the RenderPipeline class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/RenderPipeline.hpp"
 
-#include "renderer/RenderPass.hpp"
+// guacamole headers
+#include "renderer/GenericRenderPass.hpp"
 #include "utils/debug.hpp"
-
 #include "renderer/TextureBase.hpp"
+#include "renderer/WarpMatrix.hpp"
 
+// external headers
 #include <iostream>
 
 namespace gua {
 
-RenderPipeline::RenderPipeline(RenderWindow::Description const& window, StereoMode stereo_mode):
+////////////////////////////////////////////////////////////////////////////////
+
+RenderPipeline::
+RenderPipeline(RenderWindow::Description const& window):
+
     window_(NULL),
     window_description_(window),
-    stereo_mode_(stereo_mode),
     passes_(),
-    current_graph_(NULL) {}
+    current_graph_(NULL),
+    application_fps_(0.f), rendering_fps_(0.f) {
 
-RenderPipeline::~RenderPipeline() {
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+
+RenderPipeline::
+~RenderPipeline() {
+
     if(window_)
         delete window_;
 }
 
-void RenderPipeline::add_render_pass(RenderPass* pass) {
-    pass->set_pipeline(this);
-    passes_[pass->get_name()] = pass;
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPipeline::
+add_render_pass(GenericRenderPass* pass) {
+
+    if (passes_.find(pass->get_name()) == passes_.end()) {
+        pass->set_pipeline(this);
+        passes_[pass->get_name()] = pass;
+    } else {
+        WARNING("Failed to add pass \"%s\" to pipe: A pass with "
+                "this name already exists!", pass->get_name().c_str());
+    }
 }
 
-RenderPass* RenderPipeline::get_render_pass(std::string const& pass_name) {
-    return passes_[pass_name];
+////////////////////////////////////////////////////////////////////////////////
+
+GenericRenderPass* RenderPipeline::
+get_render_pass(std::string const& pass_name) {
+
+    auto pass(passes_.find(pass_name));
+
+    if (pass == passes_.end()) {
+        WARNING("Failed to get pass \"%s\" to pipe: A pass with "
+                "this name does not exist!", pass_name.c_str());
+        return NULL;
+    }
+
+    return pass->second;
 }
 
-SceneGraph const* RenderPipeline::get_current_graph() const {
+////////////////////////////////////////////////////////////////////////////////
+
+SceneGraph const* RenderPipeline::
+get_current_graph() const {
+
     return current_graph_;
 }
 
-RenderContext const& RenderPipeline::get_context() const {
+////////////////////////////////////////////////////////////////////////////////
+
+RenderContext const& RenderPipeline::
+get_context() const {
+
     if (!window_)
-        ERROR("Failed to return Context, the RenderWindow has not been initialized yet!");
+        ERROR("Failed to return Context, the RenderWindow has not been "
+              "initialized yet!");
 
     return window_->get_context();
 }
 
-void RenderPipeline::set_final_buffer(std::string const& pass_name, std::string const& buffer_name) {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPipeline::
+set_final_buffer(std::string const& pass_name,
+                 std::string const& buffer_name) {
+
     final_pass_ = pass_name;
     final_buffer_ = buffer_name;
 }
 
-StereoMode RenderPipeline::get_stereo_mode() const {
-    return stereo_mode_;
+////////////////////////////////////////////////////////////////////////////////
+
+StereoMode RenderPipeline::
+get_stereo_mode() const {
+
+    return window_description_.stereo_mode_;
 }
 
-void RenderPipeline::process(SceneGraph* graph) {
+////////////////////////////////////////////////////////////////////////////////
+
+float RenderPipeline::
+get_application_fps() const {
+
+    return application_fps_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+float RenderPipeline::
+get_rendering_fps() const {
+
+    return rendering_fps_;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPipeline::
+process(SceneGraph* graph, float application_fps, float rendering_fps) {
+
     current_graph_ = graph;
+    application_fps_ = application_fps;
+    rendering_fps_ = rendering_fps;
 
     if(!window_) {
         window_ = new RenderWindow(window_description_);
         create_buffers();
     }
 
-    window_->set_active();
+    window_->set_active(true);
     window_->start_frame();
 
-    switch (stereo_mode_) {
-        case MONO:
-            window_->display_mono(passes_[final_pass_]->get_buffer(final_buffer_, CENTER));
-            break;
-        default:
-            window_->display_stereo(passes_[final_pass_]->get_buffer(final_buffer_, LEFT),
-                                    passes_[final_pass_]->get_buffer(final_buffer_, RIGHT),
-                                    stereo_mode_);
-            break;
+    auto it(passes_.find(final_pass_));
+
+    if (it != passes_.end()) {
+
+        auto pass(it->second);
+
+        if (window_description_.stereo_mode_ == MONO) {
+            window_->display_mono(pass->get_buffer(final_buffer_,CENTER, true));
+        } else {
+            window_->display_stereo(pass->get_buffer(final_buffer_, LEFT, true),
+                                    pass->get_buffer(final_buffer_,RIGHT, true),
+                                    window_description_.stereo_mode_);
+        }
+    } else {
+        WARNING("Failed to display buffer \"%s\" from pass \"%s\": A pass "
+                "with this name does not exist!", final_buffer_.c_str(),
+                final_pass_.c_str());
     }
+
+    {
 
     window_->finish_frame();
 
     for (auto& pass: passes_)
         pass.second->flush();
+    }
 }
 
-void RenderPipeline::create_buffers() {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPipeline::
+create_buffers() {
+
     for (auto& pass: passes_)
-        pass.second->create_buffers(stereo_mode_);
+        pass.second->create_buffers(window_description_.stereo_mode_);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

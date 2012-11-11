@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,12 +21,15 @@
 /// \brief Declaration of the GeometryBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GEOMETRY_BASE_HPP
-#define GEOMETRY_BASE_HPP
+#ifndef GUA_GEOMETRY_BASE_HPP
+#define GUA_GEOMETRY_BASE_HPP
 
+// guacamole headers
 #include "utils/Singleton.hpp"
 #include "renderer/DataBase.hpp"
 #include "renderer/Geometry.hpp"
+
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A data base for meshes.
@@ -33,17 +37,17 @@
 /// This DataBase stores geometry data. It can be accessed via string
 /// identifiers.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
     public:
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Pre-loads some meshes.
         ///
-        /// This method loads some default meshes to the data base. For example
-        /// a simple cube ("cube"), the famous Utah Teapot ("teapot") and
-        /// Suzanne from Blender ("monkey").
+        /// This method loads meshes to the data base. All obj meshes in the
+        /// given directory are loaded.
+        ///
+        /// \param path_to_objects      An absolute or relative path to the
+        ///                             directory containing obj files.
         ////////////////////////////////////////////////////////////////////////
         static void load_objects_from(std::string const& path_to_objects);
 
@@ -56,6 +60,6 @@ class GeometryBase: public DataBase<Geometry>, public Singleton<GeometryBase> {
 
 }
 
-#endif // GEOMETRY_BASE_HPP
+#endif // GUA_GEOMETRY_BASE_HPP
 
 

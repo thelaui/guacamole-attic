@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,13 +21,14 @@
 /// \brief Declaration of the SceneGraph class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SCENE_GRAPH_HPP
-#define SCENE_GRAPH_HPP
+#ifndef GUA_SCENE_GRAPH_HPP
+#define GUA_SCENE_GRAPH_HPP
 
 #include "scenegraph/Core.hpp"
+#include "utils/math.hpp"
 
+#include <string>
 #include <list>
-#include <eigen2/Eigen/Geometry>
 
 namespace gua {
 
@@ -35,11 +37,12 @@ class LightCore;
 class CameraCore;
 
 ////////////////////////////////////////////////////////////////////////////////
-/// \brief This class is used to build and structure a graph describing a scene.
+/// \brief A class to represent a scene.
 ///
-/// It features some powerful possibilities to access its context via paths.
+/// This class is used to build and structure a graph describing a scene with
+/// all its contents. It provides an interface to set up and have access to
+/// a graph consisting of several Nodes in order to build a scene abstraction.
 ////////////////////////////////////////////////////////////////////////////////
-
 class SceneGraph {
 
     public: class Iterator;
@@ -47,100 +50,134 @@ class SceneGraph {
 
     public:
 
+        ////////////////////////////////////////////////////////////////////////
+        /// This enumeration is used to distinguish between different traversion
+        /// styles.
+        ////////////////////////////////////////////////////////////////////////
         enum IterationType {DEPTH_FIRST, BREADTH_FIRST};
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs an empty SceneGraph.
         ////////////////////////////////////////////////////////////////////////
         SceneGraph();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Copy Constructor.
+        /// \brief Copy Constructor.
         ///
-        /// This constructs an copied SceneGraph.
+        /// This constructs a copy of a given SceneGraph.
+        ///
+        /// \param graph    The SceneGraph to be copied.
         ////////////////////////////////////////////////////////////////////////
         SceneGraph(SceneGraph const& graph);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Destructor.
         ///
         /// This destructs the SceneGraph with all its contents.
         ////////////////////////////////////////////////////////////////////////
         virtual ~SceneGraph();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Adds a new Node.
+        /// \brief Adds a new Node.
         ///
         /// This function adds a new Node to the graph. If the given path to a
         /// parent Node is invalid (this means this Node doesn't exist), an
-        /// Iterator on the SceneGraph's "end" is returned. Otherwise an Iterator
-        /// on the added Node is given back.
+        /// Iterator on the SceneGraph's "end" is returned. Otherwise an
+        /// Iterator on the added Node is given back.
         ///
-        ///\param path_to_parent The location of the Node the new Node will be
-        ///                      attached to.
-        ///\param node_name      The name of the new Node.
-        ///\param core           The core the new Node shall refer to.
-        ///\param transform      The transformation of the object the new Node
-        ///                      carries.
+        /// \param path_to_parent The location of the Node the new Node will be
+        ///                       attached to.
+        /// \param node_name      The name of the new Node.
+        /// \param core           The core the new Node shall refer to.
+        /// \param transform      The transformation of the object the new Node
+        ///                       carries.
         ///
-        ///\return Iterator      An Iterator on the recently added Node. If the
-        ///                      path to the parent was invalid, the returned
-        ///                      Iterator points to the SceneGraph's "end".
+        /// \return Iterator      An Iterator on the recently added Node. If the
+        ///                       path to the parent was invalid, the returned
+        ///                       Iterator points to the SceneGraph's "end".
         ////////////////////////////////////////////////////////////////////////
-        Iterator add_node(std::string const& path_to_parent, std::string const& node_name, Core* core = NULL,
-                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity());
+        Iterator add_node(std::string const& path_to_parent,
+                          std::string const& node_name, Core* core = NULL,
+                          math::mat4 const& transform = math::mat4::identity());
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Adds a new Node.
+        /// \brief Adds a new Node.
+        ///
+        /// This function adds a new Node to the graph. If the given path to a
+        /// parent Node is invalid (this means this Node doesn't exist), an
+        /// Iterator on the SceneGraph's "end" is returned. Otherwise an
+        /// Iterator on the added Node is given back.
+        ///
+        /// \param parent         An Iterator to the Node the new Node will be
+        ///                       attached to.
+        /// \param node_name      The name of the new Node.
+        /// \param core           The core the new Node shall refer to.
+        /// \param transform      The transformation of the object the new Node
+        ///                       carries.
+        ///
+        /// \return Iterator      An Iterator on the recently added Node. If the
+        ///                       path to the parent was invalid, the returned
+        ///                       Iterator points to the SceneGraph's "end".
+        ////////////////////////////////////////////////////////////////////////
+        Iterator add_node(Iterator const& parent,
+                          std::string const& node_name, Core* core = NULL,
+                          math::mat4 const& transform = math::mat4::identity());
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Adds a new Node.
         ///
         /// This function adds a new Node to the graph. If the given path to a
         /// parent Node is invalid (this means this Node doesn't exist), all
         /// missing nodes are constructed with default values and added to the
         /// graph.
         ///
-        ///\param path_to_parent The location of the Node the new Node will be
-        ///                      attached to.
-        ///\param node_name      The name of the new Node.
-        ///\param core           The core the new Node shall refer to.
-        ///\param transform      The transformation of the object the new Node
-        ///                      carries.
+        /// \param path_to_parent The location of the Node the new Node will be
+        ///                       attached to.
+        /// \param node_name      The name of the new Node.
+        /// \param core           The core the new Node shall refer to.
+        /// \param transform      The transformation of the object the new Node
+        ///                       carries.
         ///
-        ///\return Iterator      An Iterator on the recently added Node.
+        /// \return Iterator      An Iterator on the recently added Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator add_node_recursively(std::string const& path_to_parent, std::string const& node_name, Core* core = NULL,
-                      Eigen::Transform3f const& transform = (Eigen::Transform3f) Eigen::Transform3f::Identity());
+        Iterator add_node_recursively(std::string const& path_to_parent,
+                                      std::string const& node_name,
+                                      Core* core = NULL,
+                                      math::mat4 const& transform =
+                                                        math::mat4::identity());
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Removes a Node.
+        /// \brief Removes a Node.
         ///
         /// This function removes a Node from the graph and returnes an Iterator
-        /// on the next Node considering a preorder traversion.
+        /// on the next Node with respect to the Iterator's traversion style.
         ///
-        ///\param path_to_node   The location of the Node to be removed.
+        /// \param path_to_node   The location of the Node to be removed.
         ///
-        ///\return Iterator      An Iterator on the next Node.
+        /// \return Iterator      An Iterator on the next Node.
         ////////////////////////////////////////////////////////////////////////
         Iterator remove_node(std::string const& path_to_node);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Moves a Node.
+        /// \brief Moves a Node.
         ///
         /// This function moves a Node and all its children from one position in
         /// the graph to another one.
         ///
-        /// NOTE: If path_to_node ends with an '/', the moved Node will be
+        /// NOTE: If path_to_node ends with a '/', the moved Node will be
         ///       attached to the target. If it doesn't end with '/', the target
         ///       will be overwritten.
         ///
-        ///\param path_to_node   The location of the Node to be moved.
-        ///\param path_to_target The location of the target the Node will be
-        ///                      moved to.
+        /// \param path_to_node   The location of the Node to be moved.
+        /// \param path_to_target The location of the target the Node will be
+        ///                       moved to.
         ///
-        ///\return Iterator      An Iterator on the moved Node.
+        /// \return Iterator      An Iterator on the moved Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator move_node(std::string const& path_to_node, std::string const& path_to_target);
+        Iterator move_node(std::string const& path_to_node,
+                           std::string const& path_to_target);
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Copies a Node.
@@ -148,7 +185,7 @@ class SceneGraph {
         /// This function copies a Node and all its children from one position
         /// in the graph to another one.
         ///
-        /// NOTE: If path_to_node ends with an '/', the copied Node will be
+        /// NOTE: If path_to_node ends with a '/', the copied Node will be
         ///       attached to the target. If it doesn't end with '/', the target
         ///       will be overwritten.
         ///
@@ -158,34 +195,36 @@ class SceneGraph {
         ///
         ///\return Iterator      An Iterator on the copied Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator copy_node(std::string const& path_to_node, std::string const& path_to_target);
+        Iterator copy_node(std::string const& path_to_node,
+                           std::string const& path_to_target);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the working Node.
+        /// \brief Sets the working Node.
         ///
         /// This function sets the Node you are currently working at. This
         /// allows to operate on nodes from within a subtree and therefore
         /// paths to nodes can be much shorter.
         ///
-        ///\param path_to_node   The location of the Node to be set as the
-        ///                      working Node.
+        /// \param path_to_node   The location of the Node to be set as the
+        ///                       working Node.
         ///
         ////////////////////////////////////////////////////////////////////////
         void set_working_node(std::string const& path_to_node);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns an iterator to a Node.
+        /// \brief Returns an iterator to a Node.
         ///
         /// This function returns an iterator to a Node which may be used to
         /// apply operations.
         ///
-        ///\param path_to_node   The location of the Node to be encapsuled in
-        ///                      the Iterator.
-        ///\param type           The type of the Iterator.
+        /// \param path_to_node   The location of the Node to be encapsulated in
+        ///                       the Iterator.
+        /// \param type           The traversion type of the Iterator.
         ///
-        ///\return Iterator      An Iterator on the given Node.
+        /// \return Iterator      An Iterator on the given Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator get_iterator(std::string const& path_to_node, IterationType type = DEPTH_FIRST) const;
+        Iterator get_iterator(std::string const& path_to_node,
+                              IterationType type = DEPTH_FIRST) const;
 
         ////////////////////////////////////////////////////////////////////////
         ///\brief Returns an iterator to the beginning of the SceneGraph.
@@ -193,22 +232,22 @@ class SceneGraph {
         /// This function returns an iterator to the beginning of the
         /// SceneGraph which is a Node named "/".
         ///
-        ///\param type           The type of the Iterator.
+        ///\param type           The traversion type of the Iterator.
         ///
         ///\return Iterator      An Iterator on the Node "/".
         ////////////////////////////////////////////////////////////////////////
         Iterator begin(IterationType type = DEPTH_FIRST) const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns an iterator to the "end" of the SceneGraph.
+        /// \brief Returns an iterator to the "end" of the SceneGraph.
         ///
         /// Because the SceneGraph is structured as a non-cyclic graph is
-        /// expected to be, there is no real end. Therefore this function
+        /// expected to be, there is no real "end". Therefore this function
         /// returns an Iterator on an imaginary end, which can be used to
-        /// check whether an added Node is valid or an iteration other the graph
+        /// check whether an added Node is valid or an iteration over the graph
         /// has finished.
         ///
-        ///\return Iterator      An Iterator on the "end" of the SceneGraph.
+        /// \return Iterator      An Iterator on the "end" of the SceneGraph.
         ////////////////////////////////////////////////////////////////////////
         Iterator end() const;
 
@@ -240,11 +279,13 @@ class SceneGraph {
         ///\return Iterator      An Iterator on the given Node.
         ////////////////////////////////////////////////////////////////////////
         Iterator operator [](std::string const& path_to_node);
+        SceneGraph const& operator= (SceneGraph const& rhs);
 
     private:
         Node *root_, *working_node_;
 
-        Node* find_node(std::string const& path_to_node, std::string const& path_to_start = "/",
+        Node* find_node(std::string const& path_to_node,
+                        std::string const& path_to_start = "/",
                         bool add_missing_nodes = false) const;
 
         bool has_child(Node* parent, std::string const& child_name) const;
@@ -266,4 +307,4 @@ std::ostream& operator<<(std::ostream& os, SceneGraph const& graph);
 
 }
 
-#endif // SCENE_GRAPH_HPP
+#endif // GUA_SCENE_GRAPH_HPP

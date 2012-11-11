@@ -12,6 +12,7 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Wall" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -30,15 +31,27 @@
 		</Build>
 		<Compiler>
 			<Add option="-std=c++0x" />
-			<Add option="-Wall" />
 			<Add option="-fPIC" />
 			<Add directory="include" />
+			<Add directory="../../scm_cl_core/src" />
+			<Add directory="../../scm_core/src" />
+			<Add directory="../../scm_data/src" />
+			<Add directory="../../scm_gl_core/src" />
+			<Add directory="../../scm_gl_util/src" />
+			<Add directory="../../scm_input/src" />
+			<Add directory="/opt/boost/boost_1_48_0/include" />
 		</Compiler>
 		<Linker>
 			<Add library="GL" />
 			<Add library="GLEW" />
+			<Add library="libscm_cl_core" />
+			<Add library="libscm_core" />
+			<Add library="libscm_gl_core" />
+			<Add library="libscm_gl_util" />
+			<Add library="libscm_input" />
 			<Add library="assimp" />
-			<Add library="IL" />
+			<Add directory="../../lib/linux_x86" />
+			<Add directory="/opt/boost/boost_1_48_0/lib" />
 		</Linker>
 		<Unit filename="include/cores/CameraCore.hpp" />
 		<Unit filename="include/cores/GeometryCore.hpp" />
@@ -47,28 +60,26 @@
 		<Unit filename="include/guacamole.hpp" />
 		<Unit filename="include/renderer/BufferDescriptions.hpp" />
 		<Unit filename="include/renderer/DataBase.hpp" />
-		<Unit filename="include/renderer/FragmentShader.hpp" />
 		<Unit filename="include/renderer/FrameBufferObject.hpp" />
+		<Unit filename="include/renderer/FullscreenPass.hpp" />
+		<Unit filename="include/renderer/GenericRenderPass.hpp" />
 		<Unit filename="include/renderer/Geometry.hpp" />
 		<Unit filename="include/renderer/GeometryBase.hpp" />
-		<Unit filename="include/renderer/LightSphere.hpp" />
+		<Unit filename="include/renderer/LightInformation.hpp" />
 		<Unit filename="include/renderer/Material.hpp" />
 		<Unit filename="include/renderer/MaterialBase.hpp" />
 		<Unit filename="include/renderer/Mesh.hpp" />
-		<Unit filename="include/renderer/RenderBackend.hpp" />
 		<Unit filename="include/renderer/RenderContext.hpp" />
 		<Unit filename="include/renderer/RenderPass.hpp" />
 		<Unit filename="include/renderer/RenderPipeline.hpp" />
 		<Unit filename="include/renderer/RenderWindow.hpp" />
-		<Unit filename="include/renderer/Shader.hpp" />
 		<Unit filename="include/renderer/ShaderProgram.hpp" />
 		<Unit filename="include/renderer/StereoShaders.hpp" />
+		<Unit filename="include/renderer/TextRenderer.hpp" />
 		<Unit filename="include/renderer/Texture.hpp" />
 		<Unit filename="include/renderer/TextureBase.hpp" />
-		<Unit filename="include/renderer/Uniform.hpp" />
-		<Unit filename="include/renderer/VertexShader.hpp" />
+		<Unit filename="include/renderer/WarpMatrix.hpp" />
 		<Unit filename="include/renderer/enums.hpp" />
-		<Unit filename="include/renderer/glInclude.hpp" />
 		<Unit filename="include/traverser/CameraNode.hpp" />
 		<Unit filename="include/traverser/GeometryNode.hpp" />
 		<Unit filename="include/traverser/LightNode.hpp" />
@@ -83,33 +94,36 @@
 		<Unit filename="include/utils/DotGenerator.hpp" />
 		<Unit filename="include/utils/KnownObject.hpp" />
 		<Unit filename="include/utils/PathParser.hpp" />
+		<Unit filename="include/utils/Profiler.hpp" />
 		<Unit filename="include/utils/Singleton.hpp" />
 		<Unit filename="include/utils/TextFile.hpp" />
 		<Unit filename="include/utils/Timer.hpp" />
 		<Unit filename="include/utils/debug.hpp" />
 		<Unit filename="include/utils/math.hpp" />
 		<Unit filename="include/utils/randomizer.hpp" />
+		<Unit filename="include/utils/string_utils.hpp" />
 		<Unit filename="src/cores/CameraCore.cpp" />
 		<Unit filename="src/cores/GeometryCore.cpp" />
 		<Unit filename="src/cores/LightCore.cpp" />
 		<Unit filename="src/cores/ScreenCore.cpp" />
 		<Unit filename="src/guacamole.cpp" />
-		<Unit filename="src/renderer/FragmentShader.cpp" />
 		<Unit filename="src/renderer/FrameBufferObject.cpp" />
+		<Unit filename="src/renderer/FullscreenPass.cpp" />
+		<Unit filename="src/renderer/GenericRenderPass.cpp" />
 		<Unit filename="src/renderer/Geometry.cpp" />
 		<Unit filename="src/renderer/GeometryBase.cpp" />
+		<Unit filename="src/renderer/LightInformation.cpp" />
 		<Unit filename="src/renderer/Material.cpp" />
 		<Unit filename="src/renderer/MaterialBase.cpp" />
 		<Unit filename="src/renderer/Mesh.cpp" />
-		<Unit filename="src/renderer/RenderBackend.cpp" />
 		<Unit filename="src/renderer/RenderPass.cpp" />
 		<Unit filename="src/renderer/RenderPipeline.cpp" />
 		<Unit filename="src/renderer/RenderWindow.cpp" />
-		<Unit filename="src/renderer/Shader.cpp" />
 		<Unit filename="src/renderer/ShaderProgram.cpp" />
+		<Unit filename="src/renderer/TextRenderer.cpp" />
 		<Unit filename="src/renderer/Texture.cpp" />
 		<Unit filename="src/renderer/TextureBase.cpp" />
-		<Unit filename="src/renderer/VertexShader.cpp" />
+		<Unit filename="src/renderer/WarpMatrix.cpp" />
 		<Unit filename="src/traverser/Optimizer.cpp" />
 		<Unit filename="src/traverser/RenderClient.cpp" />
 		<Unit filename="src/traverser/RenderMask.cpp" />
@@ -118,6 +132,7 @@
 		<Unit filename="src/utils/Directory.cpp" />
 		<Unit filename="src/utils/DotGenerator.cpp" />
 		<Unit filename="src/utils/PathParser.cpp" />
+		<Unit filename="src/utils/Profiler.cpp" />
 		<Unit filename="src/utils/TextFile.cpp" />
 		<Unit filename="src/utils/Timer.cpp" />
 		<Unit filename="src/utils/math.cpp" />

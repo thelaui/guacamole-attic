@@ -15,15 +15,36 @@
 //
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-/// \file
-/// \brief Includes all neccesary OpenGL headers.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GLINCLUDE_HPP
-#define GLINCLUDE_HPP
+#version 420
 
-#include <GL/glew.h>
-#include <GL/glxew.h>
+in vec3 normal;
+in vec2 texcoord;
 
-#endif //GLINCLUDE_HPP
+uniform float shinyness;
+uniform sampler2D tex;
+
+layout(location=0) out vec3 out_color;
+
+void main() {
+	vec3 lightDirTop  = normalize(vec3(1.0,2.0,5.0));
+	vec3 lightDirBack = normalize(vec3(0.0, 10.0,-10.0));
+	vec3 lightDirFill = normalize(vec3(-10.0,-5.0,1.0));
+
+	vec3 top  = vec3(1.0, 1.0, 1.0);
+	vec3 back = vec3(1.0, 1.0, 1.0);
+	vec3 fill = vec3(0.6, 0.6, 0.6);
+
+	float intensityTop  = pow(max(dot(lightDirTop,normal), 0.0), 3.0);
+	float intensityBack = max(dot(lightDirBack,normal), 0.0);
+	float intensityFill = max(dot(lightDirFill,normal), 0.0);
+
+	vec3 specDir = reflect(lightDirTop, normal);
+
+	float fakeSpec = pow(max(specDir.z, 0.0), shinyness);
+
+	vec3 amb = vec3(0.1, 0.1, 0.1);
+
+	out_color = texture2D(tex, texcoord).rgb * vec3(intensityTop*top + intensityBack*back + intensityFill*fill + amb + fakeSpec);
+}

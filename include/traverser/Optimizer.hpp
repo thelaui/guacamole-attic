@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,9 +21,10 @@
 /// \brief Declaration of the Optimizer class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OPTIMIZER_HPP
-#define OPTIMIZER_HPP
+#ifndef GUA_OPTIMIZER_HPP
+#define GUA_OPTIMIZER_HPP
 
+// guacamole headers
 #include "traverser/OptimizedScene.hpp"
 #include "traverser/RenderMask.hpp"
 
@@ -33,34 +35,41 @@ class SceneGraph;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class is used to convert the scengraph to a (opimized) sequence.
 ///
+/// It serializes the scene graph.
 ////////////////////////////////////////////////////////////////////////////////
-
 class Optimizer {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs an Optimizer.
-        ///
         ////////////////////////////////////////////////////////////////////////
         Optimizer();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Destructor.
         ///
         /// This destroys an Optimizer.
-        ///
         ////////////////////////////////////////////////////////////////////////
         virtual ~Optimizer();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Takes the Scengraph and processes geometry, light and camera lists.
+        /// \brief Takes the Scengraph and processes geometry, light and camera
+        ///        lists.
         ///
-        ///\param scene_graph          The SceneGraph to be processed.
+        /// \param scene_graph          The SceneGraph to be processed.
+        /// \param render_mask          The mask to be applied to the nodes of
+        ///                             the graph.
         ////////////////////////////////////////////////////////////////////////
-        void check( SceneGraph const* scene_graph, RenderMask const& render_mask );
+        void check(SceneGraph const* scene_graph,
+                   RenderMask const& render_mask);
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Returns the optimized scene.
+        ///
+        /// \return An OptimizedScene of the current scene graph.
+        ////////////////////////////////////////////////////////////////////////
         OptimizedScene const& get_data() const;
 
     private:
@@ -70,4 +79,4 @@ class Optimizer {
 
 }
 
-#endif // OPTIMIZER_HPP
+#endif // GUA_OPTIMIZER_HPP

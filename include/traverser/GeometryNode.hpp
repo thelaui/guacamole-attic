@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,30 +21,53 @@
 /// \brief Declaration and definition of the GeometryNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GEOMETRY_NODE_HPP
-#define GEOMETRY_NODE_HPP
+#ifndef GUA_GEOMETRY_NODE_HPP
+#define GUA_GEOMETRY_NODE_HPP
 
-#include <eigen2/Eigen/Geometry>
+// external headers
 #include <string>
+
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a geometry for rendering.
 ///
+/// This is a struct used for serializing the graph.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 struct GeometryNode {
-    GeometryNode(std::string const& g, std::string const& m, Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
-        geometry_(g), material_(m), transform_(t) {}
 
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief Constructor.
+    ///
+    /// This creates a new serialized node.
+    ///
+    /// \param geometry         The geometry of this node.
+    /// \param material         The material of this geometry.
+    /// \param transform        The global transformation of this node.
+    ////////////////////////////////////////////////////////////////////////////
+    GeometryNode(std::string const& geometry, std::string const& material,
+                 math::mat4 const& transform):
+        geometry_(geometry),
+        material_(material),
+        transform_(transform) {}
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief The geometry of this node.
+    ////////////////////////////////////////////////////////////////////////////
     std::string geometry_;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief The material of this geometry.
+    ////////////////////////////////////////////////////////////////////////////
     std::string material_;
 
-    Eigen::Matrix4f transform_;
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief The global transformation of this node.
+    ////////////////////////////////////////////////////////////////////////////
+    math::mat4 transform_;
 };
 
 }
 
-#endif //GEOMETRY_NODE_HPP
+#endif // GUA_GEOMETRY_NODE_HPP
 

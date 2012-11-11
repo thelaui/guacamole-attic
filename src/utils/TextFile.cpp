@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,26 +21,39 @@
 /// \brief A simple file reader to get data out of text files.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "utils/TextFile.hpp"
 
+// guacamole headers
+#include "utils/debug.hpp"
+
+// external headers
 #include <sstream>
 #include <fstream>
 
-#include "utils/debug.hpp"
-
 namespace gua {
 
-TextFile::TextFile():
+////////////////////////////////////////////////////////////////////////////////
+
+TextFile::
+TextFile():
     file_name_(""),
     content_(""),
     is_loaded_(false) {}
 
-TextFile::TextFile(std::string const& file_name):
+////////////////////////////////////////////////////////////////////////////////
+
+TextFile::
+TextFile(std::string const& file_name):
     file_name_(file_name),
     content_(""),
     is_loaded_(false) {}
 
-bool TextFile::is_valid() const {
+////////////////////////////////////////////////////////////////////////////////
+
+bool TextFile::
+is_valid() const {
+
     std::ifstream file(file_name_.c_str());
 
     if (file.fail())
@@ -49,7 +63,11 @@ bool TextFile::is_valid() const {
     return true;
 }
 
-std::string const& TextFile::get_content() const{
+////////////////////////////////////////////////////////////////////////////////
+
+std::string const& TextFile::
+get_content() const{
+
     if (is_loaded_)
         return content_;
 
@@ -73,11 +91,15 @@ std::string const& TextFile::get_content() const{
     return content_;
 }
 
-std::string const& TextFile::get_file_name() const{
+////////////////////////////////////////////////////////////////////////////////
+
+std::string const& TextFile::
+get_file_name() const{
+
     return file_name_;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 }
-
-
 

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,32 +21,49 @@
 /// \brief Declaration and definition of the LightNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef LIGHT_NODE_HPP
-#define LIGHT_NODE_HPP
+#ifndef GUA_LIGHT_NODE_HPP
+#define GUA_LIGHT_NODE_HPP
 
+// guacamole headers
 #include "utils/Color3f.hpp"
+#include "utils/math.hpp"
 
-#include <eigen2/Eigen/Geometry>
+// external headers
 #include <string>
+
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a light for rendering.
 ///
+/// This is a struct used for serializing the graph.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 struct LightNode {
-    LightNode(Eigen::Matrix4f const& transform = Eigen::Matrix4f::Identity(),
-              Color3f const& color = Color3f()):
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief Constructor.
+    ///
+    /// This creates a new serialized node.
+    ///
+    /// \param transform        The global transformation of this node.
+    /// \param color            The color of the light.
+    ////////////////////////////////////////////////////////////////////////////
+    LightNode(math::mat4 const& transform, Color3f const& color):
         transform_(transform),
         color_(color) {}
 
-    Eigen::Matrix4f transform_;
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief The global transformation of this node.
+    ////////////////////////////////////////////////////////////////////////////
+    math::mat4 transform_;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief The color of the light.
+    ////////////////////////////////////////////////////////////////////////////
     Color3f color_;
 };
 
 }
 
-#endif //LIGHT_NODE_HPP
+#endif // GUA_LIGHT_NODE_HPP
 

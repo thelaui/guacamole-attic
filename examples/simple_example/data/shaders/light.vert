@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -15,35 +16,23 @@
 //
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-/// \file
-/// \brief Declaration of the RenderBackend class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDER_BACKEND_HPP
-#define RENDER_BACKEND_HPP
+#version 330
 
-#include <string>
+layout(location=0) in vec3 in_position;
+layout(location=1) in vec3 in_texcoord;
+layout(location=2) in vec3 in_normal;
 
-#include "renderer/enums.hpp"
+uniform mat4 projection_matrix;
+uniform mat4 view_matrix;
+uniform mat4 model_matrix;
+uniform mat4 normal_matrix;
 
-namespace gua {
+out vec3 position;
 
-struct OptimizedScene;
-class RenderPass;
-class RenderContext;
-
-class RenderBackend {
-    public:
-        RenderBackend(RenderPass* pass);
-
-        void render(OptimizedScene const& scene, RenderContext const& context,
-                    CameraMode mode);
-
-    private:
-        RenderPass* pass_;
-};
-
+void main() {
+	position = (model_matrix * vec4(in_position, 1.0)).xyz;
+	gl_Position = projection_matrix * view_matrix * vec4(position, 1.0);
 }
 
-#endif // RENDER_BACKEND_HPP

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,121 +21,153 @@
 /// \brief Declaration of the Iterator class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef ITERATOR_HPP
-#define ITERATOR_HPP
+#ifndef GUA_ITERATOR_HPP
+#define GUA_ITERATOR_HPP
 
+// guacamole headers
 #include "scenegraph/SceneGraph.hpp"
 #include "scenegraph/Node.hpp"
 #include "utils/debug.hpp"
 
+// external headers
 #include <memory>
 #include <map>
+
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class is used to iterate over the SceneGraph.
 ///
 /// Iterators are used to give access to the SceneGraph's data without having
 /// to worry about its inner structure. They are very useful to get access to
-/// the nodes one by one in preorder traversion.
+/// the nodes one by one in breadth or depth first style traversion.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 class SceneGraph::Iterator {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
-        /// This constructs a Iterator from a given Node.
+        /// This constructs an Iterator on a given Node.
         ///
-        ///\param node      The Node the Iterator shall contain.
-        ///\param type           The type of the Iterator.
+        /// \param node      The Node the Iterator shall contain.
+        /// \param type      The type of the Iterator. Can be DEPTH_FIRST or
+        ///                  BREADTH_FIRST
         ////////////////////////////////////////////////////////////////////////
         Iterator(Node* node = NULL, IterationType type = DEPTH_FIRST);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Adds a new Node.
+        /// \brief Adds a new Node.
         ///
-        /// This function adds a new Node beyond the Node the Iterator holds.
+        /// This function adds a new Node to the children list of the Node
+        /// the Iterator holds.
         ///
-        ///\param node_name      The name of the new Node.
-        ///\param core           The core the new Node shall refer to.
-        ///\param transform      The transformation of the object the new Node
+        /// \param node_name      The name of the new Node.
+        /// \param core           The core the new Node shall refer to.
+        /// \param transform      The transformation of the object the new Node
         ///                      carries.
         ///
-        ///\return Iterator      An Iterator on the recently added Node.
+        /// \return Iterator      An Iterator on the recently added Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator add_node(std::string const& node_name, Core* core = NULL,
-                          Eigen::Transform3f const& transform =
-                          (Eigen::Transform3f) Eigen::Transform3f::Identity());
+        Iterator add_child(std::string const& node_name, Core* core = NULL,
+                           math::mat4 const& transform =
+                           math::mat4::identity()) const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the depth of the Iterator.
+        /// \brief Returns the depth of the Iterator.
         ///
-        /// This effectively returns the depth of the Node the Iterator is
-        /// currently pointing on.
+        /// This returns the depth of the Node the Iterator is currently
+        /// referring to.
         ///
-        ///\return depth      The depth of the Iterator.
+        /// \return depth      The depth of the Iterator.
         ////////////////////////////////////////////////////////////////////////
         int get_depth() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the name of the Iterator's Node.
+        /// \brief Returns the name of the Iterator's Node.
         ///
-        ///\return name       The depth of the Iterator' Node.
+        /// \return name       The depth of the Iterator' Node.
         ////////////////////////////////////////////////////////////////////////
         std::string const& get_name() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the name of the Iterator's Node.
+        /// \brief Sets the name of the Iterator's Node.
         ///
-        ///\param name        The new name of the Node.
+        /// \param name        The new name of the Node.
         ////////////////////////////////////////////////////////////////////////
         void set_name(std::string const& name) const;
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Adds the Iterator's Node to a group.
+        ///
+        /// \param group     The name of the group the Node will be added to.
+        ////////////////////////////////////////////////////////////////////////
         void add_to_group(std::string const& group);
-        void add_to_groups(std::vector<std::string> const& groups);
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Adds the Iterator's Node to several groups.
+        ///
+        /// \param groups    The names of the groups the Node will be added to.
+        ////////////////////////////////////////////////////////////////////////
+        void add_to_groups(std::set<std::string> const& groups);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Removes the Iterator's Node from a group.
+        ///
+        /// \param group     The name of the group the Node will removed from.
+        ////////////////////////////////////////////////////////////////////////
         void remove_from_group(std::string const& group);
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Checks whether the Iterator's Node is in a certain group.
+        ///
+        /// \param group        The name of the group to be checked.
+        ///
+        /// \return is_in_group Returns true if the Node is in the given group,
+        ///                     else false.
+        ////////////////////////////////////////////////////////////////////////
         bool is_in_group(std::string const& group) const;
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Gets the groups the Iterator's Node is in.
+        ///
+        /// \return groups   Returns all groups the Node is in.
+        ////////////////////////////////////////////////////////////////////////
         std::set<std::string> const& get_groups() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the transformation of the Iterator's Node.
+        /// \brief Returns the transformation of the Iterator's Node.
         ///
         /// Returns the accumulation of the local and global transformation.
         ///
-        ///\return transform  The Node's transformation.
+        /// \return transform  The Node's transformation.
         ////////////////////////////////////////////////////////////////////////
-        Eigen::Transform3f const& get_transform() const;
+        math::mat4 const& get_transform() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the transformation of the Iterator's Node.
+        /// \brief Sets the transformation of the Iterator's Node.
         ///
-        ///\param transform   The new transformation of the Node.
+        /// \param transform   The new transformation of the Node.
         ////////////////////////////////////////////////////////////////////////
-        void set_transform(Eigen::Transform3f const& transform) const;
+        void set_transform(math::mat4 const& transform) const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the core of the Iterator's Node.
+        /// \brief Returns the core of the Iterator's Node.
         ///
         /// Returns the base of the contained Core.
         ///
-        ///\return Core  The Node's Core.
+        /// \return Core  The Node's Core.
         ////////////////////////////////////////////////////////////////////////
         Core* get_core() const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns a casted core of the Iterator's Node.
+        /// \brief Returns a casted core of the Iterator's Node.
         ///
         /// The Core's type may be given as template parameter. A dynamic_cast
         /// will be applied in the function Node::get_core().
         ///
-        ///\return Core  The Node's Core.
+        /// \return Core  The Node's Core.
         ////////////////////////////////////////////////////////////////////////
         template <class T>
         T* get_core_casted() const {
@@ -148,102 +181,107 @@ class SceneGraph::Iterator {
         }
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the core of the Iterator's Node.
+        /// \brief Sets the core of the Iterator's Node.
         ///
-        ///\param core   The new core of the Node.
+        /// \param core   The new core of the Node.
         ////////////////////////////////////////////////////////////////////////
         void set_core(Core* core) const;
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Applies a scaling on the Iterator's Node's transformation.
+        /// \brief Applies a scaling on the Iterator's Node's transformation.
         ///
-        ///\param x         The x value of the scaling.
-        ///\param y         The y value of the scaling.
-        ///\param z         The z value of the scaling.
+        /// \param x         The x value of the scaling.
+        /// \param y         The y value of the scaling.
+        /// \param z         The z value of the scaling.
         ////////////////////////////////////////////////////////////////////////
         void scale(double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Applies a rotation on the Iterator's Node's transformation.
+        /// \brief Applies a rotation on the Iterator's Node's transformation.
         ///
-        ///\param angle     The angle of the rotation in radians.
-        ///\param x         The x factor of the rotation.
-        ///\param y         The y factor of the rotation.
-        ///\param z         The z factor of the rotation.
+        /// \param angle     The angle of the rotation in degrees.
+        /// \param x         The x factor of the rotation.
+        /// \param y         The y factor of the rotation.
+        /// \param z         The z factor of the rotation.
         ////////////////////////////////////////////////////////////////////////
         void rotate(double angle, double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Applies a translation on the Iterator's Node's transformation.
+        /// \brief Applies a translation on the Iterator's Node's
+        ///        transformation.
         ///
-        ///\param x         The x value of the translation.
-        ///\param y         The y value of the translation.
-        ///\param z         The z value of the translation.
+        /// \param x         The x value of the translation.
+        /// \param y         The y value of the translation.
+        /// \param z         The z value of the translation.
         ////////////////////////////////////////////////////////////////////////
         void translate(double x, double y, double z);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the Iterator's type.
+        /// \brief Sets the Iterator's type.
         ///
-        /// This can be used to change the way the Iterator is incremented.
+        /// This can be used to change the way the Iterator is incremented in
+        /// order to change the traversion style.
+        ///
+        /// \param type      The new type of the Iterator.
         ////////////////////////////////////////////////////////////////////////
         void set_iteration_type(IterationType type);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Increments the Iterator.
+        /// \brief Increments the Iterator.
         ///
         /// Increments the Iterator by detecting the next node of the SceneGraph
-        /// in preorder traversion and setting the Iterator's node to this one.
-        /// If every node is visited, the Iterator will be set on "end".
+        /// with respect to the Iterator's type and setting the Iterator's node
+        /// to this one. If every node is visited, the Iterator will be set on
+        /// "end".
         ////////////////////////////////////////////////////////////////////////
         void operator ++();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Compares two Iterators.
+        /// \brief Compares two Iterators.
         ///
         /// This function returns true if two Iterators point on the same Node.
         ///
-        ///\param rhs       The Iterator to be checked on equality with.
+        /// \param rhs       The Iterator to be checked on equality with.
         ///
-        ///\return result   The result of the comparison.
+        /// \return result   The result of the comparison.
         ////////////////////////////////////////////////////////////////////////
         bool operator ==(Iterator const& rhs);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Compares two Iterators.
+        /// \brief Compares two Iterators.
         ///
         /// This function returns true if two Iterators do not point on the same
         /// Node.
         ///
-        ///\param rhs       The Iterator to be checked on equality with.
+        /// \param rhs       The Iterator to be checked on equality with.
         ///
-        ///\return result   The result of the comparison.
+        /// \return result   The result of the comparison.
         ////////////////////////////////////////////////////////////////////////
         bool operator !=(Iterator const& rhs);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the name of the Iterator's Node.
+        /// \brief Sets the name of the Iterator's Node.
         ///
-        ///\param name        The new name of the Node.
+        /// \param name        The new name of the Node.
         ////////////////////////////////////////////////////////////////////////
         Iterator& operator << (std::string const& name);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the transformation of the Iterator's Node
+        /// \brief Sets the transformation of the Iterator's Node
         ///
-        ///\param transform   The new transformation of the Node.
+        /// \param transform   The new transformation of the Node.
         ////////////////////////////////////////////////////////////////////////
-        Iterator& operator << (Eigen::Transform3f const& transform);
+        Iterator& operator << (math::mat4 const& transform);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Sets the core of the Iterator's Node.
+        /// \brief Sets the core of the Iterator's Node.
         ///
-        ///\param core        The new core of the Node.
+        /// \param core        The new core of the Node.
         ////////////////////////////////////////////////////////////////////////
         Iterator& operator << (Core*core);
 
     private:
-        Node* current_node_;
+        mutable Node* current_node_;
         Node* start_node_;
 
         SceneGraph::IterationType type_;
@@ -257,9 +295,9 @@ class SceneGraph::Iterator {
         Node* get_neighbour(Node* to_be_checked);
 
         static const std::string end_name_;
-        static const Eigen::Transform3f end_transform_;
+        static const math::mat4 end_transform_;
 };
 
 }
 
-#endif //ITERATOR_HPP
+#endif // GUA_ITERATOR_HPP

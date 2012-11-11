@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,18 +21,31 @@
 /// \brief A Core representing light in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "cores/LightCore.hpp"
 
 namespace gua {
 
-LightCore::LightCore(Color3f const& color):
+////////////////////////////////////////////////////////////////////////////////
+
+LightCore::
+LightCore(Color3f const& color):
     Core(Core::LIGHT),
     color_(color) {}
 
-LightCore::~LightCore() {}
+////////////////////////////////////////////////////////////////////////////////
 
-Color3f const& LightCore::get_color() const {
+LightCore::
+~LightCore() {}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Color3f const& LightCore::
+get_color() const {
+
     return color_;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

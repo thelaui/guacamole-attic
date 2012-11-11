@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -10,127 +11,131 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
 /// \brief Declaration of the Texture class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TEXTURE_HPP
-#define TEXTURE_HPP
+#ifndef GUA_TEXTURE_HPP
+#define GUA_TEXTURE_HPP
 
+// guacamole headers
 #include "renderer/RenderContext.hpp"
 
+// external headers
 #include <string>
 #include <vector>
-#include <mutex>
+#include <thread>
 #include <GL/glew.h>
 
 namespace gua {
-////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 /// \brief A class representing a texture.
 ///
 /// This class allows to load texture data from a file and bind the
 /// texture to an OpenGL context.
-////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 class Texture {
     public:
 
-        ////////////////////////////////////////////////////////////
-        /// \brief Constructor.
-        ///
-        /// This constructs a new texture.
-        ///
-        ////////////////////////////////////////////////////////////
-        Texture();
-
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
         /// This constructs a new texture with the given parameters.
         ///
-        /// \param width        The width of the resulting texture.
-        /// \param height       The height of the resulting texture.
-        /// \param color_depth  The color depth of the resulting
-        ///                     texture.
-        /// \param color_format The color format of the resulting
-        ///                     texture.
-        /// \param type         The data type texture data is stored
-        ///                     in.
-        ////////////////////////////////////////////////////////////
-        Texture(unsigned width, unsigned height, unsigned color_depth = GL_RGB32F,
-                unsigned color_format = GL_RGB, unsigned type = GL_FLOAT);
+        /// \param width            The width of the resulting texture.
+        /// \param height           The height of the resulting texture.
+        /// \param color_format     The color format of the resulting
+        ///                         texture.
+        /// \param state_descripton The sampler state for the loaded texture.
+        ////////////////////////////////////////////////////////////////////////
+        Texture(unsigned width, unsigned height,
+                scm::gl::data_format color_format = scm::gl::FORMAT_RGB_32F,
+                scm::gl::sampler_state_desc const& state_descripton
+                = scm::gl::sampler_state_desc(scm::gl::FILTER_MIN_MAG_LINEAR));
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor.
         ///
         /// This constructs a new texture from a given file.
         ///
-        /// \param file The file which contains the texture data
-        ////////////////////////////////////////////////////////////
-        Texture(std::string const& file);
+        /// \param file             The file which contains the texture data.
+        /// \param state_descripton The sampler state for the loaded texture.
+        ////////////////////////////////////////////////////////////////////////
+        Texture(std::string const& file,
+                scm::gl::sampler_state_desc const& state_descripton
+                        = scm::gl::sampler_state_desc(
+                                scm::gl::FILTER_MIN_MAG_LINEAR,
+                                scm::gl::WRAP_REPEAT, scm::gl::WRAP_REPEAT));
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor.
         ///
         /// This will delete all associated buffers.
-        ////////////////////////////////////////////////////////////
-        ~Texture();
+        ////////////////////////////////////////////////////////////////////////
+        virtual ~Texture();
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Bind the texture.
         ///
-        /// This will bind the texture to the current OpenGL context
-        /// with the given layer.
+        /// This will bind the texture to the given OpenGL context
+        /// to the given position.
         ///
-        ///\param context  The current context.
-        ///\param texture_type The type of the texture.
-        ////////////////////////////////////////////////////////////
-        void bind(RenderContext const& context, unsigned texture_type) const;
+        /// \param context          The current context.
+        /// \param position         The position of the texture.
+        ////////////////////////////////////////////////////////////////////////
+        void bind(RenderContext const& context, int position) const;
 
-        ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Unbind a texture.
         ///
-        /// This will unbind the texture with the given position.
-        /// \param texture_type The type of the texture.
-        ////////////////////////////////////////////////////////////
-        static void unbind(unsigned texture_type);
-
-        ////////////////////////////////////////////////////////////
-        /// \brief Set a texture parameter.
+        /// This will unbind the texture for the given context.
         ///
-        /// This will set a texture parameter with the given value.
+        /// \param context          The current context.
+        ////////////////////////////////////////////////////////////////////////
+        void unbind(RenderContext const& context);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Get the schism texture.
         ///
-        /// \param parameter_name The name of the parameter.
-        /// \param value          The new value of the parameter.
-        ////////////////////////////////////////////////////////////
-        void set_parameter(unsigned parameter_name, unsigned value) const;
+        /// \param context          The context for which the texture should be
+        ///                         returned.
+        /// \return                 A pointer to the schism texture.
+        ////////////////////////////////////////////////////////////////////////
+        scm::gl::texture_2d_ptr const& get_buffer (
+                                        RenderContext const& context) const;
 
-        ////////////////////////////////////////////////////////////
-        /// \brief Get the Texture-ID.
+        ///@{
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Gets the size.
         ///
-        /// \return The texture's ID
-        ////////////////////////////////////////////////////////////
-        unsigned get_id(RenderContext const& context) const;
+        /// Returns the size of the Texture.
+        ////////////////////////////////////////////////////////////////////////
+        unsigned width() const;
+        unsigned height() const;
+        ///@}
 
-    private:
-        unsigned width_, height_, color_depth_, color_format_, type_;
-        std::vector<unsigned char> data_;
-
-        mutable std::vector<unsigned> texture_ids_;
+    protected:
+        mutable unsigned width_, height_;
+        scm::gl::data_format color_format_;
+        scm::gl::sampler_state_desc state_descripton_;
+        mutable std::vector<scm::gl::texture_2d_ptr> textures_;
+        mutable std::vector<scm::gl::sampler_state_ptr> sampler_states_;
         mutable std::mutex upload_mutex_;
 
-        void upload_to(RenderContext const& context) const;
+        virtual void upload_to(RenderContext const& context) const;
+
+    private:
+        std::string file_name_;
 };
 
 }
-# endif //TEXTURE_HPP
-
-
-
+# endif // GUA_TEXTURE_HPP
 
 

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -10,153 +11,159 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class to maintain OpenGL's FBOs.
+/// \brief Definition of the FrameBufferObject class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/FrameBufferObject.hpp"
 
+// guacamole headers
 #include "renderer/RenderContext.hpp"
 #include "utils/debug.hpp"
+#include "utils/math.hpp"
 
+// external headers
 #include <GL/glew.h>
-#include <iostream>
 #include <string>
 
 namespace gua {
 
-FrameBufferObject::FrameBufferObject():
-    width_(0),
-    height_(0),
-    fbos_() {}
+////////////////////////////////////////////////////////////////////////////////
 
-FrameBufferObject::~FrameBufferObject() {
-    for (auto fbo: fbos_)
-        if (fbo)
-            glDeleteFramebuffers(1, &fbo);
-}
+FrameBufferObject::
+FrameBufferObject():
+    fbos_(), upload_mutex_(), width_(0), height_(0) {}
 
-void FrameBufferObject::attach_buffer(RenderContext const& context,
-                                      unsigned buffer_type, unsigned buffer_id, unsigned attachment_id,
-                                      int width, int height,
-                                      int mip_level, int z_slice) {
-    bind(context, {});
+////////////////////////////////////////////////////////////////////////////////
 
-    width_ = width;
-    height_ = height;
+FrameBufferObject::
+~FrameBufferObject() {}
 
-    switch (buffer_type) {
-        case GL_TEXTURE_1D:
-            glFramebufferTexture1D(GL_FRAMEBUFFER, attachment_id, GL_TEXTURE_1D, buffer_id, mip_level);
-            break;
-        case GL_TEXTURE_2D_ARRAY:
-            glFramebufferTexture(GL_FRAMEBUFFER, attachment_id, buffer_id, z_slice);
-            break;
-        case GL_TEXTURE_3D:
-            glFramebufferTexture3D(GL_FRAMEBUFFER, attachment_id, GL_TEXTURE_3D, buffer_id, mip_level, z_slice);
-            break;
-        default:
-            glFramebufferTexture2D(GL_FRAMEBUFFER, attachment_id, buffer_type, buffer_id, mip_level);
-            break;
+////////////////////////////////////////////////////////////////////////////////
+
+void FrameBufferObject::
+attach_color_buffer(RenderContext const& ctx, unsigned in_color_attachment,
+                    Texture const& buffer, int mip_level, int z_slice) {
+
+    std::unique_lock<std::mutex> lock(upload_mutex_);
+
+    // only attach buffer if it has an appropriate size
+    if (set_size(buffer)) {
+
+        // create new fbo if there isn't any for this context
+        if (fbos_.size() <= ctx.id || fbos_[ctx.id] == NULL) {
+            fbos_.resize(ctx.id+1);
+            fbos_[ctx.id] = ctx.render_device->create_frame_buffer();
+        }
+
+        fbos_[ctx.id]->attach_color_buffer(
+                            in_color_attachment, buffer.get_buffer(ctx),
+                            mip_level, z_slice);
     }
-
-    unbind();
 }
 
-void FrameBufferObject::bind(RenderContext const& context,
-                             std::vector<unsigned> const& attachments) {
-    // upload to GPU if neccessary
-    if (fbos_.size() <= context.id || fbos_[context.id] == 0) {
-        upload_to(context);
+////////////////////////////////////////////////////////////////////////////////
+
+void FrameBufferObject::
+attach_depth_stencil_buffer(RenderContext const& ctx, Texture const& buffer,
+                            int mip_level, int z_slice) {
+
+    std::unique_lock<std::mutex> lock(upload_mutex_);
+
+    // only attach buffer if it has an appropriate size
+    if (set_size(buffer)) {
+
+        // create new fbo if there isn't any for this context
+        if (fbos_.size() <= ctx.id || fbos_[ctx.id] == NULL) {
+            fbos_.resize(ctx.id+1);
+            fbos_[ctx.id] = ctx.render_device->create_frame_buffer();
+        }
+
+        fbos_[ctx.id]->attach_depth_stencil_buffer(
+                                    buffer.get_buffer(ctx), mip_level, z_slice);
     }
-
-    glBindFramebuffer(GL_FRAMEBUFFER, fbos_[context.id]);
-
-    if (attachments.size() > 0)
-        glDrawBuffers(attachments.size(), &(*attachments.begin()));
 }
 
-void FrameBufferObject::unbind() {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+////////////////////////////////////////////////////////////////////////////////
+
+void FrameBufferObject::
+clear_color_buffers(RenderContext const& ctx, Color3f const& color) {
+
+    if (ctx.id < fbos_.size())
+        ctx.render_context->clear_color_buffers(
+                                fbos_[ctx.id], math::vec4(color.r(), color.g(),
+                                                          color.b(), 0.f));
 }
 
-bool FrameBufferObject::is_valid(RenderContext const& context) {
-  bind(context, {});
+////////////////////////////////////////////////////////////////////////////////
 
-  bool is_valid(false);
+void FrameBufferObject::
+clear_depth_stencil_buffer(RenderContext const& ctx) {
 
-  GLenum status;
-  status = glCheckFramebufferStatusEXT(GL_FRAMEBUFFER);
-  switch (status)
-  {
-  case GL_FRAMEBUFFER_COMPLETE:
-    is_valid = true;
-    break;
-  case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-    WARNING("GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
-    is_valid = false;
-    break;
-  case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-    WARNING("GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
-    is_valid = false;
-    break;
-  case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS_EXT:
-    WARNING("GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS");
-    is_valid = false;
-    break;
-  case GL_FRAMEBUFFER_INCOMPLETE_FORMATS_EXT:
-    WARNING("GL_FRAMEBUFFER_INCOMPLETE_FORMATS");
-    is_valid = false;
-    break;
-  case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-    WARNING("GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");
-    is_valid = false;
-    break;
-  case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-    WARNING("GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
-    is_valid = false;
-    break;
-  case GL_FRAMEBUFFER_UNSUPPORTED:
-    WARNING("GL_FRAMEBUFFER_UNSUPPORTED");
-    is_valid = false;
-    break;
-  default:
-    WARNING("Unknown error occured!");
-    is_valid = false;
-  }
-
-  unbind();
-  return is_valid;
+    if (ctx.id < fbos_.size())
+        ctx.render_context->clear_depth_stencil_buffer(fbos_[ctx.id]);
 }
 
-int FrameBufferObject::width() const {
+////////////////////////////////////////////////////////////////////////////////
+
+void FrameBufferObject::
+bind(RenderContext const& ctx) {
+
+    if (ctx.id < fbos_.size())
+        ctx.render_context->set_frame_buffer(fbos_[ctx.id]);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void FrameBufferObject::
+unbind(RenderContext const& ctx) {
+
+    if (fbos_.size() > ctx.id && fbos_[ctx.id] != 0)
+        ctx.render_context->reset_framebuffer();
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+unsigned FrameBufferObject::
+width() const {
+
     return width_;
 }
 
-int FrameBufferObject::height() const {
+////////////////////////////////////////////////////////////////////////////////
+
+unsigned FrameBufferObject::
+height() const {
+
     return height_;
 }
 
-void FrameBufferObject::upload_to(RenderContext const& context) const {
-    if (fbos_.size() <= context.id) {
-        fbos_.resize(context.id+1);
+////////////////////////////////////////////////////////////////////////////////
+
+bool FrameBufferObject::
+set_size(Texture const& buffer) {
+
+    if (width_ == 0 && height_ == 0) {
+        width_ = buffer.width();
+        height_ = buffer.height();
+        return true;
+    } else if (buffer.width() != width_ || buffer.height() != height_) {
+        WARNING("Buffers attached to the same FrameBufferObject must have the "
+                "same size!");
+
+        return false;
     }
 
-    unsigned fbo_id(0);
-    glGenFramebuffers(1, &fbo_id);
-    if (fbo_id == 0)
-        WARNING("Failed to create a Framebuffer object!");
-    fbos_[context.id] = fbo_id;
+    return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
 }
-
-
-
-

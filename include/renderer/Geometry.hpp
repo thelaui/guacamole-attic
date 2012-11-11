@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -10,23 +11,31 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
 /// \brief Declaration of the Geometry class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef GEOMETRY_HPP
-#define GEOMETRY_HPP
+#ifndef GUA_GEOMETRY_HPP
+#define GUA_GEOMETRY_HPP
 
+// guacamole headers
+#include "renderer/Mesh.hpp"
+
+// external headers
 #include <string>
 #include <vector>
 
-#include "renderer/Mesh.hpp"
+namespace Assimp {
+    class Importer;
+}
+
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Loads and draws meshes.
@@ -34,11 +43,9 @@
 /// This class can load mesh data from files and display them in multiple
 /// contexts. A Geometry object is made of several Mesh objects.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 class Geometry {
     public:
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor.
         ///
@@ -51,17 +58,24 @@ class Geometry {
         ///
         /// Creates a new Geometry from a given file.
         ///
-        /// \param file_name The file to load the meh's data from.
+        /// \param file_name        The file to load the meh's data from.
         ////////////////////////////////////////////////////////////////////////
         Geometry(std::string const& file_name);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Destructor.
+        ///
+        /// Deletes the Geometry and frees all associated data.
+        ////////////////////////////////////////////////////////////////////////
+        ~Geometry();
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor from memory buffer.
         ///
         /// Creates a new Geometry from a existing memory buffer.
         ///
-        /// \param buffer_name The buffer to load the meh's data from.
-        /// \param buffer_size The buffer's size.
+        /// \param buffer_name      The buffer to load the meh's data from.
+        /// \param buffer_size      The buffer's size.
         ////////////////////////////////////////////////////////////////////////
         Geometry(char const* buffer_name, unsigned buffer_size);
 
@@ -70,16 +84,16 @@ class Geometry {
         ///
         /// Draws this Geometry object to the given context.
         ///
-        /// \param context The RenderContext to which this object should be
-        ///                drawn.
+        /// \param context          The RenderContext to which this object
+        ///                         should be drawn.
         ////////////////////////////////////////////////////////////////////////
         void draw(RenderContext const& context) const;
 
     private:
-        std::vector<Mesh> meshes_;
+        Assimp::Importer* importer_;
+        std::vector<Mesh*> meshes_;
 };
 
 }
 
-#endif // GEOMETRY_HPP
-
+#endif // GUA_GEOMETRY_HPP

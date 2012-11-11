@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -10,27 +11,28 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
 /// \brief Declaration of the ShaderProgram class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SHADERPROGRAM_HPP
-#define SHADERPROGRAM_HPP
+#ifndef GUA_SHADERPROGRAM_HPP
+#define GUA_SHADERPROGRAM_HPP
 
-#include <eigen2/Eigen/Core>
+// guacamole headers
+#include "renderer/Texture.hpp"
+#include "utils/Color3f.hpp"
+#include "utils/math.hpp"
+
+// external headers
 #include <map>
 
-#include "renderer/FragmentShader.hpp"
-#include "renderer/VertexShader.hpp"
-#include "renderer/Texture.hpp"
-#include "renderer/Uniform.hpp"
-#include "utils/Color3f.hpp"
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief An actual shader which can be applied to the Graphics pipeline.
@@ -38,11 +40,9 @@
 /// It combines data from a FragmentShader and a VertexShader in order to
 /// achieve different visual appearances of the same mesh.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 class ShaderProgram {
     public:
+
         ////////////////////////////////////////////////////////////////////////
         /// \brief Default constructor.
         ///
@@ -53,13 +53,26 @@ class ShaderProgram {
         ////////////////////////////////////////////////////////////////////////
         /// \brief Constructor from shaders.
         ///
-        /// This method takes a VertexShader and a FragmentShader and combines
-        /// them to a ShaderProgram.
+        /// This method takes a vertex shader file and a fragment shader file
+        /// and combines them to a ShaderProgram.
         ///
-        /// \param v_shader The VertexShader.
-        /// \param f_shader The FragmentShader.
+        /// \param v_shader_file        The VertexShader file path.
+        /// \param f_shader_file        The FragmentShader file path.
         ////////////////////////////////////////////////////////////////////////
-        ShaderProgram( VertexShader const& v_shader, FragmentShader const& f_shader );
+        void create_from_files(std::string const& v_shader_file,
+                               std::string const& f_shader_file);
+
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Constructor.
+        ///
+        /// This method takes a vertex shader source and a fragment shader
+        /// source and combines them to a ShaderProgram.
+        ///
+        /// \param v_shader_source      The vertex shader source.
+        /// \param f_shader_source      The fragment shader source.
+        ////////////////////////////////////////////////////////////////////////
+        void create_from_sources(std::string const& v_shader_source,
+                                 std::string const& f_shader_source);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Destructor
@@ -74,80 +87,75 @@ class ShaderProgram {
         /// All preceeding draw calls on the given context will be affected by
         /// this shader.
         ///
-        /// \param context The context which should use this shader.
+        /// \param context             The context which should use this shader.
         ////////////////////////////////////////////////////////////////////////
         void use(RenderContext const& context) const;
 
         ////////////////////////////////////////////////////////////////////////
-        /// \brief Unapplies this shader.
+        /// \brief Unuses the shader.
         ///
+        /// Preceeding draw calls won't use this shader anymore.
         ////////////////////////////////////////////////////////////////////////
         void unuse(RenderContext const& context) const;
 
-        void set_mat4(RenderContext const& context, std::string const& mat_name,
-                      Eigen::Matrix4f const& mat) const;
-
-        void set_vec2(RenderContext const& context, std::string const& vec_name,
-                      Eigen::Vector2f const& vec) const;
-
-        void set_vec3(RenderContext const& context, std::string const& vec_name,
-                      Eigen::Vector3f const& vec) const;
-
-        void set_vec3(RenderContext const& context, std::string const& vec_name,
-                      Color3f const& vec) const;
-
-        void set_vec4(RenderContext const& context, std::string const& vec_name,
-                      Eigen::Vector4f const& vec) const;
-
-        void set_sampler2D(RenderContext const& context, std::string const& sampler_name,
-                           Texture const& sampler) const;
-
-        void set_float(RenderContext const& context, std::string const& float_name,
-                       float value) const;
-
-        void set_int(RenderContext const& context, std::string const& int_name,
-                     int value) const;
-
+        ///@{
         ////////////////////////////////////////////////////////////////////////
-        /// \brief The layout location of the vertex attribute.
+        /// \brief Sets an uniform value.
+        ///
+        /// Sets an uniform value of a currently used shader.
+        ///
+        /// \param context             The context which should use this shader.
+        /// \param uniform             The name of the uniform to be set.
+        /// \param value               The value to which the uniform should be
+        ///                            set.
         ////////////////////////////////////////////////////////////////////////
-        const static unsigned vertex_location = 0;
+        void set_mat4(RenderContext const& context,
+                      std::string const& uniform,
+                      math::mat4 const& value);
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief The layout location of the texture attribute.
-        ////////////////////////////////////////////////////////////////////////
-        const static unsigned texture_location = 1;
+        void set_vec2(RenderContext const& context,
+                      std::string const& uniform,
+                      math::vec2 const& value);
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief The layout location of the normal attribute.
-        ////////////////////////////////////////////////////////////////////////
-        const static unsigned normal_location = 2;
+        void set_vec3(RenderContext const& context,
+                      std::string const& uniform,
+                      math::vec3 const& value);
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief The layout location of the tangent attribute.
-        ////////////////////////////////////////////////////////////////////////
-        const static unsigned tangent_location = 3;
+        void set_color3f(RenderContext const& context,
+                      std::string const& uniform,
+                      Color3f const& color);
 
-        ////////////////////////////////////////////////////////////////////////
-        /// \brief The layout location of the bi_tangent attribute.
-        ////////////////////////////////////////////////////////////////////////
-        const static unsigned bi_tangent_location = 4;
+        void set_vec4(RenderContext const& context,
+                      std::string const& uniform,
+                      math::vec4 const& value);
+
+        void set_sampler2D(RenderContext const& context,
+                      std::string const& uniform,
+                      Texture const& value);
+
+        void set_float(RenderContext const& context,
+                      std::string const& uniform,
+                      float value);
+
+        void set_int(RenderContext const& context,
+                      std::string const& uniform,
+                      int value);
+        ///@}
 
     private:
-        unsigned check_uniform(RenderContext const& context, std::string const& name,
-                               Uniform::Type type) const;
 
         void upload_to(RenderContext const& context) const;
-        mutable std::vector<unsigned> program_ids_;
 
-        mutable std::vector<std::map<std::string, Uniform>> uniforms_;
-        mutable std::vector<unsigned> texture_offsets_;
+        mutable std::vector<scm::gl::program_ptr> programs_;
+        mutable std::vector<int> texture_offsets_;
         mutable std::mutex upload_mutex_;
 
-        VertexShader v_shader_;
-        FragmentShader f_shader_;
+        bool shaders_are_files_;
+
+        std::string f_shader_;
+        std::string v_shader_;
 };
 
 }
 
-#endif // SHADERPROGRAM_HPP
+#endif // GUA_SHADERPROGRAM_HPP

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -17,65 +18,108 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the RenderPass class.
+/// \brief Definition of the RenderPass class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/RenderPass.hpp"
 
+// guacamole headers
 #include "renderer/RenderPipeline.hpp"
-#include "renderer/RenderBackend.hpp"
+#include "renderer/LightInformation.hpp"
 #include "renderer/TextureBase.hpp"
+#include "renderer/GeometryBase.hpp"
+#include "renderer/MaterialBase.hpp"
 #include "traverser/Optimizer.hpp"
 #include "utils/debug.hpp"
+#include "utils/Profiler.hpp"
 
 namespace gua {
 
-RenderPass::RenderPass(std::string const& name, std::string const& camera, std::string const& screen, std::string const& render_mask,
-                       float width, float height, bool size_is_relative):
-    color_buffer_descriptions_(),
-    depth_stencil_buffer_description_(""),
-    name_(name),
-    camera_(camera),
-    screen_(screen),
-    render_mask_(render_mask),
-    width_(width),
-    height_(height),
-    size_is_relative_to_window_(size_is_relative),
-    left_eye_buffers_(), right_eye_buffers_(), center_eye_buffers_(),
-    left_eye_fbo_(), right_eye_fbo_(), center_eye_fbo_(),
-    pipeline_(NULL),
-    rendererd_left_eye_(false), rendererd_right_eye_(false), rendererd_center_eye_(false) {}
+////////////////////////////////////////////////////////////////////////////////
 
-void RenderPass::add_buffer(ColorBufferDescription const& buffer_desc) {
-    color_buffer_descriptions_.push_back(buffer_desc);
+RenderPass::
+RenderPass(std::string const& name, std::string const& camera,
+           std::string const& screen, std::string const& render_mask,
+           float width, float height, bool size_is_relative):
+
+    GenericRenderPass(name, camera, screen, render_mask,
+                      width, height, size_is_relative),
+    inputs_(),
+    texture_uniforms_(),
+    float_uniforms_(),
+    light_information_(NULL) {}
+
+////////////////////////////////////////////////////////////////////////////////
+
+RenderPass::
+~RenderPass() {
+
+    if (light_information_) delete light_information_;
 }
 
-void RenderPass::add_buffer(DepthStencilBufferDescription const& buffer_desc) {
-    depth_stencil_buffer_description_ = buffer_desc;
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPass::
+set_input_buffer(std::string const& in_render_pass,
+                 std::string const& in_buffer,
+                 std::string const& target_material,
+                 std::string const& target_uniform) {
+
+    inputs_[target_material][target_uniform] = std::make_pair(in_render_pass,
+                                                              in_buffer);
 }
 
-void RenderPass::set_input_buffer(std::string const& in_render_pass, std::string const& in_buffer,
-                                  std::string const& target_material, std::string const& target_uniform) {
-    inputs_[target_material][target_uniform] = std::make_pair(in_render_pass, in_buffer);
-}
+////////////////////////////////////////////////////////////////////////////////
 
-void RenderPass::overwrite_uniform_float(std::string const& material, std::string const& uniform_name, float value) {
+void RenderPass::
+overwrite_uniform_float(std::string const& material,
+                        std::string const& uniform_name, float value) {
+
     float_uniforms_[material][uniform_name] = value;
 }
 
-void RenderPass::overwrite_uniform_texture(std::string const& material, std::string const& uniform_name, std::shared_ptr<Texture> const& value) {
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPass::
+overwrite_uniform_texture(std::string const& material,
+                          std::string const& uniform_name,
+                          std::shared_ptr<Texture> const& value) {
+
     texture_uniforms_[material][uniform_name] = value;
 }
 
-void RenderPass::overwrite_uniform_texture(std::string const& material, std::string const& uniform_name, std::string const& texture_name) {
-    texture_uniforms_[material][uniform_name] = TextureBase::instance()->get(texture_name);
+////////////////////////////////////////////////////////////////////////////////
+
+void RenderPass::
+overwrite_uniform_texture(std::string const& material,
+                          std::string const& uniform_name,
+                          std::string const& texture_name) {
+
+    texture_uniforms_[material][uniform_name] = TextureBase::instance()->
+                                                              get(texture_name);
 }
 
-std::string const& RenderPass::get_name() const {
-    return name_;
-}
+////////////////////////////////////////////////////////////////////////////////
 
-std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, CameraMode mode) {
+std::shared_ptr<Texture> RenderPass::
+get_buffer(std::string const& name, CameraMode mode, bool draw_fps) {
+
+    // check for existance of desired buffer
+    if ((mode == CENTER
+            && center_eye_buffers_.find(name) == center_eye_buffers_.end())
+     || (mode == LEFT
+            && left_eye_buffers_.find(name)  == left_eye_buffers_.end())
+     || (mode == RIGHT
+            && right_eye_buffers_.find(name) == right_eye_buffers_.end())) {
+
+        WARNING("Failed to get buffer \"%s\" from pass \"%s\": "
+                "A buffer with this name does not exist!",
+                name.c_str(), get_name().c_str());
+        return NULL;
+    }
+
+    // return appropriate buffer if it has been rendered already
     if (mode == CENTER && rendererd_center_eye_)
         return center_eye_buffers_[name];
 
@@ -85,23 +129,214 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
     if (mode == RIGHT && rendererd_right_eye_)
         return right_eye_buffers_[name];
 
+    // serialize the scenegraph
     Optimizer optimizer;
     optimizer.check(pipeline_->get_current_graph(), render_mask_);
 
+    // if there are dynamic texture inputs for this render pass, get the
+    // according buffers recursively
     for (auto& node: optimizer.get_data().nodes_) {
         auto material(inputs_.find(node.material_));
 
         if (material != inputs_.end()) {
             for (auto& uniform: material->second) {
                 overwrite_uniform_texture(material->first, uniform.first,
-                                          pipeline_->get_render_pass(uniform.second.first)->get_buffer(uniform.second.second, mode));
+                              pipeline_->get_render_pass(uniform.second.first)->
+                              get_buffer(uniform.second.second, mode));
             }
         }
     }
+    // we'll need these two very often now...
+    OptimizedScene const& scene(optimizer.get_data());
+    RenderContext const& ctx(pipeline_->get_context());
 
-    RenderBackend renderer(this);
-    renderer.render(optimizer.get_data(), pipeline_->get_context(), mode);
+    // get the fbo which should be rendered to
+    FrameBufferObject* fbo(NULL);
 
+    switch (mode) {
+        case CENTER:
+            fbo = &center_eye_fbo_;
+            break;
+        case LEFT:
+            fbo = &left_eye_fbo_;
+            break;
+        case RIGHT:
+            fbo = &right_eye_fbo_;
+            break;
+    }
+
+    fbo->bind(ctx);
+
+    fbo->clear_color_buffers(ctx);
+    fbo->clear_depth_stencil_buffer(ctx);
+
+    ctx.render_context->set_viewport(scm::gl::viewport(math::vec2(0,0),
+                                                    math::vec2(fbo->width(),
+                                                               fbo->height())));
+
+    auto camera_it(scene.cameras_.find(camera_));
+    auto screen_it(scene.screens_.find(screen_));
+
+    if (camera_it != scene.cameras_.end()
+        && screen_it != scene.screens_.end()) {
+
+        auto camera(camera_it->second);
+        auto screen(screen_it->second);
+
+        math::mat4 camera_transform(camera.transform_);
+        if (mode == LEFT) {
+            scm::math::translate(camera_transform,
+                                 -camera.stereo_width_*0.5f, 0.f, 0.f);
+        } else if (mode == RIGHT) {
+            scm::math::translate(camera_transform,
+                                 camera.stereo_width_*0.5f, 0.f, 0.f);
+        }
+
+        auto projection(math::compute_frustum(camera_transform.column(3),
+                                              screen.transform_,
+                                              0.1, 100000.f));
+
+        math::mat4 view_transform(screen.transform_);
+        view_transform[12] = 0.f;
+        view_transform[13] = 0.f;
+        view_transform[14] = 0.f;
+        view_transform[15] = 1.f;
+
+        math::vec3 camera_position(camera_transform.column(3)[0],
+                                   camera_transform.column(3)[1],
+                                   camera_transform.column(3)[2]);
+
+        view_transform = scm::math::make_translation(camera_position)
+                         * view_transform;
+
+        math::mat4 view_matrix(scm::math::inverse(view_transform));
+
+        // update light data uniform block
+        if (scene.lights_.size() > 0) {
+
+            if (!light_information_) {
+                light_information_ =
+                new scm::gl::uniform_block<LightInformation>(ctx.render_device);
+            }
+
+            light_information_->begin_manipulation(ctx.render_context);
+
+            LightInformation light;
+
+            light.light_count = math::vec4i(scene.lights_.size(),
+                                            scene.lights_.size(),
+                                            scene.lights_.size(),
+                                            scene.lights_.size());
+
+            for (unsigned i(0); i < scene.lights_.size(); ++i) {
+
+                math::mat4 transform(scene.lights_[i].transform_);
+
+                // calc light radius and position
+                light.position[i] = math::vec4(transform[12], transform[13],
+                                               transform[14], transform[15]);
+                float radius = scm::math::length(light.position[i] - transform
+                                              * math::vec4(0.f, 0.f, 1.f, 1.f));
+
+                light.color_radius[i] = math::vec4(scene.lights_[i].color_.r(),
+                                                   scene.lights_[i].color_.g(),
+                                                   scene.lights_[i].color_.b(),
+                                                   radius);
+            }
+
+            **light_information_ = light;
+
+            light_information_->end_manipulation();
+
+            ctx.render_context->bind_uniform_buffer(
+                                         light_information_->block_buffer(), 0);
+        }
+
+        for (auto& core: scene.nodes_) {
+
+            auto geometry = GeometryBase::instance()->get(core.geometry_);
+            auto material = MaterialBase::instance()->get(core.material_);
+
+            if (material && geometry) {
+                material->use(ctx);
+
+                if (float_uniforms_.find(core.material_)
+                    != float_uniforms_.end())  {
+
+                    for (auto val : float_uniforms_[core.material_])
+                        material->get_shader()->set_float(ctx, val.first,
+                                                          val.second);
+                }
+
+                if (texture_uniforms_.find(core.material_)
+                    != texture_uniforms_.end()) {
+
+                    for (auto val : texture_uniforms_[core.material_])
+                        material->get_shader()->set_sampler2D(ctx, val.first,
+                                                              *val.second);
+                }
+
+                material->get_shader()->set_mat4(ctx, "projection_matrix",
+                                                 projection);
+
+                material->get_shader()->set_mat4(ctx, "view_matrix",
+                                                 view_matrix);
+
+                material->get_shader()->set_mat4(ctx, "model_matrix",
+                                                 core.transform_);
+
+                material->get_shader()->set_mat4(ctx, "normal_matrix",
+                                          scm::math::transpose(
+                                          scm::math::inverse(core.transform_)));
+
+                geometry->draw(ctx);
+
+                material->unuse(ctx);
+
+            } else if (material) {
+                WARNING("Cannot render geometry \"%s\": Undefined geometry "
+                        "name!", core.geometry_.c_str());
+
+            } else if (geometry) {
+                WARNING("Cannot render geometry \"%s\": Undefined material "
+                        "name: \"%s\"!", core.geometry_.c_str(),
+                        core.material_.c_str());
+
+            } else {
+                WARNING("Cannot render geometry \"%s\": Undefined geometry "
+                        "and material name: \"%s\"!", core.geometry_.c_str(),
+                        core.material_.c_str());
+            }
+        }
+
+        if (scene.lights_.size() > 0) {
+            ctx.render_context->reset_uniform_buffers();
+        }
+    }
+
+    fbo->unbind(ctx);
+
+    // draw fps on the screen
+    if (draw_fps) {
+        if (!text_renderer_)
+            text_renderer_ = new TextRenderer(pipeline_->get_context());
+
+        if (mode == CENTER) {
+            text_renderer_->render_fps(pipeline_->get_context(), center_eye_fbo_,
+                                       pipeline_->get_application_fps(),
+                                       pipeline_->get_rendering_fps());
+        } else if (mode == LEFT) {
+            text_renderer_->render_fps(pipeline_->get_context(), left_eye_fbo_,
+                                       pipeline_->get_application_fps(),
+                                       pipeline_->get_rendering_fps());
+        } else {
+            text_renderer_->render_fps(pipeline_->get_context(), right_eye_fbo_,
+                                       pipeline_->get_application_fps(),
+                                       pipeline_->get_rendering_fps());
+        }
+    }
+
+    // return the buffer and set the already-rendered-flag
     if (mode == CENTER) {
         rendererd_center_eye_ = true;
         return center_eye_buffers_[name];
@@ -114,70 +349,6 @@ std::shared_ptr<Texture> const& RenderPass::get_buffer(std::string const& name, 
     }
 }
 
-void RenderPass::flush() {
-    rendererd_left_eye_ = false;
-    rendererd_right_eye_ = false;
-    rendererd_center_eye_ = false;
-}
-
-void RenderPass::create_buffers(StereoMode mode) {
-    switch(mode) {
-        case MONO:
-            create_buffer(center_eye_buffers_, center_eye_fbo_);
-            break;
-        default:
-            create_buffer(left_eye_buffers_, left_eye_fbo_);
-            create_buffer(right_eye_buffers_, right_eye_fbo_);
-            break;
-    }
-}
-
-void RenderPass::create_buffer(std::map<std::string, std::shared_ptr<Texture>>& buffer_store, FrameBufferObject& fbo) {
-    buffer_store.clear();
-
-    int width = size_is_relative_to_window_ ? width_*pipeline_->get_context().width : width_;
-    int height = size_is_relative_to_window_ ? height_*pipeline_->get_context().height : height_;
-
-    if (size_is_relative_to_window_ && pipeline_->get_stereo_mode() == SIDE_BY_SIDE)
-        width_ *= 0.5;
-
-    for (auto& description: color_buffer_descriptions_) {
-        Texture* new_buffer(new Texture(width, height, description.color_depth,
-                                        description.color_format, description.type));
-
-        buffer_store[description.name] = std::shared_ptr<Texture>(new_buffer);
-
-        fbo.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D,
-                           new_buffer->get_id(pipeline_->get_context()),
-                           GL_COLOR_ATTACHMENT0 + description.location, width, height);
-
-    }
-
-    if (depth_stencil_buffer_description_.name != "") {
-        Texture* new_buffer(new Texture(width, height,
-                                        depth_stencil_buffer_description_.color_depth,
-                                        depth_stencil_buffer_description_.color_format,
-                                        depth_stencil_buffer_description_.type));
-
-        new_buffer->set_parameter(GL_TEXTURE_COMPARE_MODE, GL_NONE);
-        new_buffer->set_parameter(GL_DEPTH_TEXTURE_MODE, GL_ALPHA);
-
-        buffer_store[depth_stencil_buffer_description_.name] = std::shared_ptr<Texture>(new_buffer);
-
-        fbo.attach_buffer(pipeline_->get_context(), GL_TEXTURE_2D,
-                           new_buffer->get_id(pipeline_->get_context()),
-                           GL_DEPTH_ATTACHMENT, width, height);
-    }
-
-    if(!fbo.is_valid(pipeline_->get_context()))
-        WARNING("Pass %s has an invalid buffer configuration!", name_.c_str());
-}
-
-void RenderPass::set_pipeline(RenderPipeline* pipeline) {
-    pipeline_ = pipeline;
-}
+////////////////////////////////////////////////////////////////////////////////
 
 }
-
-
-

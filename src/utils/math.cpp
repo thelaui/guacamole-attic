@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,24 +21,29 @@
 /// \brief Implementation of the math utilities.
 ////////////////////////////////////////////////////////////////////////////////
 
+// header
 #include "utils/math.hpp"
 
-#include <eigen2/Eigen/LU>
-
+// external headers
 #include <iostream>
 
 namespace gua {
 
-Eigen::Matrix4f const math::compute_frustum(Eigen::Vector3f const& eye_position, Eigen::Matrix4f const& screen_transform,
-                                            float near_plane, float far_plane) {
+////////////////////////////////////////////////////////////////////////////////
 
-    Eigen::Vector4f relative_eye_position(screen_transform.inverse() * Eigen::Vector4f(eye_position[0], eye_position[1], eye_position[2], 1.0));
+math::mat4 const math::
+compute_frustum(math::vec4 const& eye_position, 
+                math::mat4 const& screen_transform,
+                float near_plane, float far_plane) {
 
-    float d(relative_eye_position.coeff(2));
-    float ox(-relative_eye_position.coeff(0));
-    float oy(-relative_eye_position.coeff(1));
+    math::vec4 relative_eye_position(scm::math::inverse(screen_transform) 
+                                     * eye_position);
 
-    Eigen::Matrix4f frustum(Eigen::Matrix4f::Identity());
+    float d(relative_eye_position[2]);
+    float ox(-relative_eye_position[0]);
+    float oy(-relative_eye_position[1]);
+
+    math::mat4 frustum(math::mat4::identity());
 
     frustum[0] = 2*d;
     frustum[5] = 2*d;
@@ -50,5 +56,7 @@ Eigen::Matrix4f const math::compute_frustum(Eigen::Vector3f const& eye_position,
 
     return frustum;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

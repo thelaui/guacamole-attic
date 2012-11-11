@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -17,31 +18,44 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Implementation of the RenderMask class.
+/// \brief Definition of the RenderMask class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "traverser/RenderMask.hpp"
 
+// guacamole headers
 #include "utils/debug.hpp"
 
+// external headers
 #include <iostream>
 
 namespace gua {
 
-RenderMask::RenderMask(std::string const& render_mask):
+////////////////////////////////////////////////////////////////////////////////
+
+RenderMask::
+RenderMask(std::string const& render_mask):
     expression_(render_mask) {}
 
-bool RenderMask::check(std::set<std::string> const& groups) const {
+////////////////////////////////////////////////////////////////////////////////
+
+bool RenderMask::
+check(std::set<std::string> const& groups) const {
+
     return expression_.check(groups);
 }
 
-RenderMask::BasicExpression::BasicExpression(std::string const& expression):
+////////////////////////////////////////////////////////////////////////////////
+
+RenderMask::BasicExpression::
+BasicExpression(std::string const& expression):
     type_(VALUE),
     children_(),
     value_("") {
 
     int open_brackets(0);
-    std::string current_expression;
+    std::string curr_expr;
     std::string expr(remove_useless_brackets(expression));
     std::vector<std::string> child_expressions;
 
@@ -53,90 +67,103 @@ RenderMask::BasicExpression::BasicExpression(std::string const& expression):
 
         switch (c) {
             case ' ': {
-
+                // ignore whitespaces
                 break;
             } case '(': {
                 ++open_brackets;
 
-                current_expression += '(';
+                curr_expr += '(';
 
                 break;
             } case ')': {
                 --open_brackets;
 
                 if (open_brackets < 0) {
-                    WARNING("Failed to parse expression %s: Unexpected ) at %u", expr.c_str(), i);
+                    WARNING("Failed to parse expression %s: "
+                            "Unexpected ) at %u", expr.c_str(), i);
                     return;
-                } else if (open_brackets == 0 && current_expression != "") {
-                    if (current_expression[current_expression.size()-1] == '(' || current_expression[current_expression.size()-1] == '!' ) {
-                        WARNING("Failed to parse expression %s: Unexpected ) at %u", expr.c_str(), i);
+                } else if (open_brackets == 0 && curr_expr != "") {
+                    if (curr_expr[curr_expr.size()-1] == '('
+                     || curr_expr[curr_expr.size()-1] == '!' ) {
+
+                        WARNING("Failed to parse expression %s: "
+                                "Unexpected ) at %u", expr.c_str(), i);
                         return;
                     }
 
-                    child_expressions.push_back(current_expression + ')');
-                    current_expression = "";
+                    child_expressions.push_back(curr_expr + ')');
+                    curr_expr = "";
                 } else if (open_brackets > 0) {
-                    current_expression += ')';
+                    curr_expr += ')';
                 }
                 break;
             } case '&': {
 
-                if (child_expressions.size() == 0 && current_expression == "") {
-                    WARNING("Failed to parse expression %s: Unexpected & at %u", expr.c_str(), i);
+                if (child_expressions.size() == 0 && curr_expr == "") {
+                    WARNING("Failed to parse expression %s: "
+                            "Unexpected & at %u", expr.c_str(), i);
                     return;
                 } else if (open_brackets == 0) {
-                    if (current_expression != "") {
-                        child_expressions.push_back(current_expression);
-                        current_expression = "";
+                    if (curr_expr != "") {
+                        child_expressions.push_back(curr_expr);
+                        curr_expr = "";
                     }
 
                     if (type_ == OR) {
-                        WARNING("Failed to parse expression %s: Unexpected & at %u. Don't mix & and | in one expression. Please use brackets!", expr.c_str(), i);
+                        WARNING("Failed to parse expression %s: "
+                                "Unexpected & at %u. Don't mix & "
+                                "and | in one expression. Please "
+                                "use brackets!", expr.c_str(), i);
                         return;
                     }
 
                     type_ = AND;
                 } else if (open_brackets > 0) {
-                    current_expression += '&';
+                    curr_expr += '&';
                 }
 
                 break;
             } case '|': {
 
-                if (child_expressions.size() == 0 && current_expression == "") {
-                    WARNING("Failed to parse expression %s: Unexpected | at %u", expr.c_str(), i);
+                if (child_expressions.size() == 0 && curr_expr == "") {
+                    WARNING("Failed to parse expression %s: "
+                            "Unexpected | at %u", expr.c_str(), i);
                     return;
                 } else if (open_brackets == 0) {
-                    if (current_expression != "") {
-                        child_expressions.push_back(current_expression);
-                        current_expression = "";
+                    if (curr_expr != "") {
+                        child_expressions.push_back(curr_expr);
+                        curr_expr = "";
                     }
 
                     if (type_ == AND) {
-                        WARNING("Failed to parse expression %s: Unexpected | at %u. Don't mix & and | in one expression. Please use brackets!", expr.c_str(), i);
+                        WARNING("Failed to parse expression %s: "
+                                "Unexpected | at %u. Don't mix & "
+                                "and | in one expression. Please "
+                                "use brackets!", expr.c_str(), i);
                         return;
                     }
 
                     type_ = OR;
                 } else if (open_brackets > 0) {
-                    current_expression += '|';
+                    curr_expr += '|';
                 }
 
                 break;
             } case '!': {
 
-                if (open_brackets == 0 && current_expression == "") {
-                    current_expression += '!';
+                if (open_brackets == 0 && curr_expr == "") {
+                    curr_expr += '!';
                 } else if (open_brackets <= 0) {
-                    WARNING("Failed to parse expression %s: Unexpected ! at %u.", expr.c_str(), i);
+                    WARNING("Failed to parse expression %s: "
+                            "Unexpected ! at %u.", expr.c_str(), i);
                     return;
                 } else if (open_brackets > 0) {
-                    current_expression += '!';
+                    curr_expr += '!';
                 }
 
                 break;
             } default: {
-                current_expression += c;
+                curr_expr += c;
 
                 break;
             }
@@ -144,12 +171,13 @@ RenderMask::BasicExpression::BasicExpression(std::string const& expression):
     }
 
     if (open_brackets > 0) {
-        WARNING("Failed to parse expression %s: Expected ) at end of input.", expr.c_str());
+        WARNING("Failed to parse expression %s: "
+                "Expected ) at end of input.", expr.c_str());
         return;
     }
 
-    if (current_expression != "")
-        child_expressions.push_back(current_expression);
+    if (curr_expr != "")
+        child_expressions.push_back(curr_expr);
 
     if (child_expressions.size() == 1 && child_expressions[0][0] == '!') {
         if (child_expressions[0].size() == 1) {
@@ -174,7 +202,11 @@ RenderMask::BasicExpression::BasicExpression(std::string const& expression):
 
 }
 
-bool RenderMask::BasicExpression::check(std::set<std::string> const& groups) const {
+////////////////////////////////////////////////////////////////////////////////
+
+bool RenderMask::BasicExpression::
+check(std::set<std::string> const& groups) const {
+
     switch (type_) {
         case AND: {
             for (auto& child: children_)
@@ -199,34 +231,39 @@ bool RenderMask::BasicExpression::check(std::set<std::string> const& groups) con
     return false;
 }
 
-std::string RenderMask::BasicExpression::remove_useless_brackets(std::string const& input) const {
+////////////////////////////////////////////////////////////////////////////////
+
+std::string RenderMask::BasicExpression::
+remove_useless_brackets(std::string const& input) const {
+
     // remove leading and trailing corresponding brackets
-    unsigned int leading_brackets(0);
-    while (leading_brackets < input.size() && input[leading_brackets] == '(') {
-        ++leading_brackets;
+    unsigned lead_brackets(0);
+    while (lead_brackets < input.size() && input[lead_brackets] == '(') {
+        ++lead_brackets;
     }
 
     // count removable brackets
-    if (leading_brackets > 0) {
-        unsigned int removable_brackets(leading_brackets);
-        unsigned int open_brackets(leading_brackets);
+    if (lead_brackets > 0) {
+        unsigned del_brackets(lead_brackets);
+        unsigned open_brackets(lead_brackets);
 
-        for (unsigned i(leading_brackets); i<input.size()-leading_brackets; ++i) {
+        for (unsigned i(lead_brackets); i<input.size()-lead_brackets; ++i) {
             if (input[i] == '(') {
                 ++open_brackets;
             } else if (input[i] == ')') {
                 --open_brackets;
-                if (open_brackets < removable_brackets)
-                    removable_brackets = open_brackets;
+                if (open_brackets < del_brackets)
+                    del_brackets = open_brackets;
             }
         }
 
-        return input.substr(removable_brackets, input.size()-2*removable_brackets);
+        return input.substr(del_brackets, input.size()-2*del_brackets);
 
     }
 
     return input;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 
 }

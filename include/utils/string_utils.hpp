@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -17,22 +18,20 @@
 // this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief Definition of the FragmentShader class.
+/// \brief Declaration of some string utilities.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "renderer/FragmentShader.hpp"
-
-#include "renderer/glInclude.hpp"
+#include <sstream>
 
 namespace gua {
+    namespace string_utils {
 
-FragmentShader::FragmentShader():
-    Shader::Shader() {}
-
-FragmentShader::FragmentShader( std::string const& file ):
-    Shader::Shader(file, GL_FRAGMENT_SHADER) {}
-
-FragmentShader::FragmentShader(char const* data):
-    Shader::Shader(data, GL_FRAGMENT_SHADER) {}
-
+        template <typename T>
+        inline std::string to_string(T value) {
+            std::stringstream strstr;
+            strstr << value;
+            return strstr.str();
+        }
+    }
 }
+

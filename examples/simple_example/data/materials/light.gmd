@@ -1,0 +1,2 @@
+vertex_shader ../shaders/light.vert
+fragment_shader ../shaders/light.frag

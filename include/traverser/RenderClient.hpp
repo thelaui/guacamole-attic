@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,15 +21,18 @@
 /// \brief Declaration of the CameraCore class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef RENDERCLIENT_HPP
-#define RENDERCLIENT_HPP
+#ifndef GUA_RENDERCLIENT_HPP
+#define GUA_RENDERCLIENT_HPP
 
+// guacamole headers
+#include "scenegraph/SceneGraph.hpp"
+#include "utils/Timer.hpp"
+
+// external headers
 #include <vector>
 #include <string>
 #include <thread>
 #include <condition_variable>
-
-#include "scenegraph/SceneGraph.hpp"
 
 namespace gua {
 
@@ -37,27 +41,41 @@ class RenderPipeline;
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class represents one render thread.
 ///
+/// The queue_draw method is directly called by the RenderServer. Internally it
+/// uses a threaded rendering loop which always waits for queue_draw calls. When
+/// it fails to finish rendering before the next queue_draw is called, it will
+/// ignore this call.
 ////////////////////////////////////////////////////////////////////////////////
-
 class RenderClient {
     public:
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs a new RenderClient.
         ///
+        /// \param pipeline         The pipeline which should be processed by
+        ///                         this RenderClient.
         ////////////////////////////////////////////////////////////////////////
         RenderClient(RenderPipeline* pipeline);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Destructor.
         ///
         /// This destroys a RenderClient.
-        ///
         ////////////////////////////////////////////////////////////////////////
         virtual ~RenderClient();
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Draw the scene.
+        ///
+        /// This requests a drawing operation of the given graph. If the client
+        /// is still processing the last call of this function it will be
+        /// ignored.
+        ///
+        /// \param graph            A pointer to the graph which
+        ///                         should be drawn.
+        ////////////////////////////////////////////////////////////////////////
         void queue_draw(SceneGraph const* graph);
 
     private:
@@ -65,16 +83,19 @@ class RenderClient {
 
         std::thread* draw_thread_;
         RenderPipeline* render_pipeline_;
-        SceneGraph graph_copy_;
+        SceneGraph graph_copy1_;
+        SceneGraph graph_copy2_;
 
-        bool rendering_finished_;
-        std::mutex render_mutex_;
-        std::condition_variable render_condition_;
+        float application_fps_, rendering_fps_;
+        unsigned application_frame_count_, rendering_frame_count_;
+        Timer application_timer_, rendering_timer_;
 
-        unsigned frame_;
+        bool rendering_copy1_;
+        bool new_graph_available_;
+        std::mutex copy_mutex_;
 };
 
 }
 
-#endif // RENDERCLIENT_HPP
+#endif // GUA_RENDERCLIENT_HPP
 

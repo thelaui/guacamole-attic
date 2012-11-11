@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -15,25 +16,27 @@
 //
 // You should have received a copy of the GNU General Public License along with
 // this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-/// \file
-/// \brief Definition of the VertexShader class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "renderer/VertexShader.hpp"
+#version 420
 
-#include "renderer/glInclude.hpp"
+#extension GL_ARB_shading_language_include : require
 
-namespace gua {
+#include </gua/LightInformation.glslh>
 
-VertexShader::VertexShader():
-    Shader::Shader() {}
+in vec3 position;
 
-VertexShader::VertexShader(std::string const& file):
-    Shader::Shader(file, GL_VERTEX_SHADER) {}
+layout(location=0) out vec3 out_color;
 
+void main() {
+    out_color = vec3(0, 0, 0);
+    float closest = -1;
 
-VertexShader::VertexShader(char const* data):
-    Shader::Shader(data, GL_VERTEX_SHADER) {}
-
+    for(int i=0; i<gua_light_information.light_count.x; ++i) {
+        float dist = distance(position, gua_light_information.position[i].xyz);
+        if (dist < closest || closest < 0) {
+            closest = dist;
+            out_color = gua_light_information.color_radius[i].rgb;
+        }
+    }
 }

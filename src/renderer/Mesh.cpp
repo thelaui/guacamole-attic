@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,126 +21,170 @@
 /// \brief Definition of the Mesh class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/Mesh.hpp"
 
-#include <assimp/assimp.hpp>
-#include <assimp/aiPostProcess.h>
-#include <assimp/aiScene.h>
-
+// guacamole headers
 #include "renderer/RenderContext.hpp"
 #include "renderer/ShaderProgram.hpp"
 #include "utils/debug.hpp"
 
-namespace gua {
+// external headers
+#include <assimp/assimp.hpp>
+#include <assimp/aiPostProcess.h>
+#include <assimp/aiScene.h>
 
-Mesh::Mesh():
-    vaos_(),
-    mesh_(NULL) {}
-
-Mesh::Mesh( aiMesh* mesh ):
-    vaos_(),
-    mesh_(mesh) {}
-
-Mesh::~Mesh() {
-    for (auto vao: vaos_)
-        if (vao)
-            glDeleteVertexArrays(1, &vao);
+namespace {
+    struct Vertex {
+        scm::math::vec3f pos;
+        scm::math::vec2f tex;
+        scm::math::vec3f normal;
+        scm::math::vec3f tangent;
+        scm::math::vec3f bitangent;
+    };
 }
 
-void Mesh::upload_to(RenderContext const& context) const {
-    std::vector<unsigned> face_array(mesh_->mNumFaces * 3);
+namespace gua {
+
+////////////////////////////////////////////////////////////////////////////////
+
+Mesh::
+Mesh():
+
+    vertices_(),
+    indices_(),
+    vertex_array_(),
+    upload_mutex_(),
+    mesh_(NULL) {}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Mesh::
+Mesh( aiMesh* mesh ):
+
+    vertices_(),
+    indices_(),
+    vertex_array_(),
+    upload_mutex_(),
+    mesh_(mesh) {}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Mesh::
+~Mesh() {}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void Mesh::
+upload_to(RenderContext const& ctx) const {
+
+    if (!mesh_->HasPositions()) {
+        WARNING("Unable to load Mesh! Has no vertex data.");
+        return;
+    }
+
+    std::unique_lock<std::mutex> lock(upload_mutex_);
+
+    if (vertices_.size() <= ctx.id) {
+        vertices_.resize(ctx.id+1);
+        indices_.resize(ctx.id+1);
+        vertex_array_.resize(ctx.id+1);
+    }
+
+    vertices_[ctx.id] = ctx.render_device->create_buffer(
+                                    scm::gl::BIND_VERTEX_BUFFER,
+                                    scm::gl::USAGE_STATIC_DRAW,
+                                    mesh_->mNumVertices * sizeof(Vertex), 0);
+
+    Vertex* data(static_cast<Vertex*>(ctx.render_context->map_buffer(
+                                     vertices_[ctx.id],
+                                     scm::gl::ACCESS_WRITE_INVALIDATE_BUFFER)));
+
+    for (unsigned v(0); v < mesh_->mNumVertices; ++v) {
+        data[v].pos = scm::math::vec3(mesh_->mVertices[v].x,
+                                      mesh_->mVertices[v].y,
+                                      mesh_->mVertices[v].z);
+
+        if (mesh_->HasTextureCoords(0)) {
+            data[v].tex = scm::math::vec2(mesh_->mTextureCoords[0][v].x,
+                                          mesh_->mTextureCoords[0][v].y);
+        } else {
+            data[v].tex = scm::math::vec2(0.f, 0.f);
+        }
+
+        if (mesh_->HasNormals()) {
+            data[v].normal = scm::math::vec3(mesh_->mNormals[v].x,
+                                             mesh_->mNormals[v].y,
+                                             mesh_->mNormals[v].z);
+        } else {
+            data[v].normal = scm::math::vec3(0.f, 0.f, 0.f);
+        }
+
+        if (mesh_->HasTangentsAndBitangents()) {
+            data[v].tangent = scm::math::vec3(mesh_->mTangents[v].x,
+                                              mesh_->mTangents[v].y,
+                                              mesh_->mTangents[v].z);
+
+            data[v].bitangent = scm::math::vec3(mesh_->mBitangents[v].x,
+                                              mesh_->mBitangents[v].y,
+                                              mesh_->mBitangents[v].z);
+        } else {
+            data[v].tangent = scm::math::vec3(0.f, 0.f, 0.f);
+            data[v].bitangent = scm::math::vec3(0.f, 0.f, 0.f);
+        }
+    }
+
+    ctx.render_context->unmap_buffer(vertices_[ctx.id]);
+
+    std::vector<unsigned> index_array(mesh_->mNumFaces * 3);
 
     for (unsigned t = 0; t < mesh_->mNumFaces; ++t) {
         const struct aiFace* face = &mesh_->mFaces[t];
 
-        face_array[t*3]   = face->mIndices[0];
-        face_array[t*3+1] = face->mIndices[1];
-        face_array[t*3+2] = face->mIndices[2];
+        index_array[t*3]   = face->mIndices[0];
+        index_array[t*3+1] = face->mIndices[1];
+        index_array[t*3+2] = face->mIndices[2];
     }
 
-     // generate Vertex Array for mesh
-    unsigned vao(0);
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    indices_[ctx.id] = ctx.render_device->create_buffer(
+                                      scm::gl::BIND_INDEX_BUFFER,
+                                      scm::gl::USAGE_STATIC_DRAW,
+                                      mesh_->mNumFaces * 3 * sizeof(unsigned),
+                                      &index_array[0]);
 
-    if (vaos_.size() <= context.id) {
-        vaos_.resize(context.id+1);
-    }
+    vertex_array_[ctx.id] = ctx.render_device->create_vertex_array(
+             scm::gl::vertex_format(0, 0, scm::gl::TYPE_VEC3F, sizeof(Vertex))
+                                   (0, 1, scm::gl::TYPE_VEC2F, sizeof(Vertex))
+                                   (0, 2, scm::gl::TYPE_VEC3F, sizeof(Vertex))
+                                   (0, 3, scm::gl::TYPE_VEC3F, sizeof(Vertex))
+                                   (0, 4, scm::gl::TYPE_VEC3F, sizeof(Vertex)),
+                                   {vertices_[ctx.id]});
 
-    vaos_[context.id] = vao;
-
-    // buffer for faces
-    GLuint buffer;
-    glGenBuffers(1, &buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned) * mesh_->mNumFaces * 3, &(*face_array.begin()), GL_STATIC_DRAW);
-
-    // buffer for vertex positions
-    if (mesh_->HasPositions()) {
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*mesh_->mNumVertices, mesh_->mVertices, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ShaderProgram::vertex_location);
-        glVertexAttribPointer(ShaderProgram::vertex_location, 3, GL_FLOAT, 0, 0, 0);
-    }
-
-    // buffer for vertex normals
-    if (mesh_->HasNormals()) {
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*mesh_->mNumVertices, mesh_->mNormals, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ShaderProgram::normal_location);
-        glVertexAttribPointer(ShaderProgram::normal_location, 3, GL_FLOAT, 0, 0, 0);
-    }
-
-    // buffer for texture coords
-    if (mesh_->HasTextureCoords(0)) {
-        std::vector<float> uv_array(mesh_->mNumVertices * 2);
-
-        for (unsigned int k = 0; k < mesh_->mNumVertices; ++k) {
-            uv_array[k*2]   = mesh_->mTextureCoords[0][k].x;
-            uv_array[k*2+1] = mesh_->mTextureCoords[0][k].y;
-        }
-
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*mesh_->mNumUVComponents[0]*mesh_->mNumVertices, &(*uv_array.begin()), GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ShaderProgram::texture_location);
-        glVertexAttribPointer(ShaderProgram::texture_location, mesh_->mNumUVComponents[0], GL_FLOAT, 0, 0, 0);
-    }
-
-    // buffer for vertex normals
-    if (mesh_->HasTangentsAndBitangents()) {
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*mesh_->mNumVertices, mesh_->mTangents, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ShaderProgram::tangent_location);
-        glVertexAttribPointer(ShaderProgram::tangent_location, 3, GL_FLOAT, 0, 0, 0);
-
-        glGenBuffers(1, &buffer);
-        glBindBuffer(GL_ARRAY_BUFFER, buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*mesh_->mNumVertices, mesh_->mBitangents, GL_STATIC_DRAW);
-        glEnableVertexAttribArray(ShaderProgram::bi_tangent_location);
-        glVertexAttribPointer(ShaderProgram::bi_tangent_location, 3, GL_FLOAT, 0, 0, 0);
-    }
-
-    // unbind buffers
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER,0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
-void Mesh::draw(RenderContext const& context) const {
+////////////////////////////////////////////////////////////////////////////////
+
+void Mesh::
+draw(RenderContext const& ctx) const {
+
     // upload to GPU if neccessary
-    if (vaos_.size() <= context.id || vaos_[context.id] == 0) {
-        upload_to(context);
+    if (vertices_.size() <= ctx.id || vertices_[ctx.id] == NULL) {
+        upload_to(ctx);
     }
 
-    // bind the geometry and draw it
-    glBindVertexArray(vaos_[context.id]);
-    glDrawElements(GL_TRIANGLES, mesh_->mNumFaces*3, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+    scm::gl::context_vertex_input_guard vig(ctx.render_context);
+
+    ctx.render_context->bind_vertex_array(vertex_array_[ctx.id]);
+
+    ctx.render_context->bind_index_buffer(indices_[ctx.id],
+                                          scm::gl::PRIMITIVE_TRIANGLE_LIST,
+                                          scm::gl::TYPE_UINT);
+
+    ctx.render_context->apply();
+    ctx.render_context->draw_elements(mesh_->mNumFaces*3);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

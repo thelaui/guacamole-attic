@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -24,8 +25,27 @@
 #define GUA_ENUMS_HPP
 
 namespace gua {
-    enum CameraMode { CENTER, LEFT, RIGHT };
-    enum StereoMode { MONO, SIDE_BY_SIDE, ANAGLYPH_RED_GREEN, ANAGLYPH_RED_CYAN };
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief Eye of a camera.
+    ///
+    /// An enumeration used for determining from which point of view a scene
+    /// has to be rendered. Either from the left eye of a camera, from the
+    /// right or from the exact camera position.
+    ////////////////////////////////////////////////////////////////////////////
+    enum CameraMode { CENTER,
+                      LEFT,
+                      RIGHT };
+
+    ////////////////////////////////////////////////////////////////////////////
+    /// \brief Stereo mode for a pipeline.
+    ///
+    /// Determines how two stereo images should be mapped to each other.
+    ////////////////////////////////////////////////////////////////////////////
+    enum StereoMode { MONO,
+                      SIDE_BY_SIDE,
+                      ANAGLYPH_RED_GREEN,
+                      ANAGLYPH_RED_CYAN };
 }
 
 #endif // GUA_ENUMS_HPP

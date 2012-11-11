@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -10,143 +11,140 @@
 //
 // This program is distributed in the hope that it will be useful, but WITHOUT
 // ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+// FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
 // more details.
 //
 // You should have received a copy of the GNU General Public License along with
-// this program.  If not, see <http://www.gnu.org/licenses/>.
+// this program. If not, see <http://www.gnu.org/licenses/>.
 //
 /// \file
-/// \brief A class to easily load, bind and undbind textures.
+/// \brief Definition of the Texture class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/Texture.hpp"
 
+// guacamole headers
 #include "utils/debug.hpp"
+#include "utils/math.hpp"
 
-#include <IL/il.h>
+// external headers
+#include <scm/gl_util/data/imaging/texture_loader.h>
 #include <iostream>
 
 namespace gua {
 
-Texture::Texture():
+////////////////////////////////////////////////////////////////////////////////
+
+Texture::
+Texture(unsigned width, unsigned height, scm::gl::data_format color_format,
+     scm::gl::sampler_state_desc const& state_descripton):
+     width_(width),
+     height_(height),
+     color_format_(color_format),
+     file_name_(""),
+     state_descripton_(state_descripton),
+     textures_(),
+     sampler_states_(),
+     upload_mutex_() {}
+
+////////////////////////////////////////////////////////////////////////////////
+
+Texture::
+Texture(std::string const& file,
+        scm::gl::sampler_state_desc const& state_descripton):
     width_(0),
     height_(0),
-    color_depth_(0),
-    color_format_(0),
-    type_(0),
-    data_(),
-    texture_ids_(),
+    color_format_(scm::gl::FORMAT_NULL),
+    file_name_(file),
+    state_descripton_(state_descripton),
+    textures_(),
+    sampler_states_(),
     upload_mutex_() {}
 
-Texture::Texture(unsigned width, unsigned height, unsigned color_depth,
-                 unsigned color_format, unsigned type):
-                 width_(width),
-                 height_(height),
-                 color_depth_(color_depth),
-                 color_format_(color_format),
-                 type_(type),
-                 data_(),
-                 texture_ids_(),
-                 upload_mutex_() {}
+////////////////////////////////////////////////////////////////////////////////
 
-Texture::Texture(std::string const& file):
-    width_(0),
-    height_(0),
-    color_depth_(0),
-    color_format_(0),
-    type_(0),
-    data_(),
-    texture_ids_(),
-    upload_mutex_() {
+Texture::~Texture() {}
 
-    ILuint image_id (0);
-    ilGenImages(1, &image_id);
-    ilBindImage(image_id);
+////////////////////////////////////////////////////////////////////////////////
 
-    if (!ilLoadImage(file.c_str()))
-        ERROR("Failed to load texture %s!", file.c_str());
+void Texture::
+bind(RenderContext const& context, int position) const {
 
-    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+    if (textures_.size() <= context.id || textures_[context.id] == 0)
+        upload_to(context);
 
-    width_ = ilGetInteger(IL_IMAGE_WIDTH);
-    height_ = ilGetInteger(IL_IMAGE_HEIGHT);
-    color_depth_ = GL_RGBA;
-    color_format_ = GL_RGBA;
-    type_ = GL_UNSIGNED_BYTE;
-
-    data_ = std::vector<unsigned char>(ilGetData(), ilGetData()+height_*width_*4);
-
-    ilBindImage(0);
-    ilDeleteImage(image_id);
+    context.render_context->bind_texture(
+              textures_[context.id], sampler_states_[context.id], position);
 }
 
-Texture::~Texture() {
-    for (auto texture_id : texture_ids_)
-        if (texture_id) {
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glDeleteTextures(1, &texture_id);
-        }
+////////////////////////////////////////////////////////////////////////////////
 
+void Texture::
+unbind(RenderContext const& context) {
+
+    if (textures_.size() > context.id && textures_[context.id] != 0)
+        context.render_context->reset_texture_units();
 }
 
-void Texture::bind(RenderContext const& context, unsigned texture_type) const {
-    upload_to(context);
+////////////////////////////////////////////////////////////////////////////////
 
-    glActiveTexture(GL_TEXTURE0 + texture_type);
-    glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
+scm::gl::texture_2d_ptr const& Texture::
+get_buffer(RenderContext const& context) const {
+
+    if (textures_.size() <= context.id || textures_[context.id] == 0)
+        upload_to(context);
+
+    return textures_[context.id];
 }
 
-void Texture::unbind(unsigned texture_type) {
-    glActiveTexture(GL_TEXTURE0 + texture_type);
-    glBindTexture(GL_TEXTURE_2D, 0);
+////////////////////////////////////////////////////////////////////////////////
+
+unsigned Texture::
+width() const {
+
+    return width_;
 }
 
-void Texture::set_parameter(unsigned parameter_name, unsigned value) const {
-    glTexParameteri(GL_TEXTURE_2D, parameter_name, value);
+////////////////////////////////////////////////////////////////////////////////
+
+unsigned Texture::
+height() const {
+
+    return height_;
 }
 
-unsigned Texture::get_id(RenderContext const& context) const {
-    upload_to(context);
+////////////////////////////////////////////////////////////////////////////////
 
-    return texture_ids_[context.id];
-}
-
-void Texture::upload_to(RenderContext const& context) const{
+void Texture::
+upload_to(RenderContext const& context) const{
 
     std::unique_lock<std::mutex> lock(upload_mutex_);
 
-    if (texture_ids_.size() <= context.id || texture_ids_[context.id] == 0) {
-        // generate texture id
-        unsigned texture_id(0);
-        glGenTextures(1, &texture_id);
-        if (texture_id == 0) {
-            WARNING("Failed to generate texture storage!");
-            return;
-        }
-
-        if (texture_ids_.size() <= context.id)
-            texture_ids_.resize(context.id + 1);
-
-        texture_ids_[context.id] = texture_id;
-
-        glEnable(GL_TEXTURE_2D);
-        // bind texture object
-        glBindTexture(GL_TEXTURE_2D, texture_ids_[context.id]);
-
-        //setting Texture Parameters
-        set_parameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        set_parameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        set_parameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
-        set_parameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-        // load data as texture
-        glTexImage2D(GL_TEXTURE_2D, 0, color_depth_, width_, height_,
-                    0, color_format_, type_, &(*data_.begin()));
-
-        glBindTexture(GL_TEXTURE_2D, 0);
+    if (textures_.size() <= context.id) {
+        textures_.resize(context.id + 1);
+        sampler_states_.resize(context.id + 1);
     }
+
+    if (file_name_ == "") {
+        textures_[context.id] = context.render_device->create_texture_2d(
+                                    math::vec2ui(width_, height_),
+                                    color_format_);
+    } else {
+        scm::gl::texture_loader loader;
+        textures_[context.id] = loader.load_texture_2d(
+                                    *context.render_device, file_name_, true);
+
+        if(textures_[context.id]) {
+            width_  = textures_[context.id]->dimensions()[0];
+            height_ = textures_[context.id]->dimensions()[1];
+        }
+    }
+
+    sampler_states_[context.id] = context.render_device->create_sampler_state(
+                                    state_descripton_);
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

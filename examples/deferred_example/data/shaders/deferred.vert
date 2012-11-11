@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,18 +21,15 @@
 #version 330
 
 layout(location=0) in vec3 in_position;
+layout(location=2) in vec2 in_texcoord;
 
-uniform mat4 projection_matrix;
 uniform mat4 view_matrix;
-uniform mat4 model_matrix;
-uniform mat4 normal_matrix;
 
-out vec3 light_position;
-out float light_radius;
+out vec2 texcoord;
+out vec3 camera_position;
 
 void main() {
-    light_position = vec4(model_matrix * vec4(0.f, 0.f, 0.f, 1.0)).xyz;
-    light_radius = length(vec4(model_matrix * vec4(in_position, 1.0)).xyz - light_position);
-
-    gl_Position = projection_matrix * view_matrix * model_matrix * vec4(in_position, 1.0);
+    texcoord = in_texcoord;
+    camera_position = (inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+    gl_Position = vec4(in_position, 1.0);
 }

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,24 +21,41 @@
 /// \brief A Core representing a screen in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "cores/ScreenCore.hpp"
 
 namespace gua {
 
-ScreenCore::ScreenCore(float width, float height):
+////////////////////////////////////////////////////////////////////////////////
+
+ScreenCore::
+ScreenCore(float width, float height):
     Core(Core::SCREEN),
     width_(width),
     height_(height) {}
 
-ScreenCore::~ScreenCore() {}
+////////////////////////////////////////////////////////////////////////////////
 
-float ScreenCore::get_width() const {
+ScreenCore::
+~ScreenCore() {}
+
+////////////////////////////////////////////////////////////////////////////////
+
+float ScreenCore::
+get_width() const {
+
     return width_;
 }
 
-float ScreenCore::get_height() const {
+////////////////////////////////////////////////////////////////////////////////
+
+float ScreenCore::
+get_height() const {
+
     return height_;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

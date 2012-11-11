@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,12 +21,15 @@
 /// \brief Declaration of the TextureBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef TEXTURE_BASE_HPP
-#define TEXTURE_BASE_HPP
+#ifndef GUA_TEXTURE_BASE_HPP
+#define GUA_TEXTURE_BASE_HPP
 
+// guacamole headers
 #include "utils/Singleton.hpp"
 #include "renderer/DataBase.hpp"
 #include "renderer/Texture.hpp"
+
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A data base for textures.
@@ -34,11 +38,17 @@
 /// identifiers.
 ////////////////////////////////////////////////////////////////////////////////
 
-namespace gua {
-
 class TextureBase: public DataBase<Texture>, public Singleton<TextureBase> {
     public:
 
+        ////////////////////////////////////////////////////////////////////////
+        /// \brief Pre-loads some textures.
+        ///
+        /// This method loads textures to the data base.
+        ///
+        /// \param path_to_textures     An absolute or relative path to the
+        ///                             directory containing texture files.
+        ////////////////////////////////////////////////////////////////////////
         static void load_textures_from(std::string const& path_to_textures);
 
         friend class Singleton<TextureBase>;
@@ -50,7 +60,7 @@ class TextureBase: public DataBase<Texture>, public Singleton<TextureBase> {
 
 }
 
-#endif // TEXTURE_BASE_HPP
+#endif // GUA_TEXTURE_BASE_HPP
 
 
 

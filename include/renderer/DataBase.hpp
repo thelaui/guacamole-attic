@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,24 +21,23 @@
 /// \brief Declaration and implementation of the DataBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef DATA_BASE_HPP
-#define DATA_BASE_HPP
+#ifndef GUA_DATA_BASE_HPP
+#define GUA_DATA_BASE_HPP
 
+// external headers
 #include <memory>
 #include <string>
 #include <map>
 
+namespace gua {
+
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief A database for accessing data.
 ///
-/// It can store any type of Data. The data is mapped on strings, which then can
-/// be used to access this data.
+/// It can store any type of Data. The data is mapped on strings,
+/// which then can be used to access this data.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 template <typename T>
-
 class DataBase {
     public:
 
@@ -49,7 +49,7 @@ class DataBase {
         /// \param id   The unique ID of this entry.
         /// \param date The newly added entry.
         ////////////////////////////////////////////////////////////////////////
-        void add( std::string const& id, std::shared_ptr<T> date ) {
+        void add(std::string const& id, std::shared_ptr<T> date) {
             data_.insert(std::make_pair(id, date));
         }
 
@@ -58,8 +58,8 @@ class DataBase {
         ///
         /// Returns true, if a entry with the given ID exists in the DataBase.
         ///
-        /// \param id The ID to check for.
-        /// \return   Whether the given ID is stored in the DataBase.
+        /// \param id   The ID to check for.
+        /// \return     Whether the given ID is stored in the DataBase.
         ////////////////////////////////////////////////////////////////////////
         bool is_supported( std::string const& id ) const {
             return data_.find(id) != data_.end();
@@ -68,12 +68,12 @@ class DataBase {
         ////////////////////////////////////////////////////////////////////////
         /// \brief Gets an entry from the DataBase
         ///
-        /// Returns a entry from the DataBase. It will return NULL if the entry
-        /// in question does not exist.
+        /// Returns a entry from the DataBase. It will return NULL if
+        /// the entry in question does not exist.
         ///
-        /// \param  id The ID of the entry.
-        /// \return    A shared pointer to the data of the requested entry. NULL
-        ///            if the entry does not exist.
+        /// \param  id  The ID of the entry.
+        /// \return     A shared pointer to the data of the requested
+        ///             entry. NULL if the entry does not exist.
         ////////////////////////////////////////////////////////////////////////
         std::shared_ptr<T> get( std::string const& id ) {
             auto result(data_.find(id));
@@ -88,4 +88,5 @@ class DataBase {
 };
 
 }
-#endif // DATA_BASE_HPP
+
+#endif // GUA_DATA_BASE_HPP

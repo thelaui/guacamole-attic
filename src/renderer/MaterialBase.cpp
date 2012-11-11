@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,28 +21,39 @@
 /// \brief Definition of the MaterialBase class.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "renderer/MaterialBase.hpp"
 
+// guacamole headers
 #include "utils/Directory.hpp"
 
+// external headers
 #include <sstream>
 
 namespace gua {
 
-void MaterialBase::load_materials_from(std::string const& path_to_materials) {
-    gua::Directory directory(path_to_materials);
+////////////////////////////////////////////////////////////////////////////////
 
-    std::stringstream content(directory.get_content());
+void MaterialBase::
+load_materials_from(std::string const& path_to_materials) {
 
+    gua::Directory dir(path_to_materials);
+    std::stringstream content(dir.get_content());
     std::string parse_string;
+
     while (content >> parse_string) {
         unsigned suffix_pos(parse_string.find(".gmd"));
+
         if(parse_string.length() - suffix_pos == 4) {
+            auto mat(new Material(dir.get_directory_name() + parse_string));
+
             instance()->add(parse_string.substr(0, suffix_pos),
-                            std::shared_ptr<Material>(new Material(directory.get_directory_name() + parse_string)));
+                            std::shared_ptr<Material>(mat));
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }
 

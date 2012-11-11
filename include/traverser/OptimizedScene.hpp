@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,28 +21,52 @@
 /// \brief Declaration of the OptimizedScene struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef OPTIMIZED_SCENE_HPP
-#define OPTIMIZED_SCENE_HPP
+#ifndef GUA_OPTIMIZED_SCENE_HPP
+#define GUA_OPTIMIZED_SCENE_HPP
 
-#include <vector>
-#include <string>
-#include <map>
-
+// guacamole headers
 #include "traverser/LightNode.hpp"
 #include "traverser/GeometryNode.hpp"
 #include "traverser/CameraNode.hpp"
 #include "traverser/ScreenNode.hpp"
 
+// external headers
+#include <vector>
+#include <string>
+#include <map>
+
 namespace gua {
 
+////////////////////////////////////////////////////////////////////////////////
+/// \brief Stores a serialized scene graph.
+///
+/// When the optimizer traverses the scene graph, it produces an OptimizedScene
+/// which contains relevant nodes only.
+////////////////////////////////////////////////////////////////////////////////
 struct OptimizedScene {
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief All geometry nodes.
+    ////////////////////////////////////////////////////////////////////////////
     std::vector<GeometryNode> nodes_;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief All light nodes.
+    ////////////////////////////////////////////////////////////////////////////
     std::vector<LightNode> lights_;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief All cameras.
+    ////////////////////////////////////////////////////////////////////////////
     std::map<std::string, CameraNode> cameras_;
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief All screens.
+    ////////////////////////////////////////////////////////////////////////////
     std::map<std::string, ScreenNode> screens_;
 };
 
 }
 
-#endif // OPTIMIZED_SCENE_HPP
+#endif // GUA_OPTIMIZED_SCENE_HPP
 

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -21,18 +22,30 @@
 ///        in a SceneGraph.
 ////////////////////////////////////////////////////////////////////////////////
 
+// class header
 #include "scenegraph/Core.hpp"
 
 namespace gua {
 
-Core::Core(CoreType type):
+////////////////////////////////////////////////////////////////////////////////
+
+Core::
+Core(CoreType type):
     type_(type) {}
 
-Core::~Core() {}
+////////////////////////////////////////////////////////////////////////////////
 
+Core::
+~Core() {}
 
-Core::CoreType Core::get_type() const {
+////////////////////////////////////////////////////////////////////////////////
+
+Core::CoreType Core::
+get_type() const {
+
     return type_;
 }
+
+////////////////////////////////////////////////////////////////////////////////
 
 }

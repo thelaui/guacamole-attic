@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,8 +21,11 @@
 /// \brief Declaration of the Core class.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef CORE_HPP
-#define CORE_HPP
+#ifndef GUA_CORE_HPP
+#define GUA_CORE_HPP
+
+namespace gua {
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief This class is used to represent certain Node properties.
@@ -30,40 +34,38 @@
 /// lights, geometry or camera nodes.
 ///
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 class Core {
     public:
+
         ////////////////////////////////////////////////////////////////////////
-        /// This enum is used to distinguish Cores with different properties
-        /// from each other.
+        /// This enumeration is used to distinguish Cores with
+        /// different properties from each other.
         ////////////////////////////////////////////////////////////////////////
         enum CoreType { CAMERA, GEOMETRY, LIGHT, SCREEN };
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Constructor.
+        /// \brief Constructor.
         ///
         /// This constructs a Core.
         ///
-        ///\param type      The Core's type
+        /// \param type      The Core's type
         ////////////////////////////////////////////////////////////////////////
         Core(CoreType type);
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Destructor.
+        /// \brief Destructor.
         ///
         /// This destructs a Core.
         ////////////////////////////////////////////////////////////////////////
         virtual ~Core();
 
         ////////////////////////////////////////////////////////////////////////
-        ///\brief Returns the Core's type.
+        /// \brief Returns the Core's type.
         ///
         /// This function can be used to find out on which derived Core class
         /// a Core pointer has to be casted.
         ///
-        ///\return type      The Core's type
+        /// \return type      The Core's type
         ////////////////////////////////////////////////////////////////////////
         CoreType get_type() const;
 
@@ -74,4 +76,4 @@ class Core {
 
 }
 
-#endif // CORE_HPP
+#endif // GUA_CORE_HPP

@@ -1,7 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////
-// guacamole - an interesting scenegraph implementation
+// Guacamole - An interesting scenegraph implementation.
 //
-// Copyright (c) 2011 by Mischa Krempel, Felix Lauer and Simon Schneegans
+// Copyright: (c) 2011-2012 by Felix Lauer and Simon Schneegans
+// Contact:   felix.lauer@uni-weimar.de / simon.schneegans@uni-weimar.de
 //
 // This program is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -20,30 +21,39 @@
 /// \brief Declaration and definition of the ScreenNode struct.
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef SCREEN_NODE_HPP
-#define SCREEN_NODE_HPP
+#ifndef GUA_SCREEN_NODE_HPP
+#define GUA_SCREEN_NODE_HPP
 
-#include <eigen2/Eigen/Geometry>
-
+// guacamole headers
 #include "cores/ScreenCore.hpp"
+
+namespace gua {
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \brief Stores information on a screen for rendering.
 ///
+/// This is a struct used for serializing the graph.
 ////////////////////////////////////////////////////////////////////////////////
-
-namespace gua {
-
 struct ScreenNode {
-    ScreenNode() {};
-    ScreenNode(Eigen::Matrix4f const& t = Eigen::Matrix4f::Identity()):
-        transform_(t){}
 
-    Eigen::Matrix4f transform_;
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief Constructor.
+    ///
+    /// This creates a new serialized node.
+    ///
+    /// \param transform        The global transformation of this node.
+    ////////////////////////////////////////////////////////////////////////////
+    ScreenNode(math::mat4 const& transform):
+        transform_(transform) {}
+
+    ////////////////////////////////////////////////////////////////////////////
+    ///\brief The global transformation of this node.
+    ////////////////////////////////////////////////////////////////////////////
+    math::mat4 transform_;
 };
 
 }
 
-#endif //SCREEN_NODE_HPP
+#endif // GUA_SCREEN_NODE_HPP
 
 
