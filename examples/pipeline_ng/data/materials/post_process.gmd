@@ -1,0 +1,3 @@
+vertex_shader ../shaders/post_process.vert
+fragment_shader ../shaders/post_process.frag
+

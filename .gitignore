@@ -15,6 +15,8 @@ examples/deferred_example/obj/*
 examples/deferred_example/bin/*
 examples/tracking_example/obj/*
 examples/tracking_example/bin/*
+examples/pipeline_ng/obj/*
+examples/pipeline_ng/bin/*
 examples/big_scenegraph_example/bin/*
 examples/big_scenegraph_example/obj/*
 examples/big_scenegraph_example/data/objects/audi.obj

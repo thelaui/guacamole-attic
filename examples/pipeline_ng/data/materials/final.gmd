@@ -1,0 +1,6 @@
+vertex_shader ../shaders/final.vert
+fragment_shader ../shaders/final.frag
+
+texture tiles_tex    tiles
+texture tiles_small_tex    tiles_small
+texture wood_tex    wood

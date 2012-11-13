@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="Workspace">
-		<Project filename="guacamole_scenegraph.cbp" active="1" />
+		<Project filename="guacamole_scenegraph.cbp" />
 		<Project filename="guacamole_rendering.cbp" />
 		<Project filename="examples/simple_example/simple_example.cbp">
 			<Depends filename="guacamole_rendering.cbp" />
@@ -16,5 +16,6 @@
 			<Depends filename="guacamole_rendering.cbp" />
 		</Project>
 		<Project filename="examples/big_scenegraph_example/big_scenegraph_example.cbp" />
+		<Project filename="examples/pipeline_ng/pipeline_ng.cbp" active="1" />
 	</Workspace>
 </CodeBlocks_workspace_file>

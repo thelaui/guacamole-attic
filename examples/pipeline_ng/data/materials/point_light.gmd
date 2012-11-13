@@ -1,0 +1,5 @@
+vertex_shader ../shaders/point_light.vert
+fragment_shader ../shaders/point_light.frag
+
+float texel_width 0.000625
+float texel_height 0.0011111111
