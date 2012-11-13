@@ -38,8 +38,8 @@ layout(location=0) out vec3 color;
 void main() {
     int mat_id = int(texture2D(in_tex_coords_mat_id, out_texcoord).z);
     vec2 texcoords = texture2D(in_tex_coords_mat_id, out_texcoord).xy;
-    vec3 diffuse = texture2D(in_diffuse, texcoords).rgb;
-    vec3 specular = texture2D(in_specular, texcoords).rgb;
+    vec3 diffuse = texture2D(in_diffuse, out_texcoord).rgb;
+    vec3 specular = texture2D(in_specular, out_texcoord).rgb;
 
     if (mat_id == 1)
         color = texture2D(tiles_small_tex, texcoords).rgb * diffuse + specular;
@@ -50,6 +50,11 @@ void main() {
     else if (mat_id == 3)
         color = texture2D(tiles_tex, texcoords).rgb * diffuse + specular;
 
+    else if (mat_id == 4)
+        color = vec3(1,1,1);
+
     else
         color = vec3(0, 0, 0);
+
+   // color = vec3(texcoords, 0.0);
 }

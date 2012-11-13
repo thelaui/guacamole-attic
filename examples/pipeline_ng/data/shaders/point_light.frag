@@ -48,15 +48,31 @@ vec3 get_world_pos(sampler2D depth_texture, vec2 frag_pos, mat4 inverse_projecti
 void main() {
     vec2 frag_pos = vec2(gl_FragCoord.x * texel_width, gl_FragCoord.y * texel_height);
 
-    vec3 world_pos = get_world_pos(in_depth_stencil, frag_pos, inverse_projection_view_matrix);
+    int mat_id = int(texture2D(in_tex_coords_mat_id, frag_pos).z);
 
-    float dist_to_light = length(world_pos - out_light_position);
+    if (mat_id == 4) {
+        diffuse = vec3(0, 0, 0);
+        specular = vec3(0, 0, 0);
+    } else {
+        vec3 world_pos = get_world_pos(in_depth_stencil, frag_pos, inverse_projection_view_matrix);
 
-    if (dist_to_light > out_light_radius)
-        discard;
+        vec3 world_normal = texture2D(in_normal, frag_pos).xyz;
 
-    float attenuation = 1.0 - dist_to_light/out_light_radius;
+        vec3 dir_to_light = out_light_position - world_pos;
+        float dist_to_light = length(dir_to_light);
+        dir_to_light /= dist_to_light;
 
-    diffuse = vec3(1, 1, 1) * attenuation;
-    specular = vec3(0, 0, 0);
+        if (dist_to_light > out_light_radius)
+            discard;
+
+        if (dot(world_normal, dir_to_light) < 0)
+            discard;
+
+        float attenuation = pow(1.0 - dist_to_light/out_light_radius, 1);
+        float diffuse_term = dot(world_normal, dir_to_light) * attenuation;
+        float specular_term = pow(max(0, dot(reflect(dir_to_light, world_normal), normalize(world_pos - out_camera_position))) , 50) * attenuation;
+
+        diffuse = vec3(1, 1, 1) * diffuse_term;
+        specular = vec3(1, 1, 1) * specular_term;
+    }
 }

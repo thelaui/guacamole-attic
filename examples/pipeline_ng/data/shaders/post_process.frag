@@ -29,5 +29,22 @@ uniform sampler2D in_depth_stencil;
 layout(location=0) out vec3 color;
 
 void main() {
-    color = texture2D(in_color, out_texcoord).rgb;
+    float fog = min(1, max (0, texture2D(in_depth_stencil, out_texcoord).x * 3.0 - 2.5));
+    float vignette = length(out_texcoord - 0.5);
+    color = (texture2D(in_color, out_texcoord).rgb + 0.4 * fog) + vignette * vignette;
+
+//    const float vblurSize = 1.0/512.0;
+//    vec4 sum = vec4(0.0);
+//
+//    // blur in y (vertical)
+//    // take nine samples, with the distance blurSize between them
+//    sum += texture2D(RTBlurH, vec2(out_texcoord.x, out_texcoord.y - 4.0*vblurSize)) * 0.05;
+//    sum += texture2D(RTBlurH, vec2(out_texcoord.x, out_texcoord.y - 3.0*vblurSize)) * 0.09;
+//    sum += texture2D(RTBlurH, vec2(out_texcoord.x, out_texcoord.y - 2.0*vblurSize)) * 0.12;
+//    sum += texture2D(RTBlurH, vec2(out_texcoord.x, out_texcoord.y - vblurSize)) * 0.15;
+//    sum += texture2D(RTBlurH, vec2(out_texcoord.x, out_texcoord.y)) * 0.16;
+//    sum += texture2D(RTBlurH, vec2(out_texcoord.x, out_texcoord.y + vblurSize)) * 0.15;
+//    sum += texture2D(RTBlurH, vec2(out_texcoord.x, out_texcoord.y + 2.0*vblurSize)) * 0.12;
+//    sum += texture2D(RTBlurH, vec2(out_texcoord.x, out_texcoord.y + 3.0*vblurSize)) * 0.09;
+//    sum += texture2D(RTBlurH, vec2(out_texcoord.x, out_texcoord.y + 4.0*vblurSize)) * 0.05;
 }

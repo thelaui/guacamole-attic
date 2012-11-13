@@ -16,6 +16,9 @@
 			<Depends filename="guacamole_rendering.cbp" />
 		</Project>
 		<Project filename="examples/big_scenegraph_example/big_scenegraph_example.cbp" />
-		<Project filename="examples/pipeline_ng/pipeline_ng.cbp" active="1" />
+		<Project filename="examples/pipeline_ng/pipeline_ng.cbp" active="1">
+			<Depends filename="guacamole_scenegraph.cbp" />
+			<Depends filename="guacamole_rendering.cbp" />
+		</Project>
 	</Workspace>
 </CodeBlocks_workspace_file>

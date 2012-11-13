@@ -56,6 +56,19 @@ std::vector<gua::SceneGraph::Iterator> add_lights(gua::SceneGraph& graph, int co
     return lights;
 }
 
+void add_monkeys(gua::SceneGraph& graph, int count) {
+
+    auto monkey_core = new gua::GeometryCore("monkey", "wood");
+
+    for (int i(0); i < count; ++i) {
+        for (int j(0); j < count; ++j) {
+            auto ape = graph.add_node("/", "monkey" + gua::string_utils::to_string(10 * i + j), monkey_core);
+            ape.scale(0.1, 0.1, 0.1);
+            ape.translate((i-count*0.5)*0.2, 0.4, (j-count*0.5)*0.2);
+        }
+    }
+}
+
 int main(int argc, char** argv) {
 
     // initialize guacamole
@@ -77,10 +90,7 @@ int main(int argc, char** argv) {
     box.scale(0.2, 0.2, 0.2);
     box.translate(0, 0.1, 0);
 
-    auto monkey_core = new gua::GeometryCore("monkey", "wood");
-    auto ape = graph.add_node("/box", "monkey", monkey_core);
-    ape.scale(0.5, 0.5, 0.5);
-    ape.translate(0, 1, 0);
+    add_monkeys(graph, 10);
 
     auto lights = add_lights(graph, 64);
 
@@ -113,7 +123,7 @@ int main(int argc, char** argv) {
             lights[i].translate(0, std::sin(time*(i*0.1 + 0.5))*frame_time*0.5, 0);
         }
 
-        graph["/box/monkey"].rotate(50*frame_time, 0, 1, 0);
+       // graph["/box/monkey"].rotate(50*frame_time, 0, 1, 0);
         graph["/screen"].rotate(20*frame_time, 0, 1, 0);
     }
 
