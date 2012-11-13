@@ -24,7 +24,7 @@ in vec3 out_position;
 in vec3 out_camera_position;
 in vec3 out_light_position;
 in float out_light_radius;
-in mat4 inverse_view_matrix;
+in mat4 inverse_projection_view_matrix;
 
 uniform sampler2D in_normal;
 uniform sampler2D in_tex_coords_mat_id;
@@ -35,18 +35,28 @@ uniform float texel_height;
 layout(location=0) out vec3 diffuse;
 layout(location=1) out vec3 specular;
 
+
+vec3 get_world_pos(sampler2D depth_texture, vec2 frag_pos, mat4 inverse_projection_view_matrix) {
+    vec2 ndc_pos = frag_pos * 2.0 - 1.0;
+    float depth = texture2D(depth_texture, frag_pos).x * 2.0 - 1.0;
+    vec4 screen_space_pos = vec4(ndc_pos.x , ndc_pos.y, depth, 1.0);
+    vec4 h = inverse_projection_view_matrix * screen_space_pos;
+    h /= h.w;
+    return h.xyz;
+}
+
 void main() {
-    float z_near = 0.1;
-    float z_far = 100000.0;
-    vec2 texcoords = vec2(gl_FragCoord.s * texel_width, gl_FragCoord.t * texel_height);
-    vec4 depth_sample = texture2D(in_depth_stencil, texcoords);
+    vec2 frag_pos = vec2(gl_FragCoord.x * texel_width, gl_FragCoord.y * texel_height);
 
-    float depth = z_near * z_far / (z_far - depth_sample.x * (z_far - z_near));
-    
-    float aspect_ratio = texel_height / texel_width;
-    vec3 view_pos = depth * vec3(texcoords.s * 2.0 - 1.0, (texcoords.t * 2.0 - 1.0) / aspect_ratio, -1.0);
-    vec3 world_pos = (inverse_view_matrix * vec4(view_pos, 1.0)).xyz;
+    vec3 world_pos = get_world_pos(in_depth_stencil, frag_pos, inverse_projection_view_matrix);
 
-    diffuse = world_pos;    
+    float dist_to_light = length(world_pos - out_light_position);
+
+    if (dist_to_light > out_light_radius)
+        discard;
+
+    float attenuation = 1.0 - dist_to_light/out_light_radius;
+
+    diffuse = vec3(1, 1, 1) * attenuation;
     specular = vec3(0, 0, 0);
 }

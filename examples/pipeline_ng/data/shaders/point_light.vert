@@ -33,13 +33,14 @@ out vec3 out_position;
 out vec3 out_camera_position;
 out vec3 out_light_position;
 out float out_light_radius;
-out mat4 inverse_view_matrix;
+out mat4 inverse_projection_view_matrix;
 
 void main() {
 	out_position = (model_matrix * vec4(in_position, 1.0)).xyz;
     out_light_position = (model_matrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
     out_light_radius = length(out_light_position - out_position);
-	gl_Position = projection_matrix * view_matrix * vec4(out_position, 1.0);    
-    inverse_view_matrix = inverse(view_matrix);
-    out_camera_position = (inverse_view_matrix * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+	gl_Position = projection_matrix * view_matrix * vec4(out_position, 1.0);
+    inverse_projection_view_matrix = inverse(projection_matrix * view_matrix);
+
+    out_camera_position = (inverse(view_matrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 }

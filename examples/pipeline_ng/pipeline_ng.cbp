@@ -64,6 +64,12 @@
 		</Linker>
 		<Unit filename="data/shaders/base.frag" />
 		<Unit filename="data/shaders/base.vert" />
+		<Unit filename="data/shaders/final.frag" />
+		<Unit filename="data/shaders/final.vert" />
+		<Unit filename="data/shaders/point_light.frag" />
+		<Unit filename="data/shaders/point_light.vert" />
+		<Unit filename="data/shaders/post_process.frag" />
+		<Unit filename="data/shaders/post_process.vert" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

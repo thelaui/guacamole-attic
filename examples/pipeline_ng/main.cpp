@@ -86,6 +86,11 @@ int main(int argc, char** argv) {
     gua::TextureBase::load_textures_from("data/textures/");
     gua::MaterialBase::load_materials_from("data/materials/");
 
+    auto light_mat = gua::MaterialBase::instance()->get("point_light");
+    light_mat->set_blend_state(scm::gl::blend_state_desc(scm::gl::blend_ops(true, scm::gl::FUNC_ONE, scm::gl::FUNC_ONE)));
+    light_mat->set_rasterizer_state(scm::gl::rasterizer_state_desc(scm::gl::FILL_SOLID, scm::gl::CULL_FRONT));
+    light_mat->set_depth_stencil_state(scm::gl::depth_stencil_state_desc(false));
+
     // setup scene
     gua::SceneGraph graph;
 
