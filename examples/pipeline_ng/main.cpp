@@ -58,6 +58,12 @@ gua::RenderPipeline* create_pipe() {
     pipe->add_render_pass(post_process_pass);
     pipe->set_final_buffer("post_process", "color");
 
+    pipe->add_preview_buffer("l_buffer", "diffuse");
+    pipe->add_preview_buffer("l_buffer", "specular");
+    pipe->add_preview_buffer("g_buffer", "normal");
+    pipe->add_preview_buffer("g_buffer", "tex_coords_mat_id");
+    pipe->add_preview_buffer("final", "color");
+
     return pipe;
 }
 
@@ -75,7 +81,7 @@ std::vector<gua::SceneGraph::Iterator> add_lights(gua::SceneGraph& graph, int co
         lights[i].scale(0.02, 0.02, 0.02);
         lights[i].translate(gua::randomizer::random(-0.8f, 0.8f), gua::randomizer::random(0.05f, 0.1f), gua::randomizer::random(-0.8f, 0.8f));
 
-        light.scale(15, 15, 15);
+        light.scale(50, 50, 50);
     }
 
     return lights;
@@ -89,7 +95,7 @@ void add_monkeys(gua::SceneGraph& graph, int count) {
         for (int j(0); j < count; ++j) {
             auto ape = graph.add_node("/", "monkey" + gua::string_utils::to_string(10 * i + j), monkey_core);
             ape.scale(0.1, 0.1, 0.1);
-            ape.translate((i-count*0.5)*0.2, 0.4, (j-count*0.5)*0.2);
+            ape.translate((i-count*0.5)*0.2, 0.8, (j-count*0.5)*0.2);
         }
     }
 }
@@ -122,7 +128,7 @@ int main(int argc, char** argv) {
 
     add_monkeys(graph, 10);
 
-    auto lights = add_lights(graph, 256);
+    auto lights = add_lights(graph, 40);
 
     auto screen_core(new gua::ScreenCore(1.6, 0.9));
     auto screen = graph.add_node("/", "screen", screen_core);
@@ -153,7 +159,6 @@ int main(int argc, char** argv) {
             lights[i].translate(0, std::sin(time*(i*0.1 + 0.5))*frame_time*0.5, 0);
         }
 
-        //graph["/box/monkey"].rotate(50*frame_time, 0, 1, 0);
         graph["/screen"].rotate(20*frame_time, 0, 1, 0);
     }
 

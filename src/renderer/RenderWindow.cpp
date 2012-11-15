@@ -48,6 +48,7 @@ unsigned RenderWindow::last_context_id_ = 0;
 RenderWindow::
 RenderWindow(Description const& description):
 
+    preview_count_(0),
     fullscreen_shader_(),
     fullscreen_quad_(),
     depth_stencil_state_(),
@@ -178,6 +179,7 @@ finish_frame() const {
 
     set_active(true);
     ctx_.window->swap_buffers(0);
+    preview_count_ = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,12 +195,13 @@ display_mono(std::shared_ptr<Texture> const& texture) {
 void RenderWindow::
 display_stereo(std::shared_ptr<Texture> const& left_texture,
                std::shared_ptr<Texture> const& right_texture,
-               StereoMode stereo_mode) {
+               StereoMode stereo_mode,
+               math::vec2 const& bottom_left, math::vec2 const& size) {
 
     ctx_.render_context->set_viewport(
                             scm::gl::viewport(
-                                    math::vec2(0,0),
-                                    math::vec2(ctx_.width, ctx_.height)));
+                                    math::vec2(ctx_.width, ctx_.height) * bottom_left,
+                                    math::vec2(ctx_.width, ctx_.height) * size));
 
     fullscreen_shader_.use(ctx_);
 
@@ -219,6 +222,23 @@ display_stereo(std::shared_ptr<Texture> const& left_texture,
 
     ctx_.render_context->reset_state_objects();
     fullscreen_shader_.unuse(ctx_);
+}
+
+
+void RenderWindow::
+display_preview(std::shared_ptr<Texture> const& texture) {
+    const float preview_size = 0.15;
+    const float preview_gap = 0.02;
+
+    math::vec2 bottom_left = math::vec2(1.0 - preview_gap - preview_size,
+                (1 + preview_count_)*preview_gap +
+                     preview_count_ *preview_size);
+
+    math::vec2 size = math::vec2(preview_size, preview_size);
+
+    display_stereo(texture, texture, MONO, bottom_left, size);
+
+    ++preview_count_;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

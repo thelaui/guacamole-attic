@@ -116,6 +116,12 @@ class RenderPipeline {
                               std::string const& buffer_name);
 
         ////////////////////////////////////////////////////////////////////////
+        ///
+        ////////////////////////////////////////////////////////////////////////
+        void add_preview_buffer(std::string const& pass_name,
+                                std::string const& buffer_name);
+
+        ////////////////////////////////////////////////////////////////////////
         /// \brief Gets the stereo mode of this pipe.
         ///
         /// \return                 The stereo mode of this pipe.
@@ -149,7 +155,10 @@ class RenderPipeline {
 
         RenderWindow* window_;
         RenderWindow::Description window_description_;
+
         std::string final_pass_, final_buffer_;
+        std::vector<std::pair<std::string, std::string>> preview_buffers_;
+
         std::map<std::string, GenericRenderPass*> passes_;
 
         SceneGraph* current_graph_;

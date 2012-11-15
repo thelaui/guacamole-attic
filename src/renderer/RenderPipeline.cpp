@@ -119,6 +119,15 @@ set_final_buffer(std::string const& pass_name,
 
 ////////////////////////////////////////////////////////////////////////////////
 
+void RenderPipeline::
+add_preview_buffer(std::string const& pass_name,
+                   std::string const& buffer_name) {
+
+    preview_buffers_.push_back(std::make_pair(pass_name, buffer_name));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 StereoMode RenderPipeline::
 get_stereo_mode() const {
 
@@ -165,10 +174,10 @@ process(SceneGraph* graph, float application_fps, float rendering_fps) {
         auto pass(it->second);
 
         if (window_description_.stereo_mode_ == MONO) {
-            window_->display_mono(pass->get_buffer(final_buffer_,CENTER, true));
+            window_->display_mono(pass->get_buffer(final_buffer_, CENTER, true));
         } else {
             window_->display_stereo(pass->get_buffer(final_buffer_, LEFT, true),
-                                    pass->get_buffer(final_buffer_,RIGHT, true),
+                                    pass->get_buffer(final_buffer_, RIGHT, true),
                                     window_description_.stereo_mode_);
         }
     } else {
@@ -177,13 +186,29 @@ process(SceneGraph* graph, float application_fps, float rendering_fps) {
                 final_pass_.c_str());
     }
 
-    {
+    for (auto buffer : preview_buffers_) {
+        auto it(passes_.find(buffer.first));
+
+        if (it != passes_.end()) {
+
+            auto pass(it->second);
+
+            if (window_description_.stereo_mode_ == MONO) {
+                window_->display_preview(pass->get_buffer(buffer.second, CENTER, true));
+            } else {
+                window_->display_preview(pass->get_buffer(buffer.second, LEFT, true));
+            }
+        } else {
+            WARNING("Failed to display buffer \"%s\" from pass \"%s\": A pass "
+                    "with this name does not exist!", buffer.second.c_str(),
+                    buffer.first.c_str());
+        }
+    }
 
     window_->finish_frame();
 
     for (auto& pass: passes_)
         pass.second->flush();
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

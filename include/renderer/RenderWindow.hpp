@@ -171,10 +171,19 @@ class RenderWindow {
         /// \param left_texture     The left eye texture.
         /// \param right_texture    The reight eye exture.
         /// \param stereo_mode      The stereo mode for mapping both textures.
+        /// \param bottom_left      Relative coords of the bottom left corner.
+        /// \param top_right        Relative coordinates of the top right corner.
         ////////////////////////////////////////////////////////////////////////
         void display_stereo(std::shared_ptr<Texture> const& left_texture,
                             std::shared_ptr<Texture> const& right_texture,
-                            StereoMode stereo_mode);
+                            StereoMode stereo_mode,
+                            math::vec2 const& bottom_left = math::vec2(0, 0),
+                            math::vec2 const& size = math::vec2(1, 1));
+
+        ////////////////////////////////////////////////////////////////////////
+        ///
+        ////////////////////////////////////////////////////////////////////////
+        void display_preview(std::shared_ptr<Texture> const& texture);
 
         ////////////////////////////////////////////////////////////////////////
         /// \brief Get the RenderContext of this window.
@@ -188,6 +197,7 @@ class RenderWindow {
 
     private:
         static unsigned last_context_id_;
+        mutable unsigned preview_count_;
 
         RenderContext ctx_;
 
