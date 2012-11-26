@@ -30,6 +30,7 @@
 #include "utils/math.hpp"
 
 // external headers
+#include <mutex>
 #include <map>
 
 namespace gua {

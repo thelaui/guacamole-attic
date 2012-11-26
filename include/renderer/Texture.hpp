@@ -30,6 +30,7 @@
 // external headers
 #include <string>
 #include <vector>
+#include <mutex>
 #include <thread>
 #include <GL/glew.h>
 

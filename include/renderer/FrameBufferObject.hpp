@@ -29,6 +29,7 @@
 #include "utils/Color3f.hpp"
 
 // external headers
+#include <mutex>
 #include <vector>
 
 namespace gua {

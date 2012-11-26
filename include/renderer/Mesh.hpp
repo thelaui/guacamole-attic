@@ -26,6 +26,7 @@
 
 // external headers
 #include <scm/gl_core.h>
+#include <mutex>
 #include <thread>
 #include <vector>
 

@@ -30,9 +30,9 @@
 #include "utils/debug.hpp"
 
 // external headers
-#include <assimp/assimp.hpp>
-#include <assimp/aiPostProcess.h>
-#include <assimp/aiScene.h>
+#include <assimp/Importer.hpp>
+//#include <assimp/aiPostProcess.h>
+//#include <assimp/aiScene.h>
 
 namespace {
     struct Vertex {

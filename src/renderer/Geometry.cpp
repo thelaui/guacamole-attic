@@ -30,9 +30,9 @@
 #include "renderer/LightSphere.hpp"
 
 // external headers
-#include <assimp/assimp.hpp>
-#include <assimp/aiPostProcess.h>
-#include <assimp/aiScene.h>
+#include <assimp/Importer.hpp>
+//#include <assimp/aiPostProcess.h>
+//#include <assimp/scene.h>
 
 namespace gua {
 
